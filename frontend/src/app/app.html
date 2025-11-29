@@ -1,0 +1,92 @@
+<!-- frontend/src/app/app.html -->
+
+<!-- Contenedor principal que ocupa toda la pantalla -->
+<mat-sidenav-container class="w-screen h-screen">
+
+  <!-- 1. Barra Lateral (Sidenav) -->
+  <mat-sidenav #sidenav mode="side" opened 
+               class="w-64 bg-slate-900 text-white border-r-0">
+    
+    <!-- Título de la barra lateral -->
+    <h2 class="text-2xl font-semibold p-6 text-center cursor-pointer hover:text-blue-400 transition-colors" 
+        routerLink="/dashboard">
+      Tu Negocio
+    </h2>
+    
+    <!-- Lista de Navegación -->
+    <mat-nav-list>
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link"
+         class="!text-slate-300 hover:!bg-slate-700">
+        <mat-icon matListItemIcon class="!text-slate-400">dashboard</mat-icon>
+        <span matListItemTitle>Inicio</span>
+      </a>
+      <a mat-list-item routerLink="/venta" routerLinkActive="active-link" class="...">
+        <mat-icon matListItemIcon class="...">point_of_sale</mat-icon>
+        <span matListItemTitle>Nueva Venta</span>
+      </a>
+      <a mat-list-item routerLink="/facturas" routerLinkActive="active-link"
+         class="!text-slate-300 hover:!bg-slate-700">
+        <mat-icon matListItemIcon class="!text-slate-400">history</mat-icon>
+        <span matListItemTitle>Historial Ventas</span>
+      </a>
+      <a mat-list-item routerLink="/cliente" routerLinkActive="active-link"
+         class="!text-slate-300 hover:!bg-slate-700">
+        <mat-icon matListItemIcon class="!text-slate-400">people</mat-icon>
+        <span matListItemTitle>Clientes</span>
+      </a>
+      <a mat-list-item routerLink="/proveedor" routerLinkActive="active-link"
+         class="!text-slate-300 hover:!bg-slate-700">
+        <mat-icon matListItemIcon class="!text-slate-400">store</mat-icon>
+        <span matListItemTitle>Proveedores</span>
+      </a>
+      <a mat-list-item routerLink="/producto" routerLinkActive="active-link"
+         class="!text-slate-300 hover:!bg-slate-700">
+        <mat-icon matListItemIcon class="!text-slate-400">inventory_2</mat-icon>
+        <span matListItemTitle>Productos</span>
+      </a>
+      <a mat-list-item routerLink="/cotizacion/nueva" routerLinkActive="active-link" class="!text-slate-300 hover:!bg-slate-700">
+        <mat-icon matListItemIcon class="!text-slate-400">description</mat-icon>
+        <span matListItemTitle>Cotizar</span>
+      </a>
+      <a mat-list-item routerLink="/cotizacion/historial" routerLinkActive="active-link" class="!text-slate-300 hover:!bg-slate-700">
+        <mat-icon matListItemIcon class="!text-slate-400">list_alt</mat-icon>
+        <span matListItemTitle>Historial Cotizaciones</span>
+      </a>
+      <a mat-list-item routerLink="/compra" routerLinkActive="active-link"
+         class="!text-slate-300 hover:!bg-slate-700">
+        <mat-icon matListItemIcon class="!text-slate-400">local_shipping</mat-icon>
+        <span matListItemTitle>Compras</span>
+      </a>
+      <a mat-list-item routerLink="/compra/historial" routerLinkActive="active-link" class="!text-slate-300 hover:!bg-slate-700">
+        <mat-icon matListItemIcon class="!text-slate-400">history_edu</mat-icon>
+        <span matListItemTitle>Historial Compras</span>
+      </a>
+    </mat-nav-list>
+
+  </mat-sidenav>
+
+  <!-- 2. Contenido Principal (lado derecho) -->
+  <mat-sidenav-content class="bg-gray-100">
+    
+    <!-- Barra Superior del Contenido (la que tiene el botón de menú) -->
+    <mat-toolbar class="bg-white shadow-sm text-gray-800">
+      <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle sidenav">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="flex-auto"></span>
+      <span>Hola, Fernando</span>
+      <button mat-icon-button class="ml-2" aria-label="User account">
+        <mat-icon>person</mat-icon>
+      </button>
+    </mat-toolbar>
+    
+    <!-- 
+      Aquí es donde se cargarán tus páginas (Cliente, Proveedor, etc.) 
+      El padding (p-4 md:p-8) crea el margen alrededor de tus tablas.
+    -->
+    <main class="p-4 md:p-8">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

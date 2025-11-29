@@ -1,0 +1,14 @@
+/* frontend/src/app/proveedor/proveedor-list/proveedor-list.component.css (REEMPLAZAR) */
+
+/* Reutilizamos los estilos de 'cliente' */
+.proveedor-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-bottom: 16px; 
+}
+
+.proveedor-card-header button {
+  margin-left: 1rem;
+}

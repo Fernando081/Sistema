@@ -1,0 +1,100 @@
+<!-- frontend/src/app/cliente/cliente-dialog/cliente-dialog.component.html -->
+<h1 mat-dialog-title>{{ isEditMode ? 'Editar Cliente' : 'Nuevo Cliente' }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="guardar()">
+  <div mat-dialog-content class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+    
+    <mat-form-field class="w-full">
+      <mat-label>RFC</mat-label>
+      <input matInput formControlName="rfc" required oninput="this.value = this.value.toUpperCase()">
+      <mat-error *ngIf="form.get('rfc')?.hasError('required')">Requerido</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Correo Electrónico</mat-label>
+      <input matInput formControlName="email" placeholder="cliente@ejemplo.com" type="email">
+      <mat-error *ngIf="form.get('email')?.hasError('email')">Correo inválido</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Razón Social</mat-label>
+      <input matInput formControlName="razonSocial" required>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Código Postal</mat-label>
+      <input matInput formControlName="codigoPostal" required>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>País</mat-label>
+      <input matInput formControlName="pais">
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Estado</mat-label>
+      <mat-select formControlName="idEstado">
+        <mat-option *ngFor="let estado of estados" [value]="estado.idEstado">
+          {{ estado.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    
+    <mat-form-field class="w-full">
+      <mat-label>Municipio</mat-label>
+      <mat-select formControlName="idMunicipio">
+        <mat-option *ngFor="let mun of municipios" [value]="mun.idMunicipio">
+          {{ mun.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="w-full"><mat-label>Ciudad</mat-label><input matInput formControlName="ciudad"></mat-form-field>
+    <mat-form-field class="w-full"><mat-label>Colonia</mat-label><input matInput formControlName="colonia"></mat-form-field>
+    <mat-form-field class="w-full"><mat-label>Calle</mat-label><input matInput formControlName="calle"></mat-form-field>
+    <mat-form-field class="w-full"><mat-label>No. Ext</mat-label><input matInput formControlName="numeroExterior"></mat-form-field>
+    <mat-form-field class="w-full"><mat-label>No. Int</mat-label><input matInput formControlName="numeroInterior"></mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Régimen Fiscal</mat-label>
+      <mat-select formControlName="idRegimenFiscal" required>
+        <mat-option *ngFor="let r of regimenes$ | async" [value]="r.idRegimenFiscal">
+          {{ r.clave }} - {{ r.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Uso CFDI</mat-label>
+      <mat-select formControlName="idUsoCFDI">
+        <mat-option *ngFor="let u of usosCFDI$ | async" [value]="u.idUsoCFDI">
+          {{ u.clave }} - {{ u.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Forma de Pago</mat-label>
+      <mat-select formControlName="idFormaPago">
+        <mat-option *ngFor="let f of formasPago$ | async" [value]="f.idFormaPago">
+          {{ f.clave }} - {{ f.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Método de Pago</mat-label>
+      <mat-select formControlName="idMetodoDePago">
+        <mat-option *ngFor="let m of metodosPago$ | async" [value]="m.idMetodoDePago">
+          {{ m.clave }} - {{ m.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </div>
+
+  <div mat-dialog-actions align="end" class="mt-4">
+    <button mat-button type="button" (click)="cerrar()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Guardar</button>
+  </div>
+</form>

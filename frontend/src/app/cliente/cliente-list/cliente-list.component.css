@@ -1,0 +1,14 @@
+/* frontend/src/app/cliente/cliente-list/cliente-list.component.css */
+/* Estilos para alinear el botón de "Nuevo Cliente" */
+.cliente-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-bottom: 16px; /* Espacio extra antes del formulario de búsqueda */
+}
+
+/* Ajuste para que el botón no esté pegado al borde */
+.cliente-card-header button {
+  margin-left: 1rem; /* Espacio a la izquierda del botón */
+}

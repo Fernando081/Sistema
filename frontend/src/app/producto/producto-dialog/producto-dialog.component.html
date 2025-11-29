@@ -1,0 +1,182 @@
+<!-- frontend/src/app/producto/producto-dialog/producto-dialog.component.html -->
+<h1 mat-dialog-title>{{ isEditMode ? 'Editar Producto' : 'Nuevo Producto' }}</h1>
+
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+
+  <mat-tab label="Datos Generales">
+    <div class="p-4">
+      <form [formGroup]="form" (ngSubmit)="guardar()">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+          
+          <mat-form-field class="w-full">
+            <mat-label>Descripción</mat-label>
+            <input matInput formControlName="descripcion" required>
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+            <mat-label>Categoría</mat-label>
+            <mat-select formControlName="idCategoria" required>
+              <mat-option *ngFor="let cat of categoria$ | async" [value]="cat.idCategoria">
+                {{ cat.descripcion }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+            <mat-label>Precio Unitario</mat-label>
+            <input matInput type="number" formControlName="precioUnitario" required>
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+            <mat-label>Código</mat-label>
+            <input matInput formControlName="codigo">
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+            <mat-label>Marca</mat-label>
+            <input matInput formControlName="marca">
+          </mat-form-field>
+          
+          <mat-form-field class="w-full">
+            <mat-label>Ubicación</mat-label>
+            <input matInput formControlName="ubicacion">
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+            <mat-label>Clave SAT (Prod/Serv)</mat-label>
+            <input type="text" placeholder="Buscar..." matInput formControlName="claveProdServControl" [matAutocomplete]="autoProdServ">
+            <mat-autocomplete #autoProdServ="matAutocomplete" [displayWith]="displayClave">
+              <mat-option *ngFor="let option of filteredClavesProdServ$ | async" [value]="option">
+                <span class="font-bold">{{ option.clave }}</span> - {{ option.descripcion | slice:0:50 }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+          <mat-form-field class="w-full">
+            <mat-label>Clave Unidad (SAT)</mat-label>
+            <input type="text" placeholder="Buscar..." matInput formControlName="claveUnidadControl" [matAutocomplete]="autoUnidadSat">
+            <mat-autocomplete #autoUnidadSat="matAutocomplete" [displayWith]="displayClave">
+              <mat-option *ngFor="let option of filteredClavesUnidad$ | async" [value]="option">
+                <span class="font-bold">{{ option.clave }}</span> - {{ option.descripcion }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+            <mat-label>Unidad Local</mat-label>
+            <mat-select formControlName="idUnidad">
+              <mat-option *ngFor="let u of unidades$ | async" [value]="u.idUnidad">
+                {{ u.descripcion }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+            <mat-label>Objeto Impuesto (SAT)</mat-label>
+            <mat-select formControlName="idObjetoImpuesto">
+              <mat-option *ngFor="let obj of objetosImpuesto$ | async" [value]="obj.idObjetoImpuesto">
+                {{ obj.clave }} - {{ obj.descripcion }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="col-span-1 md:col-span-2 mt-4 p-4 border rounded bg-gray-50">
+            <h3 class="text-md font-semibold mb-2">Configuración Fiscal (RESICO)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <mat-form-field class="w-full">
+                <mat-label>Objeto Impuesto</mat-label>
+                <mat-select formControlName="objetoImpuestoSat">
+                  <mat-option value="02">02 - Sí objeto</mat-option>
+                  <mat-option value="01">01 - No objeto</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="w-full">
+                <mat-label>Tasa IVA</mat-label>
+                <input matInput type="number" formControlName="tasaIva" placeholder="0.16">
+              </mat-form-field>
+
+              <div class="flex flex-col justify-center">
+                <mat-checkbox formControlName="aplicaRetencionIsr">Retener ISR (1.25%)</mat-checkbox>
+                <mat-checkbox formControlName="aplicaRetencionIva">Retener IVA</mat-checkbox>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="mt-4 flex justify-end gap-2">
+          <button mat-button type="button" (click)="cerrar()">Cancelar</button>
+          <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Guardar</button>
+        </div>
+
+      </form>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Historial Precios" *ngIf="isEditMode">
+    <div class="p-6 flex flex-col items-center">
+      <h3 class="text-lg font-bold mb-4 text-gray-700">Evolución del Precio</h3>
+      
+      <div class="h-[300px] w-full" *ngIf="chartData.length > 0; else noData">
+        <ngx-charts-line-chart
+          [view]="[600, 300]"
+          [results]="chartData"
+          [xAxis]="true"
+          [yAxis]="true"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          xAxisLabel="Fecha"
+          yAxisLabel="Precio ($)"
+          [autoScale]="true">
+        </ngx-charts-line-chart>
+      </div>
+      
+      <ng-template #noData>
+        <div class="p-8 text-center text-gray-400 bg-gray-50 rounded w-full">
+          No hay cambios de precio registrados aún.
+        </div>
+      </ng-template>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Equivalentes" *ngIf="isEditMode">
+    <div class="p-6">
+      <h3 class="text-base font-semibold mb-2">Vincular producto compatible</h3>
+      
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Buscar producto...</mat-label>
+        <input type="text" matInput [formControl]="buscadorEquivalenteControl" [matAutocomplete]="autoEq">
+        <mat-icon matSuffix>link</mat-icon>
+        <mat-autocomplete #autoEq="matAutocomplete" [displayWith]="displayProdSimple" 
+                          (optionSelected)="vincularEquivalente($event.option.value)">
+          <mat-option *ngFor="let p of productosCandidatos$ | async" [value]="p">
+             <span class="font-bold">{{ p.codigo }}</span> - {{ p.descripcion }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div class="mt-4">
+        <h3 class="font-bold text-gray-700 border-b pb-2">Productos Vinculados:</h3>
+        <mat-list role="list">
+          <mat-list-item *ngFor="let eq of equivalentes" role="listitem" class="hover:bg-gray-50">
+            <mat-icon matListItemIcon class="text-gray-400">inventory_2</mat-icon>
+            <span matListItemTitle class="font-medium">{{ eq.descripcion }}</span>
+            <span matListItemLine class="text-sm text-gray-500">
+              Cód: {{ eq.codigo }} | Precio: {{ eq.precio | currency }} | Stock: {{ eq.existencia }}
+            </span>
+            <button mat-icon-button matListItemMeta color="warn" (click)="desvincularEquivalente(eq.id_producto_eq)">
+              <mat-icon>link_off</mat-icon>
+            </button>
+          </mat-list-item>
+        </mat-list>
+        
+        <div *ngIf="equivalentes.length === 0" class="text-gray-400 text-sm mt-4 text-center italic">
+          No hay productos vinculados a este ítem.
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+
+</mat-tab-group>

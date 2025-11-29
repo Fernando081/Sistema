@@ -1,0 +1,19 @@
+<!-- frontend/src/app/categoria/categoria-dialog/categoria-dialog.component.html (REEMPLAZAR) -->
+
+<h1 mat-dialog-title>{{ isEditMode ? 'Editar Categoría' : 'Nueva Categoría' }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="guardar()">
+  <div mat-dialog-content>
+    <p>Introduce el nombre de la categoría.</p>
+    <mat-form-field class="w-full">
+      <mat-label>Descripción</mat-label>
+      <input matInput formControlName="descripcion" required placeholder="Ej. Ferretería">
+      <mat-error *ngIf="form.get('descripcion')?.hasError('required')">La descripción es requerida</mat-error>
+    </mat-form-field>
+  </div>
+
+  <div mat-dialog-actions align="end" class="mt-4">
+    <button mat-button type="button" (click)="cerrar()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Guardar</button>
+  </div>
+</form>

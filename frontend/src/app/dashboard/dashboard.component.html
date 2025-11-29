@@ -1,0 +1,83 @@
+<!-- frontend/src/app/dashboard/dashboard.component.html -->
+ <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6" *ngIf="metrics">
+
+  <mat-card class="bg-blue-50 border-l-4 border-blue-500 shadow-sm">
+    <mat-card-content class="flex items-center p-4">
+      <div class="bg-blue-100 p-3 rounded-full mr-4">
+        <mat-icon class="text-blue-600 scale-150">attach_money</mat-icon>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 font-medium">Ventas Hoy</p>
+        <h3 class="text-2xl font-bold text-gray-800">{{ metrics.ventasHoy | currency:'MXN' }}</h3>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="bg-green-50 border-l-4 border-green-500 shadow-sm">
+    <mat-card-content class="flex items-center p-4">
+      <div class="bg-green-100 p-3 rounded-full mr-4">
+        <mat-icon class="text-green-600 scale-150">calendar_today</mat-icon>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 font-medium">Este Mes</p>
+        <h3 class="text-2xl font-bold text-gray-800">{{ metrics.ventasMes | currency:'MXN' }}</h3>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="bg-red-50 border-l-4 border-red-500 shadow-sm">
+    <mat-card-content class="flex items-center p-4">
+      <div class="bg-red-100 p-3 rounded-full mr-4">
+        <mat-icon class="text-red-600 scale-150">warning</mat-icon>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 font-medium">Stock Crítico</p>
+        <h3 class="text-2xl font-bold text-gray-800">{{ metrics.conteoBajos }} prod.</h3>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="md:col-span-2 shadow-md">
+    <mat-card-header>
+      <mat-card-title>Tendencia de Ventas (7 Días)</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="h-[300px] flex items-center justify-center mt-4">
+      <ngx-charts-bar-vertical
+        [view]="[600, 250]"
+        [results]="metrics.grafica"
+        [scheme]="colorScheme"
+        [xAxis]="true"
+        [yAxis]="true"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="true"
+        xAxisLabel="Fecha"
+        yAxisLabel="Venta ($)">
+      </ngx-charts-bar-vertical>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="shadow-md">
+    <mat-card-header>
+      <mat-card-title class="text-red-600">⚠️ Reabastecer</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="mt-4">
+      <table mat-table [dataSource]="metrics.listaBajos" class="w-full">
+        <ng-container matColumnDef="codigo">
+          <th mat-header-cell *matHeaderCellDef> Cód </th>
+          <td mat-cell *matCellDef="let e"> {{e.codigo}} </td>
+        </ng-container>
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef> Desc </th>
+          <td mat-cell *matCellDef="let e" class="text-xs"> {{e.descripcion | slice:0:15}}... </td>
+        </ng-container>
+        <ng-container matColumnDef="existencia">
+          <th mat-header-cell *matHeaderCellDef> Cant </th>
+          <td mat-cell *matCellDef="let e" class="font-bold text-red-600"> {{e.existencia}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+</div>

@@ -1,0 +1,24 @@
+// frontend/src/app/producto/producto-list/producto-list.spec.ts
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ProductoList } from './producto-list';
+
+describe('ProductoList', () => {
+  let component: ProductoList;
+  let fixture: ComponentFixture<ProductoList>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ProductoList]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(ProductoList);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

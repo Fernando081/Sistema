@@ -1,0 +1,15 @@
+/* frontend/src/app/app.css */
+
+/* Este estilo es para el enlace activo en la barra lateral.
+  Tailwind no puede aplicar estilos basados en 'routerLinkActive' fácilmente,
+  así que lo hacemos aquí para que coincida con el look de la imagen.
+*/
+.active-link {
+  background-color: #334155; /* Esto es 'slate-700' de Tailwind */
+  color: white !important;
+  font-weight: 600;
+}
+
+.active-link .mat-icon {
+  color: white !important;
+}

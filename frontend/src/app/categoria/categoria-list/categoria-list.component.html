@@ -1,0 +1,70 @@
+<!-- frontend/src/app/categoria/categoria-list/categoria-list.component.html (REEMPLAZAR) -->
+
+<!-- 
+  Este componente se cargará DENTRO de la pestaña de Productos.
+  Usamos una tarjeta simple para mantener el estilo.
+-->
+<mat-card class="mat-elevation-z0 border">
+  <mat-card-header class="categoria-card-header">
+    <mat-card-title class="!text-xl !font-semibold">Gestionar Categorías</mat-card-title>
+    <button mat-flat-button color="primary" (click)="abrirDialogo()">
+      <mat-icon>add</mat-icon>
+      Nueva Categoría
+    </button>
+  </mat-card-header>
+
+  <mat-card-content>
+    <mat-form-field appearance="outline" class="w-full mb-4">
+      <mat-label>Buscar categoría</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por descripción..." #input>
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <div *ngIf="isLoading" class="flex justify-center items-center p-8">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+
+    <div class="overflow-auto" [hidden]="isLoading">
+      <table mat-table [dataSource]="dataSource" matSort class="w-full">
+
+        <ng-container matColumnDef="idCategoria">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+          <td mat-cell *matCellDef="let element"> {{element.idCategoria}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Descripción </th>
+          <td mat-cell *matCellDef="let element"> {{element.descripcion}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="primary" (click)="abrirDialogo(element)" matTooltip="Editar Categoría">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="eliminarCategoria(element.idCategoria)" matTooltip="Eliminar Categoría">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length" class="text-center p-4">
+            No se encontraron datos para el filtro "{{input.value}}"
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator 
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 25]"
+      showFirstLastButtons
+      aria-label="Seleccionar página de categorías">
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>
