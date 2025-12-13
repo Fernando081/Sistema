@@ -236,10 +236,10 @@ export class ProductoDialogComponent implements OnInit {
       if (data.length > 0) {
         this.chartData = [
           {
-            name: 'Precio Unitario',
+            name: 'Precio',
             series: data.map(h => ({
-              name: new Date(h.fecha).toLocaleDateString(), // Formato fecha corta
-              value: Number(h.precio)
+              name: new Date(h.fecha).toLocaleDateString(),
+              value: Number(h.precio) // <--- Asegúrate que tenga Number() aquí también
             }))
           }
         ];

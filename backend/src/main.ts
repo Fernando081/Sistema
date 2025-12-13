@@ -6,8 +6,11 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Habilitar CORS para que Angular (en localhost:4200) se pueda conectar
-  app.enableCors();
+  app.enableCors({
+    origin: true, // Permite automáticamente el origen que solicita
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
 
   // Habilitar validación global para DTOs
   app.useGlobalPipes(new ValidationPipe({

@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle'; // <--- IMPORTAR
 
 // Servicios e Interfaces
 import { CompraService } from '../services/compra.service';
@@ -28,10 +29,11 @@ import { map, startWith } from 'rxjs/operators';
   selector: 'app-compra',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, FormsModule, // <--- FormsModule vital para inputs tabla
+    CommonModule, ReactiveFormsModule, FormsModule,
     MatCardModule, MatFormFieldModule, MatInputModule, 
     MatButtonModule, MatIconModule, MatTableModule, 
-    MatAutocompleteModule, MatSnackBarModule
+    MatAutocompleteModule, MatSnackBarModule,
+    MatSlideToggleModule // <--- AGREGAR
   ],
   templateUrl: './compra.component.html',
 })
@@ -41,11 +43,14 @@ export class CompraComponent implements OnInit {
   carrito: DetalleCompra[] = [];
   proveedorSeleccionado: Proveedor | null = null;
   totalGeneral = 0;
+  
+  // Variable para crédito
+  esCredito: boolean = false; 
 
   // --- FORMULARIOS ---
   proveedorControl = new FormControl<string | Proveedor>('');
   productoControl = new FormControl<string | Producto>('');
-  folioFacturaControl = new FormControl(''); // Folio físico del papel del proveedor
+  folioFacturaControl = new FormControl('');
   observacionesControl = new FormControl('');
 
   // --- LISTAS ---
@@ -69,17 +74,14 @@ export class CompraComponent implements OnInit {
   }
 
   cargarCatalogos() {
-    // 1. Cargar Proveedores (Mapeo seguro)
     this.proveedorService.getProveedores().subscribe(data => {
       this.listaProveedores = data.map(p => ({
         idProveedor: p['IdProveedor'],
         rfc: p['RFC'],
         razonSocial: p['RazonSocial']
-        // ... otros campos si los necesitas
       })) as unknown as Proveedor[];
     });
 
-    // 2. Cargar Productos
     this.productoService.getProductos().subscribe(data => {
       this.listaProductos = data.map(p => ({
         idProducto: p['IdProducto'],
@@ -91,7 +93,6 @@ export class CompraComponent implements OnInit {
   }
 
   configurarAutocompletes() {
-    // Filtro Proveedores
     this.proveedoresFiltrados$ = this.proveedorControl.valueChanges.pipe(
       startWith(''),
       map(value => {
@@ -100,7 +101,6 @@ export class CompraComponent implements OnInit {
       })
     );
 
-    // Filtro Productos
     this.productosFiltrados$ = this.productoControl.valueChanges.pipe(
       startWith(''),
       map(value => {
@@ -109,8 +109,6 @@ export class CompraComponent implements OnInit {
       })
     );
   }
-
-  // --- ACCIONES ---
 
   seleccionarProveedor(prov: Proveedor) {
     this.proveedorSeleccionado = prov;
@@ -128,23 +126,20 @@ export class CompraComponent implements OnInit {
         codigo: producto.codigo,
         descripcion: producto.descripcion,
         cantidad: 1,
-        costoUnitario: 0, // Inicializamos en 0 para obligar a capturar el costo real
+        costoUnitario: 0,
         importe: 0
       };
       this.carrito.push(nuevo);
     }
 
     this.productoControl.setValue('');
-    this.carrito = [...this.carrito]; // Refrescar tabla
+    this.carrito = [...this.carrito];
     this.recalcularTotalGeneral();
   }
-
-  // --- CÁLCULOS ---
 
   alCambiarValor(item: DetalleCompra) {
     if (item.cantidad < 1) item.cantidad = 1;
     if (item.costoUnitario < 0) item.costoUnitario = 0;
-    
     this.recalcularRenglon(item);
     this.recalcularTotalGeneral();
   }
@@ -163,8 +158,6 @@ export class CompraComponent implements OnInit {
     this.recalcularTotalGeneral();
   }
 
-  // --- GUARDAR ---
-
   guardarCompra() {
     if (!this.proveedorSeleccionado) {
       this.mostrarNotificacion('Selecciona un proveedor');
@@ -174,26 +167,22 @@ export class CompraComponent implements OnInit {
       this.mostrarNotificacion('El carrito está vacío');
       return;
     }
-    // Validar que hayan puesto costos
     const sinCosto = this.carrito.some(i => i.costoUnitario <= 0);
     if (sinCosto) {
-        this.mostrarNotificacion('⚠️ Hay productos con Costo $0.00. Verifica los precios.');
+        this.mostrarNotificacion('⚠️ Hay productos con Costo $0.00.');
         return;
     }
 
     const compraPayload: CreateCompra = {
       idProveedor: this.proveedorSeleccionado.idProveedor,
       folioFactura: this.folioFacturaControl.value || '',
+      esCredito: this.esCredito, // <--- ENVIAMOS EL VALOR DEL TOGGLE
       observaciones: this.observacionesControl.value || '',
-      
-      // Aseguramos que el total sea número
-      total: Number(this.totalGeneral), 
-      
-      // Mapeamos el carrito para asegurar que cantidad y costos sean números
+      total: Number(this.totalGeneral),
       conceptos: this.carrito.map(item => ({
         idProducto: item.idProducto,
         descripcion: item.descripcion,
-        codigo: item.codigo || '', // Enviamos el código (ahora el backend lo acepta)
+        codigo: item.codigo || '',
         cantidad: Number(item.cantidad),
         costoUnitario: Number(item.costoUnitario),
         importe: Number(item.importe)
@@ -202,20 +191,16 @@ export class CompraComponent implements OnInit {
 
     this.compraService.crearCompra(compraPayload).subscribe({
       next: (res) => {
-        this.mostrarNotificacion('✅ Compra registrada. Inventario actualizado.');
+        this.mostrarNotificacion('✅ Compra registrada correctamente.');
         this.limpiarTodo();
-        // Recargar productos para ver la nueva existencia si volvemos a buscar
         this.ngOnInit();
       },
       error: (err) => {
-        // Tip: Si vuelve a fallar, esto imprime en consola qué campo falló
-        console.error('Detalle del error:', err.error.message); 
-        this.mostrarNotificacion('Error: ' + (Array.isArray(err.error.message) ? err.error.message[0] : err.message));
+        console.error(err);
+        this.mostrarNotificacion('Error: ' + (err.error?.message || err.message));
       }
     });
   }
-
-  // --- UTILIDADES ---
 
   limpiarTodo() {
     this.carrito = [];
@@ -224,6 +209,7 @@ export class CompraComponent implements OnInit {
     this.productoControl.setValue('');
     this.folioFacturaControl.setValue('');
     this.observacionesControl.setValue('');
+    this.esCredito = false; // Resetear toggle
     this.totalGeneral = 0;
   }
 

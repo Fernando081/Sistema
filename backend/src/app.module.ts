@@ -1,4 +1,4 @@
-// backend/src/app.module.ts (REEMPLAZAR)
+// backend/src/app.module.ts 
 
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -33,6 +33,9 @@ import { ObjetoImpuesto } from './catalogos/entities/objeto-impuesto.entity';
 import { VentaModule } from './venta/venta.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { CotizacionModule } from './cotizacion/cotizacion.module';
+import { Pago } from './pago/pago.entity';
+import { PagoModule } from './pago/pago.module';
+import { PagoProveedorModule } from './pago-proveedor/pago-proveedor.module';
 
 @Module({
   imports: [
@@ -50,7 +53,7 @@ import { CotizacionModule } from './cotizacion/cotizacion.module';
       entities: [
         Cliente, Proveedor, Producto, Categoria,
         RegimenFiscal, FormaPago, MetodoPago, UsoCFDI, Estado, Municipio,
-        ClaveProdServ, ClaveUnidad, Unidad, ObjetoImpuesto
+        ClaveProdServ, ClaveUnidad, Unidad, ObjetoImpuesto, Pago
       ],
     }),
     ClienteModule,
@@ -62,6 +65,8 @@ import { CotizacionModule } from './cotizacion/cotizacion.module';
     CompraModule,
     DashboardModule,
     CotizacionModule,
+    PagoModule,
+    PagoProveedorModule,
   ],
   controllers: [],
   providers: [],

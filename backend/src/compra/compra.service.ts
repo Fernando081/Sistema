@@ -12,10 +12,12 @@ export class CompraService {
     const conceptosJson = JSON.stringify(createCompraDto.conceptos);
 
     const result = await this.dataSource.query(
-      `SELECT fn_crear_compra($1, $2, $3, $4, $5) as id_compra`,
+      // Llamamos a la función con 6 parámetros ($1 a $6)
+      `SELECT fn_crear_compra($1, $2, $3, $4, $5, $6) as id_compra`,
       [
         createCompraDto.idProveedor,
         createCompraDto.folioFactura || '',
+        createCompraDto.esCredito,        // <--- Nuevo
         createCompraDto.total,
         createCompraDto.observaciones || '',
         conceptosJson
@@ -27,6 +29,7 @@ export class CompraService {
         idCompra: result[0].id_compra 
     };
   }
+  
   async findAll() {
     return this.dataSource.query('SELECT * FROM fn_get_compras()');
   }
@@ -34,5 +37,4 @@ export class CompraService {
   async findDetalle(idCompra: number) {
     return this.dataSource.query('SELECT * FROM fn_get_detalle_compra($1)', [idCompra]);
   }
-
 }

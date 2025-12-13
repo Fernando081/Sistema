@@ -1,0 +1,118 @@
+<!-- frontend/src/app/pago/cuentas-por-pagar/cuentas-por-pagar.component.html -->
+ <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+  
+  <div class="flex flex-col gap-4">
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="text-red-600">money_off</mat-icon>
+        <mat-card-title>Cuentas por Pagar</mat-card-title>
+        <mat-card-subtitle>Selecciona un proveedor</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="mt-2">
+        <mat-form-field class="w-full">
+          <mat-label>Buscar Proveedor</mat-label>
+          <input type="text" matInput [formControl]="proveedorControl" [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProv" (optionSelected)="seleccionarProveedor($event.option.value)">
+            <mat-option *ngFor="let p of proveedoresFiltrados$ | async" [value]="p">
+              {{p.razonSocial}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="proveedorSeleccionado">
+      <mat-card-header><mat-card-title>Facturas Vencidas / Pendientes</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <div class="overflow-auto max-h-[400px]">
+          <table mat-table [dataSource]="deudasPendientes" class="w-full">
+            
+            <ng-container matColumnDef="folio">
+              <th mat-header-cell *matHeaderCellDef> Factura Prov. </th>
+              <td mat-cell *matCellDef="let row" class="font-mono text-xs"> {{row.folio_factura_proveedor || 'S/N'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="fecha">
+              <th mat-header-cell *matHeaderCellDef> Fecha </th>
+              <td mat-cell *matCellDef="let row"> {{row.fecha_compra | date:'dd/MM/yy'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="total">
+              <th mat-header-cell *matHeaderCellDef> Total </th>
+              <td mat-cell *matCellDef="let row"> {{row.total | currency}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="saldo">
+              <th mat-header-cell *matHeaderCellDef> Debe </th>
+              <td mat-cell *matCellDef="let row" class="text-red-600 font-bold"> {{row.saldo_pendiente | currency}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="pagar">
+              <th mat-header-cell *matHeaderCellDef> </th>
+              <td mat-cell *matCellDef="let row">
+                <button mat-mini-fab color="warn" (click)="seleccionarCompra(row)" matTooltip="Registrar Pago">
+                  <mat-icon>attach_money</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell text-center p-4 text-gray-500" colspan="5">
+                No hay deudas pendientes con este proveedor. 🎉
+              </td>
+            </tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="flex flex-col gap-4" *ngIf="compraSeleccionada">
+    <mat-card class="bg-red-50 border border-red-200 shadow-lg">
+      <mat-card-header>
+        <mat-card-title class="text-red-800">Registrar Salida de Dinero</mat-card-title>
+        <mat-card-subtitle>Pago a Factura: <strong>{{compraSeleccionada.folio_factura_proveedor}}</strong></mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content class="flex flex-col gap-4 mt-6">
+        
+        <div class="flex justify-between items-center bg-white p-4 rounded border">
+          <span class="text-gray-600">Deuda Actual:</span>
+          <span class="text-2xl font-bold text-red-600">{{compraSeleccionada.saldo_pendiente | currency}}</span>
+        </div>
+
+        <mat-form-field class="w-full">
+          <mat-label>Monto a Pagar</mat-label>
+          <input matInput type="number" [(ngModel)]="montoPagar">
+          <span matPrefix>$&nbsp;</span>
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+          <mat-label>Forma de Pago</mat-label>
+          <mat-select [(ngModel)]="formaPago">
+            <mat-option value="Transferencia">Transferencia Electrónica</mat-option>
+            <mat-option value="Cheque">Cheque</mat-option>
+            <mat-option value="Efectivo">Efectivo</mat-option>
+            <mat-option value="Tarjeta de Crédito">Tarjeta de Crédito</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+          <mat-label>Referencia (Folio/Cheque)</mat-label>
+          <input matInput [(ngModel)]="referencia" placeholder="Ej. SPEI-123456">
+        </mat-form-field>
+
+        <div class="flex gap-2 mt-2">
+          <button mat-flat-button color="warn" class="py-6 flex-1 text-lg" (click)="registrarPago()">
+            <mat-icon>publish</mat-icon> Pagar
+          </button>
+          <button mat-stroked-button (click)="compraSeleccionada = null">Cancelar</button>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div>

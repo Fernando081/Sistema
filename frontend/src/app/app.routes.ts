@@ -46,4 +46,12 @@ export const routes: Routes = [
   path: 'compra/historial',
   loadComponent: () => import('./compra/compra-list/compra-list.component').then(m => m.CompraListComponent)
   },
+  {
+    path: 'cobranza',
+    loadComponent: () => import('./pago/cobranza/cobranza.component').then(m => m.CobranzaComponent)
+  },
+  {
+    path: 'cuentas-por-pagar',
+    loadComponent: () => import('./pago/cuentas-por-pagar/cuentas-por-pagar.component').then(m => m.CuentasPorPagarComponent)
+  }
 ];

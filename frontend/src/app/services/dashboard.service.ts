@@ -3,11 +3,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+// Ajusta la URL si es necesario
 const API_URL = 'https://glorious-space-goggles-9rxj6pr5w5p3xp9g-3000.app.github.dev/api/v1/dashboard';
 
 export interface DashboardMetrics {
   ventasHoy: number;
   ventasMes: number;
+  porCobrar: number; // <--- NUEVO (Activos)
+  porPagar: number;  // <--- NUEVO (Pasivos)
   conteoBajos: number;
   grafica: { name: string; value: number }[];
   listaBajos: { codigo: string; descripcion: string; existencia: number }[];

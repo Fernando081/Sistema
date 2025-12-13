@@ -14,11 +14,6 @@ export class ClienteService {
 
   constructor(private http: HttpClient) { }
 
-  // -------------------------------------------------
-  // ¡¡CAMBIO CLAVE AQUÍ!!
-  // Cambiamos 'Observable<Cliente[]>' por 'Observable<any[]>'
-  // Esto soluciona los 17 errores TS2551.
-  // -------------------------------------------------
   getClientes(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }

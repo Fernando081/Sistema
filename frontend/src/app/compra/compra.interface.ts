@@ -4,13 +4,14 @@ export interface DetalleCompra {
   descripcion: string;
   codigo: string;
   cantidad: number;
-  costoUnitario: number; // A cuánto te lo vendió el proveedor
+  costoUnitario: number;
   importe: number;
 }
 
 export interface CreateCompra {
   idProveedor: number;
-  folioFactura?: string; // Folio externo (del proveedor)
+  folioFactura?: string;
+  esCredito: boolean; // <--- Nuevo campo
   total: number;
   observaciones?: string;
   conceptos: DetalleCompra[];
