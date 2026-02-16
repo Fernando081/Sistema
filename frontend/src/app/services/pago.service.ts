@@ -2,8 +2,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-const API_URL = 'https://glorious-space-goggles-9rxj6pr5w5p3xp9g-3000.app.github.dev/api/v1/pago';
+const API_URL = `${environment.apiBaseUrl}/pago`;
 
 export interface PagoDto {
   idFactura: number;

@@ -2,10 +2,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { Venta, FacturaResumen } from '../venta/venta.interface';
 
 // Ajusta tu URL si es necesario
-const API_URL = 'https://glorious-space-goggles-9rxj6pr5w5p3xp9g-3000.app.github.dev/api/v1/venta';
+const API_URL = `${environment.apiBaseUrl}/venta`;
 
 @Injectable({
   providedIn: 'root'
