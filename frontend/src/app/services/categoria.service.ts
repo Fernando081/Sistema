@@ -3,6 +3,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { Categoria } from '../categoria/categoria.interface';
 import { map } from 'rxjs/operators';
 
@@ -13,7 +14,7 @@ export class CategoriaService {
   // -------------------------------------------------
   // ¡RECUERDA! Reemplaza esto con tu URL pública de Codespaces (puerto 3000)
   // -------------------------------------------------
-  private apiUrl = 'https://glorious-space-goggles-9rxj6pr5w5p3xp9g-3000.app.github.dev/api/v1/categoria';
+  private apiUrl = `${environment.apiBaseUrl}/categoria`;
 
   constructor(private http: HttpClient) { }
 
