@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
-// URL de tu Backend en Codespaces
-const API_URL = 'https://glorious-space-goggles-9rxj6pr5w5p3xp9g-3000.app.github.dev/api/v1/catalogos';
+// Base URL del backend obtenida de environment.apiBaseUrl
+const API_URL = `${environment.apiBaseUrl}/catalogos`;
 
 // --- 1. TODAS LAS INTERFACES (Antiguas y Nuevas) ---
 

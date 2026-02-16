@@ -2,9 +2,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-// Ajusta la URL si es necesario
-const API_URL = 'https://glorious-space-goggles-9rxj6pr5w5p3xp9g-3000.app.github.dev/api/v1/dashboard';
+// La URL base se configura en environment.apiBaseUrl (ver src/environments/*)
+const API_URL = `${environment.apiBaseUrl}/dashboard`;
 
 export interface DashboardMetrics {
   ventasHoy: number;

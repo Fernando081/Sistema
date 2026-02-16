@@ -3,18 +3,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { Proveedor, CreateProveedorDto, UpdateProveedorDto } from '../proveedor/proveedor.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProveedorService {
-  // -------------------------------------------------
-  // ¡URL DE PRODUCCIÓN!
-  // Reemplaza esto con tu URL pública de Codespaces (puerto 3000)
-  // si aún estás en desarrollo.
-  // -------------------------------------------------
-  private apiUrl = 'https://glorious-space-goggles-9rxj6pr5w5p3xp9g-3000.app.github.dev/api/v1/proveedores';
+  // Endpoint base configurado en environment.apiBaseUrl (ver src/environments/*)
+  private apiUrl = `${environment.apiBaseUrl}/proveedores`;
 
   constructor(private http: HttpClient) { }
 
