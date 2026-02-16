@@ -110,14 +110,48 @@ export class ProductoService {
   }
 
   async getKardex(idProducto: number) {
-    return this.dataSource.query('SELECT * FROM fn_get_kardex_producto($1)', [idProducto]);
-  }
+  // Consultamos la tabla unificada que creamos
+  const resultado = await this.dataSource.query(
+    `
+    SELECT 
+      id_kardex,
+      fecha,
+      tipo_movimiento,
+      cantidad,
+      stock_anterior,
+      stock_resultante,
+      precio_unitario,
+      referencia
+    FROM kardex 
+    WHERE id_producto = $1 
+    ORDER BY fecha DESC
+    `,
+    [idProducto],
+  );
+
+  return resultado;
+}
   
-  // --- PRECIOS HISTÓRICOS ---
   async getHistorialPrecios(idProducto: number) {
-    // Obtenemos la lista de cambios
-    return this.dataSource.query('SELECT * FROM fn_get_historial_precios($1)', [idProducto]);
-  }
+  // ANTES: Llamaba a la función borrada fn_get_historial_precios
+  // AHORA: Consultamos directamente la tabla 'kardex' unificada
+  
+  const historial = await this.dataSource.query(
+    `
+    SELECT 
+      fecha, 
+      precio_unitario as precio, -- Alias 'precio' para que tu frontend no se rompa
+      referencia,
+      tipo_movimiento
+    FROM kardex 
+    WHERE id_producto = $1
+    ORDER BY fecha ASC
+    `,
+    [idProducto],
+  );
+
+  return historial;
+}
 
   // --- EQUIVALENTES ---
   async getEquivalentes(idProducto: number) {

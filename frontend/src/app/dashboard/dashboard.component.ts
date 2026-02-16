@@ -19,13 +19,19 @@ import { DashboardService, DashboardMetrics } from '../services/dashboard.servic
 export class DashboardComponent implements OnInit {
   metrics: DashboardMetrics | null = null;
   
-  // Variable ESPECIAL para la gráfica (Formato Multi-Serie)
-  graficaData: any[] = []; 
+  // --- DATA PARA GRÁFICAS ---
+  graficaVentas: any[] = [];      // Historial
+  graficaFlujo: any[] = [];       // Balance (Nuevo)
+  graficaTop: any[] = [];         // Productos (Nuevo)
 
-  // Configuración Gráfica
-  view: [number, number] = [800, 300]; 
-  colorScheme: any = { domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5'] };
-  
+  // --- CONFIGURACIÓN VISUAL ---
+  // Esquema Ventas (Verde)
+  colorVentas: any = { domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'] };
+  // Esquema Flujo (Ámbar para cobrar, Morado para pagar)
+  colorFlujo: any = { domain: ['#FFC107', '#9C27B0'] }; 
+  // Esquema Top (Azulitos)
+  colorTop: any = { domain: ['#1976D2', '#2196F3', '#64B5F6', '#90CAF9', '#BBDEFB'] };
+
   // Tabla Stock Bajo
   displayedColumns: string[] = ['codigo', 'descripcion', 'existencia'];
 
@@ -33,35 +39,40 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.dashboardService.getMetrics().subscribe(data => {
-      // 1. Imprimir en consola para que veas qué llega realmente (F12)
-      console.log('--- DATOS DEL BACKEND ---', data);
-      
       this.metrics = data;
 
-      // 2. ADAPTADOR ROBUSTO PARA LA GRÁFICA
-      if (data.grafica && Array.isArray(data.grafica) && data.grafica.length > 0) {
-        
+      // 1. GRÁFICA DE VENTAS (HISTORIAL)
+      if (data.grafica && data.grafica.length > 0) {
         const datosLimpios = data.grafica.map((item: any) => ({
-          // Intentamos leer 'name' o 'Name' (por si acaso)
-          name: item.name || item.Name || 'Sin Fecha',
-          
-          // Intentamos leer 'value' o 'Value', y forzamos a Número
-          value: Number(item.value || item.Value || 0)
+          name: item.name || 'S/F',
+          value: Number(item.value || 0)
         }));
-
-        console.log('Datos procesados para gráfica:', datosLimpios);
-
-        this.graficaData = [
-          {
-            name: 'Ventas',
-            series: datosLimpios
-          }
-        ];
+        this.graficaVentas = [{ name: 'Ventas', series: datosLimpios }];
       } else {
-        // Si el arreglo está vacío, ponemos datos en 0 para que no se rompa
-        console.warn('El backend no devolvió datos para la gráfica (Array vacío).');
-        this.graficaData = []; 
+        this.graficaVentas = []; 
       }
+
+      // 2. GRÁFICA DE FLUJO (BALANCE) - Construcción Manual
+      // Aquí comparamos Activos vs Pasivos
+      this.graficaFlujo = [
+        {
+          name: 'Por Cobrar',
+          value: Number(data.porCobrar || 0)
+        },
+        {
+          name: 'Por Pagar',
+          value: Number(data.porPagar || 0)
+        }
+      ];
+
+      // 3. GRÁFICA TOP PRODUCTOS
+      if (data.topProductos && data.topProductos.length > 0) {
+        this.graficaTop = data.topProductos.map((item: any) => ({
+            name: item.name,
+            value: Number(item.value)
+        }));
+      }
+
     });
   }
 }

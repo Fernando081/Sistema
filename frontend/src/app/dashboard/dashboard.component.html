@@ -1,7 +1,7 @@
 <!-- frontend/src/app/dashboard/dashboard.component.html -->
 <div class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6" *ngIf="metrics">
 
-  <mat-card class="bg-blue-50 border-l-4 border-blue-500 shadow-sm hover:shadow-md transition">
+  <mat-card class="bg-blue-50 border-l-4 border-blue-500 shadow-sm">
     <mat-card-content class="flex items-center p-4">
       <div class="bg-blue-100 p-3 rounded-full mr-4">
         <mat-icon class="text-blue-600 scale-150">point_of_sale</mat-icon>
@@ -13,99 +13,130 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="bg-indigo-50 border-l-4 border-indigo-500 shadow-sm hover:shadow-md transition">
-    <mat-card-content class="flex items-center p-4">
-      <div class="bg-indigo-100 p-3 rounded-full mr-4">
-        <mat-icon class="text-indigo-600 scale-150">calendar_month</mat-icon>
-      </div>
-      <div>
-        <p class="text-sm text-gray-500 font-medium">Acumulado Mes</p>
-        <h3 class="text-2xl font-bold text-gray-800">{{ metrics.ventasMes | currency:'MXN' }}</h3>
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card class="bg-amber-50 border-l-4 border-amber-500 shadow-sm hover:shadow-md transition">
+  <mat-card class="bg-amber-50 border-l-4 border-amber-500 shadow-sm">
     <mat-card-content class="flex items-center p-4">
       <div class="bg-amber-100 p-3 rounded-full mr-4">
         <mat-icon class="text-amber-600 scale-150">account_balance_wallet</mat-icon>
       </div>
       <div>
-        <p class="text-sm text-gray-500 font-medium">Por Cobrar (Clientes)</p>
+        <p class="text-sm text-gray-500 font-medium">Por Cobrar</p>
         <h3 class="text-2xl font-bold text-gray-800">{{ metrics.porCobrar | currency:'MXN' }}</h3>
       </div>
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="bg-purple-50 border-l-4 border-purple-500 shadow-sm hover:shadow-md transition">
+  <mat-card class="bg-purple-50 border-l-4 border-purple-500 shadow-sm">
     <mat-card-content class="flex items-center p-4">
       <div class="bg-purple-100 p-3 rounded-full mr-4">
         <mat-icon class="text-purple-600 scale-150">money_off</mat-icon>
       </div>
       <div>
-        <p class="text-sm text-gray-500 font-medium">Por Pagar (Prov.)</p>
+        <p class="text-sm text-gray-500 font-medium">Por Pagar</p>
         <h3 class="text-2xl font-bold text-gray-800">{{ metrics.porPagar | currency:'MXN' }}</h3>
       </div>
     </mat-card-content>
   </mat-card>
 
+  <mat-card class="bg-red-50 border-l-4 border-red-500 shadow-sm">
+    <mat-card-content class="flex items-center p-4">
+      <div class="bg-red-100 p-3 rounded-full mr-4">
+        <mat-icon class="text-red-600 scale-150">warning</mat-icon>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 font-medium">Stock Bajo</p>
+        <h3 class="text-2xl font-bold text-gray-800">{{ metrics.conteoBajos }} prod.</h3>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+
   <mat-card class="md:col-span-3 shadow-md">
     <mat-card-header>
-      <mat-card-title>Comportamiento de Ventas (7 Días)</mat-card-title>
+      <mat-card-title>Tendencia de Ventas (7 Días)</mat-card-title>
     </mat-card-header>
-    <mat-card-content class="h-[350px] flex items-center justify-center mt-4">
-      <div *ngIf="graficaData.length > 0; else noData" class="w-full h-full">
+    <mat-card-content class="h-[300px] flex items-center justify-center mt-4">
+      <div *ngIf="graficaVentas.length > 0; else noData" class="w-full h-full">
         <ngx-charts-area-chart
-          [view]="view"
-          [results]="graficaData" 
-          [scheme]="colorScheme"
+          [results]="graficaVentas"
+          [scheme]="colorVentas"
           [gradient]="true"
           [xAxis]="true"
           [yAxis]="true"
           [showXAxisLabel]="true"
-          [showYAxisLabel]="true"
           xAxisLabel="Fecha"
           yAxisLabel="Venta ($)"
           [autoScale]="true">
         </ngx-charts-area-chart>
       </div>
-
-      <ng-template #noData>
-        <p class="text-gray-400">No hay datos de ventas en los últimos 7 días.</p>
-      </ng-template>
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="md:col-span-1 shadow-md border-t-4 border-red-500">
+  <mat-card class="md:col-span-1 shadow-md">
     <mat-card-header>
-      <div class="flex items-center gap-2">
-        <mat-icon class="text-red-500">warning</mat-icon>
-        <mat-card-title>Stock Bajo ({{metrics.conteoBajos}})</mat-card-title>
-      </div>
+      <mat-card-title>Flujo de Dinero</mat-card-title>
     </mat-card-header>
-    <mat-card-content class="mt-4 overflow-auto max-h-[300px]">
-      <table class="w-full text-sm text-left text-gray-500">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-          <tr>
-            <th class="px-2 py-2">Producto</th>
-            <th class="px-2 py-2 text-right">Stock</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let prod of metrics.listaBajos" class="bg-white border-b hover:bg-gray-50">
-            <td class="px-2 py-2 font-medium text-gray-900 truncate max-w-[120px]" title="{{prod.descripcion}}">
-              {{prod.descripcion}}
-            </td>
-            <td class="px-2 py-2 text-right font-bold text-red-600">
-              {{prod.existencia}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div *ngIf="metrics.listaBajos.length === 0" class="text-center py-4 text-green-600">
-        ¡Todo en orden! 👍
+    <mat-card-content class="h-[300px] flex items-center justify-center mt-4">
+      <ngx-charts-bar-vertical
+        [results]="graficaFlujo"
+        [scheme]="colorFlujo"
+        [xAxis]="true"
+        [yAxis]="true"
+        [showXAxisLabel]="false"
+        [showYAxisLabel]="true"
+        [showDataLabel]="true"> 
+      </ngx-charts-bar-vertical>
+    </mat-card-content>
+  </mat-card>
+
+
+  <mat-card class="md:col-span-2 shadow-md">
+    <mat-card-header>
+      <mat-card-title>🏆 Top 5 Más Vendidos</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="h-[250px] flex items-center justify-center mt-4">
+      <div *ngIf="graficaTop.length > 0; else noData" class="w-full h-full">
+        <ngx-charts-bar-horizontal
+          [results]="graficaTop"
+          [scheme]="colorTop"
+          [xAxis]="true"
+          [yAxis]="true"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          xAxisLabel="Cantidad Vendida">
+        </ngx-charts-bar-horizontal>
       </div>
     </mat-card-content>
   </mat-card>
+
+  <mat-card class="md:col-span-2 shadow-md border-t-4 border-red-500">
+    <mat-card-header>
+      <mat-card-title class="text-red-600">⚠️ Alerta de Reabastecimiento</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="mt-2 overflow-auto h-[250px]">
+      <table mat-table [dataSource]="metrics.listaBajos" class="w-full">
+        <ng-container matColumnDef="codigo">
+          <th mat-header-cell *matHeaderCellDef> Cód </th>
+          <td mat-cell *matCellDef="let e"> {{e.codigo}} </td>
+        </ng-container>
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef> Descripción </th>
+          <td mat-cell *matCellDef="let e" class="text-xs font-medium"> {{e.descripcion}} </td>
+        </ng-container>
+        <ng-container matColumnDef="existencia">
+          <th mat-header-cell *matHeaderCellDef> Stock </th>
+          <td mat-cell *matCellDef="let e" class="font-bold text-red-600 text-right pr-4"> {{e.existencia}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <ng-template #noData>
+    <div class="flex flex-col items-center justify-center h-full text-gray-400">
+      <mat-icon class="scale-150 mb-2">bar_chart</mat-icon>
+      <p>No hay datos suficientes aún.</p>
+    </div>
+  </ng-template>
 
 </div>

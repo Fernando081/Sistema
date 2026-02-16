@@ -2,24 +2,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Producto, CreateProductoDto, UpdateProductoDto } from '../producto/producto.interface';
+import { Producto, CreateProductoDto, UpdateProductoDto, KardexItem } from '../producto/producto.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductoService {
-  // -------------------------------------------------
-  // ¡RECUERDA! Reemplaza esto con tu URL pública de Codespaces (puerto 3000)
-  // -------------------------------------------------
+  
   private apiUrl = 'https://glorious-space-goggles-9rxj6pr5w5p3xp9g-3000.app.github.dev/api/v1/producto';
 
   constructor(private http: HttpClient) { }
 
-  getProductos(): Observable<any[]> { // Devuelve any[] para el mapeo
+  // --- CRUD BÁSICO ---
+
+  getProductos(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
   
-  getProductoById(id: number): Observable<any> { // Devuelve any para el mapeo
+  getProductoById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
@@ -35,8 +35,13 @@ export class ProductoService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  getKardex(id: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/${id}/kardex`);
+  // --- MÉTODOS AVANZADOS (KARDEX, PRECIOS, EQUIVALENTES) ---
+
+  // CORRECCIÓN APLICADA: 
+  // Usamos `${this.apiUrl}/${idProducto}/kardex`
+  // Como apiUrl ya tiene '/producto', esto genera: .../api/v1/producto/123/kardex (CORRECTO)
+  getKardex(idProducto: number): Observable<KardexItem[]> {
+    return this.http.get<KardexItem[]>(`${this.apiUrl}/${idProducto}/kardex`);
   }
 
   getHistorialPrecios(id: number): Observable<any[]> {

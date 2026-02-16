@@ -33,27 +33,27 @@ export class ProductoController {
   }
 
   @Get(':id/kardex')
-  getKardex(@Param('id') id: number) {
-    return this.productoService.getKardex(id);
-  }
+async obtenerKardex(@Param('id', ParseIntPipe) id: number) {
+  return this.productoService.getKardex(id);
+}
 
   @Get(':id/historial-precios')
-  getHistorialPrecios(@Param('id') id: number) {
+  getHistorialPrecios(@Param('id', ParseIntPipe) id: number) {
     return this.productoService.getHistorialPrecios(id);
   }
 
   @Get(':id/equivalentes')
-  getEquivalentes(@Param('id') id: number) {
+  getEquivalentes(@Param('id', ParseIntPipe) id: number) {
     return this.productoService.getEquivalentes(id);
   }
 
   @Post(':id/equivalentes/:idEq')
-  agregarEquivalente(@Param('id') id: number, @Param('idEq') idEq: number) {
+  agregarEquivalente(@Param('id', ParseIntPipe) id: number, @Param('idEq', ParseIntPipe) idEq: number) {
     return this.productoService.agregarEquivalente(id, idEq);
   }
 
   @Delete(':id/equivalentes/:idEq')
-  eliminarEquivalente(@Param('id') id: number, @Param('idEq') idEq: number) {
+  eliminarEquivalente(@Param('id', ParseIntPipe) id: number, @Param('idEq', ParseIntPipe) idEq: number) {
     return this.productoService.eliminarEquivalente(id, idEq);
   }
 }

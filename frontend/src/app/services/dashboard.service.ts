@@ -14,6 +14,7 @@ export interface DashboardMetrics {
   conteoBajos: number;
   grafica: { name: string; value: number }[];
   listaBajos: { codigo: string; descripcion: string; existencia: number }[];
+  topProductos: { name: string; value: number }[];
 }
 
 @Injectable({ providedIn: 'root' })

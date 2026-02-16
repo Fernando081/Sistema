@@ -1,56 +1,85 @@
 <!-- frontend/src/app/producto/producto-kardex/producto-kardex.component.html -->
- <h2 mat-dialog-title class="flex items-center gap-2">
-  <mat-icon>history</mat-icon>
-  Kardex: {{ data.descripcion }}
+<h2 mat-dialog-title class="flex items-center gap-2 border-b pb-2 mb-0">
+  <mat-icon class="text-gray-600">history</mat-icon>
+  <span class="text-xl">Kardex: {{ data.descripcion }}</span>
 </h2>
 
-<mat-dialog-content>
-  <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
-    <p><strong>Código:</strong> {{ data.codigo }}</p>
-    <p><strong>Existencia Actual:</strong> {{ data.existencia }}</p>
+<mat-dialog-content class="!pt-4">
+  
+  <div class="mb-4 flex justify-between items-center p-3 bg-gray-50 border rounded-lg text-sm">
+    <div>
+      <span class="text-gray-500 block">Código</span>
+      <span class="font-bold text-gray-800 text-lg">{{ data.codigo || '---' }}</span>
+    </div>
+    <div class="text-right">
+      <span class="text-gray-500 block">Existencia Actual</span>
+      <span class="font-bold text-blue-700 text-lg">{{ data.existencia }}</span>
+    </div>
   </div>
 
-  <div class="overflow-auto max-h-80">
+  <div class="overflow-auto max-h-[400px] border rounded-lg">
     <table mat-table [dataSource]="movimientos" class="w-full">
       
       <ng-container matColumnDef="fecha">
-        <th mat-header-cell *matHeaderCellDef> Fecha </th>
-        <td mat-cell *matCellDef="let e"> {{e.fecha | date:'short'}} </td>
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-100"> Fecha </th>
+        <td mat-cell *matCellDef="let e" class="text-xs text-gray-600 whitespace-nowrap"> 
+          {{e.fecha | date:'dd/MM/yy HH:mm'}} 
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="tipo">
-        <th mat-header-cell *matHeaderCellDef> Movimiento </th>
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-100"> Movimiento </th>
         <td mat-cell *matCellDef="let e">
-          <span class="px-2 py-1 rounded text-xs font-bold"
-            [class.bg-green-100]="e.tipo === 'Entrada'"
-            [class.text-green-800]="e.tipo === 'Entrada'"
-            [class.bg-red-100]="e.tipo === 'Salida'"
-            [class.text-red-800]="e.tipo === 'Salida'">
-            {{e.tipo}}
+          <span class="px-2 py-0.5 rounded border text-[10px] font-bold uppercase tracking-wide"
+                [ngClass]="getBadgeClass(e.tipo_movimiento)">
+            {{e.tipo_movimiento.replace('_', ' ')}}
           </span>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="cantidad">
-        <th mat-header-cell *matHeaderCellDef> Cant. </th>
-        <td mat-cell *matCellDef="let e" class="font-mono font-bold"> {{e.cantidad}} </td>
+      <ng-container matColumnDef="referencia">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-100"> Referencia </th>
+        <td mat-cell *matCellDef="let e" class="text-xs max-w-[150px] truncate" [matTooltip]="e.referencia"> 
+          {{e.referencia || '---'}} 
+        </td>
       </ng-container>
 
-      <ng-container matColumnDef="referencia">
-        <th mat-header-cell *matHeaderCellDef> Referencia </th>
-        <td mat-cell *matCellDef="let e" class="text-xs text-gray-500"> {{e.referencia}} </td>
+      <ng-container matColumnDef="precio">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-100 text-right"> P. Unit. </th>
+        <td mat-cell *matCellDef="let e" class="text-right text-xs font-mono text-gray-600"> 
+          {{e.precio_unitario | currency:'MXN':'symbol':'1.2-2'}} 
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cantidad">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-100 text-right"> Cant. </th>
+        <td mat-cell *matCellDef="let e" class="text-right font-bold text-sm">
+          <span *ngIf="e.cantidad > 0" class="text-green-600">+{{e.cantidad}}</span>
+          <span *ngIf="e.cantidad < 0" class="text-red-600">{{e.cantidad}}</span>
+          <span *ngIf="Number(e.cantidad) === 0" class="text-gray-400">-</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="stock">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-100 text-right"> Stock </th>
+        <td mat-cell *matCellDef="let e" class="text-right font-mono text-xs font-bold text-blue-900 bg-blue-50/50"> 
+          {{e.stock_resultante}} 
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-colors"></tr>
       
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell text-center p-4" colspan="4">Sin movimientos registrados.</td>
+        <td class="mat-cell text-center p-8 text-gray-400 italic" colspan="6">
+          <mat-icon class="block mx-auto text-4xl mb-2">history_toggle_off</mat-icon>
+          Aún no hay movimientos registrados para este producto.
+        </td>
       </tr>
     </table>
   </div>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
+<mat-dialog-actions align="end" class="border-t !pt-2">
   <button mat-button (click)="dialogRef.close()">Cerrar</button>
 </mat-dialog-actions>
