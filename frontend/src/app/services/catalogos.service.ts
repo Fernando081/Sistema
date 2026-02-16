@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
-// URL de tu Backend en Codespaces
+// Base URL del backend obtenida de environment.apiBaseUrl
 const API_URL = `${environment.apiBaseUrl}/catalogos`;
 
 // --- 1. TODAS LAS INTERFACES (Antiguas y Nuevas) ---

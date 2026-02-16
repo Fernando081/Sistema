@@ -10,11 +10,7 @@ import { Proveedor, CreateProveedorDto, UpdateProveedorDto } from '../proveedor/
   providedIn: 'root'
 })
 export class ProveedorService {
-  // -------------------------------------------------
-  // ¡URL DE PRODUCCIÓN!
-  // Reemplaza esto con tu URL pública de Codespaces (puerto 3000)
-  // si aún estás en desarrollo.
-  // -------------------------------------------------
+  // Endpoint base configurado en environment.apiBaseUrl (ver src/environments/*)
   private apiUrl = `${environment.apiBaseUrl}/proveedores`;
 
   constructor(private http: HttpClient) { }

@@ -11,9 +11,7 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CategoriaService {
-  // -------------------------------------------------
-  // ¡RECUERDA! Reemplaza esto con tu URL pública de Codespaces (puerto 3000)
-  // -------------------------------------------------
+  // Endpoint base configurado en environment.apiBaseUrl (ver src/environments/*)
   private apiUrl = `${environment.apiBaseUrl}/categoria`;
 
   constructor(private http: HttpClient) { }
