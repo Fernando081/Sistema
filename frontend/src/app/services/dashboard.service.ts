@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-// Ajusta la URL si es necesario
+// La URL base se configura en src/environments/* (environment.apiBaseUrl)
 const API_URL = `${environment.apiBaseUrl}/dashboard`;
 
 export interface DashboardMetrics {
