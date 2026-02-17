@@ -1,0 +1,26 @@
+<div class="min-h-screen flex items-center justify-center bg-slate-100 p-4">
+  <mat-card class="w-full max-w-md p-6 !shadow-lg">
+    <h1 class="text-2xl font-semibold mb-2">Iniciar sesión</h1>
+    <p class="text-slate-500 mb-4">Accede al sistema de ventas e inventario.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Usuario</mat-label>
+        <input matInput formControlName="username" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="loading || form.invalid">
+        <span *ngIf="!loading">Entrar</span>
+        <span *ngIf="loading" class="inline-flex items-center gap-2">
+          <mat-spinner diameter="18"></mat-spinner>
+          Ingresando...
+        </span>
+      </button>
+    </form>
+  </mat-card>
+</div>
