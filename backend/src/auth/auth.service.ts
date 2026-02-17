@@ -4,11 +4,19 @@ import { LoginResponse, JwtPayload } from './auth.types';
 
 @Injectable()
 export class AuthService {
-  private readonly jwtSecret = this.getEnvOrDefault('JWT_SECRET', 'dev-secret-change-me');
+  private static readonly DEFAULT_JWT_SECRET = 'dev-secret-change-me';
+  private readonly jwtSecret = this.getEnvOrDefault('JWT_SECRET', AuthService.DEFAULT_JWT_SECRET);
   private readonly authUser = this.getEnvOrDefault('AUTH_USERNAME', 'admin');
   private readonly authPassword = this.getEnvOrDefault('AUTH_PASSWORD', 'admin123');
   private readonly expiresInSeconds = 60 * 60 * 8;
 
+  constructor() {
+    if (process.env.NODE_ENV === 'production' && this.jwtSecret === AuthService.DEFAULT_JWT_SECRET) {
+      throw new Error(
+        'Invalid JWT configuration: JWT_SECRET must be set to a strong, non-default value in production.',
+      );
+    }
+  }
   login(username: string, password: string): LoginResponse {
     const validUser = this.safeCompare(username, this.authUser);
     const validPass = this.safeCompare(password, this.authPassword);
