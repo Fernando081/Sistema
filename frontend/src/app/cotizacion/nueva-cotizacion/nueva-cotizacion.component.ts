@@ -67,7 +67,7 @@ export class NuevaCotizacionComponent implements OnInit {
   }
 
   cargarCatalogos() {
-    // Cargar Clientes
+    // Cargar Clientes (Service now handles mapping)
     this.clienteService.getClientes().subscribe(data => {
       this.listaClientes = data;
     });

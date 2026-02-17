@@ -99,7 +99,7 @@ export class VentaComponent implements OnInit {
     this.formasPago$ = this.catalogosService.getFormasPago();
     this.metodosPago$ = this.catalogosService.getMetodosPago();
 
-    // 2. Cargar Clientes (Mapeo COMPLETO para evitar error TS2352)
+    // 2. Cargar Clientes (Service now handles mapping)
     this.clienteService.getClientes().subscribe(data => {
       this.listaClientes = data;
     });
