@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Venta, FacturaResumen } from '../venta/venta.interface';
 
-// La URL base se configura en environment.apiBaseUrl (ver src/environments/*)
+// La URL base se configura a través de environment.apiBaseUrl
 const API_URL = `${environment.apiBaseUrl}/venta`;
 
 @Injectable({

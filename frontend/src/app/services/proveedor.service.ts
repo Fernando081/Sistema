@@ -10,7 +10,7 @@ import { Proveedor, CreateProveedorDto, UpdateProveedorDto } from '../proveedor/
   providedIn: 'root'
 })
 export class ProveedorService {
-  // Endpoint base configurado en environment.apiBaseUrl (ver src/environments/*)
+  // La URL base se configura a través de environment.apiBaseUrl
   private apiUrl = `${environment.apiBaseUrl}/proveedores`;
 
   constructor(private http: HttpClient) { }

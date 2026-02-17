@@ -1,3 +1,4 @@
 export const environment = {
-  apiBaseUrl: 'http://localhost:3000/api/v1',
+  // Usar ruta relativa evita problemas en Codespaces y despliegues con dominio dinámico.
+  apiBaseUrl: '/api/v1',
 };

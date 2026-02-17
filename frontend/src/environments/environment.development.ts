@@ -1,3 +1,4 @@
 export const environment = {
-  apiBaseUrl: 'http://localhost:3000/api/v1',
+  // En desarrollo se recomienda usar proxy de Angular hacia el backend local (puerto 3000).
+  apiBaseUrl: '/api/v1',
 };
