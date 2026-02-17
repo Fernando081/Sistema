@@ -3,11 +3,30 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Cliente, CreateClienteDto, UpdateClienteDto } from '../cliente/cliente.interface';
 
+// Tipo explícito que refleja exactamente lo que retorna la API en PascalCase
 export interface ClienteApiResponse {
-  [key: string]: string | number | null | undefined;
+  IdCliente: number;
+  RFC: string;
+  RazonSocial: string;
+  Pais: string;
+  IdEstado: number;
+  IdMunicipio: number;
+  Ciudad: string;
+  Colonia: string;
+  Calle: string;
+  CodigoPostal: string;
+  NumeroExterior: string;
+  NumeroInterior: string;
+  Referencia: string;
+  IdMetodoDePago: number;
+  IdUsoCFDI: number;
+  IdFormaPago: number;
+  IdRegimenFiscal: number;
+  Email?: string;
 }
 
 @Injectable({
@@ -19,9 +38,30 @@ export class ClienteService {
 
   constructor(private http: HttpClient) { }
 
-  // La API actual entrega campos en PascalCase; este tipo permite indexación segura c['IdCliente'].
-  getClientes(): Observable<ClienteApiResponse[]> {
-    return this.http.get<ClienteApiResponse[]>(this.apiUrl);
+  // Convierte la respuesta de la API (PascalCase) a Cliente[] (camelCase) para type-safety
+  getClientes(): Observable<Cliente[]> {
+    return this.http.get<ClienteApiResponse[]>(this.apiUrl).pipe(
+      map(data => data.map(c => ({
+        idCliente: c.IdCliente,
+        rfc: c.RFC,
+        razonSocial: c.RazonSocial,
+        pais: c.Pais,
+        idEstado: c.IdEstado,
+        idMunicipio: c.IdMunicipio,
+        ciudad: c.Ciudad,
+        colonia: c.Colonia,
+        calle: c.Calle,
+        codigoPostal: c.CodigoPostal,
+        numeroExterior: c.NumeroExterior,
+        numeroInterior: c.NumeroInterior,
+        referencia: c.Referencia,
+        idMetodoDePago: c.IdMetodoDePago,
+        idUsoCFDI: c.IdUsoCFDI,
+        idFormaPago: c.IdFormaPago,
+        idRegimenFiscal: c.IdRegimenFiscal,
+        email: c.Email
+      })))
+    );
   }
 
   getClienteById(id: number): Observable<Cliente> {
