@@ -33,6 +33,8 @@ Se **centralizó la URL base de API** del frontend mediante `environment`:
 - `frontend/src/environments/environment.production.ts`
 - Reemplazo en servicios para usar `environment.apiBaseUrl`.
 - Configuración de `fileReplacements` en `angular.json` para producción.
+- Adición de `proxy.conf.json` para redirigir las llamadas del frontend (por ejemplo `/api`) hacia el backend en local/Codespaces.
+- Configuración de `proxyConfig` en `angular.json` (sección `architect.serve`) para usar `proxy.conf.json` y evitar el `ERR_CONNECTION_REFUSED` en Codespaces.
 
 ## Siguientes implementaciones que te recomiendo
 
