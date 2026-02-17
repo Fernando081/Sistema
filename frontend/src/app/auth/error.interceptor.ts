@@ -12,10 +12,17 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      const isLoginRequest = req.url.includes('/login');
+
       if (error.status === 401) {
-        authService.logout();
-        router.navigate(['/login']);
-        snackBar.open('Tu sesión expiró. Inicia sesión nuevamente.', 'Cerrar', { duration: 4000 });
+        if (isLoginRequest) {
+          const message = error.error?.message || 'Ocurrió un error al procesar la solicitud.';
+          snackBar.open(message, 'Cerrar', { duration: 4500 });
+        } else {
+          authService.logout();
+          router.navigate(['/login']);
+          snackBar.open('Tu sesión expiró. Inicia sesión nuevamente.', 'Cerrar', { duration: 4000 });
+        }
       } else if (error.status >= 400) {
         const message = error.error?.message || 'Ocurrió un error al procesar la solicitud.';
         snackBar.open(message, 'Cerrar', { duration: 4500 });
