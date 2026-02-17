@@ -26,7 +26,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,
-    MatProgressSpinnerModule, ClienteDialogComponent
+    MatProgressSpinnerModule
   ],
   templateUrl: './cliente-list.component.html',
   styleUrls: ['./cliente-list.component.css']
@@ -57,28 +57,7 @@ export class ClienteListComponent implements OnInit {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (data) => {
-          // ¡CAMBIO! Mapeamos la data de PascalCase a camelCase
-          // Esto soluciona el problema de la tabla vacía
-          const camelCaseData = data.map(cliente => ({
-            idCliente: cliente['IdCliente'],
-            rfc: cliente['RFC'],
-            razonSocial: cliente['RazonSocial'],
-            pais: cliente['Pais'],
-            idEstado: cliente['IdEstado'],
-            idMunicipio: cliente['IdMunicipio'],
-            ciudad: cliente['Ciudad'],
-            colonia: cliente['Colonia'],
-            calle: cliente['Calle'],
-            codigoPostal: cliente['CodigoPostal'],
-            numeroExterior: cliente['NumeroExterior'],
-            numeroInterior: cliente['NumeroInterior'],
-            referencia: cliente['Referencia'],
-            idMetodoDePago: cliente['IdMetodoDePago'],
-            idUsoCFDI: cliente['IdUsoCFDI'],
-            idFormaPago: cliente['IdFormaPago'],
-            idRegimenFiscal: cliente['IdRegimenFiscal']
-          }));
-          this.dataSource.data = camelCaseData;
+          this.dataSource.data = data;
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
         },

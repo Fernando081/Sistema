@@ -1,6 +1,7 @@
 // backend/src/app.module.ts 
 
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -36,6 +37,9 @@ import { CotizacionModule } from './cotizacion/cotizacion.module';
 import { Pago } from './pago/pago.entity';
 import { PagoModule } from './pago/pago.module';
 import { PagoProveedorModule } from './pago-proveedor/pago-proveedor.module';
+import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { AuthUser } from './auth/auth-user.entity';
 
 @Module({
   imports: [
@@ -53,7 +57,7 @@ import { PagoProveedorModule } from './pago-proveedor/pago-proveedor.module';
       entities: [
         Cliente, Proveedor, Producto, Categoria,
         RegimenFiscal, FormaPago, MetodoPago, UsoCFDI, Estado, Municipio,
-        ClaveProdServ, ClaveUnidad, Unidad, ObjetoImpuesto, Pago
+        ClaveProdServ, ClaveUnidad, Unidad, ObjetoImpuesto, Pago, AuthUser
       ],
     }),
     ClienteModule,
@@ -67,8 +71,9 @@ import { PagoProveedorModule } from './pago-proveedor/pago-proveedor.module';
     CotizacionModule,
     PagoModule,
     PagoProveedorModule,
+    AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AppModule {}

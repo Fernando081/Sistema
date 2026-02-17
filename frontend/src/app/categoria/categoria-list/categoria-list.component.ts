@@ -26,7 +26,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,
-    MatProgressSpinnerModule, CategoriaDialogComponent // Importa su propio diálogo
+    MatProgressSpinnerModule
   ],
   templateUrl: './categoria-list.component.html',
   styleUrls: ['./categoria-list.component.css']

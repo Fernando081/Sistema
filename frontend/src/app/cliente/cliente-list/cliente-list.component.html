@@ -69,6 +69,24 @@
       </table>
     </div>
 
+    <div class="mobile-cards" [hidden]="isLoading">
+      <mat-card class="mobile-client-card" *ngFor="let element of dataSource.filteredData">
+        <div class="font-semibold">{{ element.razonSocial }}</div>
+        <div class="text-sm text-slate-600">RFC: {{ element.rfc }}</div>
+        <div class="text-sm text-slate-600">C.P.: {{ element.codigoPostal }}</div>
+        <div class="mt-2 flex gap-2 justify-end">
+          <button mat-stroked-button color="primary" (click)="abrirDialogo(element)">
+            <mat-icon>edit</mat-icon>
+            Editar
+          </button>
+          <button mat-stroked-button color="warn" (click)="eliminarCliente(element.idCliente)">
+            <mat-icon>delete</mat-icon>
+            Eliminar
+          </button>
+        </div>
+      </mat-card>
+    </div>
+
     <mat-paginator 
       [pageSize]="10"
       [pageSizeOptions]="[10, 25, 50]"

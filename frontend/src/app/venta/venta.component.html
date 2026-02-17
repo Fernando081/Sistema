@@ -183,10 +183,18 @@
 
         <button mat-flat-button color="accent" class="w-full mt-6 !text-lg !py-6" 
                 (click)="guardarVenta()" 
-                [disabled]="carrito.length === 0 || !clienteSeleccionado">
-          <mat-icon>print</mat-icon>
-          Terminar Venta
+                [disabled]="guardandoVenta || carrito.length === 0 || !clienteSeleccionado">
+          <ng-container *ngIf="!guardandoVenta; else savingSaleTpl">
+            <mat-icon>print</mat-icon>
+            Terminar Venta
+          </ng-container>
         </button>
+        <ng-template #savingSaleTpl>
+          <span class="inline-flex items-center gap-2">
+            <mat-spinner diameter="18"></mat-spinner>
+            Guardando...
+          </span>
+        </ng-template>
       </mat-card-content>
     </mat-card>
 

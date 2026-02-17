@@ -60,27 +60,8 @@ export class CobranzaComponent implements OnInit {
 
   cargarClientes() {
     this.clienteService.getClientes().subscribe(data => {
-      // Reutiliza tu mapeo de clientes aquí
-      this.listaClientes = data.map(c => ({
-            idCliente: c['IdCliente'],
-            rfc: c['RFC'],
-            razonSocial: c['RazonSocial'],
-            pais: c['Pais'],
-            idEstado: c['IdEstado'],
-            idMunicipio: c['IdMunicipio'],
-            ciudad: c['Ciudad'],
-            colonia: c['Colonia'],
-            calle: c['Calle'],
-            codigoPostal: c['CodigoPostal'],
-            numeroExterior: c['NumeroExterior'],
-            numeroInterior: c['NumeroInterior'],
-            referencia: c['Referencia'],
-            idMetodoDePago: c['IdMetodoDePago'],
-            idUsoCFDI: c['IdUsoCFDI'],
-            idFormaPago: c['IdFormaPago'],
-            idRegimenFiscal: c['IdRegimenFiscal']
-      })) as unknown as Cliente[];
-      
+      this.listaClientes = data;
+
       this.clientesFiltrados$ = this.clienteControl.valueChanges.pipe(
         startWith(''),
         map(val => {
