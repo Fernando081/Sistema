@@ -27,7 +27,7 @@ import { ConceptoVenta, Venta } from './venta.interface';
 
 // RxJS
 import { Observable, of } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-venta',
@@ -331,19 +331,22 @@ export class VentaComponent implements OnInit {
     };
 
     this.guardandoVenta = true;
-    this.ventaService.crearVenta(ventaPayload).subscribe({
-      next: (res) => {
-        this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
-        this.limpiarTodo();
-        this.ngOnInit();
-      },
-      error: (error) => {
-        this.mostrarNotificacion('Error al guardar: ' + (error.error?.message || error.message || 'Error desconocido'));
-      },
-      complete: () => {
-        this.guardandoVenta = false;
-      }
-    });
+    this.ventaService.crearVenta(ventaPayload)
+      .pipe(
+        finalize(() => {
+          this.guardandoVenta = false;
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
+          this.limpiarTodo();
+          this.ngOnInit();
+        },
+        error: (error) => {
+          this.mostrarNotificacion('Error al guardar: ' + (error.error?.message || error.message || 'Error desconocido'));
+        }
+      });
   }
 
   // --- UTILIDADES ---
