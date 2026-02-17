@@ -82,7 +82,7 @@ export class AuthService {
       if (error instanceof UnauthorizedException) {
         throw error;
       }
-      throw new UnauthorizedException('Token inválido');
+      throw new UnauthorizedException('Token con formato inválido');
     }
   }
 
