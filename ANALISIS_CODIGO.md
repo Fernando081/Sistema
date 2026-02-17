@@ -29,7 +29,7 @@ Implementado:
 
 ### 4) Tipado estricto TypeScript ✅
 - Backend: se añadieron interfaces para datos de ticket/query (`ticket.types.ts`).
-- Frontend: se eliminó un caso relevante de `any[]` en `ClienteService` y se tipó con `Cliente[]`.
+- Frontend: se eliminó un caso relevante de `any[]` en `ClienteService` y se tipó con `ClienteApiResponse[]` (tipo real retornado por `getClientes()`).
 
 ### 5) Manejo de decimales y moneda ✅ (parcial funcional)
 - Frontend de ventas actualizado para calcular en centavos (`toCents/fromCents`) y evitar errores de coma flotante.
