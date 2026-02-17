@@ -99,32 +99,9 @@ export class VentaComponent implements OnInit {
     this.formasPago$ = this.catalogosService.getFormasPago();
     this.metodosPago$ = this.catalogosService.getMetodosPago();
 
-    // 2. Cargar Clientes (Mapeo COMPLETO para evitar error TS2352)
+    // 2. Cargar Clientes
     this.clienteService.getClientes().subscribe(data => {
-      this.listaClientes = data.map(c => ({
-        // Identificadores
-        idCliente: c['IdCliente'],
-        
-        // Datos Fiscales y Dirección
-        rfc: c['RFC'],
-        razonSocial: c['RazonSocial'],
-        pais: c['Pais'],
-        idEstado: c['IdEstado'],
-        idMunicipio: c['IdMunicipio'],
-        ciudad: c['Ciudad'],
-        colonia: c['Colonia'],
-        calle: c['Calle'],
-        codigoPostal: c['CodigoPostal'],
-        numeroExterior: c['NumeroExterior'],
-        numeroInterior: c['NumeroInterior'],
-        referencia: c['Referencia'],
-        
-        // Datos SAT por defecto
-        idMetodoDePago: c['IdMetodoDePago'],
-        idUsoCFDI: c['IdUsoCFDI'],
-        idFormaPago: c['IdFormaPago'],
-        idRegimenFiscal: c['IdRegimenFiscal']
-      })) as unknown as Cliente[];
+      this.listaClientes = data;
     });
 
     // 3. Cargar Productos (Mapeo COMPLETO)
@@ -363,8 +340,17 @@ export class VentaComponent implements OnInit {
       complete: () => {
         this.guardandoVenta = false;
       },
-      error: () => {
+      error: (error) => {
         this.guardandoVenta = false;
+        let mensaje = 'Ocurrió un error al guardar la venta.';
+        if (error?.status === 0) {
+          mensaje = 'No se pudo conectar con el servidor. Verifica tu conexión e inténtalo de nuevo.';
+        } else if (error?.error?.message) {
+          mensaje = error.error.message;
+        } else if (error?.message) {
+          mensaje = error.message;
+        }
+        this.mostrarNotificacion(mensaje);
       },
     });
   }

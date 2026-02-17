@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -24,6 +24,8 @@ import { AuthService } from '../auth.service';
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
+  private readonly fb = inject(FormBuilder);
+
   loading = false;
 
   form = this.fb.nonNullable.group({
@@ -32,7 +34,6 @@ export class LoginComponent {
   });
 
   constructor(
-    private readonly fb: FormBuilder,
     private readonly authService: AuthService,
     private readonly router: Router,
   ) {}
