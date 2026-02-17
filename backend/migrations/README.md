@@ -4,10 +4,13 @@ This directory contains SQL migration scripts for the database schema.
 
 ## How to Apply Migrations
 
-Run the migration scripts in numerical order against your PostgreSQL database:
+Run any new migration scripts in numerical order against your PostgreSQL database. Make sure you
+track which migrations have already been applied (for example, in a dedicated migrations table)
+and only run migrations that have not yet been applied, or use a migration management tool to
+handle this for you:
 
 ```bash
-# Example using psql
+# Example using psql to apply a specific new migration
 psql -U your_username -d your_database -f 001_create_auth_user_table.sql
 ```
 
