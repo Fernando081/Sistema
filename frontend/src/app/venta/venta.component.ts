@@ -363,8 +363,17 @@ export class VentaComponent implements OnInit {
       complete: () => {
         this.guardandoVenta = false;
       },
-      error: () => {
+      error: (error) => {
         this.guardandoVenta = false;
+        let mensaje = 'Ocurrió un error al guardar la venta.';
+        if (error?.status === 0) {
+          mensaje = 'No se pudo conectar con el servidor. Verifica tu conexión e inténtalo de nuevo.';
+        } else if (error?.error?.message) {
+          mensaje = error.error.message;
+        } else if (error?.message) {
+          mensaje = error.message;
+        }
+        this.mostrarNotificacion(mensaje);
       },
     });
   }
