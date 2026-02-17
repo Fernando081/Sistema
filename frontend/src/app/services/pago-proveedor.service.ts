@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-// Ajusta la URL si tu entorno cambió
+// La URL base se obtiene de environment.apiBaseUrl y se configura por entorno
 const API_URL = `${environment.apiBaseUrl}/pago-proveedor`;
 
 export interface PagoProveedorDto {
