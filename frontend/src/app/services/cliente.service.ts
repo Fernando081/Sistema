@@ -7,26 +7,26 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Cliente, CreateClienteDto, UpdateClienteDto } from '../cliente/cliente.interface';
 
-// Tipo explícito que refleja exactamente lo que retorna la API en PascalCase
+// Explicit type matching the PascalCase keys returned by the API
 export interface ClienteApiResponse {
   IdCliente: number;
   RFC: string;
   RazonSocial: string;
   Pais: string;
-  IdEstado: number;
-  IdMunicipio: number;
-  Ciudad: string;
-  Colonia: string;
-  Calle: string;
+  IdEstado: number | null;
+  IdMunicipio: number | null;
+  Ciudad: string | null;
+  Colonia: string | null;
+  Calle: string | null;
   CodigoPostal: string;
-  NumeroExterior: string;
-  NumeroInterior: string;
-  Referencia: string;
-  IdMetodoDePago: number;
-  IdUsoCFDI: number;
-  IdFormaPago: number;
+  NumeroExterior: string | null;
+  NumeroInterior: string | null;
+  Referencia: string | null;
+  IdMetodoDePago: number | null;
+  IdUsoCFDI: number | null;
+  IdFormaPago: number | null;
   IdRegimenFiscal: number;
-  Email?: string;
+  email?: string | null;
 }
 
 @Injectable({
@@ -38,30 +38,35 @@ export class ClienteService {
 
   constructor(private http: HttpClient) { }
 
-  // Convierte la respuesta de la API (PascalCase) a Cliente[] (camelCase) para type-safety
+  // Fetch clientes and map from PascalCase API response to camelCase Cliente interface
   getClientes(): Observable<Cliente[]> {
     return this.http.get<ClienteApiResponse[]>(this.apiUrl).pipe(
-      map(data => data.map(c => ({
-        idCliente: c.IdCliente,
-        rfc: c.RFC,
-        razonSocial: c.RazonSocial,
-        pais: c.Pais,
-        idEstado: c.IdEstado,
-        idMunicipio: c.IdMunicipio,
-        ciudad: c.Ciudad,
-        colonia: c.Colonia,
-        calle: c.Calle,
-        codigoPostal: c.CodigoPostal,
-        numeroExterior: c.NumeroExterior,
-        numeroInterior: c.NumeroInterior,
-        referencia: c.Referencia,
-        idMetodoDePago: c.IdMetodoDePago,
-        idUsoCFDI: c.IdUsoCFDI,
-        idFormaPago: c.IdFormaPago,
-        idRegimenFiscal: c.IdRegimenFiscal,
-        email: c.Email
-      })))
+      map(response => response.map(this.mapApiResponseToCliente))
     );
+  }
+
+  // Map PascalCase API response to camelCase Cliente
+  private mapApiResponseToCliente(apiCliente: ClienteApiResponse): Cliente {
+    return {
+      idCliente: apiCliente.IdCliente,
+      rfc: apiCliente.RFC,
+      razonSocial: apiCliente.RazonSocial,
+      pais: apiCliente.Pais,
+      idEstado: apiCliente.IdEstado ?? 0,
+      idMunicipio: apiCliente.IdMunicipio ?? 0,
+      ciudad: apiCliente.Ciudad ?? '',
+      colonia: apiCliente.Colonia ?? '',
+      calle: apiCliente.Calle ?? '',
+      codigoPostal: apiCliente.CodigoPostal,
+      numeroExterior: apiCliente.NumeroExterior ?? '',
+      numeroInterior: apiCliente.NumeroInterior ?? '',
+      referencia: apiCliente.Referencia ?? '',
+      idMetodoDePago: apiCliente.IdMetodoDePago ?? 0,
+      idUsoCFDI: apiCliente.IdUsoCFDI ?? 0,
+      idFormaPago: apiCliente.IdFormaPago ?? 0,
+      idRegimenFiscal: apiCliente.IdRegimenFiscal,
+      email: apiCliente.email
+    };
   }
 
   getClienteById(id: number): Observable<Cliente> {
