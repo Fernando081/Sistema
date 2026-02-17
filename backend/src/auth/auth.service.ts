@@ -8,6 +8,26 @@ export class AuthService {
   private readonly authUser: string;
   private readonly authPassword: string;
   private readonly expiresInSeconds = 60 * 60 * 8;
+  private readonly jwtSecret: string;
+  private readonly authUser: string;
+  private readonly authPassword: string;
+  private readonly expiresInSeconds = 60 * 60 * 8;
+
+  constructor() {
+    const nodeEnv = process.env.NODE_ENV ?? 'development';
+
+    const jwtSecretFromEnv = process.env.JWT_SECRET;
+    if (!jwtSecretFromEnv) {
+      if (nodeEnv !== 'development' && nodeEnv !== 'test') {
+        throw new Error('JWT_SECRET environment variable must be set in non-development environments');
+      }
+      this.jwtSecret = 'dev-secret-change-me';
+    } else {
+      this.jwtSecret = jwtSecretFromEnv;
+    }
+
+    const authUserFromEnv = process.env.AUTH_USERNAME;
+    const authPasswordFromEnv = process.env.AUTH_PASSWORD;
 
   constructor() {
     const nodeEnv = process.env.NODE_ENV ?? 'development';

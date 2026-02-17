@@ -57,28 +57,7 @@ export class ClienteListComponent implements OnInit {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (data) => {
-          // ¡CAMBIO! Mapeamos la data de PascalCase a camelCase
-          // Esto soluciona el problema de la tabla vacía
-          const camelCaseData = data.map(cliente => ({
-            idCliente: cliente['IdCliente'],
-            rfc: cliente['RFC'],
-            razonSocial: cliente['RazonSocial'],
-            pais: cliente['Pais'],
-            idEstado: cliente['IdEstado'],
-            idMunicipio: cliente['IdMunicipio'],
-            ciudad: cliente['Ciudad'],
-            colonia: cliente['Colonia'],
-            calle: cliente['Calle'],
-            codigoPostal: cliente['CodigoPostal'],
-            numeroExterior: cliente['NumeroExterior'],
-            numeroInterior: cliente['NumeroInterior'],
-            referencia: cliente['Referencia'],
-            idMetodoDePago: cliente['IdMetodoDePago'],
-            idUsoCFDI: cliente['IdUsoCFDI'],
-            idFormaPago: cliente['IdFormaPago'],
-            idRegimenFiscal: cliente['IdRegimenFiscal']
-          }));
-          this.dataSource.data = camelCaseData;
+          this.dataSource.data = data;
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
         },
@@ -92,7 +71,6 @@ export class ClienteListComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
     
-    // ¡CAMBIO! Aplicamos el filtro para camelCase
     this.dataSource.filterPredicate = (data: Cliente, filter: string) => {
       return data.razonSocial.toLowerCase().includes(filter) || 
              data.rfc.toLowerCase().includes(filter);
