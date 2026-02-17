@@ -14,6 +14,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 // Servicios e Interfaces
 import { ProductoService } from '../services/producto.service';
@@ -34,7 +35,7 @@ import { map, startWith } from 'rxjs/operators';
   imports: [
     CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule,
     MatInputModule, MatButtonModule, MatIconModule, MatTableModule,
-    MatAutocompleteModule, MatSelectModule, MatDividerModule, MatSnackBarModule, FormsModule
+    MatAutocompleteModule, MatSelectModule, MatDividerModule, MatSnackBarModule, FormsModule, MatProgressSpinnerModule
   ],
   templateUrl: './venta.component.html',
   // Elimina styleUrls si no tienes el archivo CSS
@@ -70,6 +71,7 @@ export class VentaComponent implements OnInit {
   metodosPago$: Observable<MetodoPago[]> = of([]);
 
   displayedColumns: string[] = ['descripcion', 'cantidad', 'precio', 'importe', 'acciones'];
+  guardandoVenta = false;
 
   constructor(
     private fb: FormBuilder,
@@ -256,13 +258,14 @@ export class VentaComponent implements OnInit {
 
   // --- CEREBRO MATEMÁTICO (RESICO BLINDADO) ---
   recalcularRenglon(item: ConceptoVenta, productoOriginal: Producto) {
-    // 1. Importe base
-    item.importe = item.cantidad * item.valorUnitario;
+    // 1. Importe base en centavos para evitar errores de coma flotante
+    const importeCents = this.toCents(item.cantidad * item.valorUnitario);
+    item.importe = this.fromCents(importeCents);
 
     // 2. IVA
     if (item.objetoImpuesto === '02') {
         item.baseIva = item.importe;
-        item.importeIva = item.baseIva * item.tasaIva;
+        item.importeIva = this.fromCents(this.toCents(item.baseIva * item.tasaIva));
     } else {
         item.baseIva = 0;
         item.importeIva = 0;
@@ -275,7 +278,7 @@ export class VentaComponent implements OnInit {
     
     if (productoOriginal.aplicaRetencionIsr && esClienteMoral) {
         item.baseRetIsr = item.importe;
-        item.importeRetIsr = item.baseRetIsr * 0.0125; // 1.25%
+        item.importeRetIsr = this.fromCents(this.toCents(item.baseRetIsr * 0.0125)); // 1.25%
     } else {
         item.importeRetIsr = 0;
     }
@@ -292,11 +295,14 @@ export class VentaComponent implements OnInit {
   }
 
   recalcularTotalesGenerales() {
-    this.subtotalGeneral = this.carrito.reduce((acc, item) => acc + item.importe, 0);
-    this.ivaGeneral = this.carrito.reduce((acc, item) => acc + item.importeIva, 0);
-    this.retIsrGeneral = this.carrito.reduce((acc, item) => acc + item.importeRetIsr, 0);
-    
-    this.totalGeneral = this.subtotalGeneral + this.ivaGeneral - this.retIsrGeneral;
+    const subtotalCents = this.carrito.reduce((acc, item) => acc + this.toCents(item.importe), 0);
+    const ivaCents = this.carrito.reduce((acc, item) => acc + this.toCents(item.importeIva), 0);
+    const retCents = this.carrito.reduce((acc, item) => acc + this.toCents(item.importeRetIsr), 0);
+
+    this.subtotalGeneral = this.fromCents(subtotalCents);
+    this.ivaGeneral = this.fromCents(ivaCents);
+    this.retIsrGeneral = this.fromCents(retCents);
+    this.totalGeneral = this.fromCents(subtotalCents + ivaCents - retCents);
   }
 
   eliminarDelCarrito(index: number) {
@@ -307,6 +313,7 @@ export class VentaComponent implements OnInit {
 
   // --- GUARDAR VENTA ---
   guardarVenta() {
+    if (this.guardandoVenta) return;
     if (!this.clienteSeleccionado) {
       this.mostrarNotificacion('Debes seleccionar un cliente');
       return;
@@ -346,14 +353,19 @@ export class VentaComponent implements OnInit {
       conceptos: this.carrito
     };
 
+    this.guardandoVenta = true;
     this.ventaService.crearVenta(ventaPayload).subscribe({
       next: (res) => {
         this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
         this.limpiarTodo();
-        // Recargar productos para actualizar stock visualmente
-        this.ngOnInit(); 
+        this.ngOnInit();
       },
-      error: (err) => this.mostrarNotificacion('Error al guardar: ' + err.message)
+      complete: () => {
+        this.guardandoVenta = false;
+      },
+      error: () => {
+        this.guardandoVenta = false;
+      },
     });
   }
 
@@ -369,6 +381,14 @@ export class VentaComponent implements OnInit {
 
   mostrarNotificacion(msg: string) {
     this.snackBar.open(msg, 'Cerrar', { duration: 3000 });
+  }
+
+  private toCents(value: number): number {
+    return Math.round(value * 100);
+  }
+
+  private fromCents(value: number): number {
+    return value / 100;
   }
 
   displayCliente(cliente: Cliente): string {

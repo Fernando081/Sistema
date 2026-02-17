@@ -1,6 +1,7 @@
 // backend/src/app.module.ts 
 
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -36,6 +37,8 @@ import { CotizacionModule } from './cotizacion/cotizacion.module';
 import { Pago } from './pago/pago.entity';
 import { PagoModule } from './pago/pago.module';
 import { PagoProveedorModule } from './pago-proveedor/pago-proveedor.module';
+import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -67,8 +70,9 @@ import { PagoProveedorModule } from './pago-proveedor/pago-proveedor.module';
     CotizacionModule,
     PagoModule,
     PagoProveedorModule,
+    AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AppModule {}

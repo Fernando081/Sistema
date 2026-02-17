@@ -6,19 +6,24 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Cliente, CreateClienteDto, UpdateClienteDto } from '../cliente/cliente.interface';
 
+export interface ClienteApiResponse {
+  [key: string]: string | number | null | undefined;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ClienteService {
-  
+
   private apiUrl = `${environment.apiBaseUrl}/cliente`;
 
   constructor(private http: HttpClient) { }
 
-  getClientes(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  // La API actual entrega campos en PascalCase; este tipo permite indexación segura c['IdCliente'].
+  getClientes(): Observable<ClienteApiResponse[]> {
+    return this.http.get<ClienteApiResponse[]>(this.apiUrl);
   }
-  
+
   getClienteById(id: number): Observable<Cliente> {
     return this.http.get<Cliente>(`${this.apiUrl}/${id}`);
   }

@@ -1,31 +1,49 @@
 // frontend/src/app/app.ts
 
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav'; // <-- NUEVO
-import { MatListModule } from '@angular/material/list';     // <-- NUEVO
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  // Añadimos los nuevos módulos al array 'imports'
   imports: [
-    CommonModule, 
+    CommonModule,
     RouterOutlet,
     RouterLink,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
-    MatSidenavModule, // <-- NUEVO
-    MatListModule      // <-- NUEVO
+    MatSidenavModule,
+    MatListModule,
   ],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
-  title = 'frontend';
+  isLoginRoute = false;
+
+  constructor(
+    private readonly authService: AuthService,
+    private readonly router: Router,
+  ) {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.isLoginRoute = this.router.url.startsWith('/login');
+      });
+    this.isLoginRoute = this.router.url.startsWith('/login');
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }
