@@ -16,7 +16,35 @@ export class AuthService {
   constructor(
     @InjectRepository(AuthUser)
     private readonly authUserRepository: Repository<AuthUser>,
-  ) {}
+  ) {
+    this.validateProductionSecurity();
+  }
+
+  private validateProductionSecurity(): void {
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    if (isProduction) {
+      const defaultJwtSecret = 'dev-secret-change-me';
+      const defaultUsername = 'admin';
+      const defaultPassword = 'admin123';
+
+      if (this.jwtSecret === defaultJwtSecret) {
+        throw new Error(
+          'SECURITY ERROR: JWT_SECRET must be changed from default value in production. ' +
+          'Set a strong JWT_SECRET environment variable.'
+        );
+      }
+
+      if (this.authUser === defaultUsername && this.authPassword === defaultPassword) {
+        throw new Error(
+          'SECURITY ERROR: Default credentials (admin/admin123) must be changed in production. ' +
+          'Set AUTH_USERNAME and AUTH_PASSWORD environment variables to secure values.'
+        );
+      }
+
+      this.logger.log('Production security validation passed');
+    }
+  }
 
   async login(username: string, password: string): Promise<LoginResponse> {
     const dbUser = await this.validateFromDatabase(username, password);
