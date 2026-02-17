@@ -35,10 +35,17 @@ export class AuthService {
         );
       }
 
-      if (this.authUser === defaultUsername && this.authPassword === defaultPassword) {
+      if (this.authUser === defaultUsername) {
         throw new Error(
-          'SECURITY ERROR: Default credentials (admin/admin123) must be changed in production. ' +
-          'Set AUTH_USERNAME and AUTH_PASSWORD environment variables to secure values.'
+          'SECURITY ERROR: Default username (admin) must be changed in production. ' +
+          'Set AUTH_USERNAME environment variable to a secure value.'
+        );
+      }
+
+      if (this.authPassword === defaultPassword) {
+        throw new Error(
+          'SECURITY ERROR: Default password (admin123) must be changed in production. ' +
+          'Set AUTH_PASSWORD environment variable to a secure value.'
         );
       }
 
