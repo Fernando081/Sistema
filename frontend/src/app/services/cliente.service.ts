@@ -7,8 +7,8 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Cliente, CreateClienteDto, UpdateClienteDto } from '../cliente/cliente.interface';
 
-// Tipo explícito para la respuesta de la API con campos en PascalCase
-export interface ClienteApiResponseRaw {
+// Tipo explícito que refleja exactamente lo que retorna la API en PascalCase
+export interface ClienteApiResponse {
   IdCliente: number;
   RFC: string;
   RazonSocial: string;
@@ -38,9 +38,9 @@ export class ClienteService {
 
   constructor(private http: HttpClient) { }
 
-  // La API entrega campos en PascalCase; convertimos a camelCase aquí para type-safety
+  // Convierte la respuesta de la API (PascalCase) a Cliente[] (camelCase) para type-safety
   getClientes(): Observable<Cliente[]> {
-    return this.http.get<ClienteApiResponseRaw[]>(this.apiUrl).pipe(
+    return this.http.get<ClienteApiResponse[]>(this.apiUrl).pipe(
       map(data => data.map(c => ({
         idCliente: c.IdCliente,
         rfc: c.RFC,
