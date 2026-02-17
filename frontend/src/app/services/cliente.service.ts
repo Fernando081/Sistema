@@ -65,7 +65,7 @@ export class ClienteService {
       idUsoCFDI: apiCliente.IdUsoCFDI ?? 0,
       idFormaPago: apiCliente.IdFormaPago ?? 0,
       idRegimenFiscal: apiCliente.IdRegimenFiscal,
-      email: apiCliente.email ?? undefined
+      email: apiCliente.email
     };
   }
 
