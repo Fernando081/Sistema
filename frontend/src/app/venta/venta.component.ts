@@ -340,7 +340,6 @@ export class VentaComponent implements OnInit {
       complete: () => {
         this.guardandoVenta = false;
       },
-      error: () => {
       error: (error) => {
         this.guardandoVenta = false;
         let mensaje = 'Ocurrió un error al guardar la venta.';

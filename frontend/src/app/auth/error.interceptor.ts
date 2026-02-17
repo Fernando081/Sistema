@@ -10,11 +10,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const authService = inject(AuthService);
 
-  return next(req).pipe(
-    catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
-        authService.logout();
-        router.navigate(['/login']);
   const isLoginRequest = req.url.includes('/auth/login');
 
   return next(req).pipe(

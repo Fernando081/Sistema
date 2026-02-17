@@ -4,10 +4,6 @@ import { LoginResponse, JwtPayload } from './auth.types';
 
 @Injectable()
 export class AuthService {
-  private readonly jwtSecret = process.env.JWT_SECRET || 'dev-secret-change-me';
-  private readonly authUser = process.env.AUTH_USERNAME || 'admin';
-  private readonly authPassword = process.env.AUTH_PASSWORD || 'admin123';
-  private readonly expiresInSeconds = 60 * 60 * 8;
   private readonly jwtSecret: string;
   private readonly authUser: string;
   private readonly authPassword: string;
@@ -36,6 +32,7 @@ export class AuthService {
     this.authUser = authUserFromEnv;
     this.authPassword = authPasswordFromEnv;
   }
+
   login(username: string, password: string): LoginResponse {
     const validUser = this.safeCompare(username, this.authUser);
     const validPass = this.safeCompare(password, this.authPassword);
@@ -74,12 +71,19 @@ export class AuthService {
       throw new UnauthorizedException('Firma JWT inválida');
     }
 
-    const payload = JSON.parse(Buffer.from(payloadPart, 'base64url').toString('utf-8')) as JwtPayload;
-    if (payload.exp < Math.floor(Date.now() / 1000)) {
-      throw new UnauthorizedException('Token expirado');
-    }
+    try {
+      const payload = JSON.parse(Buffer.from(payloadPart, 'base64url').toString('utf-8')) as JwtPayload;
+      if (payload.exp < Math.floor(Date.now() / 1000)) {
+        throw new UnauthorizedException('Token expirado');
+      }
 
-    return payload;
+      return payload;
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException('Token con formato inválido');
+    }
   }
 
   private sign(payload: JwtPayload): string {
