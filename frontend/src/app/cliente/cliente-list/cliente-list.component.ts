@@ -72,7 +72,6 @@ export class ClienteListComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
     
-    // ¡CAMBIO! Aplicamos el filtro para camelCase
     this.dataSource.filterPredicate = (data: Cliente, filter: string) => {
       return data.razonSocial.toLowerCase().includes(filter) || 
              data.rfc.toLowerCase().includes(filter);
