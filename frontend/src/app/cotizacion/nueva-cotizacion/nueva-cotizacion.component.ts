@@ -67,13 +67,9 @@ export class NuevaCotizacionComponent implements OnInit {
   }
 
   cargarCatalogos() {
-    // Cargar Clientes
+    // Cargar Clientes (Service now handles mapping)
     this.clienteService.getClientes().subscribe(data => {
-      this.listaClientes = data.map(c => ({
-        idCliente: c['IdCliente'],
-        rfc: c['RFC'],
-        razonSocial: c['RazonSocial'],
-      })) as unknown as Cliente[];
+      this.listaClientes = data;
     });
 
     // Cargar Productos

@@ -5,16 +5,26 @@ import { LoginResponse, JwtPayload } from './auth.types';
 @Injectable()
 export class AuthService {
   private static readonly DEFAULT_JWT_SECRET = 'dev-secret-change-me';
+  private static readonly DEFAULT_AUTH_USERNAME = 'admin';
+  private static readonly DEFAULT_AUTH_PASSWORD = 'admin123';
+  
   private readonly jwtSecret = this.getEnvOrDefault('JWT_SECRET', AuthService.DEFAULT_JWT_SECRET);
-  private readonly authUser = this.getEnvOrDefault('AUTH_USERNAME', 'admin');
-  private readonly authPassword = this.getEnvOrDefault('AUTH_PASSWORD', 'admin123');
+  private readonly authUser = this.getEnvOrDefault('AUTH_USERNAME', AuthService.DEFAULT_AUTH_USERNAME);
+  private readonly authPassword = this.getEnvOrDefault('AUTH_PASSWORD', AuthService.DEFAULT_AUTH_PASSWORD);
   private readonly expiresInSeconds = 60 * 60 * 8;
 
   constructor() {
-    if (process.env.NODE_ENV === 'production' && this.jwtSecret === AuthService.DEFAULT_JWT_SECRET) {
-      throw new Error(
-        'Invalid JWT configuration: JWT_SECRET must be set to a strong, non-default value in production.',
-      );
+    if (process.env.NODE_ENV === 'production') {
+      if (this.jwtSecret === AuthService.DEFAULT_JWT_SECRET) {
+        throw new Error(
+          'Invalid JWT configuration: JWT_SECRET must be set to a strong, non-default value in production.',
+        );
+      }
+      if (this.authUser === AuthService.DEFAULT_AUTH_USERNAME || this.authPassword === AuthService.DEFAULT_AUTH_PASSWORD) {
+        throw new Error(
+          'Invalid authentication configuration: AUTH_USERNAME and AUTH_PASSWORD must be set to non-default values in production.',
+        );
+      }
     }
   }
   login(username: string, password: string): LoginResponse {

@@ -99,32 +99,9 @@ export class VentaComponent implements OnInit {
     this.formasPago$ = this.catalogosService.getFormasPago();
     this.metodosPago$ = this.catalogosService.getMetodosPago();
 
-    // 2. Cargar Clientes (Mapeo COMPLETO para evitar error TS2352)
+    // 2. Cargar Clientes (Service now handles mapping)
     this.clienteService.getClientes().subscribe(data => {
-      this.listaClientes = data.map(c => ({
-        // Identificadores
-        idCliente: c['IdCliente'],
-        
-        // Datos Fiscales y Dirección
-        rfc: c['RFC'],
-        razonSocial: c['RazonSocial'],
-        pais: c['Pais'],
-        idEstado: c['IdEstado'],
-        idMunicipio: c['IdMunicipio'],
-        ciudad: c['Ciudad'],
-        colonia: c['Colonia'],
-        calle: c['Calle'],
-        codigoPostal: c['CodigoPostal'],
-        numeroExterior: c['NumeroExterior'],
-        numeroInterior: c['NumeroInterior'],
-        referencia: c['Referencia'],
-        
-        // Datos SAT por defecto
-        idMetodoDePago: c['IdMetodoDePago'],
-        idUsoCFDI: c['IdUsoCFDI'],
-        idFormaPago: c['IdFormaPago'],
-        idRegimenFiscal: c['IdRegimenFiscal']
-      })) as unknown as Cliente[];
+      this.listaClientes = data;
     });
 
     // 3. Cargar Productos (Mapeo COMPLETO)
@@ -357,14 +334,13 @@ export class VentaComponent implements OnInit {
     this.ventaService.crearVenta(ventaPayload).subscribe({
       next: (res) => {
         this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
+        this.guardandoVenta = false;
         this.limpiarTodo();
         this.ngOnInit();
       },
-      complete: () => {
+      error: (error) => {
         this.guardandoVenta = false;
-      },
-      error: () => {
-        this.guardandoVenta = false;
+        this.mostrarNotificacion('Error al guardar: ' + (error.error?.message || error.message || 'Error desconocido'));
       },
     });
   }
