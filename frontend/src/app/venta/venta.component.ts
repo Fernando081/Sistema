@@ -334,14 +334,15 @@ export class VentaComponent implements OnInit {
     this.ventaService.crearVenta(ventaPayload).subscribe({
       next: (res) => {
         this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
-        this.guardandoVenta = false;
         this.limpiarTodo();
         this.ngOnInit();
       },
       error: (error) => {
-        this.guardandoVenta = false;
         this.mostrarNotificacion('Error al guardar: ' + (error.error?.message || error.message || 'Error desconocido'));
       },
+      complete: () => {
+        this.guardandoVenta = false;
+      }
     });
   }
 
