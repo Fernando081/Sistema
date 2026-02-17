@@ -27,7 +27,7 @@ import { ConceptoVenta, Venta } from './venta.interface';
 
 // RxJS
 import { Observable, of } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-venta',
@@ -99,32 +99,9 @@ export class VentaComponent implements OnInit {
     this.formasPago$ = this.catalogosService.getFormasPago();
     this.metodosPago$ = this.catalogosService.getMetodosPago();
 
-    // 2. Cargar Clientes (Mapeo COMPLETO para evitar error TS2352)
+    // 2. Cargar Clientes (Service now handles mapping)
     this.clienteService.getClientes().subscribe(data => {
-      this.listaClientes = data.map(c => ({
-        // Identificadores
-        idCliente: c['IdCliente'],
-        
-        // Datos Fiscales y Dirección
-        rfc: c['RFC'],
-        razonSocial: c['RazonSocial'],
-        pais: c['Pais'],
-        idEstado: c['IdEstado'],
-        idMunicipio: c['IdMunicipio'],
-        ciudad: c['Ciudad'],
-        colonia: c['Colonia'],
-        calle: c['Calle'],
-        codigoPostal: c['CodigoPostal'],
-        numeroExterior: c['NumeroExterior'],
-        numeroInterior: c['NumeroInterior'],
-        referencia: c['Referencia'],
-        
-        // Datos SAT por defecto
-        idMetodoDePago: c['IdMetodoDePago'],
-        idUsoCFDI: c['IdUsoCFDI'],
-        idFormaPago: c['IdFormaPago'],
-        idRegimenFiscal: c['IdRegimenFiscal']
-      })) as unknown as Cliente[];
+      this.listaClientes = data;
     });
 
     // 3. Cargar Productos (Mapeo COMPLETO)
@@ -354,19 +331,22 @@ export class VentaComponent implements OnInit {
     };
 
     this.guardandoVenta = true;
-    this.ventaService.crearVenta(ventaPayload).subscribe({
-      next: (res) => {
-        this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
-        this.limpiarTodo();
-        this.ngOnInit();
-      },
-      complete: () => {
-        this.guardandoVenta = false;
-      },
-      error: () => {
-        this.guardandoVenta = false;
-      },
-    });
+    this.ventaService.crearVenta(ventaPayload)
+      .pipe(
+        finalize(() => {
+          this.guardandoVenta = false;
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
+          this.limpiarTodo();
+          this.ngOnInit();
+        },
+        error: (error) => {
+          this.mostrarNotificacion('Error al guardar: ' + (error.error?.message || error.message || 'Error desconocido'));
+        }
+      });
   }
 
   // --- UTILIDADES ---
