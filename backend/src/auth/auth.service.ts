@@ -4,35 +4,29 @@ import { LoginResponse, JwtPayload } from './auth.types';
 
 @Injectable()
 export class AuthService {
-  private readonly jwtSecret: string;
-  private readonly authUser: string;
-  private readonly authPassword: string;
+  private static readonly DEFAULT_JWT_SECRET = 'dev-secret-change-me';
+  private static readonly DEFAULT_AUTH_USERNAME = 'admin';
+  private static readonly DEFAULT_AUTH_PASSWORD = 'admin123';
+  
+  private readonly jwtSecret = this.getEnvOrDefault('JWT_SECRET', AuthService.DEFAULT_JWT_SECRET);
+  private readonly authUser = this.getEnvOrDefault('AUTH_USERNAME', AuthService.DEFAULT_AUTH_USERNAME);
+  private readonly authPassword = this.getEnvOrDefault('AUTH_PASSWORD', AuthService.DEFAULT_AUTH_PASSWORD);
   private readonly expiresInSeconds = 60 * 60 * 8;
 
   constructor() {
-    const nodeEnv = process.env.NODE_ENV ?? 'development';
-
-    const jwtSecretFromEnv = process.env.JWT_SECRET;
-    if (!jwtSecretFromEnv) {
-      if (nodeEnv !== 'development' && nodeEnv !== 'test') {
-        throw new Error('JWT_SECRET environment variable must be set in non-development environments');
+    if (process.env.NODE_ENV === 'production') {
+      if (this.jwtSecret === AuthService.DEFAULT_JWT_SECRET) {
+        throw new Error(
+          'Invalid JWT configuration: JWT_SECRET must be set to a strong, non-default value in production.',
+        );
       }
-      this.jwtSecret = 'dev-secret-change-me';
-    } else {
-      this.jwtSecret = jwtSecretFromEnv;
+      if (this.authUser === AuthService.DEFAULT_AUTH_USERNAME || this.authPassword === AuthService.DEFAULT_AUTH_PASSWORD) {
+        throw new Error(
+          'Invalid authentication configuration: AUTH_USERNAME and AUTH_PASSWORD must be set to non-default values in production.',
+        );
+      }
     }
-
-    const authUserFromEnv = process.env.AUTH_USERNAME;
-    const authPasswordFromEnv = process.env.AUTH_PASSWORD;
-
-    if (!authUserFromEnv || !authPasswordFromEnv) {
-      throw new Error('AUTH_USERNAME and AUTH_PASSWORD environment variables must be set');
-    }
-
-    this.authUser = authUserFromEnv;
-    this.authPassword = authPasswordFromEnv;
   }
-
   login(username: string, password: string): LoginResponse {
     const validUser = this.safeCompare(username, this.authUser);
     const validPass = this.safeCompare(password, this.authPassword);
@@ -71,19 +65,23 @@ export class AuthService {
       throw new UnauthorizedException('Firma JWT inválida');
     }
 
-    try {
-      const payload = JSON.parse(Buffer.from(payloadPart, 'base64url').toString('utf-8')) as JwtPayload;
-      if (payload.exp < Math.floor(Date.now() / 1000)) {
-        throw new UnauthorizedException('Token expirado');
-      }
-
-      return payload;
-    } catch (error) {
-      if (error instanceof UnauthorizedException) {
-        throw error;
-      }
-      throw new UnauthorizedException('Token con formato inválido');
+    const payload = JSON.parse(Buffer.from(payloadPart, 'base64url').toString('utf-8')) as JwtPayload;
+    if (payload.exp < Math.floor(Date.now() / 1000)) {
+      throw new UnauthorizedException('Token expirado');
     }
+
+    return payload;
+  }
+
+
+  private getEnvOrDefault(key: string, fallback: string): string {
+    const value = process.env[key]?.trim();
+
+    if (!value) {
+      return fallback;
+    }
+
+    return value;
   }
 
   private sign(payload: JwtPayload): string {

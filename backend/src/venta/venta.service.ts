@@ -20,10 +20,6 @@ export class VentaService {
       [idFactura],
     ) as TicketQueryResult[];
 
-    if (!resultado || resultado.length === 0) {
-      throw new Error(`No se encontraron datos para la factura ${idFactura}`);
-    }
-
     return this.ticketService.crearPdfFactura(resultado[0].datos);
   }
 
@@ -73,9 +69,8 @@ export class VentaService {
       service: 'gmail',
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
     });
-    const emailFrom = process.env.EMAIL_FROM || process.env.EMAIL_USER;
     await transporter.sendMail({
-      from: `"Refacciones y Tractorepuestos" <${emailFrom}>`,
+      from: '"Refacciones y Tractorepuestos" <dusk081.eth@gmail.com>',
       to: datosEnvio.destinatario,
       subject: datosEnvio.asunto,
       text: datosEnvio.cuerpo_mensaje,

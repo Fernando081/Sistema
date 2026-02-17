@@ -27,7 +27,7 @@ import { ConceptoVenta, Venta } from './venta.interface';
 
 // RxJS
 import { Observable, of } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-venta',
@@ -99,7 +99,7 @@ export class VentaComponent implements OnInit {
     this.formasPago$ = this.catalogosService.getFormasPago();
     this.metodosPago$ = this.catalogosService.getMetodosPago();
 
-    // 2. Cargar Clientes
+    // 2. Cargar Clientes (Service now handles mapping)
     this.clienteService.getClientes().subscribe(data => {
       this.listaClientes = data;
     });
@@ -331,28 +331,22 @@ export class VentaComponent implements OnInit {
     };
 
     this.guardandoVenta = true;
-    this.ventaService.crearVenta(ventaPayload).subscribe({
-      next: (res) => {
-        this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
-        this.limpiarTodo();
-        this.ngOnInit();
-      },
-      complete: () => {
-        this.guardandoVenta = false;
-      },
-      error: (error) => {
-        this.guardandoVenta = false;
-        let mensaje = 'Ocurrió un error al guardar la venta.';
-        if (error?.status === 0) {
-          mensaje = 'No se pudo conectar con el servidor. Verifica tu conexión e inténtalo de nuevo.';
-        } else if (error?.error?.message) {
-          mensaje = error.error.message;
-        } else if (error?.message) {
-          mensaje = error.message;
+    this.ventaService.crearVenta(ventaPayload)
+      .pipe(
+        finalize(() => {
+          this.guardandoVenta = false;
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
+          this.limpiarTodo();
+          this.ngOnInit();
+        },
+        error: (error) => {
+          this.mostrarNotificacion('Error al guardar: ' + (error.error?.message || error.message || 'Error desconocido'));
         }
-        this.mostrarNotificacion(mensaje);
-      },
-    });
+      });
   }
 
   // --- UTILIDADES ---

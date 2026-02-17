@@ -60,6 +60,7 @@ export class CobranzaComponent implements OnInit {
 
   cargarClientes() {
     this.clienteService.getClientes().subscribe(data => {
+      // Service now handles mapping
       this.listaClientes = data;
       
       this.clientesFiltrados$ = this.clienteControl.valueChanges.pipe(

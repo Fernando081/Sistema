@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Cliente, CreateClienteDto, UpdateClienteDto } from '../cliente/cliente.interface';
 
-// Explicit type matching the PascalCase keys returned by the API
+// Backend returns PascalCase fields from PostgreSQL
 export interface ClienteApiResponse {
   IdCliente: number;
   RFC: string;
@@ -26,7 +26,7 @@ export interface ClienteApiResponse {
   IdUsoCFDI: number | null;
   IdFormaPago: number | null;
   IdRegimenFiscal: number;
-  email?: string | null;
+  email: string | null; // lowercase per backend entity
 }
 
 @Injectable({
@@ -38,47 +38,52 @@ export class ClienteService {
 
   constructor(private http: HttpClient) { }
 
-  // Fetch clientes and map from PascalCase API response to camelCase Cliente interface
-  getClientes(): Observable<Cliente[]> {
-    return this.http.get<ClienteApiResponse[]>(this.apiUrl).pipe(
-      map(response => response.map(this.mapApiResponseToCliente))
-    );
-  }
-
-  // Map PascalCase API response to camelCase Cliente
-  private mapApiResponseToCliente(apiCliente: ClienteApiResponse): Cliente {
+  // Transform API response (PascalCase) to domain model (camelCase)
+  private mapApiResponseToCliente(apiResponse: ClienteApiResponse): Cliente {
     return {
-      idCliente: apiCliente.IdCliente,
-      rfc: apiCliente.RFC,
-      razonSocial: apiCliente.RazonSocial,
-      pais: apiCliente.Pais,
-      idEstado: apiCliente.IdEstado ?? 0,
-      idMunicipio: apiCliente.IdMunicipio ?? 0,
-      ciudad: apiCliente.Ciudad ?? '',
-      colonia: apiCliente.Colonia ?? '',
-      calle: apiCliente.Calle ?? '',
-      codigoPostal: apiCliente.CodigoPostal,
-      numeroExterior: apiCliente.NumeroExterior ?? '',
-      numeroInterior: apiCliente.NumeroInterior ?? '',
-      referencia: apiCliente.Referencia ?? '',
-      idMetodoDePago: apiCliente.IdMetodoDePago ?? 0,
-      idUsoCFDI: apiCliente.IdUsoCFDI ?? 0,
-      idFormaPago: apiCliente.IdFormaPago ?? 0,
-      idRegimenFiscal: apiCliente.IdRegimenFiscal,
-      email: apiCliente.email
+      idCliente: apiResponse.IdCliente,
+      rfc: apiResponse.RFC,
+      razonSocial: apiResponse.RazonSocial,
+      pais: apiResponse.Pais,
+      idEstado: apiResponse.IdEstado ?? 0,
+      idMunicipio: apiResponse.IdMunicipio ?? 0,
+      ciudad: apiResponse.Ciudad ?? '',
+      colonia: apiResponse.Colonia ?? '',
+      calle: apiResponse.Calle ?? '',
+      codigoPostal: apiResponse.CodigoPostal,
+      numeroExterior: apiResponse.NumeroExterior ?? '',
+      numeroInterior: apiResponse.NumeroInterior ?? '',
+      referencia: apiResponse.Referencia ?? '',
+      idMetodoDePago: apiResponse.IdMetodoDePago ?? 0,
+      idUsoCFDI: apiResponse.IdUsoCFDI ?? 0,
+      idFormaPago: apiResponse.IdFormaPago ?? 0,
+      idRegimenFiscal: apiResponse.IdRegimenFiscal,
+      email: apiResponse.email,
     };
   }
 
+  getClientes(): Observable<Cliente[]> {
+    return this.http.get<ClienteApiResponse[]>(this.apiUrl).pipe(
+      map(responses => responses.map(r => this.mapApiResponseToCliente(r)))
+    );
+  }
+
   getClienteById(id: number): Observable<Cliente> {
-    return this.http.get<Cliente>(`${this.apiUrl}/${id}`);
+    return this.http.get<ClienteApiResponse>(`${this.apiUrl}/${id}`).pipe(
+      map(r => this.mapApiResponseToCliente(r))
+    );
   }
 
   createCliente(cliente: CreateClienteDto): Observable<Cliente> {
-    return this.http.post<Cliente>(this.apiUrl, cliente);
+    return this.http.post<ClienteApiResponse>(this.apiUrl, cliente).pipe(
+      map(r => this.mapApiResponseToCliente(r))
+    );
   }
 
   updateCliente(id: number, cliente: UpdateClienteDto): Observable<Cliente> {
-    return this.http.put<Cliente>(`${this.apiUrl}/${id}`, cliente);
+    return this.http.put<ClienteApiResponse>(`${this.apiUrl}/${id}`, cliente).pipe(
+      map(r => this.mapApiResponseToCliente(r))
+    );
   }
 
   deleteCliente(id: number): Observable<void> {
