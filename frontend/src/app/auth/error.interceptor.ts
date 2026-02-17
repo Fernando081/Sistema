@@ -12,7 +12,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
+      const isLoginRequest = req.url.includes('/login');
+
+      if (error.status === 401 && !isLoginRequest) {
         authService.logout();
         router.navigate(['/login']);
         snackBar.open('Tu sesión expiró. Inicia sesión nuevamente.', 'Cerrar', { duration: 4000 });
