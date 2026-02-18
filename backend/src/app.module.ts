@@ -39,6 +39,7 @@ import { PagoModule } from './pago/pago.module';
 import { PagoProveedorModule } from './pago-proveedor/pago-proveedor.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { AuthUser } from './auth/auth-user.entity';
 
 @Module({
   imports: [
@@ -56,7 +57,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
       entities: [
         Cliente, Proveedor, Producto, Categoria,
         RegimenFiscal, FormaPago, MetodoPago, UsoCFDI, Estado, Municipio,
-        ClaveProdServ, ClaveUnidad, Unidad, ObjetoImpuesto, Pago
+        ClaveProdServ, ClaveUnidad, Unidad, ObjetoImpuesto, Pago, AuthUser
       ],
     }),
     ClienteModule,

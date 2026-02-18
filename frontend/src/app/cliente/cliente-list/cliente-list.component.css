@@ -12,3 +12,23 @@
 .cliente-card-header button {
   margin-left: 1rem; /* Espacio a la izquierda del botón */
 }
+
+.mobile-cards {
+  display: none;
+  gap: 0.75rem;
+}
+
+.mobile-client-card {
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .overflow-auto {
+    display: none;
+  }
+
+  .mobile-cards {
+    display: block;
+  }
+}

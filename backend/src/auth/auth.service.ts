@@ -1,44 +1,74 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { createHmac, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
+import { Repository } from 'typeorm';
 import { LoginResponse, JwtPayload } from './auth.types';
+import { AuthUser } from './auth-user.entity';
 
 @Injectable()
 export class AuthService {
-  private static readonly DEFAULT_JWT_SECRET = 'dev-secret-change-me';
-  private static readonly DEFAULT_AUTH_USERNAME = 'admin';
-  private static readonly DEFAULT_AUTH_PASSWORD = 'admin123';
-  
-  private readonly jwtSecret = this.getEnvOrDefault('JWT_SECRET', AuthService.DEFAULT_JWT_SECRET);
-  private readonly authUser = this.getEnvOrDefault('AUTH_USERNAME', AuthService.DEFAULT_AUTH_USERNAME);
-  private readonly authPassword = this.getEnvOrDefault('AUTH_PASSWORD', AuthService.DEFAULT_AUTH_PASSWORD);
+  private readonly logger = new Logger(AuthService.name);
+  private readonly jwtSecret = this.getEnvOrDefault('JWT_SECRET', 'dev-secret-change-me');
+  private readonly authUser = this.getEnvOrDefault('AUTH_USERNAME', 'admin');
+  private readonly authPassword = this.getEnvOrDefault('AUTH_PASSWORD', 'admin123');
   private readonly expiresInSeconds = 60 * 60 * 8;
 
-  constructor() {
-    if (process.env.NODE_ENV === 'production') {
-      if (this.jwtSecret === AuthService.DEFAULT_JWT_SECRET) {
+  constructor(
+    @InjectRepository(AuthUser)
+    private readonly authUserRepository: Repository<AuthUser>,
+  ) {
+    this.validateProductionSecurity();
+  }
+
+  private validateProductionSecurity(): void {
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    if (isProduction) {
+      const defaultJwtSecret = 'dev-secret-change-me';
+      const defaultUsername = 'admin';
+      const defaultPassword = 'admin123';
+
+      if (this.jwtSecret === defaultJwtSecret) {
         throw new Error(
-          'Invalid JWT configuration: JWT_SECRET must be set to a strong, non-default value in production.',
+          'SECURITY ERROR: JWT_SECRET must be changed from default value in production. ' +
+          'Set a strong JWT_SECRET environment variable.'
         );
       }
-      if (this.authUser === AuthService.DEFAULT_AUTH_USERNAME || this.authPassword === AuthService.DEFAULT_AUTH_PASSWORD) {
+
+      if (this.authUser === defaultUsername) {
         throw new Error(
-          'Invalid authentication configuration: AUTH_USERNAME and AUTH_PASSWORD must be set to non-default values in production.',
+          'SECURITY ERROR: Default username (admin) must be changed in production. ' +
+          'Set AUTH_USERNAME environment variable to a secure value.'
         );
       }
+
+      if (this.authPassword === defaultPassword) {
+        throw new Error(
+          'SECURITY ERROR: Default password (admin123) must be changed in production. ' +
+          'Set AUTH_PASSWORD environment variable to a secure value.'
+        );
+      }
+
+      this.logger.log('Production security validation passed');
     }
   }
-  login(username: string, password: string): LoginResponse {
-    const validUser = this.safeCompare(username, this.authUser);
-    const validPass = this.safeCompare(password, this.authPassword);
 
-    if (!validUser || !validPass) {
-      throw new UnauthorizedException('Credenciales inválidas');
+  async login(username: string, password: string): Promise<LoginResponse> {
+    const dbUser = await this.validateFromDatabase(username, password);
+
+    if (!dbUser) {
+      const validUser = this.safeCompare(username, this.authUser);
+      const validPass = this.safeCompare(password, this.authPassword);
+
+      if (!validUser || !validPass) {
+        throw new UnauthorizedException('Credenciales inválidas');
+      }
     }
 
     const issuedAt = Math.floor(Date.now() / 1000);
     const payload: JwtPayload = {
       sub: username,
-      role: 'admin',
+      role: dbUser?.role || 'admin',
       iat: issuedAt,
       exp: issuedAt + this.expiresInSeconds,
     };
@@ -73,15 +103,57 @@ export class AuthService {
     return payload;
   }
 
+  private async validateFromDatabase(username: string, password: string): Promise<AuthUser | null> {
+    try {
+      const user = await this.authUserRepository.findOne({ where: { username, isActive: true } });
+      if (!user) {
+        return null;
+      }
+
+      return this.verifyPassword(password, user.passwordHash) ? user : null;
+    } catch {
+      this.logger.error('No se pudo validar auth contra BD. Se usará fallback por env.');
+      return null;
+    }
+  }
+
+  private verifyPassword(password: string, storedHash: string | null | undefined): boolean {
+    // Validate that storedHash matches expected format (salt:hash) before splitting
+    if (!storedHash || typeof storedHash !== 'string') {
+      this.logger.error('Invalid password hash: storedHash is null, undefined, empty, or not a string');
+      return false;
+    }
+
+    if (!storedHash.includes(':')) {
+      this.logger.error('Invalid password hash format: expected format with colon separator (salt:hash)');
+      return false;
+    }
+
+    const parts = storedHash.split(':');
+    if (parts.length !== 2) {
+      this.logger.error(`Invalid password hash format: expected exactly one colon separator but found ${parts.length - 1}`);
+      return false;
+    }
+
+    const [salt, hash] = parts;
+    if (!salt || !hash) {
+      this.logger.error('Invalid password hash format: salt or hash is empty');
+      return false;
+    }
+
+    const passwordHash = scryptSync(password, salt, 64).toString('hex');
+    return this.safeCompare(passwordHash, hash);
+  }
+
+  static hashPassword(password: string): string {
+    const salt = randomBytes(16).toString('hex');
+    const hash = scryptSync(password, salt, 64).toString('hex');
+    return `${salt}:${hash}`;
+  }
 
   private getEnvOrDefault(key: string, fallback: string): string {
     const value = process.env[key]?.trim();
-
-    if (!value) {
-      return fallback;
-    }
-
-    return value;
+    return value || fallback;
   }
 
   private sign(payload: JwtPayload): string {
@@ -91,7 +163,6 @@ export class AuthService {
     const signature = this.base64Url(createHmac('sha256', this.jwtSecret).update(data).digest('base64'));
     return `${data}.${signature}`;
   }
-
 
   private safeCompare(left: string, right: string): boolean {
     const leftBuffer = Buffer.from(left);

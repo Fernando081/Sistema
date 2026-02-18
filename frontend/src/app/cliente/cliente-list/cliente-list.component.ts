@@ -57,7 +57,6 @@ export class ClienteListComponent implements OnInit {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (data) => {
-          // Service now handles PascalCase to camelCase mapping
           this.dataSource.data = data;
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;

@@ -47,9 +47,18 @@ Implementado:
 - Backend: pruebas unitarias para `AuthService`.
 - Frontend: prueba de `AuthService` validando persistencia de token.
 
-## Prioridad siguiente recomendada
+## Prioridad siguiente recomendada (actualización)
 
-1. Autenticación con usuarios/roles persistidos en BD.
-2. Ampliar pruebas en servicios de negocio (venta/compra/pagos).
-3. Tablas responsive en móvil con layout alterno tipo tarjetas.
-4. Normalización completa de contratos API (`camelCase` consistente).
+1. ✅ **Autenticación con usuarios/roles persistidos en BD (implementación base)**
+   - Se agregó entidad `AuthUser` (`auth_user`) y autenticación con lookup en repositorio TypeORM.
+   - Si la tabla no está disponible, existe fallback controlado a credenciales de entorno para no romper dev.
+
+2. ✅ **Ampliar pruebas en servicios de negocio**
+   - Se añadieron pruebas unitarias para `CompraService`, `PagoService` y `PagoProveedorService`.
+
+3. ✅ **Tablas responsive en móvil con layout tipo tarjetas**
+   - `ClienteListComponent` ahora muestra tarjetas en pantallas pequeñas y mantiene tabla en desktop.
+
+4. ✅ **Normalización de contratos API hacia camelCase (cliente)**
+   - `ClienteService` ahora transforma respuestas PascalCase de backend a `Cliente` camelCase en un solo lugar.
+   - Componentes de cliente/cotización/cobranza/venta reutilizan directamente el modelo normalizado.

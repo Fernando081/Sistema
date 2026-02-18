@@ -6,12 +6,12 @@
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
       <mat-form-field appearance="outline">
         <mat-label>Usuario</mat-label>
-        <input matInput formControlName="username" autocomplete="username" aria-label="Usuario" required />
+        <input matInput formControlName="username" />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Contraseña</mat-label>
-        <input matInput type="password" formControlName="password" autocomplete="current-password" aria-label="Contraseña" required />
+        <input matInput type="password" formControlName="password" required />
       </mat-form-field>
 
       <button mat-flat-button color="primary" type="submit" [disabled]="loading || form.invalid">

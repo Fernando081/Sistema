@@ -331,22 +331,20 @@ export class VentaComponent implements OnInit {
     };
 
     this.guardandoVenta = true;
-    this.ventaService.crearVenta(ventaPayload)
-      .pipe(
-        finalize(() => {
-          this.guardandoVenta = false;
-        })
-      )
-      .subscribe({
-        next: (res) => {
-          this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
-          this.limpiarTodo();
-          this.ngOnInit();
-        },
-        error: (error) => {
-          this.mostrarNotificacion('Error al guardar: ' + (error.error?.message || error.message || 'Error desconocido'));
-        }
-      });
+    this.ventaService.crearVenta(ventaPayload).pipe(
+      finalize(() => {
+        this.guardandoVenta = false;
+      })
+    ).subscribe({
+      next: (res) => {
+        this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
+        this.limpiarTodo();
+        this.ngOnInit();
+      },
+      error: () => {
+        // Error handling is done by the interceptor
+      },
+    });
   }
 
   // --- UTILIDADES ---
