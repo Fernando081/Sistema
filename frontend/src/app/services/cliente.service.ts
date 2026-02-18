@@ -25,7 +25,7 @@ interface ClienteApiResponse {
   IdUsoCFDI?: number;
   IdFormaPago?: number;
   IdRegimenFiscal?: number;
-  Email?: string | null;
+  email?: string | null;
 }
 
 @Injectable({
@@ -84,7 +84,7 @@ export class ClienteService {
       idUsoCFDI: Number(apiCliente.IdUsoCFDI || 0),
       idFormaPago: Number(apiCliente.IdFormaPago || 0),
       idRegimenFiscal: Number(apiCliente.IdRegimenFiscal || 0),
-      email: apiCliente.Email ?? null,
+      email: apiCliente.email ?? null,
     };
   }
 }
