@@ -112,7 +112,7 @@ export class AuthService {
 
       return this.verifyPassword(password, user.passwordHash) ? user : null;
     } catch {
-      this.logger.warn('No se pudo validar auth contra BD. Se usará fallback por env.');
+      this.logger.error('No se pudo validar auth contra BD. Se usará fallback por env.');
       return null;
     }
   }
