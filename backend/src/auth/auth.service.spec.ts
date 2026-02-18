@@ -59,7 +59,7 @@ describe('AuthService', () => {
     await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(UnauthorizedException);
   });
 
-  it('rechaza hash con hash vacío', async () => {
+  it('rechaza hash con valor hash vacío', async () => {
     const invalidHash = 'onlysalt:';
     repoMock.findOne = jest.fn().mockResolvedValue({ username: 'fer', role: 'admin', passwordHash: invalidHash, isActive: true });
 

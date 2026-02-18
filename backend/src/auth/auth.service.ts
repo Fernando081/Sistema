@@ -125,7 +125,7 @@ export class AuthService {
     }
 
     if (!storedHash.includes(':')) {
-      this.logger.error(`Invalid password hash format: expected 'salt:hash' but got '${storedHash.substring(0, 20)}...'`);
+      this.logger.error('Invalid password hash format: expected format with colon separator (salt:hash)');
       return false;
     }
 
