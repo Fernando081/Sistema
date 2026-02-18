@@ -1,6 +1,16 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { createHmac, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
+import {
+  createHmac,
+  randomBytes,
+  scryptSync,
+  timingSafeEqual,
+} from 'node:crypto';
 import { Repository } from 'typeorm';
 import { LoginResponse, JwtPayload } from './auth.types';
 import { AuthUser } from './auth-user.entity';
@@ -8,9 +18,15 @@ import { AuthUser } from './auth-user.entity';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
-  private readonly jwtSecret = this.getEnvOrDefault('JWT_SECRET', 'dev-secret-change-me');
+  private readonly jwtSecret = this.getEnvOrDefault(
+    'JWT_SECRET',
+    'dev-secret-change-me',
+  );
   private readonly authUser = this.getEnvOrDefault('AUTH_USERNAME', 'admin');
-  private readonly authPassword = this.getEnvOrDefault('AUTH_PASSWORD', 'admin123');
+  private readonly authPassword = this.getEnvOrDefault(
+    'AUTH_PASSWORD',
+    'admin123',
+  );
   private readonly expiresInSeconds = 60 * 60 * 8;
 
   constructor(
@@ -22,7 +38,7 @@ export class AuthService {
 
   private validateProductionSecurity(): void {
     const isProduction = process.env.NODE_ENV === 'production';
-    
+
     if (isProduction) {
       const defaultJwtSecret = 'dev-secret-change-me';
       const defaultUsername = 'admin';
@@ -31,26 +47,55 @@ export class AuthService {
       if (this.jwtSecret === defaultJwtSecret) {
         throw new Error(
           'SECURITY ERROR: JWT_SECRET must be changed from default value in production. ' +
-          'Set a strong JWT_SECRET environment variable.'
+            'Set a strong JWT_SECRET environment variable.',
         );
       }
 
       if (this.authUser === defaultUsername) {
         throw new Error(
           'SECURITY ERROR: Default username (admin) must be changed in production. ' +
-          'Set AUTH_USERNAME environment variable to a secure value.'
+            'Set AUTH_USERNAME environment variable to a secure value.',
         );
       }
 
       if (this.authPassword === defaultPassword) {
         throw new Error(
           'SECURITY ERROR: Default password (admin123) must be changed in production. ' +
-          'Set AUTH_PASSWORD environment variable to a secure value.'
+            'Set AUTH_PASSWORD environment variable to a secure value.',
         );
       }
 
       this.logger.log('Production security validation passed');
     }
+  }
+
+  async register(
+    username: string,
+    password: string,
+    role = 'admin',
+  ): Promise<{ idUser: number; username: string; role: string }> {
+    const existingUser = await this.authUserRepository.findOne({
+      where: { username },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('El usuario ya existe');
+    }
+
+    const newUser = this.authUserRepository.create({
+      username,
+      passwordHash: AuthService.hashPassword(password),
+      role,
+      isActive: true,
+    });
+
+    const savedUser = await this.authUserRepository.save(newUser);
+
+    return {
+      idUser: savedUser.idUser,
+      username: savedUser.username,
+      role: savedUser.role,
+    };
   }
 
   async login(username: string, password: string): Promise<LoginResponse> {
@@ -95,7 +140,9 @@ export class AuthService {
       throw new UnauthorizedException('Firma JWT inválida');
     }
 
-    const payload = JSON.parse(Buffer.from(payloadPart, 'base64url').toString('utf-8')) as JwtPayload;
+    const payload = JSON.parse(
+      Buffer.from(payloadPart, 'base64url').toString('utf-8'),
+    ) as JwtPayload;
     if (payload.exp < Math.floor(Date.now() / 1000)) {
       throw new UnauthorizedException('Token expirado');
     }
@@ -103,35 +150,51 @@ export class AuthService {
     return payload;
   }
 
-  private async validateFromDatabase(username: string, password: string): Promise<AuthUser | null> {
+  private async validateFromDatabase(
+    username: string,
+    password: string,
+  ): Promise<AuthUser | null> {
     try {
-      const user = await this.authUserRepository.findOne({ where: { username, isActive: true } });
+      const user = await this.authUserRepository.findOne({
+        where: { username, isActive: true },
+      });
       if (!user) {
         return null;
       }
 
       return this.verifyPassword(password, user.passwordHash) ? user : null;
     } catch {
-      this.logger.error('No se pudo validar auth contra BD. Se usará fallback por env.');
+      this.logger.error(
+        'No se pudo validar auth contra BD. Se usará fallback por env.',
+      );
       return null;
     }
   }
 
-  private verifyPassword(password: string, storedHash: string | null | undefined): boolean {
+  private verifyPassword(
+    password: string,
+    storedHash: string | null | undefined,
+  ): boolean {
     // Validate that storedHash matches expected format (salt:hash) before splitting
     if (!storedHash || typeof storedHash !== 'string') {
-      this.logger.error('Invalid password hash: storedHash is null, undefined, empty, or not a string');
+      this.logger.error(
+        'Invalid password hash: storedHash is null, undefined, empty, or not a string',
+      );
       return false;
     }
 
     if (!storedHash.includes(':')) {
-      this.logger.error('Invalid password hash format: expected format with colon separator (salt:hash)');
+      this.logger.error(
+        'Invalid password hash format: expected format with colon separator (salt:hash)',
+      );
       return false;
     }
 
     const parts = storedHash.split(':');
     if (parts.length !== 2) {
-      this.logger.error(`Invalid password hash format: expected exactly one colon separator but found ${parts.length - 1}`);
+      this.logger.error(
+        `Invalid password hash format: expected exactly one colon separator but found ${parts.length - 1}`,
+      );
       return false;
     }
 
@@ -157,10 +220,18 @@ export class AuthService {
   }
 
   private sign(payload: JwtPayload): string {
-    const header = this.base64Url(Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64'));
-    const body = this.base64Url(Buffer.from(JSON.stringify(payload)).toString('base64'));
+    const header = this.base64Url(
+      Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString(
+        'base64',
+      ),
+    );
+    const body = this.base64Url(
+      Buffer.from(JSON.stringify(payload)).toString('base64'),
+    );
     const data = `${header}.${body}`;
-    const signature = this.base64Url(createHmac('sha256', this.jwtSecret).update(data).digest('base64'));
+    const signature = this.base64Url(
+      createHmac('sha256', this.jwtSecret).update(data).digest('base64'),
+    );
     return `${data}.${signature}`;
   }
 

@@ -38,13 +38,40 @@ The `auth_user` table stores authentication credentials for system users:
 - `created_at` - Timestamp when created
 - `updated_at` - Timestamp when last updated (auto-updated by trigger)
 
-### Creating Users
+### Creating Users from NestJS (recommended)
 
-To create a user, you need to hash the password using the `AuthService.hashPassword()` method in the backend, or use this SQL function approach:
+Use the temporary/permanent endpoint `POST /api/v1/auth/register` so NestJS uses `AuthService.hashPassword()` and stores the user safely.
+
+**Example request (Postman):**
+
+```http
+POST http://localhost:3000/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "username": "admin_principal",
+  "password": "SuperSeguro123",
+  "role": "admin"
+}
+```
+
+**Response example:**
+
+```json
+{
+  "idUser": 1,
+  "username": "admin_principal",
+  "role": "admin"
+}
+```
+
+Allowed roles currently are `admin` and `user`. If no `role` is sent, `admin` is used by default.
+
+### Creating Users manually with SQL (not recommended)
+
+If you choose SQL directly, **first generate** `password_hash` using backend code (`AuthService.hashPassword()`), then insert:
 
 ```sql
--- Note: For production use, generate the hash using the AuthService.hashPassword() method
--- This is just an example structure
 INSERT INTO auth_user (username, password_hash, role, is_active)
 VALUES ('your_username', 'salt:hash_from_backend', 'admin', true);
 ```

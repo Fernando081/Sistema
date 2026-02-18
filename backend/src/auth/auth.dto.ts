@@ -1,4 +1,4 @@
-import { IsString, MinLength } from 'class-validator';
+import { IsIn, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class LoginDto {
   @IsString()
@@ -7,4 +7,18 @@ export class LoginDto {
   @IsString()
   @MinLength(6)
   password!: string;
+}
+
+export class RegisterDto {
+  @IsString()
+  username!: string;
+
+  @IsString()
+  @MinLength(6)
+  password!: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['admin', 'user'])
+  role?: string;
 }
