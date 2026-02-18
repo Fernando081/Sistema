@@ -74,6 +74,31 @@ describe('AuthService', () => {
     });
   });
 
+  it('usa rol por defecto cuando no se proporciona', async () => {
+    const result = await service.register('nuevo-por-defecto', 'password456');
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(repoMock.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        username: 'nuevo-por-defecto',
+        role: 'admin',
+        isActive: true,
+      }),
+    );
+
+    const createCalls = (repoMock.create as jest.Mock).mock.calls as Array<
+      [Partial<AuthUser>]
+    >;
+    const createdUser = createCalls[createCalls.length - 1]?.[0];
+
+    expect(createdUser?.passwordHash).toContain(':');
+    expect(createdUser?.passwordHash).not.toContain('password456');
+    expect(result).toEqual({
+      idUser: 1,
+      username: 'nuevo-por-defecto',
+      role: 'admin',
+    });
+  });
   it('impide registrar usuario duplicado', async () => {
     repoMock.findOne = jest
       .fn()
