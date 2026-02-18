@@ -1,5 +1,14 @@
 // backend/src/cliente/cliente.dto.ts
-import { IsString, IsNotEmpty, MaxLength, IsOptional, IsInt, MinLength, IsPostalCode, IsEmail } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  MaxLength,
+  IsOptional,
+  IsInt,
+  MinLength,
+  IsPostalCode,
+  IsEmail,
+} from 'class-validator';
 
 // DTO para Crear un Cliente (Validación)
 export class CreateClienteDto {
@@ -31,7 +40,7 @@ export class CreateClienteDto {
   @IsOptional()
   @MaxLength(50)
   ciudad: string;
-  
+
   @IsString()
   @IsOptional()
   @MaxLength(100)

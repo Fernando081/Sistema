@@ -11,7 +11,7 @@ export class CompraController {
   create(@Body() createCompraDto: CreateCompraDto) {
     return this.compraService.create(createCompraDto);
   }
-  
+
   @Get()
   findAll() {
     return this.compraService.findAll();

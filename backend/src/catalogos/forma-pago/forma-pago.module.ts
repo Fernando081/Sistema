@@ -8,6 +8,6 @@ import { FormaPagoController } from './forma-pago.controller';
   imports: [TypeOrmModule.forFeature([FormaPago])],
   providers: [FormaPagoService],
   controllers: [FormaPagoController],
-  exports: [FormaPagoService] // Exportamos por si acaso
+  exports: [FormaPagoService], // Exportamos por si acaso
 })
 export class FormaPagoModule {}

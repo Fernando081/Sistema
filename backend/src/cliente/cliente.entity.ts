@@ -35,10 +35,20 @@ export class Cliente {
   @Column({ type: 'varchar', length: 5, name: 'CodigoPostal' })
   codigoPostal: string;
 
-  @Column({ type: 'varchar', length: 20, name: 'NumeroExterior', nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 20,
+    name: 'NumeroExterior',
+    nullable: true,
+  })
   numeroExterior: string;
 
-  @Column({ type: 'varchar', length: 20, name: 'NumeroInterior', nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 20,
+    name: 'NumeroInterior',
+    nullable: true,
+  })
   numeroInterior: string;
 
   @Column({ type: 'varchar', length: 100, name: 'Referencia', nullable: true })

@@ -6,6 +6,9 @@ import { DataSource } from 'typeorm';
 export class MunicipioService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
   async findByEstado(claveEstado: string): Promise<any[]> {
-    return this.dataSource.query('SELECT * FROM fn_get_municipios_por_estado($1)', [claveEstado]);
+    return this.dataSource.query(
+      'SELECT * FROM fn_get_municipios_por_estado($1)',
+      [claveEstado],
+    );
   }
 }

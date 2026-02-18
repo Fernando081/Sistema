@@ -6,7 +6,13 @@ export class Producto {
   @PrimaryGeneratedColumn('identity', { name: 'IdProducto' })
   idProducto: number;
 
-  @Column({ type: 'varchar', length: 30, name: 'Codigo', unique: true, nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 30,
+    name: 'Codigo',
+    unique: true,
+    nullable: true,
+  })
   @Index()
   codigo: string;
 
@@ -42,7 +48,13 @@ export class Producto {
   @Column({ name: 'ObjetoImpuesto', default: '02', length: 2 })
   objetoImpuestoSat: string;
 
-  @Column({ name: 'TasaIVA', type: 'numeric', precision: 18, scale: 6, default: 0.16 })
+  @Column({
+    name: 'TasaIVA',
+    type: 'numeric',
+    precision: 18,
+    scale: 6,
+    default: 0.16,
+  })
   tasaIva: number;
 
   @Column({ name: 'AplicaRetencionISR', type: 'boolean', default: false })
@@ -57,5 +69,5 @@ export class Producto {
   equivalentesIds?: number[];
 
   // Join virtual
-  categoriaNombre?: string; 
+  categoriaNombre?: string;
 }

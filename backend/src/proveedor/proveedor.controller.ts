@@ -1,6 +1,15 @@
 // backend/src/proveedor/proveedor.controller.ts (REEMPLAZAR)
 
-import { Controller, Get, Post, Body, Param, ParseIntPipe, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ParseIntPipe,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { ProveedorService } from './proveedor.service';
 import { CreateProveedorDto, UpdateProveedorDto } from './proveedor.dto';
 
@@ -24,7 +33,10 @@ export class ProveedorController {
   }
 
   @Put(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateProveedorDto: UpdateProveedorDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProveedorDto: UpdateProveedorDto,
+  ) {
     return this.proveedorService.update(id, updateProveedorDto);
   }
 

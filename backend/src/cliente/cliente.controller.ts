@@ -1,6 +1,15 @@
 // backend/src/cliente/cliente.controller.ts
 
-import { Controller, Get, Post, Body, Param, ParseIntPipe, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ParseIntPipe,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { ClienteService } from './cliente.service';
 import { CreateClienteDto, UpdateClienteDto } from './cliente.dto'; // Importamos los DTOs
 
@@ -26,7 +35,10 @@ export class ClienteController {
 
   // ¡CAMBIO! El parámetro ahora es 'id' (numérico)
   @Put(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateClienteDto: UpdateClienteDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateClienteDto: UpdateClienteDto,
+  ) {
     return this.clienteService.update(id, updateClienteDto);
   }
 

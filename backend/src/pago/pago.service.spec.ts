@@ -26,7 +26,11 @@ describe('PagoService', () => {
 
     const service = new PagoService(dataSourceMock);
     await expect(
-      service.registrarPago({ idFactura: 1, monto: 1, formaPago: 'Efectivo' } as any),
+      service.registrarPago({
+        idFactura: 1,
+        monto: 1,
+        formaPago: 'Efectivo',
+      } as any),
     ).rejects.toThrow(BadRequestException);
   });
 });

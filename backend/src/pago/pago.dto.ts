@@ -1,5 +1,11 @@
 // backend/src/pago/pago.dto.ts
-import { IsNumber, IsString, IsOptional, IsNotEmpty, Min } from 'class-validator';
+import {
+  IsNumber,
+  IsString,
+  IsOptional,
+  IsNotEmpty,
+  Min,
+} from 'class-validator';
 
 export class RegistrarPagoDto {
   @IsNumber()

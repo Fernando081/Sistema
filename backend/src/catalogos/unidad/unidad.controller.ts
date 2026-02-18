@@ -5,7 +5,9 @@ import { UnidadService } from './unidad.service';
 @Controller('catalogos/unidad')
 export class UnidadController {
   constructor(private readonly service: UnidadService) {}
-  
+
   @Get()
-  findAll() { return this.service.findAll(); }
+  findAll() {
+    return this.service.findAll();
+  }
 }

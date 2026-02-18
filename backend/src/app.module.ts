@@ -1,4 +1,4 @@
-// backend/src/app.module.ts 
+// backend/src/app.module.ts
 
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
@@ -51,13 +51,26 @@ import { AuthUser } from './auth/auth-user.entity';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      autoLoadEntities: true, 
-      synchronize: false, 
+      autoLoadEntities: true,
+      synchronize: false,
       ssl: { rejectUnauthorized: false },
       entities: [
-        Cliente, Proveedor, Producto, Categoria,
-        RegimenFiscal, FormaPago, MetodoPago, UsoCFDI, Estado, Municipio,
-        ClaveProdServ, ClaveUnidad, Unidad, ObjetoImpuesto, Pago, AuthUser
+        Cliente,
+        Proveedor,
+        Producto,
+        Categoria,
+        RegimenFiscal,
+        FormaPago,
+        MetodoPago,
+        UsoCFDI,
+        Estado,
+        Municipio,
+        ClaveProdServ,
+        ClaveUnidad,
+        Unidad,
+        ObjetoImpuesto,
+        Pago,
+        AuthUser,
       ],
     }),
     ClienteModule,

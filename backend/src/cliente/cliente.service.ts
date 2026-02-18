@@ -21,7 +21,10 @@ export class ClienteService {
   }
 
   async findOne(idCliente: number): Promise<Cliente> {
-    const result = await this.dataSource.query('SELECT * FROM fn_get_cliente_by_id($1)', [idCliente]);
+    const result = await this.dataSource.query(
+      'SELECT * FROM fn_get_cliente_by_id($1)',
+      [idCliente],
+    );
     if (!result || result.length === 0) {
       throw new NotFoundException(`Cliente con ID ${idCliente} no encontrado.`);
     }
@@ -49,13 +52,16 @@ export class ClienteService {
         createClienteDto.idUsoCFDI,
         createClienteDto.idFormaPago,
         createClienteDto.idRegimenFiscal,
-        createClienteDto.email || null
-      ]
+        createClienteDto.email || null,
+      ],
     );
     return result[0];
   }
 
-  async update(idCliente: number, updateClienteDto: UpdateClienteDto): Promise<Cliente> {
+  async update(
+    idCliente: number,
+    updateClienteDto: UpdateClienteDto,
+  ): Promise<Cliente> {
     // ¡CAMBIO! Llama a la función de PostgreSQL
     const clienteActual = await this.findOne(idCliente);
     if (!clienteActual) {
@@ -83,15 +89,18 @@ export class ClienteService {
         datosAActualizar.idUsoCFDI,
         datosAActualizar.idFormaPago,
         datosAActualizar.idRegimenFiscal,
-        datosAActualizar.email || null
-      ]
+        datosAActualizar.email || null,
+      ],
     );
     return result[0];
   }
 
   async remove(idCliente: number): Promise<void> {
     // ¡CAMBIO! Llama a la función de PostgreSQL
-    const result = await this.dataSource.query('SELECT * FROM fn_delete_cliente($1)', [idCliente]);
+    const result = await this.dataSource.query(
+      'SELECT * FROM fn_delete_cliente($1)',
+      [idCliente],
+    );
     if (!result || result.length === 0) {
       throw new NotFoundException(`Cliente con ID ${idCliente} no encontrado.`);
     }

@@ -1,11 +1,19 @@
 // backend/src/compra/compra.dto.ts
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested, IsBoolean } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+  IsBoolean,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class DetalleCompraDto {
   @IsNumber() idProducto: number;
-  
-  @IsString() 
+
+  @IsString()
   @IsOptional()
   codigo: string;
 
@@ -17,9 +25,9 @@ export class DetalleCompraDto {
 
 export class CreateCompraDto {
   @IsNumber() idProveedor: number;
-  
-  @IsString() 
-  @IsOptional() 
+
+  @IsString()
+  @IsOptional()
   folioFactura: string;
 
   // --- NUEVO CAMPO ---
@@ -27,9 +35,9 @@ export class CreateCompraDto {
   esCredito: boolean;
 
   @IsNumber() total: number;
-  
-  @IsString() 
-  @IsOptional() 
+
+  @IsString()
+  @IsOptional()
   observaciones: string;
 
   @IsArray()

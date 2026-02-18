@@ -8,6 +8,6 @@ import { Pago } from './pago.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Pago])],
   providers: [PagoService],
-  controllers: [PagoController]
+  controllers: [PagoController],
 })
 export class PagoModule {}
