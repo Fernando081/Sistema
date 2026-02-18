@@ -37,4 +37,38 @@ describe('AuthService', () => {
     const response = await service.login('fer', 'secreto');
     expect(response.access_token).toBeTruthy();
   });
+
+  it('rechaza hash sin separador de colon', async () => {
+    const invalidHash = 'noseparatorhere';
+    repoMock.findOne = jest.fn().mockResolvedValue({ username: 'fer', role: 'admin', passwordHash: invalidHash, isActive: true });
+
+    await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(UnauthorizedException);
+  });
+
+  it('rechaza hash con múltiples separadores', async () => {
+    const invalidHash = 'salt:hash:extra';
+    repoMock.findOne = jest.fn().mockResolvedValue({ username: 'fer', role: 'admin', passwordHash: invalidHash, isActive: true });
+
+    await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(UnauthorizedException);
+  });
+
+  it('rechaza hash con salt vacío', async () => {
+    const invalidHash = ':onlyhash';
+    repoMock.findOne = jest.fn().mockResolvedValue({ username: 'fer', role: 'admin', passwordHash: invalidHash, isActive: true });
+
+    await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(UnauthorizedException);
+  });
+
+  it('rechaza hash con hash vacío', async () => {
+    const invalidHash = 'onlysalt:';
+    repoMock.findOne = jest.fn().mockResolvedValue({ username: 'fer', role: 'admin', passwordHash: invalidHash, isActive: true });
+
+    await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(UnauthorizedException);
+  });
+
+  it('rechaza hash nulo', async () => {
+    repoMock.findOne = jest.fn().mockResolvedValue({ username: 'fer', role: 'admin', passwordHash: null, isActive: true });
+
+    await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(UnauthorizedException);
+  });
 });

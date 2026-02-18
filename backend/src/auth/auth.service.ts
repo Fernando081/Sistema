@@ -118,8 +118,26 @@ export class AuthService {
   }
 
   private verifyPassword(password: string, storedHash: string): boolean {
-    const [salt, hash] = storedHash.split(':');
+    // Validate that storedHash matches expected format (salt:hash) before splitting
+    if (!storedHash || typeof storedHash !== 'string') {
+      this.logger.error('Invalid password hash: storedHash is null, undefined, or not a string');
+      return false;
+    }
+
+    if (!storedHash.includes(':')) {
+      this.logger.error(`Invalid password hash format: expected 'salt:hash' but got '${storedHash.substring(0, 20)}...'`);
+      return false;
+    }
+
+    const parts = storedHash.split(':');
+    if (parts.length !== 2) {
+      this.logger.error(`Invalid password hash format: expected exactly one colon separator but found ${parts.length - 1}`);
+      return false;
+    }
+
+    const [salt, hash] = parts;
     if (!salt || !hash) {
+      this.logger.error('Invalid password hash format: salt or hash is empty');
       return false;
     }
 
