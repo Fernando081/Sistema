@@ -117,7 +117,7 @@ export class AuthService {
     }
   }
 
-  private verifyPassword(password: string, storedHash: string): boolean {
+  private verifyPassword(password: string, storedHash: string | null | undefined): boolean {
     // Validate that storedHash matches expected format (salt:hash) before splitting
     if (!storedHash || typeof storedHash !== 'string') {
       this.logger.error('Invalid password hash: storedHash is null, undefined, or not a string');
