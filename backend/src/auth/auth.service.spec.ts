@@ -5,6 +5,7 @@ import { AuthUser } from './auth-user.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let loggerErrorSpy: jest.SpyInstance;
 
   const repoMock = {
     findOne: jest.fn(),
@@ -17,6 +18,7 @@ describe('AuthService', () => {
     process.env.JWT_SECRET = 'test-secret';
     repoMock.findOne = jest.fn().mockResolvedValue(null);
     service = new AuthService(repoMock);
+    loggerErrorSpy = jest.spyOn(service['logger'], 'error');
   });
 
   it('genera token válido con credenciales fallback correctas', async () => {
@@ -43,13 +45,17 @@ describe('AuthService', () => {
     repoMock.findOne = jest.fn().mockResolvedValue({ username: 'fer', role: 'admin', passwordHash: invalidHash, isActive: true });
 
     await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(UnauthorizedException);
+    expect(loggerErrorSpy).toHaveBeenCalledWith('Invalid password hash format: expected format with colon separator (salt:hash)');
   });
 
   it('rechaza hash con múltiples separadores', async () => {
-    const invalidHash = 'salt:hash:extra';
+    // Create a valid hash first, then append :extra to test the parts.length !== 2 validation
+    const validHash = AuthService.hashPassword('test');
+    const invalidHash = `${validHash}:extra`;
     repoMock.findOne = jest.fn().mockResolvedValue({ username: 'fer', role: 'admin', passwordHash: invalidHash, isActive: true });
 
     await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(UnauthorizedException);
+    expect(loggerErrorSpy).toHaveBeenCalledWith('Invalid password hash format: expected exactly one colon separator but found 2');
   });
 
   it('rechaza hash con salt vacío', async () => {
@@ -57,6 +63,7 @@ describe('AuthService', () => {
     repoMock.findOne = jest.fn().mockResolvedValue({ username: 'fer', role: 'admin', passwordHash: invalidHash, isActive: true });
 
     await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(UnauthorizedException);
+    expect(loggerErrorSpy).toHaveBeenCalledWith('Invalid password hash format: salt or hash is empty');
   });
 
   it('rechaza hash con valor hash vacío', async () => {
@@ -64,11 +71,13 @@ describe('AuthService', () => {
     repoMock.findOne = jest.fn().mockResolvedValue({ username: 'fer', role: 'admin', passwordHash: invalidHash, isActive: true });
 
     await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(UnauthorizedException);
+    expect(loggerErrorSpy).toHaveBeenCalledWith('Invalid password hash format: salt or hash is empty');
   });
 
   it('rechaza hash nulo', async () => {
     repoMock.findOne = jest.fn().mockResolvedValue({ username: 'fer', role: 'admin', passwordHash: null, isActive: true });
 
     await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(UnauthorizedException);
+    expect(loggerErrorSpy).toHaveBeenCalledWith('Invalid password hash: storedHash is null, undefined, empty, or not a string');
   });
 });
