@@ -21,6 +21,10 @@ describe('AuthService', () => {
     loggerErrorSpy = jest.spyOn(service['logger'], 'error');
   });
 
+  afterEach(() => {
+    loggerErrorSpy.mockRestore();
+  });
+
   it('genera token válido con credenciales fallback correctas', async () => {
     const response = await service.login('admin', 'admin123');
     expect(response.access_token).toBeTruthy();
