@@ -40,7 +40,7 @@ The `auth_user` table stores authentication credentials for system users:
 
 ### Creating Users from NestJS (recommended)
 
-Use the temporary/permanent endpoint `POST /api/v1/auth/register` so NestJS uses `AuthService.hashPassword()` and stores the user safely.
+During initial setup or local development, you can use the registration endpoint `POST /api/v1/auth/register` so NestJS uses `AuthService.hashPassword()` and stores the user safely. For production deployments, you should either disable this public registration endpoint after creating the initial admin user or restrict it (for example via authentication, IP allowlisting, and/or rate limiting) and use a controlled admin process for creating further users.
 
 **Example request (Postman):**
 
