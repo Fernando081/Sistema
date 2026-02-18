@@ -31,7 +31,9 @@ import { ProductoKardexComponent } from '../producto-kardex/producto-kardex.comp
     MatButtonModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,
     MatProgressSpinnerModule, CurrencyPipe,
     MatTabsModule,
-    CategoriaListComponent
+    CategoriaListComponent,
+    ProductoDialogComponent,
+    ProductoKardexComponent
   ],
   templateUrl: './producto-list.component.html',
   styleUrls: ['./producto-list.component.css']
