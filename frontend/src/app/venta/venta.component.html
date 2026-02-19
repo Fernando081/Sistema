@@ -102,9 +102,39 @@
         </div>
 
         <div [formGroup]="configForm" class="flex flex-col gap-2">
-          <mat-form-field class="w-full text-sm"><mat-label>Uso CFDI</mat-label><mat-select formControlName="idUsoCFDI"><mat-option *ngFor="let u of usosCfdi$ | async" [value]="u.idUsoCFDI">{{ u.clave }} - {{ u.nombre }}</mat-option></mat-select></mat-form-field>
-          <mat-form-field class="w-full text-sm"><mat-label>Método de Pago</mat-label><mat-select formControlName="idMetodoPago"><mat-option *ngFor="let m of metodosPago$ | async" [value]="m.idMetodoDePago">{{ m.clave }} - {{ m.nombre }}</mat-option></mat-select></mat-form-field>
-          <mat-form-field class="w-full text-sm"><mat-label>Forma de Pago</mat-label><mat-select formControlName="idFormaPago"><mat-option *ngFor="let f of formasPago$ | async" [value]="f.idFormaPago">{{ f.clave }} - {{ f.nombre }}</mat-option></mat-select></mat-form-field>
+          <mat-form-field class="w-full text-sm">
+            <mat-label>Uso CFDI</mat-label>
+            <mat-select formControlName="idUsoCFDI">
+              <mat-option
+                *ngFor="let u of usosCfdi$ | async"
+                [value]="u.idUsoCFDI"
+              >
+                {{ u.clave }} - {{ u.nombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="w-full text-sm">
+            <mat-label>Método de Pago</mat-label>
+            <mat-select formControlName="idMetodoPago">
+              <mat-option
+                *ngFor="let m of metodosPago$ | async"
+                [value]="m.idMetodoDePago"
+              >
+                {{ m.clave }} - {{ m.nombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="w-full text-sm">
+            <mat-label>Forma de Pago</mat-label>
+            <mat-select formControlName="idFormaPago">
+              <mat-option
+                *ngFor="let f of formasPago$ | async"
+                [value]="f.idFormaPago"
+              >
+                {{ f.clave }} - {{ f.nombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </mat-card-content>
     </mat-card>
