@@ -12,10 +12,10 @@
       [opened]="!(isHandset$ | async)"
       class="app-sidenav"
     >
-      <div class="brand" routerLink="/dashboard">
+      <a class="brand" routerLink="/dashboard">
         <span class="brand-logo">TN</span>
         <h2>Tu Negocio</h2>
-      </div>
+      </a>
 
       <mat-nav-list class="app-nav-list">
         <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>dashboard</mat-icon><span matListItemTitle>Inicio</span></a>
