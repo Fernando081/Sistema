@@ -144,11 +144,6 @@ describe('AuthService', () => {
     await expect(
       service.register('usuario-duplicado', 'password123', 'admin'),
     ).rejects.toThrow('El usuario ya existe');
-
-    // Restore the mock for subsequent tests
-    repoMock.save = jest.fn((entity) =>
-      Promise.resolve({ idUser: 1, ...entity }),
-    );
   });
 
   it('valida usuario desde BD con hash', async () => {
