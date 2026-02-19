@@ -1,27 +1,39 @@
-# Sistema (Ventas, Compras, Inventario y Facturación)
+# Sistema (Ventas, Compras, Inventario, Cobranza y Facturación)
 
-Monorepo con **NestJS (backend)** + **Angular standalone (frontend)** para operar clientes, proveedores, productos, ventas, compras, cotizaciones, cobranza y cuentas por pagar.
+Monorepo full-stack con **NestJS + TypeORM (backend)** y **Angular standalone + Material (frontend)** para operar procesos comerciales: clientes, proveedores, productos, ventas, compras, cotizaciones, cobranza y cuentas por pagar.
 
-## 1) Arquitectura técnica
+## 1) Estado actual del proyecto
 
-- **Backend:** NestJS + TypeORM + PostgreSQL + funciones SQL/stored procedures.
-- **Frontend:** Angular 20 standalone + Angular Material + Tailwind utilities.
-- **Base de datos:** script principal en `Sistema_Completo.sql`.
-- **Comunicación:** REST bajo prefijo `/api/v1`.
+El sistema está funcional en arquitectura cliente-servidor:
 
-Estructura:
+- **Backend** con API REST versionada (`/api/v1`) y validación global de DTOs.
+- **Frontend** standalone con rutas protegidas por guard JWT.
+- **Autenticación JWT** implementada de extremo a extremo (login, guard, interceptores).
+- **Módulos de negocio** activos para catálogo y operación comercial.
+- **Base SQL principal** en `Sistema_Completo.sql` + carpeta de migraciones en `backend/migrations`.
 
-- `backend/` API, módulos de dominio y acceso a BD.
-- `frontend/` UI y servicios HTTP.
-- `ANALISIS_CODIGO.md` mejoras técnicas y estado.
+## 2) Stack técnico
 
-## 2) Requisitos
+- **Backend:** NestJS 11, TypeORM 0.3, PostgreSQL, class-validator, pdfmake, nodemailer.
+- **Frontend:** Angular 20, Angular Material, RxJS.
+- **Persistencia:** PostgreSQL.
+- **Auth:** JWT HS256 con guard global en backend.
+
+## 3) Estructura del repositorio
+
+- `backend/` API REST, módulos de dominio, entidades, auth, servicios.
+- `frontend/` aplicación Angular, componentes standalone, servicios HTTP e interceptores.
+- `backend/migrations/` scripts SQL incrementales.
+- `Sistema_Completo.sql` script integral de base de datos.
+- `ANALISIS_CODIGO.md` análisis técnico y mejoras aplicadas.
+
+## 4) Requisitos
 
 - Node.js 20+
 - npm 10+
 - PostgreSQL 14+
 
-## 3) Variables de entorno
+## 5) Configuración de entorno
 
 ### Backend (`backend/.env`)
 
@@ -32,22 +44,25 @@ DB_USER=postgres
 DB_PASSWORD=postgres
 DB_NAME=sistema
 
-# Auth
 JWT_SECRET=cambiar-en-produccion
 AUTH_USERNAME=admin
 AUTH_PASSWORD=admin123
 
-# Correo para envío de facturas
 EMAIL_USER=correo@gmail.com
 EMAIL_PASS=app-password
 ```
 
 ### Frontend
 
-Se usa configuración por entorno en `frontend/src/environments/*` con `apiBaseUrl`.
-Recomendado en desarrollo: proxy Angular (`/api/v1` -> backend:3000).
+Variables por entorno en:
 
-## 4) Instalación y arranque
+- `frontend/src/environments/environment.ts`
+- `frontend/src/environments/environment.development.ts`
+- `frontend/src/environments/environment.production.ts`
+
+Se recomienda proxy en desarrollo (`frontend/proxy.conf.json`) para consumir `/api/v1`.
+
+## 6) Instalación y ejecución
 
 ### Backend
 
@@ -57,6 +72,8 @@ npm install
 npm run start:dev
 ```
 
+API por defecto: `http://localhost:3000/api/v1`
+
 ### Frontend
 
 ```bash
@@ -65,32 +82,48 @@ npm install
 npm start
 ```
 
-Abrir `http://localhost:4200`.
+UI por defecto: `http://localhost:4200`
 
-## 5) Seguridad implementada (JWT)
+## 7) Seguridad y autenticación
 
-- Endpoint público de login: `POST /api/v1/auth/login`.
-- Guard global que protege el resto de endpoints con `Authorization: Bearer <token>`.
-- Token firmado HS256 (HMAC) con expiración.
+### Implementado
+
+- `POST /api/v1/auth/login` (público) para obtener token.
+- Guard global `JwtAuthGuard` para proteger endpoints.
+- Decorador `@Public()` para excepciones puntuales.
+- `AuthService` con:
+  - Validación contra tabla `auth_user`.
+  - Fallback a credenciales de entorno si la tabla no está disponible.
+  - Validaciones adicionales de seguridad para producción.
 - Frontend con:
-  - `AuthService` (persistencia de token en `localStorage`).
-  - `authInterceptor` (inyecta token automáticamente).
-  - `errorInterceptor` (manejo global de 401/4xx/5xx).
-  - `authGuard` en rutas privadas.
-  - `LoginComponent`.
+  - `authGuard` para rutas privadas.
+  - `authInterceptor` para inyectar `Bearer` automáticamente.
+  - `errorInterceptor` para manejo global de errores (incluye 401).
 
-> Credenciales por defecto para dev: `admin / admin123` (ajustar por `.env`).
+### Nota operativa
 
-## 6) Refactor clave: PDF de factura
+Existe endpoint `POST /api/v1/auth/register` como `@Public()` para alta inicial de usuarios. En producción se recomienda restringirlo o deshabilitarlo tras el bootstrap inicial.
 
-Se separó la generación del PDF en un servicio dedicado (`TicketService`) para mantener `VentaService` enfocado en la orquestación y datos de negocio.
+## 8) Funcionalidad de negocio cubierta
 
-## 7) Tipado y precisión de moneda
+- Dashboard de métricas.
+- Catálogos SAT (régimen fiscal, forma/método pago, uso CFDI, estado, municipio, clave prod/serv, clave unidad, unidad, objeto impuesto).
+- Clientes, proveedores, categorías y productos.
+- Ventas + generación de ticket/PDF (servicio dedicado).
+- Compras e historial.
+- Cotizaciones (alta + historial).
+- Cobranza y cuentas por pagar.
 
-- Se agregaron interfaces de tipado para resultado del ticket (`ticket.types.ts`).
-- En frontend de ventas, totales y cálculos se consolidan en centavos para evitar errores de coma flotante.
+## 9) Cambios y mejoras ya incorporados
 
-## 8) Pruebas
+- Refactor de venta para separar generación de PDF en `TicketService`.
+- Tipado adicional para ticket (`ticket.types.ts`) y servicios en frontend.
+- Cálculo monetario en centavos en flujo de ventas para reducir errores de coma flotante.
+- Normalización de contratos API hacia camelCase en frontend (por ejemplo cliente/proveedor/producto).
+- Estado de carga para evitar doble envío en registro de venta (`guardandoVenta`).
+- Pruebas unitarias base en auth y servicios críticos (`compra`, `pago`, `pago-proveedor`).
+
+## 10) Pruebas
 
 ### Backend
 
@@ -106,18 +139,34 @@ cd frontend
 npm test
 ```
 
-Incluye pruebas base para autenticación (`auth.service.spec.ts` en backend y frontend).
+## 11) Recomendaciones pendientes
 
-## 9) Deploy y operación
+1. Cerrar o proteger `auth/register` para ambientes productivos.
+2. Consolidar estrategia de moneda/decimales también en backend para cálculos fiscales.
+3. Ampliar cobertura de pruebas E2E para flujos completos (venta, compra, pagos).
+4. Añadir observabilidad (logging estructurado + trazabilidad por request).
 
-- Definir `JWT_SECRET` fuerte en producción.
-- No usar credenciales por defecto.
-- Colocar backend detrás de HTTPS + reverse proxy.
-- Mantener `synchronize: false` en TypeORM y migrar con SQL controlado.
 
-## 10) Roadmap recomendado
+## 12) Registro de cambios y mejoras (histórico)
 
-1. Migrar auth a usuarios persistidos en BD + roles/permisos granulares.
-2. Cobertura de pruebas para servicios críticos (venta, compra, pagos).
-3. Diseños responsivos alternativos para tablas en móvil (cards + breakpoints).
-4. Logging estructurado y trazabilidad de errores por request.
+> Esta sección se mantiene para **no perder trazabilidad** de mejoras realizadas.
+
+### Seguridad y auth
+- Implementación de `AuthModule`, `AuthService`, `JwtAuthGuard` global y decorador `@Public()`.
+- Login JWT operativo en `POST /api/v1/auth/login`.
+- Integración frontend de `authGuard`, `authInterceptor` y `errorInterceptor`.
+- Evolución de auth a usuarios persistidos (`auth_user`) con fallback por entorno para desarrollo.
+
+### Ventas y facturación
+- Refactor para delegar generación de PDF a `TicketService`.
+- Tipado adicional para datos de ticket (`ticket.types.ts`).
+- Ajustes de precisión monetaria en frontend de ventas con estrategia en centavos (`toCents/fromCents`).
+- Mejora UX en guardado de venta con estado `guardandoVenta` para evitar doble envío.
+
+### Contratos y mantenibilidad
+- Normalización progresiva de respuestas a camelCase en frontend.
+- Reducción de usos de `any` en servicios relevantes.
+- Validación global de DTOs en backend (whitelist/transform/forbidNonWhitelisted).
+
+### Calidad
+- Pruebas unitarias base agregadas/reforzadas en `AuthService`, `CompraService`, `PagoService` y `PagoProveedorService`.
