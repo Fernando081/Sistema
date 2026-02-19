@@ -27,7 +27,6 @@ import { ClaveUnidadModule } from './clave-unidad/clave-unidad.module';
     UnidadModule,
     ObjetoImpuestoModule,
     // ... etc
-
   ],
   exports: [
     // Opcional: Exportamos los módulos si otros módulos del sistema

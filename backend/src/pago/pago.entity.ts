@@ -1,5 +1,11 @@
 // backend/src/pago/pago.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  Index,
+} from 'typeorm';
 
 @Entity({ name: 'pago' })
 export class Pago {
@@ -10,7 +16,11 @@ export class Pago {
   @Index() // Indexamos porque buscaremos pagos por factura seguido
   idFactura: number;
 
-  @Column({ name: 'fecha_pago', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    name: 'fecha_pago',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   fechaPago: Date;
 
   @Column({ name: 'monto', type: 'numeric', precision: 18, scale: 2 })

@@ -2,7 +2,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity({ name: 'claveproductooservicio' })
 export class ClaveProdServ {
-  @PrimaryGeneratedColumn({ name: 'IdClaveProdOServ' }) idClaveProdOServ: number;
+  @PrimaryGeneratedColumn({ name: 'IdClaveProdOServ' })
+  idClaveProdOServ: number;
   @Column({ name: 'Clave' }) clave: string;
   @Column({ name: 'Descripcion' }) descripcion: string;
 }

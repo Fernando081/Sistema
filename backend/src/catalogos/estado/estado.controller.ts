@@ -5,5 +5,7 @@ import { EstadoService } from './estado.service';
 export class EstadoController {
   constructor(private readonly service: EstadoService) {}
   @Get()
-  findAll() { return this.service.findAll(); }
+  findAll() {
+    return this.service.findAll();
+  }
 }

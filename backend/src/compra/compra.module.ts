@@ -5,6 +5,6 @@ import { CompraController } from './compra.controller';
 
 @Module({
   providers: [CompraService],
-  controllers: [CompraController]
+  controllers: [CompraController],
 })
 export class CompraModule {}

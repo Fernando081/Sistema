@@ -8,6 +8,6 @@ import { MetodoPagoController } from './metodo-pago.controller';
   imports: [TypeOrmModule.forFeature([MetodoPago])],
   providers: [MetodoPagoService],
   controllers: [MetodoPagoController],
-  exports: [MetodoPagoService] // Exportamos por si acaso
+  exports: [MetodoPagoService], // Exportamos por si acaso
 })
 export class MetodoPagoModule {}

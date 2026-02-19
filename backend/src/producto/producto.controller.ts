@@ -1,5 +1,14 @@
 // backend/src/producto/producto.controller.ts (REEMPLAZAR)
-import { Controller, Get, Post, Body, Param, ParseIntPipe, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ParseIntPipe,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { ProductoService } from './producto.service';
 import { CreateProductoDto, UpdateProductoDto } from './producto.dto';
 
@@ -23,7 +32,10 @@ export class ProductoController {
   }
 
   @Put(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateProductoDto: UpdateProductoDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProductoDto: UpdateProductoDto,
+  ) {
     return this.productoService.update(id, updateProductoDto);
   }
 
@@ -33,9 +45,9 @@ export class ProductoController {
   }
 
   @Get(':id/kardex')
-async obtenerKardex(@Param('id', ParseIntPipe) id: number) {
-  return this.productoService.getKardex(id);
-}
+  async obtenerKardex(@Param('id', ParseIntPipe) id: number) {
+    return this.productoService.getKardex(id);
+  }
 
   @Get(':id/historial-precios')
   getHistorialPrecios(@Param('id', ParseIntPipe) id: number) {
@@ -48,12 +60,18 @@ async obtenerKardex(@Param('id', ParseIntPipe) id: number) {
   }
 
   @Post(':id/equivalentes/:idEq')
-  agregarEquivalente(@Param('id', ParseIntPipe) id: number, @Param('idEq', ParseIntPipe) idEq: number) {
+  agregarEquivalente(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('idEq', ParseIntPipe) idEq: number,
+  ) {
     return this.productoService.agregarEquivalente(id, idEq);
   }
 
   @Delete(':id/equivalentes/:idEq')
-  eliminarEquivalente(@Param('id', ParseIntPipe) id: number, @Param('idEq', ParseIntPipe) idEq: number) {
+  eliminarEquivalente(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('idEq', ParseIntPipe) idEq: number,
+  ) {
     return this.productoService.eliminarEquivalente(id, idEq);
   }
 }

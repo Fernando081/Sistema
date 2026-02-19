@@ -1,5 +1,14 @@
 // backend/src/producto/producto.dto.ts (NUEVO ARCHIVO)
-import { IsString, IsNotEmpty, MaxLength, IsOptional, IsInt, IsNumber, Min, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  MaxLength,
+  IsOptional,
+  IsInt,
+  IsNumber,
+  Min,
+  IsBoolean,
+} from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateProductoDto {

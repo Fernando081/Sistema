@@ -8,6 +8,6 @@ import { UsoCfdiController } from './uso-cfdi.controller';
   imports: [TypeOrmModule.forFeature([UsoCFDI])],
   providers: [UsoCfdiService],
   controllers: [UsoCfdiController],
-  exports: [UsoCfdiService] // Exportamos por si acaso
+  exports: [UsoCfdiService], // Exportamos por si acaso
 })
 export class UsoCfdiModule {}

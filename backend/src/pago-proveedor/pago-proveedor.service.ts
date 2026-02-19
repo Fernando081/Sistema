@@ -12,9 +12,18 @@ export class PagoProveedorService {
     try {
       const result = await this.dataSource.query(
         `SELECT fn_registrar_pago_proveedor($1, $2, $3, $4, $5) as id_pago`,
-        [dto.idCompra, dto.monto, dto.formaPago, dto.referencia || '', dto.notas || '']
+        [
+          dto.idCompra,
+          dto.monto,
+          dto.formaPago,
+          dto.referencia || '',
+          dto.notas || '',
+        ],
       );
-      return { message: 'Pago a proveedor registrado', idPago: result[0].id_pago };
+      return {
+        message: 'Pago a proveedor registrado',
+        idPago: result[0].id_pago,
+      };
     } catch (error: any) {
       throw new BadRequestException(error.message || 'Error al registrar pago');
     }
@@ -22,8 +31,8 @@ export class PagoProveedorService {
 
   async getPagosPorCompra(idCompra: number) {
     return this.dataSource.query(
-      `SELECT * FROM pago_proveedor WHERE id_compra = $1 ORDER BY fecha_pago DESC`, 
-      [idCompra]
+      `SELECT * FROM pago_proveedor WHERE id_compra = $1 ORDER BY fecha_pago DESC`,
+      [idCompra],
     );
   }
 
@@ -34,7 +43,7 @@ export class PagoProveedorService {
        FROM compra 
        WHERE id_proveedor = $1 AND saldo_pendiente > 0.01
        ORDER BY fecha_compra ASC`,
-      [idProveedor]
+      [idProveedor],
     );
   }
 }

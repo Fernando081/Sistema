@@ -8,6 +8,6 @@ import { ClaveProdServController } from './clave-prod-serv.controller';
   imports: [TypeOrmModule.forFeature([ClaveProdServ])],
   providers: [ClaveProdServService],
   controllers: [ClaveProdServController],
-  exports: [ClaveProdServService] // Exportamos por si acaso
+  exports: [ClaveProdServService], // Exportamos por si acaso
 })
 export class ClaveProdServModule {}
