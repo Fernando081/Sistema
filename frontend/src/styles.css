@@ -62,16 +62,15 @@ body {
     gap: 1rem;
   }
 
-  .responsive-table .mat-mdc-cell::before {
-    content: attr(data-label);
+  .responsive-table .mat-mdc-cell .cell-label {
     font-weight: 600;
     color: var(--mat-sys-outline);
     font-size: 0.75rem;
     text-transform: uppercase;
+    flex-shrink: 0;
   }
 
-  .responsive-table .mat-mdc-cell:last-child {
-    justify-content: flex-end;
+  .responsive-table .mat-mdc-cell.actions-cell {
     margin-top: 0.5rem;
     border-top: 1px dashed var(--mat-sys-outline-variant) !important;
     padding-top: 1rem !important;
