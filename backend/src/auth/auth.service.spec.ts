@@ -6,6 +6,7 @@ import { AuthUser } from './auth-user.entity';
 describe('AuthService', () => {
   let service: AuthService;
   let loggerErrorSpy: jest.SpyInstance;
+  let loggerLogSpy: jest.SpyInstance;
 
   const repoMock = {
     findOne: jest.fn(),
@@ -25,10 +26,12 @@ describe('AuthService', () => {
     );
     service = new AuthService(repoMock);
     loggerErrorSpy = jest.spyOn(service['logger'], 'error');
+    loggerLogSpy = jest.spyOn(service['logger'], 'log');
   });
 
   afterEach(() => {
     loggerErrorSpy.mockRestore();
+    loggerLogSpy.mockRestore();
   });
 
   it('genera token válido con credenciales fallback correctas', async () => {
@@ -107,6 +110,40 @@ describe('AuthService', () => {
     await expect(
       service.register('repetido', 'password123', 'admin'),
     ).rejects.toThrow(ConflictException);
+  });
+
+  it('registra exitosamente y registra evento de auditoría', async () => {
+    const result = await service.register(
+      'usuario-con-log',
+      'password789',
+      'user',
+    );
+
+    expect(result).toEqual({
+      idUser: 1,
+      username: 'usuario-con-log',
+      role: 'user',
+    });
+
+    expect(loggerLogSpy).toHaveBeenCalledWith(
+      'User registered successfully: username=usuario-con-log, role=user, idUser=1',
+    );
+  });
+
+  it('maneja condición de carrera con violación de constraint único', async () => {
+    const uniqueViolationError = Object.assign(new Error('duplicate key'), {
+      code: '23505',
+    });
+
+    repoMock.save = jest.fn().mockRejectedValue(uniqueViolationError);
+
+    await expect(
+      service.register('usuario-duplicado', 'password123', 'admin'),
+    ).rejects.toThrow(ConflictException);
+
+    await expect(
+      service.register('usuario-duplicado', 'password123', 'admin'),
+    ).rejects.toThrow('El usuario ya existe');
   });
 
   it('valida usuario desde BD con hash', async () => {

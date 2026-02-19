@@ -5,5 +5,7 @@ import { FormaPagoService } from './forma-pago.service';
 export class FormaPagoController {
   constructor(private readonly service: FormaPagoService) {}
   @Get()
-  findAll() { return this.service.findAll(); }
+  findAll() {
+    return this.service.findAll();
+  }
 }

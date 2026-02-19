@@ -1,5 +1,12 @@
 // backend/src/venta/venta.dto.ts
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 // 1. DTO para cada Renglón del carrito (Concepto)
@@ -30,7 +37,7 @@ export class ConceptoVentaDto {
 // 2. DTO para la Venta General (Cabecera)
 export class CreateVentaDto {
   @IsNumber() idCliente: number;
-  
+
   // Datos fiscales del receptor (Snapshot)
   @IsString() rfcReceptor: string;
   @IsString() nombreReceptor: string;

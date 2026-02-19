@@ -5,5 +5,7 @@ import { RegimenFiscalService } from './regimen-fiscal.service';
 export class RegimenFiscalController {
   constructor(private readonly service: RegimenFiscalService) {}
   @Get()
-  findAll() { return this.service.findAll(); }
+  findAll() {
+    return this.service.findAll();
+  }
 }

@@ -8,6 +8,6 @@ import { MunicipioController } from './municipio.controller';
   imports: [TypeOrmModule.forFeature([Municipio])],
   providers: [MunicipioService],
   controllers: [MunicipioController],
-  exports: [MunicipioService] // Exportamos por si acaso
+  exports: [MunicipioService], // Exportamos por si acaso
 })
 export class MunicipioModule {}

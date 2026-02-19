@@ -5,5 +5,7 @@ import { MetodoPagoService } from './metodo-pago.service';
 export class MetodoPagoController {
   constructor(private readonly service: MetodoPagoService) {}
   @Get()
-  findAll() { return this.service.findAll(); }
+  findAll() {
+    return this.service.findAll();
+  }
 }

@@ -17,6 +17,7 @@ psql -U your_username -d your_database -f 001_create_auth_user_table.sql
 ## Migration Files
 
 - `001_create_auth_user_table.sql` - Creates the auth_user table for JWT authentication system
+- `002_add_role_check_constraint.sql` - Adds CHECK constraint to enforce role values at database level
 
 ## Creating New Migrations
 
@@ -33,7 +34,7 @@ The `auth_user` table stores authentication credentials for system users:
 - `id_user` - Primary key, auto-incrementing
 - `username` - Unique username for login
 - `password_hash` - Scrypt hashed password (format: `salt:hash`)
-- `role` - User role (default: 'admin')
+- `role` - User role (must be 'admin' or 'user', enforced by CHECK constraint)
 - `is_active` - Boolean flag to enable/disable access
 - `created_at` - Timestamp when created
 - `updated_at` - Timestamp when last updated (auto-updated by trigger)

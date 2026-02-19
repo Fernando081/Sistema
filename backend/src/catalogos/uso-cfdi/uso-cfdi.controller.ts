@@ -5,5 +5,7 @@ import { UsoCfdiService } from './uso-cfdi.service';
 export class UsoCfdiController {
   constructor(private readonly service: UsoCfdiService) {}
   @Get()
-  findAll() { return this.service.findAll(); }
+  findAll() {
+    return this.service.findAll();
+  }
 }

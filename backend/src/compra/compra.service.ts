@@ -17,24 +17,26 @@ export class CompraService {
       [
         createCompraDto.idProveedor,
         createCompraDto.folioFactura || '',
-        createCompraDto.esCredito,        // <--- Nuevo
+        createCompraDto.esCredito, // <--- Nuevo
         createCompraDto.total,
         createCompraDto.observaciones || '',
-        conceptosJson
-      ]
+        conceptosJson,
+      ],
     );
 
-    return { 
-        message: 'Compra registrada con éxito. Inventario actualizado.', 
-        idCompra: result[0].id_compra 
+    return {
+      message: 'Compra registrada con éxito. Inventario actualizado.',
+      idCompra: result[0].id_compra,
     };
   }
-  
+
   async findAll() {
     return this.dataSource.query('SELECT * FROM fn_get_compras()');
   }
 
   async findDetalle(idCompra: number) {
-    return this.dataSource.query('SELECT * FROM fn_get_detalle_compra($1)', [idCompra]);
+    return this.dataSource.query('SELECT * FROM fn_get_detalle_compra($1)', [
+      idCompra,
+    ]);
   }
 }

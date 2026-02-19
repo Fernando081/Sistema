@@ -8,18 +8,21 @@ import { CreateProveedorDto, UpdateProveedorDto } from './proveedor.dto';
 
 @Injectable()
 export class ProveedorService {
-  constructor(
-    @InjectDataSource() private dataSource: DataSource,
-  ) {}
+  constructor(@InjectDataSource() private dataSource: DataSource) {}
 
   async findAll(): Promise<Proveedor[]> {
     return this.dataSource.query('SELECT * FROM fn_get_proveedores()');
   }
 
   async findOne(idProveedor: number): Promise<Proveedor> {
-    const result = await this.dataSource.query('SELECT * FROM fn_get_proveedor_by_id($1)', [idProveedor]);
+    const result = await this.dataSource.query(
+      'SELECT * FROM fn_get_proveedor_by_id($1)',
+      [idProveedor],
+    );
     if (!result || result.length === 0) {
-      throw new NotFoundException(`Proveedor con ID ${idProveedor} no encontrado.`);
+      throw new NotFoundException(
+        `Proveedor con ID ${idProveedor} no encontrado.`,
+      );
     }
     return result[0];
   }
@@ -43,18 +46,23 @@ export class ProveedorService {
         createProveedorDto.idMetodoDePago,
         createProveedorDto.idUsoCFDI,
         createProveedorDto.idFormaPago,
-        createProveedorDto.idRegimenFiscal
-      ]
+        createProveedorDto.idRegimenFiscal,
+      ],
     );
     return result[0];
   }
 
-  async update(idProveedor: number, updateProveedorDto: UpdateProveedorDto): Promise<Proveedor> {
+  async update(
+    idProveedor: number,
+    updateProveedorDto: UpdateProveedorDto,
+  ): Promise<Proveedor> {
     const proveedorActual = await this.findOne(idProveedor);
     if (!proveedorActual) {
-      throw new NotFoundException(`Proveedor con ID ${idProveedor} no encontrado.`);
+      throw new NotFoundException(
+        `Proveedor con ID ${idProveedor} no encontrado.`,
+      );
     }
-    
+
     const datosAActualizar = { ...proveedorActual, ...updateProveedorDto };
 
     const result = await this.dataSource.query(
@@ -76,16 +84,21 @@ export class ProveedorService {
         datosAActualizar.idMetodoDePago,
         datosAActualizar.idUsoCFDI,
         datosAActualizar.idFormaPago,
-        datosAActualizar.idRegimenFiscal
-      ]
+        datosAActualizar.idRegimenFiscal,
+      ],
     );
     return result[0];
   }
 
   async remove(idProveedor: number): Promise<void> {
-    const result = await this.dataSource.query('SELECT * FROM fn_delete_proveedor($1)', [idProveedor]);
+    const result = await this.dataSource.query(
+      'SELECT * FROM fn_delete_proveedor($1)',
+      [idProveedor],
+    );
     if (!result || result.length === 0) {
-      throw new NotFoundException(`Proveedor con ID ${idProveedor} no encontrado.`);
+      throw new NotFoundException(
+        `Proveedor con ID ${idProveedor} no encontrado.`,
+      );
     }
   }
 }

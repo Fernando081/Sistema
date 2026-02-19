@@ -89,13 +89,25 @@ export class AuthService {
       isActive: true,
     });
 
-    const savedUser = await this.authUserRepository.save(newUser);
+    try {
+      const savedUser = await this.authUserRepository.save(newUser);
 
-    return {
-      idUser: savedUser.idUser,
-      username: savedUser.username,
-      role: savedUser.role,
-    };
+      this.logger.log(
+        `User registered successfully: username=${savedUser.username}, role=${savedUser.role}, idUser=${savedUser.idUser}`,
+      );
+
+      return {
+        idUser: savedUser.idUser,
+        username: savedUser.username,
+        role: savedUser.role,
+      };
+    } catch (error) {
+      // Handle race condition: unique constraint violation
+      if (error instanceof Error && 'code' in error && error.code === '23505') {
+        throw new ConflictException('El usuario ya existe');
+      }
+      throw error;
+    }
   }
 
   async login(username: string, password: string): Promise<LoginResponse> {

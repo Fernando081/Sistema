@@ -8,6 +8,6 @@ import { RegimenFiscalController } from './regimen-fiscal.controller';
   imports: [TypeOrmModule.forFeature([RegimenFiscal])],
   providers: [RegimenFiscalService],
   controllers: [RegimenFiscalController],
-  exports: [RegimenFiscalService] // Exportamos por si acaso
+  exports: [RegimenFiscalService], // Exportamos por si acaso
 })
 export class RegimenFiscalModule {}

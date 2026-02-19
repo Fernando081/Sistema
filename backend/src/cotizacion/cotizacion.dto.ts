@@ -17,7 +17,7 @@ export class CreateCotizacionDto {
   @IsNumber() idCliente: number;
   @IsString() nombreReceptor: string;
   @IsString() rfcReceptor: string;
-  
+
   @IsNumber() subtotal: number;
   @IsNumber() totalImpuestos: number;
   @IsNumber() totalRetenciones: number;

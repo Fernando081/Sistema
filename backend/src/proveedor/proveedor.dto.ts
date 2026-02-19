@@ -1,6 +1,14 @@
 // backend/src/proveedor/proveedor.dto.ts (NUEVO ARCHIVO)
 
-import { IsString, IsNotEmpty, MaxLength, IsOptional, IsInt, MinLength, IsPostalCode } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  MaxLength,
+  IsOptional,
+  IsInt,
+  MinLength,
+  IsPostalCode,
+} from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 // DTO para Crear un Proveedor (Validación)
@@ -33,7 +41,7 @@ export class CreateProveedorDto {
   @IsOptional()
   @MaxLength(50)
   ciudad: string;
-  
+
   @IsString()
   @IsOptional()
   @MaxLength(100)

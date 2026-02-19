@@ -18,7 +18,7 @@ export class VentaService {
     const resultado = await this.dataSource.query(
       'SELECT fn_get_datos_ticket($1) as datos',
       [idFactura],
-    ) as TicketQueryResult[];
+    );
 
     return this.ticketService.crearPdfFactura(resultado[0].datos);
   }
@@ -46,7 +46,10 @@ export class VentaService {
         conceptosJson,
       ],
     );
-    return { message: 'Venta registrada con éxito', idFactura: result[0].id_factura };
+    return {
+      message: 'Venta registrada con éxito',
+      idFactura: result[0].id_factura,
+    };
   }
 
   async findAll() {
@@ -54,7 +57,9 @@ export class VentaService {
   }
 
   async findDetalle(idFactura: number) {
-    return this.dataSource.query('SELECT * FROM fn_get_detalle_factura($1)', [idFactura]);
+    return this.dataSource.query('SELECT * FROM fn_get_detalle_factura($1)', [
+      idFactura,
+    ]);
   }
 
   async enviarFacturaPorCorreo(idFactura: number) {
@@ -62,7 +67,8 @@ export class VentaService {
       'SELECT * FROM fn_preparar_envio_correo($1)',
       [idFactura],
     );
-    if (!res || res.length === 0) throw new Error('Error al obtener datos de envío.');
+    if (!res || res.length === 0)
+      throw new Error('Error al obtener datos de envío.');
     const datosEnvio = res[0];
     const pdfBuffer = await this.generarTicketPdf(idFactura);
     const transporter = nodemailer.createTransport({
@@ -74,7 +80,9 @@ export class VentaService {
       to: datosEnvio.destinatario,
       subject: datosEnvio.asunto,
       text: datosEnvio.cuerpo_mensaje,
-      attachments: [{ filename: datosEnvio.nombre_archivo, content: pdfBuffer }],
+      attachments: [
+        { filename: datosEnvio.nombre_archivo, content: pdfBuffer },
+      ],
     });
     return { message: `Correo enviado a ${datosEnvio.destinatario}` };
   }

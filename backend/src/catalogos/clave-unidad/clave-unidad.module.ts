@@ -8,6 +8,6 @@ import { ClaveUnidadController } from './clave-unidad.controller';
   imports: [TypeOrmModule.forFeature([ClaveUnidad])],
   providers: [ClaveUnidadService],
   controllers: [ClaveUnidadController],
-  exports: [ClaveUnidadService] // Exportamos por si acaso
+  exports: [ClaveUnidadService], // Exportamos por si acaso
 })
 export class ClaveUnidadModule {}
