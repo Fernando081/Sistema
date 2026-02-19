@@ -62,6 +62,9 @@ body {
     text-transform: uppercase;
   }
 
+  .responsive-table .mat-mdc-cell:last-child::before {
+    content: none;
+  }
   .responsive-table .mat-mdc-cell:last-child {
     justify-content: flex-end;
     margin-top: 0.5rem;
