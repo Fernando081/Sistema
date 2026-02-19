@@ -20,7 +20,7 @@ export class RegisterDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
-  @MaxLength(50)
+  @MaxLength(255)
   username!: string;
 
   @IsString()
