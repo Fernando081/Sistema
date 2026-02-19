@@ -1,5 +1,71 @@
 /* frontend/src/styles.css */
-/* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-card {
+  animation: slideUpFade 0.45s ease-out forwards;
+}
+
+@media screen and (max-width: 768px) {
+  .responsive-table .mat-mdc-table {
+    background: transparent !important;
+  }
+
+  .responsive-table .mat-mdc-header-row {
+    display: none !important;
+  }
+
+  .responsive-table .mat-mdc-row {
+    display: flex !important;
+    flex-direction: column;
+    background: var(--mat-sys-surface-container);
+    border-radius: var(--ui-radius-lg);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  .responsive-table .mat-mdc-cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: none !important;
+    padding: 0.45rem 0 !important;
+    gap: 1rem;
+  }
+
+  .responsive-table .mat-mdc-cell::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--mat-sys-outline);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .responsive-table .mat-mdc-cell:last-child {
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+    border-top: 1px dashed var(--mat-sys-outline-variant) !important;
+    padding-top: 1rem !important;
+  }
+}

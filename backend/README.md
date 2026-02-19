@@ -25,6 +25,22 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Configuración de base de datos (importante)
+
+Antes de levantar el backend, crea `backend/.env` basado en `backend/.env.example`.
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+Opciones soportadas:
+
+- `DATABASE_URL` (cadena completa de conexión), o
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`.
+
+> Si usas DB local, el puerto por defecto es `5432`.
+> Activa `DB_SSL=true` solo si tu proveedor cloud lo exige.
+
 ## Project setup
 
 ```bash

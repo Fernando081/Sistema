@@ -5,36 +5,42 @@
 </ng-container>
 
 <ng-template #appLayout>
-  <mat-sidenav-container class="w-screen h-screen">
-    <mat-sidenav #sidenav mode="side" opened class="w-64 bg-slate-900 text-white border-r-0">
-      <h2 class="text-2xl font-semibold p-6 text-center cursor-pointer hover:text-blue-400 transition-colors" routerLink="/dashboard">
-        Tu Negocio
-      </h2>
+  <mat-sidenav-container class="h-screen w-screen app-shell">
+    <mat-sidenav
+      #sidenav
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="!(isHandset$ | async)"
+      class="app-sidenav"
+    >
+      <div class="brand" routerLink="/dashboard">
+        <span class="brand-logo">TN</span>
+        <h2>Tu Negocio</h2>
+      </div>
 
-      <mat-nav-list>
-        <a mat-list-item routerLink="/dashboard" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">dashboard</mat-icon><span matListItemTitle>Inicio</span></a>
-        <a mat-list-item routerLink="/venta" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">point_of_sale</mat-icon><span matListItemTitle>Nueva Venta</span></a>
-        <a mat-list-item routerLink="/facturas" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">history</mat-icon><span matListItemTitle>Historial Ventas</span></a>
-        <a mat-list-item routerLink="/cliente" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">people</mat-icon><span matListItemTitle>Clientes</span></a>
-        <a mat-list-item routerLink="/proveedor" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">store</mat-icon><span matListItemTitle>Proveedores</span></a>
-        <a mat-list-item routerLink="/producto" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">inventory_2</mat-icon><span matListItemTitle>Productos</span></a>
-        <a mat-list-item routerLink="/cotizacion/nueva" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">request_quote</mat-icon><span matListItemTitle>Nueva Cotización</span></a>
-        <a mat-list-item routerLink="/cotizacion/historial" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">history_toggle_off</mat-icon><span matListItemTitle>Historial Cotizaciones</span></a>
-        <a mat-list-item routerLink="/compra" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">shopping_cart</mat-icon><span matListItemTitle>Nueva Compra</span></a>
-        <a mat-list-item routerLink="/compra/historial" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">receipt_long</mat-icon><span matListItemTitle>Historial Compras</span></a>
-        <a mat-list-item routerLink="/cobranza" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">payments</mat-icon><span matListItemTitle>Cobranza</span></a>
-        <a mat-list-item routerLink="/cuentas-por-pagar" class="!text-slate-300 hover:!bg-slate-700"><mat-icon matListItemIcon class="!text-slate-400">account_balance</mat-icon><span matListItemTitle>Cuentas por Pagar</span></a>
+      <mat-nav-list class="app-nav-list">
+        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>dashboard</mat-icon><span matListItemTitle>Inicio</span></a>
+        <a mat-list-item routerLink="/venta" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>point_of_sale</mat-icon><span matListItemTitle>Nueva Venta</span></a>
+        <a mat-list-item routerLink="/facturas" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>history</mat-icon><span matListItemTitle>Historial Ventas</span></a>
+        <a mat-list-item routerLink="/cliente" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>people</mat-icon><span matListItemTitle>Clientes</span></a>
+        <a mat-list-item routerLink="/proveedor" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>store</mat-icon><span matListItemTitle>Proveedores</span></a>
+        <a mat-list-item routerLink="/producto" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>inventory_2</mat-icon><span matListItemTitle>Productos</span></a>
+        <a mat-list-item routerLink="/cotizacion/nueva" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>request_quote</mat-icon><span matListItemTitle>Nueva Cotización</span></a>
+        <a mat-list-item routerLink="/cotizacion/historial" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>history_toggle_off</mat-icon><span matListItemTitle>Historial Cotizaciones</span></a>
+        <a mat-list-item routerLink="/compra" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>shopping_cart</mat-icon><span matListItemTitle>Nueva Compra</span></a>
+        <a mat-list-item routerLink="/compra/historial" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>receipt_long</mat-icon><span matListItemTitle>Historial Compras</span></a>
+        <a mat-list-item routerLink="/cobranza" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>payments</mat-icon><span matListItemTitle>Cobranza</span></a>
+        <a mat-list-item routerLink="/cuentas-por-pagar" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>account_balance</mat-icon><span matListItemTitle>Cuentas por Pagar</span></a>
       </mat-nav-list>
     </mat-sidenav>
 
-    <mat-sidenav-content class="bg-gray-100">
-      <mat-toolbar class="bg-white shadow-sm text-gray-800">
+    <mat-sidenav-content>
+      <mat-toolbar class="app-toolbar">
         <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle sidenav"><mat-icon>menu</mat-icon></button>
         <span class="flex-auto"></span>
         <button mat-stroked-button color="primary" (click)="logout()">Cerrar sesión</button>
       </mat-toolbar>
 
-      <main class="p-4 md:p-8">
+      <main class="app-content">
         <router-outlet></router-outlet>
       </main>
     </mat-sidenav-content>

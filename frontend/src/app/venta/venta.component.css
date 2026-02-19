@@ -1,1 +1,38 @@
 /* frontend/src/app/venta/venta.component.css */
+
+.line-input {
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 0.5rem;
+  outline: none;
+  background: var(--mat-sys-surface-container-lowest);
+}
+
+.line-input:focus {
+  border-color: var(--mat-sys-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--mat-sys-primary) 20%, transparent);
+}
+
+.client-info {
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.totals-card {
+  background: linear-gradient(
+    160deg,
+    var(--mat-sys-primary-container),
+    color-mix(in srgb, var(--mat-sys-primary-container) 75%, white)
+  ) !important;
+  color: var(--mat-sys-on-primary-container);
+  border: none !important;
+}
+
+.pay-button {
+  border-radius: 1rem !important;
+  min-height: 3.5rem;
+  font-size: 1rem !important;
+}
