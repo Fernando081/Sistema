@@ -39,6 +39,11 @@ describe('parseSsl', () => {
     expect(parseSsl(configService)).toEqual({ rejectUnauthorized: false });
   });
 
+  it('returns ssl object with rejectUnauthorized=false when DB_SSL is "y"', () => {
+    const configService = makeConfigService({ DB_SSL: 'y' });
+    expect(parseSsl(configService)).toEqual({ rejectUnauthorized: false });
+  });
+
   it('returns ssl object with rejectUnauthorized=false when DB_SSL is "on"', () => {
     const configService = makeConfigService({ DB_SSL: 'on' });
     expect(parseSsl(configService)).toEqual({ rejectUnauthorized: false });
