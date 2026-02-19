@@ -42,8 +42,15 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { AuthUser } from './auth/auth-user.entity';
 
 const parseSsl = (configService: ConfigService): false | { rejectUnauthorized: boolean } => {
-  const rawSsl = (configService.get<string>('DB_SSL') || '').toLowerCase();
-  return rawSsl === 'true' ? { rejectUnauthorized: false } : false;
+  const rawSsl = configService.get<string>('DB_SSL');
+  if (!rawSsl) {
+    return false;
+  }
+
+  const normalized = rawSsl.trim().toLowerCase();
+  const truthyValues = new Set(['true', '1', 'yes', 'y', 'on']);
+
+  return truthyValues.has(normalized) ? { rejectUnauthorized: false } : false;
 };
 
 @Module({
