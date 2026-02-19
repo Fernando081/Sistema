@@ -108,4 +108,20 @@ describe('parseSsl', () => {
     const configService = makeConfigService({ DB_SSL: '  yes  ' });
     expect(parseSsl(configService)).toEqual({ rejectUnauthorized: false });
   });
+
+  it('handles mixed-case DB_SSL_REJECT_UNAUTHORIZED value', () => {
+    const configService = makeConfigService({
+      DB_SSL: 'true',
+      DB_SSL_REJECT_UNAUTHORIZED: 'TRUE',
+    });
+    expect(parseSsl(configService)).toEqual({ rejectUnauthorized: true });
+  });
+
+  it('handles DB_SSL_REJECT_UNAUTHORIZED with surrounding whitespace', () => {
+    const configService = makeConfigService({
+      DB_SSL: 'true',
+      DB_SSL_REJECT_UNAUTHORIZED: '  true  ',
+    });
+    expect(parseSsl(configService)).toEqual({ rejectUnauthorized: true });
+  });
 });
