@@ -76,6 +76,29 @@ describe('parseSsl', () => {
     expect(parseSsl(configService)).toEqual({ rejectUnauthorized: false });
   });
 
+  it('returns ssl object with rejectUnauthorized=true when DB_SSL_REJECT_UNAUTHORIZED is "yes"', () => {
+    const configService = makeConfigService({
+      DB_SSL: 'true',
+      DB_SSL_REJECT_UNAUTHORIZED: 'yes',
+    });
+    expect(parseSsl(configService)).toEqual({ rejectUnauthorized: true });
+  });
+
+  it('returns ssl object with rejectUnauthorized=true when DB_SSL_REJECT_UNAUTHORIZED is "y"', () => {
+    const configService = makeConfigService({
+      DB_SSL: 'true',
+      DB_SSL_REJECT_UNAUTHORIZED: 'y',
+    });
+    expect(parseSsl(configService)).toEqual({ rejectUnauthorized: true });
+  });
+
+  it('returns ssl object with rejectUnauthorized=true when DB_SSL_REJECT_UNAUTHORIZED is "on"', () => {
+    const configService = makeConfigService({
+      DB_SSL: 'true',
+      DB_SSL_REJECT_UNAUTHORIZED: 'on',
+    });
+    expect(parseSsl(configService)).toEqual({ rejectUnauthorized: true });
+  });
   it('handles mixed-case DB_SSL value', () => {
     const configService = makeConfigService({ DB_SSL: 'TRUE' });
     expect(parseSsl(configService)).toEqual({ rejectUnauthorized: false });
