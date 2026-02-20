@@ -4,13 +4,21 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter, map, shareReplay } from 'rxjs';
 import { AuthService } from './auth/auth.service';
+
+type AuthUser = {
+  sub?: string;
+  role?: string;
+};
 
 @Component({
   selector: 'app-root',
@@ -23,6 +31,9 @@ import { AuthService } from './auth/auth.service';
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+    MatBadgeModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatSidenavModule,
     MatListModule,
     AsyncPipe,
@@ -34,6 +45,7 @@ export class App {
   private readonly breakpointObserver = inject(BreakpointObserver);
 
   isLoginRoute = false;
+  user: AuthUser | null = null;
   readonly isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => result.matches),
     shareReplay(1),
@@ -47,12 +59,38 @@ export class App {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this.isLoginRoute = this.router.url.startsWith('/login');
+        this.user = this.getUserFromToken();
       });
     this.isLoginRoute = this.router.url.startsWith('/login');
+    this.user = this.getUserFromToken();
   }
 
   logout(): void {
     this.authService.logout();
+    this.user = null;
     this.router.navigate(['/login']);
+  }
+
+  private getUserFromToken(): AuthUser | null {
+    const token = this.authService.getToken();
+    if (!token) {
+      return null;
+    }
+
+    const segments = token.split('.');
+    if (segments.length < 2) {
+      return null;
+    }
+
+    const payload = segments[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = payload.padEnd(Math.ceil(payload.length / 4) * 4, '=');
+
+    try {
+      const decoded = atob(padded);
+      const parsed = JSON.parse(decoded) as AuthUser;
+      return parsed;
+    } catch {
+      return null;
+    }
   }
 }
