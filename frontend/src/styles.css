@@ -25,56 +25,56 @@ body {
   font-family: 'Poppins', 'Roboto', 'Helvetica Neue', sans-serif;
 }
 
-.mat-mdc-card {
-  background-color: var(--wrap-card-bg) !important;
-  border-radius: var(--wrap-radius) !important;
-  box-shadow: var(--wrap-shadow-sm) !important;
-  border: none !important;
+body .mat-mdc-card {
+  background-color: var(--wrap-card-bg);
+  border-radius: var(--wrap-radius);
+  box-shadow: var(--wrap-shadow-sm);
+  border: none;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
 }
 
-.mat-mdc-card:hover {
+body .mat-mdc-card:hover {
   transform: translateY(-3px);
-  box-shadow: var(--wrap-shadow-hover) !important;
+  box-shadow: var(--wrap-shadow-hover);
 }
 
-.mat-mdc-card-header {
-  padding: 24px 24px 0 !important;
+body .mat-mdc-card-header {
+  padding: 24px 24px 0;
 }
 
-.mat-mdc-card-title {
-  color: var(--wrap-text-title) !important;
-  font-weight: 600 !important;
-  font-size: 1.125rem !important;
+body .mat-mdc-card-title {
+  color: var(--wrap-text-title);
+  font-weight: 600;
+  font-size: 1.125rem;
 }
 
-.mat-mdc-card-content {
-  padding: 24px !important;
+body .mat-mdc-card-content {
+  padding: 24px;
 }
 
-.mat-mdc-table {
-  background: transparent !important;
+body .mat-mdc-table {
+  background: transparent;
 }
 
-th.mat-mdc-header-cell {
-  background-color: #f7f9fa !important;
-  color: var(--wrap-text-title) !important;
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  border-bottom: none !important;
-  padding: 16px !important;
+body th.mat-mdc-header-cell {
+  background-color: #f7f9fa;
+  color: var(--wrap-text-title);
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-bottom: none;
+  padding: 16px;
 }
 
-td.mat-mdc-cell {
-  color: var(--wrap-text-muted) !important;
-  border-bottom: 1px solid var(--wrap-border) !important;
-  padding: 16px !important;
+body td.mat-mdc-cell {
+  color: var(--wrap-text-muted);
+  border-bottom: 1px solid var(--wrap-border);
+  padding: 16px;
   font-size: 0.875rem;
 }
 
-tr.mdc-data-table__row:hover {
-  background-color: #fcfcfc !important;
+body tr.mdc-data-table__row:hover {
+  background-color: #fcfcfc;
 }
 
 @keyframes slideUpFade {
