@@ -81,7 +81,7 @@ export class App {
     }
 
     const segments = token.split('.');
-    if (segments.length < 2) {
+    if (segments.length !== 3) {
       return null;
     }
 
