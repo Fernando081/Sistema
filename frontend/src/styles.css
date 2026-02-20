@@ -26,35 +26,35 @@ body {
 }
 
 .mat-mdc-card {
-  background-color: var(--wrap-card-bg) !important;
-  border-radius: var(--wrap-radius) !important;
-  box-shadow: var(--wrap-shadow-sm) !important;
-  border: none !important;
+  background-color: var(--wrap-card-bg);
+  border-radius: var(--wrap-radius);
+  box-shadow: var(--wrap-shadow-sm);
+  border: none;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
 }
 
 .mat-mdc-card:hover {
   transform: translateY(-3px);
-  box-shadow: var(--wrap-shadow-hover) !important;
+  box-shadow: var(--wrap-shadow-hover);
 }
 
 .mat-mdc-card-header {
-  padding: 24px 24px 0 !important;
+  padding: 24px 24px 0;
 }
 
 .mat-mdc-card-title {
-  color: var(--wrap-text-title) !important;
-  font-weight: 600 !important;
-  font-size: 1.125rem !important;
+  color: var(--wrap-text-title);
+  font-weight: 600;
+  font-size: 1.125rem;
 }
 
 .mat-mdc-card-content {
-  padding: 24px !important;
+  padding: 24px;
 }
 
 .mat-mdc-table {
-  background: transparent !important;
+  background: transparent;
 }
 
 th.mat-mdc-header-cell {
