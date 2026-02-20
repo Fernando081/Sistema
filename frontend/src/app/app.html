@@ -19,7 +19,7 @@
 
       <div class="profile-card">
         <img
-          src="https://ui-avatars.com/api/?name=Administrador&background=eef5f9&color=1e88e5"
+          [src]="'https://ui-avatars.com/api/?name=' + (user?.sub || 'Administrador') + '&background=eef5f9&color=1e88e5'"
           alt="Avatar"
           class="avatar"
         />
