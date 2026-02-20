@@ -33,9 +33,22 @@ export class AuthService {
     const token = this.getToken();
     if (!token) return null;
     try {
-      const payload = token.split('.')[1];
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        return null;
+      }
+      const payload = parts[1];
       const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-      return JSON.parse(atob(base64)) as { sub?: string; role?: string };
+      const paddingNeeded = base64.length % 4;
+      const paddedBase64 =
+        paddingNeeded === 0
+          ? base64
+          : paddingNeeded === 2
+          ? base64 + '=='
+          : paddingNeeded === 3
+          ? base64 + '='
+          : base64;
+      return JSON.parse(atob(paddedBase64)) as { sub?: string; role?: string };
     } catch {
       return null;
     }
