@@ -28,4 +28,16 @@ export class AuthService {
   isAuthenticated(): boolean {
     return Boolean(this.getToken());
   }
+
+  getDecodedToken(): { username?: string; role?: string } | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload;
+    } catch (err) {
+      console.warn('Failed to decode token payload', err);
+      return null;
+    }
+  }
 }

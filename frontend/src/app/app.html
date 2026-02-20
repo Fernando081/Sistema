@@ -23,8 +23,8 @@
           alt="Avatar"
           class="avatar"
         />
-        <h4>Administrador</h4>
-        <p>Panel principal</p>
+        <h4>{{ user?.username || 'Administrador' }}</h4>
+        <p>{{ user?.role || 'Panel principal' }}</p>
       </div>
 
       <mat-nav-list class="app-nav-list">
