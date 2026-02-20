@@ -1,82 +1,169 @@
 /* frontend/src/app/app.css */
 
-.app-shell {
-  background: linear-gradient(180deg, var(--mat-sys-surface-container-low) 0%, var(--mat-sys-surface-container-lowest) 40%);
-}
-
-.app-sidenav {
-  width: 18rem;
+.wrap-sidenav {
+  width: 260px;
   border-right: 0 !important;
-  margin: 0.75rem;
-  border-radius: var(--ui-radius-xl);
-  background: var(--mat-sys-surface-container) !important;
+  box-shadow: 5px 0 20px rgba(0, 0, 0, 0.05);
+  background: #fff !important;
 }
 
 .brand {
+  height: 70px;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin: 0.75rem;
-  padding: 0.75rem;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid #edf2f7;
   cursor: pointer;
 }
 
 .brand-logo {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 999px;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
   display: grid;
   place-items: center;
-  color: var(--mat-sys-on-primary);
-  background: var(--mat-sys-primary);
+  color: #fff;
+  background: #1e88e5;
   font-weight: 700;
+  box-shadow: 0 6px 14px rgba(30, 136, 229, 0.35);
 }
 
 .brand h2 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 700;
+  color: #2f3d4a;
+}
+
+.profile-card {
+  padding: 1.25rem;
+  text-align: center;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.profile-card h4 {
+  margin: 0.6rem 0 0.2rem;
+  color: #3e5569;
+}
+
+.profile-card p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #8b9bab;
 }
 
 .app-nav-list {
-  padding-inline: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
 }
 
-.nav-item {
-  border-radius: 999px !important;
-  margin-bottom: 0.2rem;
-  color: var(--mat-sys-on-surface-variant) !important;
-  transition: var(--ui-transition-fluid);
+.nav-label {
+  margin: 0.2rem 0 0.25rem;
+  padding-left: 0.9rem;
+  color: #9aa8b5;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.nav-item:hover {
-  background-color: var(--mat-sys-surface-container-highest) !important;
+.nav-label.mt {
+  margin-top: 0.8rem;
 }
 
-.active-link {
-  background-color: var(--mat-sys-secondary-container) !important;
-  color: var(--mat-sys-on-secondary-container) !important;
-  font-weight: 600;
+.wrap-nav-item {
+  border-radius: 8px !important;
+  color: #54667a !important;
+  transition: all 0.3s ease;
 }
 
-.active-link .mat-icon {
-  color: var(--mat-sys-on-secondary-container) !important;
+.wrap-nav-item:hover {
+  background-color: #f2f6f8;
+  color: #1e88e5 !important;
+  transform: translateX(3px);
 }
 
-.app-toolbar {
+.wrap-nav-item .mat-icon {
+  color: #a1aab2 !important;
+  transition: color 0.3s ease;
+}
+
+.wrap-nav-item:hover .mat-icon,
+.active-nav .mat-icon {
+  color: #fff !important;
+}
+
+.active-nav {
+  background-color: #1e88e5 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 10px rgba(30, 136, 229, 0.3);
+}
+
+.wrap-content-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #eef5f9;
+}
+
+.wrap-toolbar {
+  min-height: 70px;
+  background: linear-gradient(90deg, #1e88e5 0%, #2a95f6 100%) !important;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(30, 136, 229, 0.28);
   position: sticky;
   top: 0;
   z-index: 2;
-  background: color-mix(in srgb, var(--mat-sys-surface-container-lowest) 86%, transparent) !important;
-  backdrop-filter: blur(8px);
+  padding-inline: 1rem;
+}
+
+.logout-btn {
+  border-radius: 999px;
 }
 
 .app-content {
-  padding: 1rem;
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
 }
 
-@media (min-width: 768px) {
-  .app-content {
-    padding: 1.5rem 2rem;
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.page-head h3 {
+  margin: 0;
+  color: #2f3d4a;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.page-head span {
+  background: #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: #90a4ae;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 900px) {
+  .page-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }

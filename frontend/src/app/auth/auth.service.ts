@@ -28,4 +28,19 @@ export class AuthService {
   isAuthenticated(): boolean {
     return Boolean(this.getToken());
   }
+
+  getDecodedToken(): { sub?: string; role?: string } | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const part = token.split('.')[1];
+      // Convert base64url to standard base64 before decoding
+      const b64 = part.replace(/-/g, '+').replace(/_/g, '/') + '=='.slice(0, (4 - (part.length % 4)) % 4);
+      const payload = JSON.parse(atob(b64));
+      return payload;
+    } catch (err) {
+      console.warn('Failed to decode token payload', err);
+      return null;
+    }
+  }
 }

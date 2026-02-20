@@ -1,54 +1,56 @@
 <!-- frontend/src/app/dashboard/dashboard.component.html -->
-<div class="p-2 md:p-4 grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6" *ngIf="metrics">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6" *ngIf="metrics">
   <mat-card class="animate-card">
-    <mat-card-content class="flex items-center p-4">
-      <div class="p-3 rounded-full mr-4 bg-[var(--mat-sys-primary-container)]">
-        <mat-icon class="scale-125 text-[var(--mat-sys-on-primary-container)]">point_of_sale</mat-icon>
+    <mat-card-content class="flex items-center">
+      <div class="kpi-icon" style="background: var(--wrap-primary-bg); color: var(--wrap-primary);">
+        <mat-icon class="scale-150">point_of_sale</mat-icon>
       </div>
       <div>
-        <p class="text-sm opacity-70 font-medium">Ventas Hoy</p>
-        <h3 class="text-2xl font-bold">{{ metrics.ventasHoy | currency:'MXN' }}</h3>
+        <h3 class="kpi-value m-0">{{ metrics.ventasHoy | currency:'MXN' }}</h3>
+        <span class="kpi-label">Ventas Hoy</span>
       </div>
     </mat-card-content>
   </mat-card>
 
   <mat-card class="animate-card">
-    <mat-card-content class="flex items-center p-4">
-      <div class="p-3 rounded-full mr-4 bg-[var(--mat-sys-secondary-container)]">
-        <mat-icon class="scale-125 text-[var(--mat-sys-on-secondary-container)]">account_balance_wallet</mat-icon>
+    <mat-card-content class="flex items-center">
+      <div class="kpi-icon" style="background: var(--wrap-warning-bg); color: var(--wrap-warning);">
+        <mat-icon class="scale-150">account_balance_wallet</mat-icon>
       </div>
       <div>
-        <p class="text-sm opacity-70 font-medium">Por Cobrar</p>
-        <h3 class="text-2xl font-bold">{{ metrics.porCobrar | currency:'MXN' }}</h3>
+        <h3 class="kpi-value m-0">{{ metrics.porCobrar | currency:'MXN' }}</h3>
+        <span class="kpi-label">Por Cobrar</span>
       </div>
     </mat-card-content>
   </mat-card>
 
   <mat-card class="animate-card">
-    <mat-card-content class="flex items-center p-4">
-      <div class="p-3 rounded-full mr-4 bg-[var(--mat-sys-tertiary-container)]">
-        <mat-icon class="scale-125 text-[var(--mat-sys-on-tertiary-container)]">money_off</mat-icon>
+    <mat-card-content class="flex items-center">
+      <div class="kpi-icon" style="background: var(--wrap-purple-bg); color: var(--wrap-purple);">
+        <mat-icon class="scale-150">money_off</mat-icon>
       </div>
       <div>
-        <p class="text-sm opacity-70 font-medium">Por Pagar</p>
-        <h3 class="text-2xl font-bold">{{ metrics.porPagar | currency:'MXN' }}</h3>
+        <h3 class="kpi-value m-0">{{ metrics.porPagar | currency:'MXN' }}</h3>
+        <span class="kpi-label">Por Pagar</span>
       </div>
     </mat-card-content>
   </mat-card>
 
   <mat-card class="animate-card">
-    <mat-card-content class="flex items-center p-4">
-      <div class="p-3 rounded-full mr-4 bg-[var(--mat-sys-error-container)]">
-        <mat-icon class="scale-125 text-[var(--mat-sys-on-error-container)]">warning</mat-icon>
+    <mat-card-content class="flex items-center">
+      <div class="kpi-icon" style="background: var(--wrap-danger-bg); color: var(--wrap-danger);">
+        <mat-icon class="scale-150">warning</mat-icon>
       </div>
       <div>
-        <p class="text-sm opacity-70 font-medium">Stock Bajo</p>
-        <h3 class="text-2xl font-bold">{{ metrics.conteoBajos }} prod.</h3>
+        <h3 class="kpi-value m-0">{{ metrics.conteoBajos }} prod.</h3>
+        <span class="kpi-label">Stock Bajo</span>
       </div>
     </mat-card-content>
   </mat-card>
+</div>
 
-  <mat-card class="md:col-span-3 animate-card">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<mat-card class="md:col-span-3 animate-card">
     <mat-card-header><mat-card-title>Tendencia de Ventas (7 Días)</mat-card-title></mat-card-header>
     <mat-card-content class="h-[300px] flex items-center justify-center mt-4">
       <div *ngIf="graficaVentas.length > 0; else noData" class="w-full h-full">

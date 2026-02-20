@@ -34,6 +34,9 @@ export class App {
   private readonly breakpointObserver = inject(BreakpointObserver);
 
   isLoginRoute = false;
+  get user() {
+    return this.authService.getDecodedToken();
+  }
   readonly isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => result.matches),
     shareReplay(1),
