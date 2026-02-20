@@ -18,6 +18,9 @@ import { AuthService } from './auth/auth.service';
 type AuthUser = {
   sub?: string;
   role?: string;
+  // Optional JWT timestamp fields, aligned with backend JwtPayload
+  iat?: number;
+  exp?: number;
 };
 
 @Component({
