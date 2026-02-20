@@ -33,13 +33,23 @@ export class AuthService {
     const token = this.getToken();
     if (!token) return null;
     try {
-      const part = token.split('.')[1];
-      // Convert base64url to standard base64 before decoding
-      const b64 = part.replace(/-/g, '+').replace(/_/g, '/') + '=='.slice(0, (4 - (part.length % 4)) % 4);
-      const payload = JSON.parse(atob(b64));
-      return payload;
-    } catch (err) {
-      console.warn('Failed to decode token payload', err);
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        return null;
+      }
+      const payload = parts[1];
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const paddingNeeded = base64.length % 4;
+      const paddedBase64 =
+        paddingNeeded === 0
+          ? base64
+          : paddingNeeded === 2
+          ? base64 + '=='
+          : paddingNeeded === 3
+          ? base64 + '='
+          : base64;
+      return JSON.parse(atob(paddedBase64)) as { sub?: string; role?: string };
+    } catch {
       return null;
     }
   }
