@@ -7,6 +7,13 @@
   --wrap-text-muted: #67757c;
   --wrap-border: #e9ecef;
   --wrap-primary: #1e88e5;
+  --wrap-primary-bg: #e8f2fc;
+  --wrap-warning: #ffb22b;
+  --wrap-warning-bg: #fdf3e5;
+  --wrap-purple: #7460ee;
+  --wrap-purple-bg: #f1ebfa;
+  --wrap-danger: #fc4b6c;
+  --wrap-danger-bg: #fde9eb;
 
   --wrap-shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.05);
   --wrap-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.1);
@@ -30,11 +37,14 @@ body .mat-mdc-card {
   border-radius: var(--wrap-radius);
   box-shadow: var(--wrap-shadow-sm);
   border: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
 }
 
-body .mat-mdc-card:hover {
+body .mat-mdc-card.animate-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+body .mat-mdc-card.animate-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--wrap-shadow-hover);
 }
@@ -75,6 +85,29 @@ body td.mat-mdc-cell {
 
 body tr.mdc-data-table__row:hover {
   background-color: #fcfcfc;
+}
+
+.kpi-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 1rem;
+}
+
+.kpi-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--wrap-text-title);
+}
+
+.kpi-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--wrap-text-muted);
 }
 
 @keyframes slideUpFade {
