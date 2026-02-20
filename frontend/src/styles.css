@@ -7,6 +7,13 @@
   --wrap-text-muted: #67757c;
   --wrap-border: #e9ecef;
   --wrap-primary: #1e88e5;
+  --wrap-primary-light: #e8f2fc;
+  --wrap-warning: #ffb22b;
+  --wrap-warning-light: #fdf3e5;
+  --wrap-secondary: #7460ee;
+  --wrap-secondary-light: #f1ebfa;
+  --wrap-danger: #fc4b6c;
+  --wrap-danger-light: #fde9eb;
 
   --wrap-shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.05);
   --wrap-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.1);
@@ -23,6 +30,17 @@ body {
   background-color: var(--wrap-bg);
   color: var(--wrap-text-muted);
   font-family: 'Poppins', 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+.kpi-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  flex-shrink: 0;
 }
 
 .mat-mdc-card {
