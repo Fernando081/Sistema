@@ -32,15 +32,7 @@ body {
   }
 
   .responsive-table .mat-mdc-header-row {
-    position: absolute !important;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-    border: 0;
+    display: none !important;
   }
 
   .responsive-table .mat-mdc-row {
@@ -62,15 +54,19 @@ body {
     gap: 1rem;
   }
 
-  .responsive-table .mat-mdc-cell .cell-label {
+  .responsive-table .mat-mdc-cell::before {
+    content: attr(data-label);
     font-weight: 600;
     color: var(--mat-sys-outline);
     font-size: 0.75rem;
     text-transform: uppercase;
-    flex-shrink: 0;
   }
 
+  .responsive-table .mat-mdc-cell.actions-cell::before {
+    content: none;
+  }
   .responsive-table .mat-mdc-cell.actions-cell {
+    justify-content: flex-end;
     margin-top: 0.5rem;
     border-top: 1px dashed var(--mat-sys-outline-variant) !important;
     padding-top: 1rem !important;

@@ -12,24 +12,24 @@
       [opened]="!(isHandset$ | async)"
       class="app-sidenav"
     >
-      <a class="brand" routerLink="/dashboard">
+      <div class="brand" routerLink="/dashboard">
         <span class="brand-logo">TN</span>
         <h2>Tu Negocio</h2>
-      </a>
+      </div>
 
       <mat-nav-list class="app-nav-list">
-        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>dashboard</mat-icon><span matListItemTitle>Inicio</span></a>
-        <a mat-list-item routerLink="/venta" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>point_of_sale</mat-icon><span matListItemTitle>Nueva Venta</span></a>
-        <a mat-list-item routerLink="/facturas" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>history</mat-icon><span matListItemTitle>Historial Ventas</span></a>
-        <a mat-list-item routerLink="/cliente" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>people</mat-icon><span matListItemTitle>Clientes</span></a>
-        <a mat-list-item routerLink="/proveedor" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>store</mat-icon><span matListItemTitle>Proveedores</span></a>
-        <a mat-list-item routerLink="/producto" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>inventory_2</mat-icon><span matListItemTitle>Productos</span></a>
-        <a mat-list-item routerLink="/cotizacion/nueva" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>request_quote</mat-icon><span matListItemTitle>Nueva Cotización</span></a>
-        <a mat-list-item routerLink="/cotizacion/historial" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>history_toggle_off</mat-icon><span matListItemTitle>Historial Cotizaciones</span></a>
-        <a mat-list-item routerLink="/compra" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>shopping_cart</mat-icon><span matListItemTitle>Nueva Compra</span></a>
-        <a mat-list-item routerLink="/compra/historial" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>receipt_long</mat-icon><span matListItemTitle>Historial Compras</span></a>
-        <a mat-list-item routerLink="/cobranza" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>payments</mat-icon><span matListItemTitle>Cobranza</span></a>
-        <a mat-list-item routerLink="/cuentas-por-pagar" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-item"><mat-icon matListItemIcon>account_balance</mat-icon><span matListItemTitle>Cuentas por Pagar</span></a>
+        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>dashboard</mat-icon><span matListItemTitle>Inicio</span></a>
+        <a mat-list-item routerLink="/venta" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>point_of_sale</mat-icon><span matListItemTitle>Nueva Venta</span></a>
+        <a mat-list-item routerLink="/facturas" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>history</mat-icon><span matListItemTitle>Historial Ventas</span></a>
+        <a mat-list-item routerLink="/cliente" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>people</mat-icon><span matListItemTitle>Clientes</span></a>
+        <a mat-list-item routerLink="/proveedor" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>store</mat-icon><span matListItemTitle>Proveedores</span></a>
+        <a mat-list-item routerLink="/producto" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>inventory_2</mat-icon><span matListItemTitle>Productos</span></a>
+        <a mat-list-item routerLink="/cotizacion/nueva" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>request_quote</mat-icon><span matListItemTitle>Nueva Cotización</span></a>
+        <a mat-list-item routerLink="/cotizacion/historial" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>history_toggle_off</mat-icon><span matListItemTitle>Historial Cotizaciones</span></a>
+        <a mat-list-item routerLink="/compra" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>shopping_cart</mat-icon><span matListItemTitle>Nueva Compra</span></a>
+        <a mat-list-item routerLink="/compra/historial" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>receipt_long</mat-icon><span matListItemTitle>Historial Compras</span></a>
+        <a mat-list-item routerLink="/cobranza" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>payments</mat-icon><span matListItemTitle>Cobranza</span></a>
+        <a mat-list-item routerLink="/cuentas-por-pagar" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>account_balance</mat-icon><span matListItemTitle>Cuentas por Pagar</span></a>
       </mat-nav-list>
     </mat-sidenav>
 
