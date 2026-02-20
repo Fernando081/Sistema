@@ -5,42 +5,70 @@
 </ng-container>
 
 <ng-template #appLayout>
-  <mat-sidenav-container class="h-screen w-screen app-shell">
+  <mat-sidenav-container class="h-screen w-screen bg-transparent">
     <mat-sidenav
       #sidenav
       [mode]="(isHandset$ | async) ? 'over' : 'side'"
       [opened]="!(isHandset$ | async)"
-      class="app-sidenav"
+      class="wrap-sidenav"
     >
       <div class="brand" routerLink="/dashboard">
-        <span class="brand-logo">TN</span>
-        <h2>Tu Negocio</h2>
+        <div class="brand-logo">RT</div>
+        <h2>Refacciones</h2>
+      </div>
+
+      <div class="profile-card">
+        <img
+          src="https://ui-avatars.com/api/?name=Administrador&background=eef5f9&color=1e88e5"
+          alt="Avatar"
+          class="avatar"
+        />
+        <h4>Administrador</h4>
+        <p>Panel principal</p>
       </div>
 
       <mat-nav-list class="app-nav-list">
-        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>dashboard</mat-icon><span matListItemTitle>Inicio</span></a>
-        <a mat-list-item routerLink="/venta" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>point_of_sale</mat-icon><span matListItemTitle>Nueva Venta</span></a>
-        <a mat-list-item routerLink="/facturas" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>history</mat-icon><span matListItemTitle>Historial Ventas</span></a>
-        <a mat-list-item routerLink="/cliente" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>people</mat-icon><span matListItemTitle>Clientes</span></a>
-        <a mat-list-item routerLink="/proveedor" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>store</mat-icon><span matListItemTitle>Proveedores</span></a>
-        <a mat-list-item routerLink="/producto" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>inventory_2</mat-icon><span matListItemTitle>Productos</span></a>
-        <a mat-list-item routerLink="/cotizacion/nueva" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>request_quote</mat-icon><span matListItemTitle>Nueva Cotización</span></a>
-        <a mat-list-item routerLink="/cotizacion/historial" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>history_toggle_off</mat-icon><span matListItemTitle>Historial Cotizaciones</span></a>
-        <a mat-list-item routerLink="/compra" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>shopping_cart</mat-icon><span matListItemTitle>Nueva Compra</span></a>
-        <a mat-list-item routerLink="/compra/historial" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>receipt_long</mat-icon><span matListItemTitle>Historial Compras</span></a>
-        <a mat-list-item routerLink="/cobranza" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>payments</mat-icon><span matListItemTitle>Cobranza</span></a>
-        <a mat-list-item routerLink="/cuentas-por-pagar" routerLinkActive="active-link" class="nav-item"><mat-icon matListItemIcon>account_balance</mat-icon><span matListItemTitle>Cuentas por Pagar</span></a>
+        <p class="nav-label">Principal</p>
+        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>space_dashboard</mat-icon><span matListItemTitle>Dashboard</span></a>
+        <a mat-list-item routerLink="/venta" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>point_of_sale</mat-icon><span matListItemTitle>Punto de Venta</span></a>
+        <a mat-list-item routerLink="/facturas" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>receipt_long</mat-icon><span matListItemTitle>Historial Ventas</span></a>
+
+        <p class="nav-label mt">Catálogos</p>
+        <a mat-list-item routerLink="/cliente" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>people_outline</mat-icon><span matListItemTitle>Clientes</span></a>
+        <a mat-list-item routerLink="/proveedor" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>storefront</mat-icon><span matListItemTitle>Proveedores</span></a>
+        <a mat-list-item routerLink="/producto" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>inventory_2</mat-icon><span matListItemTitle>Productos</span></a>
+        <a mat-list-item routerLink="/compra" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>shopping_cart</mat-icon><span matListItemTitle>Compras</span></a>
       </mat-nav-list>
     </mat-sidenav>
 
-    <mat-sidenav-content>
-      <mat-toolbar class="app-toolbar">
-        <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle sidenav"><mat-icon>menu</mat-icon></button>
+    <mat-sidenav-content class="wrap-content-shell">
+      <mat-toolbar class="wrap-toolbar">
+        <button mat-icon-button (click)="sidenav.toggle()" aria-label="Abrir menú">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <mat-form-field appearance="outline" class="topbar-search">
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput placeholder="Buscar algo..." />
+        </mat-form-field>
+
         <span class="flex-auto"></span>
-        <button mat-stroked-button color="primary" (click)="logout()">Cerrar sesión</button>
+
+        <button mat-icon-button class="mr-2">
+          <mat-icon matBadge="3" matBadgeColor="warn">notifications_none</mat-icon>
+        </button>
+        <button mat-button class="logout-btn" (click)="logout()">
+          <span>Salir</span>
+          <mat-icon>logout</mat-icon>
+        </button>
       </mat-toolbar>
 
       <main class="app-content">
+        <div class="page-head">
+          <h3>Sistema ERP</h3>
+          <span>Home / Dashboard</span>
+        </div>
+
         <router-outlet></router-outlet>
       </main>
     </mat-sidenav-content>

@@ -4,7 +4,10 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -23,6 +26,9 @@ import { AuthService } from './auth/auth.service';
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+    MatBadgeModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatSidenavModule,
     MatListModule,
     AsyncPipe,
