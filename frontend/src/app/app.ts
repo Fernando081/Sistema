@@ -40,6 +40,8 @@ export class App {
   private readonly breakpointObserver = inject(BreakpointObserver);
 
   isLoginRoute = false;
+  userName: string | null = null;
+  userRole: string | null = null;
   readonly isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => result.matches),
     shareReplay(1),
@@ -53,8 +55,16 @@ export class App {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this.isLoginRoute = this.router.url.startsWith('/login');
+        this.loadUserInfo();
       });
     this.isLoginRoute = this.router.url.startsWith('/login');
+    this.loadUserInfo();
+  }
+
+  private loadUserInfo(): void {
+    const decoded = this.authService.getDecodedToken();
+    this.userName = decoded?.sub ?? null;
+    this.userRole = decoded?.role ?? null;
   }
 
   logout(): void {

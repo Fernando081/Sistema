@@ -28,4 +28,16 @@ export class AuthService {
   isAuthenticated(): boolean {
     return Boolean(this.getToken());
   }
+
+  getDecodedToken(): { sub?: string; role?: string } | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payload = token.split('.')[1];
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(base64)) as { sub?: string; role?: string };
+    } catch {
+      return null;
+    }
+  }
 }
