@@ -27,6 +27,16 @@
         <p>{{ userRole || 'Panel principal' }}</p>
       </div>
 
+      <div class="profile-card">
+        <img
+          src="assets/avatar-admin.png"
+          alt="Avatar"
+          class="avatar"
+        />
+        <h4>{{ user?.sub || 'Administrador' }}</h4>
+        <p>{{ user?.role || 'Panel principal' }}</p>
+      </div>
+
       <mat-nav-list class="app-nav-list">
         <p class="nav-label">Principal</p>
         <a mat-list-item routerLink="/dashboard" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>space_dashboard</mat-icon><span matListItemTitle>Dashboard</span></a>
