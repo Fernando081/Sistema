@@ -19,17 +19,7 @@
 
       <div class="profile-card">
         <img
-          [src]="'https://ui-avatars.com/api/?name=' + ((userName || 'Administrador')) + '&background=eef5f9&color=1e88e5'"
-          alt="Avatar"
-          class="avatar"
-        />
-        <h4>{{ userName || 'Administrador' }}</h4>
-        <p>{{ userRole || 'Panel principal' }}</p>
-      </div>
-
-      <div class="profile-card">
-        <img
-          src="assets/avatar-admin.png"
+          [src]="'https://ui-avatars.com/api/?name=' + (user?.sub || 'Administrador') + '&background=eef5f9&color=1e88e5'"
           alt="Avatar"
           class="avatar"
         />
@@ -48,14 +38,6 @@
         <a mat-list-item routerLink="/proveedor" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>storefront</mat-icon><span matListItemTitle>Proveedores</span></a>
         <a mat-list-item routerLink="/producto" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>inventory_2</mat-icon><span matListItemTitle>Productos</span></a>
         <a mat-list-item routerLink="/compra" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>shopping_cart</mat-icon><span matListItemTitle>Compras</span></a>
-
-        <p class="nav-label mt">Cotizaciones</p>
-        <a mat-list-item routerLink="/cotizaciones/nueva" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>request_quote</mat-icon><span matListItemTitle>Nueva Cotización</span></a>
-        <a mat-list-item routerLink="/cotizaciones/historial" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>history</mat-icon><span matListItemTitle>Historial Cotizaciones</span></a>
-
-        <p class="nav-label mt">Finanzas</p>
-        <a mat-list-item routerLink="/cobranza" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>payments</mat-icon><span matListItemTitle>Cobranza</span></a>
-        <a mat-list-item routerLink="/cuentas-por-pagar" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>account_balance</mat-icon><span matListItemTitle>Cuentas por Pagar</span></a>
       </mat-nav-list>
     </mat-sidenav>
 
@@ -64,8 +46,6 @@
         <button mat-icon-button (click)="sidenav.toggle()" aria-label="Abrir menú">
           <mat-icon>menu</mat-icon>
         </button>
-
-        <!-- Search field removed because it had no bindings or logic; reintroduce only with proper functionality -->
 
         <span class="flex-auto"></span>
 

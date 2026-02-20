@@ -7,17 +7,19 @@
   --wrap-text-muted: #67757c;
   --wrap-border: #e9ecef;
   --wrap-primary: #1e88e5;
-  --wrap-primary-light: #e8f2fc;
-  --wrap-warning: #ffb22b;
-  --wrap-warning-light: #fdf3e5;
-  --wrap-secondary: #7460ee;
-  --wrap-secondary-light: #f1ebfa;
-  --wrap-danger: #fc4b6c;
-  --wrap-danger-light: #fde9eb;
 
   --wrap-shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.05);
   --wrap-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.1);
   --wrap-radius: 12px;
+
+  --wrap-kpi-sales-bg: #e8f2fc;
+  --wrap-kpi-sales-color: #1e88e5;
+  --wrap-kpi-wallet-bg: #fdf3e5;
+  --wrap-kpi-wallet-color: #ffb22b;
+  --wrap-kpi-debt-bg: #f1ebfa;
+  --wrap-kpi-debt-color: #7460ee;
+  --wrap-kpi-stock-bg: #fde9eb;
+  --wrap-kpi-stock-color: #fc4b6c;
 }
 
 html,
@@ -29,50 +31,39 @@ body {
   margin: 0;
   background-color: var(--wrap-bg);
   color: var(--wrap-text-muted);
-  font-family: 'Poppins', 'Roboto', 'Helvetica Neue', sans-serif;
-}
-
-.kpi-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 1rem;
-  flex-shrink: 0;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
 }
 
 .mat-mdc-card {
-  background-color: var(--wrap-card-bg) !important;
-  border-radius: var(--wrap-radius) !important;
-  box-shadow: var(--wrap-shadow-sm) !important;
-  border: none !important;
+  background-color: var(--wrap-card-bg);
+  border-radius: var(--wrap-radius);
+  box-shadow: var(--wrap-shadow-sm);
+  border: none;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
 }
 
-.mat-mdc-card.animate-card:hover {
+.mat-mdc-card:hover {
   transform: translateY(-3px);
-  box-shadow: var(--wrap-shadow-hover) !important;
+  box-shadow: var(--wrap-shadow-hover);
 }
 
 .mat-mdc-card-header {
-  padding: 24px 24px 0 !important;
+  padding: 24px 24px 0;
 }
 
 .mat-mdc-card-title {
-  color: var(--wrap-text-title) !important;
-  font-weight: 600 !important;
-  font-size: 1.125rem !important;
+  color: var(--wrap-text-title);
+  font-weight: 600;
+  font-size: 1.125rem;
 }
 
 .mat-mdc-card-content {
-  padding: 24px !important;
+  padding: 24px;
 }
 
 .mat-mdc-table {
-  background: transparent !important;
+  background: transparent;
 }
 
 th.mat-mdc-header-cell {
@@ -93,6 +84,37 @@ td.mat-mdc-cell {
 
 tr.mdc-data-table__row:hover {
   background-color: #fcfcfc !important;
+}
+
+.kpi-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.kpi-icon-sales {
+  background-color: var(--wrap-kpi-sales-bg);
+  color: var(--wrap-kpi-sales-color);
+}
+
+.kpi-icon-wallet {
+  background-color: var(--wrap-kpi-wallet-bg);
+  color: var(--wrap-kpi-wallet-color);
+}
+
+.kpi-icon-debt {
+  background-color: var(--wrap-kpi-debt-bg);
+  color: var(--wrap-kpi-debt-color);
+}
+
+.kpi-icon-stock {
+  background-color: var(--wrap-kpi-stock-bg);
+  color: var(--wrap-kpi-stock-color);
 }
 
 @keyframes slideUpFade {

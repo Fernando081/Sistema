@@ -15,6 +15,14 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
 import { filter, map, shareReplay } from 'rxjs';
 import { AuthService } from './auth/auth.service';
 
+type AuthUser = {
+  sub?: string;
+  role?: string;
+  // Optional JWT timestamp fields, aligned with backend JwtPayload
+  iat?: number;
+  exp?: number;
+};
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -40,8 +48,7 @@ export class App {
   private readonly breakpointObserver = inject(BreakpointObserver);
 
   isLoginRoute = false;
-  userName: string | null = null;
-  userRole: string | null = null;
+  user: AuthUser | null = null;
   readonly isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => result.matches),
     shareReplay(1),
@@ -55,20 +62,38 @@ export class App {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this.isLoginRoute = this.router.url.startsWith('/login');
-        this.loadUserInfo();
+        this.user = this.getUserFromToken();
       });
     this.isLoginRoute = this.router.url.startsWith('/login');
-    this.loadUserInfo();
-  }
-
-  private loadUserInfo(): void {
-    const decoded = this.authService.getDecodedToken();
-    this.userName = decoded?.sub ?? null;
-    this.userRole = decoded?.role ?? null;
+    this.user = this.getUserFromToken();
   }
 
   logout(): void {
     this.authService.logout();
+    this.user = null;
     this.router.navigate(['/login']);
+  }
+
+  private getUserFromToken(): AuthUser | null {
+    const token = this.authService.getToken();
+    if (!token) {
+      return null;
+    }
+
+    const segments = token.split('.');
+    if (segments.length !== 3) {
+      return null;
+    }
+
+    const payload = segments[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = payload.padEnd(Math.ceil(payload.length / 4) * 4, '=');
+
+    try {
+      const decoded = atob(padded);
+      const parsed = JSON.parse(decoded) as AuthUser;
+      return parsed;
+    } catch {
+      return null;
+    }
   }
 }
