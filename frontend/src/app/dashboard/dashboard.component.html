@@ -50,7 +50,7 @@
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" *ngIf="metrics">
-<mat-card class="md:col-span-3 animate-card">
+  <mat-card class="md:col-span-3 animate-card">
     <mat-card-header><mat-card-title>Tendencia de Ventas (7 Días)</mat-card-title></mat-card-header>
     <mat-card-content class="h-[300px] flex items-center justify-center mt-4">
       <div *ngIf="graficaVentas.length > 0; else noData" class="w-full h-full">
