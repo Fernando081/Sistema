@@ -19,11 +19,11 @@
 
       <div class="profile-card">
         <img
-          src="https://ui-avatars.com/api/?name=Administrador&background=eef5f9&color=1e88e5"
+          [src]="'https://ui-avatars.com/api/?name=' + ((userName || 'Administrador')) + '&background=eef5f9&color=1e88e5'"
           alt="Avatar"
           class="avatar"
         />
-        <h4>Administrador</h4>
+        <h4>{{ userName || 'Administrador' }}</h4>
         <p>Panel principal</p>
       </div>
 
