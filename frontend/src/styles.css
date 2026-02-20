@@ -62,10 +62,10 @@ body {
     text-transform: uppercase;
   }
 
-  .responsive-table .mat-mdc-cell:last-child::before {
+  .responsive-table .mat-mdc-cell.actions-cell::before {
     content: none;
   }
-  .responsive-table .mat-mdc-cell:last-child {
+  .responsive-table .mat-mdc-cell.actions-cell {
     justify-content: flex-end;
     margin-top: 0.5rem;
     border-top: 1px dashed var(--mat-sys-outline-variant) !important;

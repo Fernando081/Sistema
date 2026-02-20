@@ -40,7 +40,7 @@ Opciones soportadas:
 
 > Si usas DB local, el puerto por defecto es `5432`.
 > Activa `DB_SSL=true` solo si tu proveedor cloud lo exige.  
-> **Advertencia de seguridad:** con la implementación actual, al activar `DB_SSL` se desactiva la verificación del certificado del servidor (`rejectUnauthorized: false`), lo que hace la conexión vulnerable a ataques _man-in-the-middle_. Úsalo solo si tu proveedor lo requiere explícitamente y en entornos controlados. Para entornos de producción expuestos a Internet, configura SSL con validación completa de certificados en lugar de depender de esta opción.
+> **Advertencia de seguridad:** al activar `DB_SSL`, por defecto se deshabilita la verificación del certificado del servidor (`rejectUnauthorized: false`), lo que expone la conexión a ataques _man-in-the-middle_. Para entornos de producción, añade también `DB_SSL_REJECT_UNAUTHORIZED=true` para forzar validación completa del certificado.
 
 ## Project setup
 
