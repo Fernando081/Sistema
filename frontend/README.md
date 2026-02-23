@@ -66,7 +66,7 @@ If `npm run build` or `npm run start` fails with errors like:
 - `You installed esbuild for another platform ... @esbuild/win32-x64`
 - `Cannot find module @rollup/rollup-linux-x64-gnu`
 
-it usually means `node_modules` was installed on another OS/architecture (for example Windows) and then reused in Linux.
+it usually means `node_modules` was installed on another OS/architecture (for example, Windows) and then reused in Linux.
 
 Recommended fix in Linux container:
 
