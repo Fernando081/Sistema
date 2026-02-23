@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npx ng serve",
-    "build": "npx ng build",
-    "watch": "npx ng build --watch --configuration development",
-    "test": "npx ng test"
+    "start": "node ../node_modules/@angular/cli/bin/ng.js serve",
+    "build": "node ../node_modules/@angular/cli/bin/ng.js build",
+    "watch": "node ../node_modules/@angular/cli/bin/ng.js build --watch --configuration development",
+    "test": "node ../node_modules/@angular/cli/bin/ng.js test"
   },
   "prettier": {
     "printWidth": 100,

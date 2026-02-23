@@ -57,3 +57,55 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Troubleshooting in containers / Codex
+
+If `npm run build` or `npm run start` fails with errors like:
+
+- `sh: 1: ng: Permission denied`
+- `You installed esbuild for another platform ... @esbuild/win32-x64`
+- `Cannot find module @rollup/rollup-linux-x64-gnu`
+
+it usually means `node_modules` was installed on another OS/architecture (for example Windows) and then reused in Linux.
+
+Recommended fix in Linux container (bash):
+
+```bash
+rm -rf node_modules frontend/node_modules backend/node_modules
+npm cache verify
+npm ci
+```
+
+If you are using **PowerShell on Windows**, use this equivalent cleanup command (PowerShell does not support `rm -rf`):
+
+```powershell
+Remove-Item -Recurse -Force node_modules, frontend/node_modules, backend/node_modules
+npm cache verify
+npm ci
+```
+
+If your environment uses a private registry/proxy, make sure optional dependencies are allowed (esbuild/rollup platform packages are required by Angular tooling).
+
+
+### What each recovery command does
+
+Use this sequence only when dependencies were copied from another OS/architecture or when optional native packages are missing.
+
+1. `rm -rf node_modules frontend/node_modules backend/node_modules`
+   - Removes all installed dependencies so npm can reinstall binaries for the **current** platform.
+   - In this repo, workspaces install primarily under root `node_modules`, but removing workspace folders as well ensures no stale packages remain.
+
+2. `npm cache verify`
+   - Checks npm cache integrity and removes corrupted entries.
+   - Useful after interrupted installs or platform switches.
+
+3. `npm ci`
+   - Reinstalls dependencies exactly from `package-lock.json` (clean, reproducible install).
+   - Prefer this in CI/containers over `npm install`.
+
+After reinstalling, retry:
+
+```bash
+npm run build
+npm --workspace frontend run start -- --host 0.0.0.0 --port 4200
+```
