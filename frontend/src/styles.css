@@ -1,5 +1,18 @@
 /* frontend/src/styles.css */
 
+:root {
+  --wrap-bg: #eef5f9;
+  --wrap-card-bg: #ffffff;
+  --wrap-text-title: #3e5569;
+  --wrap-text-muted: #67757c;
+  --wrap-border: #e9ecef;
+  --wrap-primary: #1e88e5;
+
+  --wrap-shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.05);
+  --wrap-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.1);
+  --wrap-radius: 12px;
+}
+
 html,
 body {
   height: 100%;
@@ -7,7 +20,61 @@ body {
 
 body {
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background-color: var(--wrap-bg);
+  color: var(--wrap-text-muted);
+  font-family: 'Poppins', 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+.mat-mdc-card {
+  background-color: var(--wrap-card-bg) !important;
+  border-radius: var(--wrap-radius) !important;
+  box-shadow: var(--wrap-shadow-sm) !important;
+  border: none !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.mat-mdc-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--wrap-shadow-hover) !important;
+}
+
+.mat-mdc-card-header {
+  padding: 24px 24px 0 !important;
+}
+
+.mat-mdc-card-title {
+  color: var(--wrap-text-title) !important;
+  font-weight: 600 !important;
+  font-size: 1.125rem !important;
+}
+
+.mat-mdc-card-content {
+  padding: 24px !important;
+}
+
+.mat-mdc-table {
+  background: transparent !important;
+}
+
+th.mat-mdc-header-cell {
+  background-color: #f7f9fa !important;
+  color: var(--wrap-text-title) !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  border-bottom: none !important;
+  padding: 16px !important;
+}
+
+td.mat-mdc-cell {
+  color: var(--wrap-text-muted) !important;
+  border-bottom: 1px solid var(--wrap-border) !important;
+  padding: 16px !important;
+  font-size: 0.875rem;
+}
+
+tr.mdc-data-table__row:hover {
+  background-color: #fcfcfc !important;
 }
 
 @keyframes slideUpFade {
@@ -38,11 +105,11 @@ body {
   .responsive-table .mat-mdc-row {
     display: flex !important;
     flex-direction: column;
-    background: var(--mat-sys-surface-container);
-    border-radius: var(--ui-radius-lg);
+    background: var(--wrap-card-bg);
+    border-radius: var(--wrap-radius);
     margin-bottom: 1rem;
     padding: 1rem;
-    border: 1px solid var(--mat-sys-outline-variant);
+    border: 1px solid var(--wrap-border);
   }
 
   .responsive-table .mat-mdc-cell {
@@ -57,7 +124,7 @@ body {
   .responsive-table .mat-mdc-cell::before {
     content: attr(data-label);
     font-weight: 600;
-    color: var(--mat-sys-outline);
+    color: #8b9bab;
     font-size: 0.75rem;
     text-transform: uppercase;
   }
@@ -65,10 +132,11 @@ body {
   .responsive-table .mat-mdc-cell.actions-cell::before {
     content: none;
   }
+
   .responsive-table .mat-mdc-cell.actions-cell {
     justify-content: flex-end;
     margin-top: 0.5rem;
-    border-top: 1px dashed var(--mat-sys-outline-variant) !important;
+    border-top: 1px dashed var(--wrap-border) !important;
     padding-top: 1rem !important;
   }
 }
