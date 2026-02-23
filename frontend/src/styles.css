@@ -20,9 +20,6 @@ body {
 
 body {
   margin: 0;
-  background-color: var(--wrap-bg);
-  color: var(--wrap-text-muted);
-  font-family: 'Poppins', 'Roboto', 'Helvetica Neue', sans-serif;
 }
 
 .mat-mdc-card {
