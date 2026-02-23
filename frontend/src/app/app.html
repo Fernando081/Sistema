@@ -18,7 +18,11 @@
       </div>
 
       <div class="profile-card">
-        <div class="avatar">
+        <div
+          class="avatar"
+          role="img"
+          [attr.aria-label]="user?.sub || 'Administrador'"
+        >
           {{ (user?.sub || 'Administrador')[0].toUpperCase() }}
         </div>
         <h4>{{ user?.sub || 'Administrador' }}</h4>
