@@ -1,0 +1,37 @@
+/* frontend/src/custom-theme.scss */
+@use '@angular/material' as mat;
+
+$theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto, sans-serif',
+    plain-family: 'Roboto, sans-serif',
+  ),
+  density: (
+    scale: -1,
+  ),
+));
+
+html {
+  @include mat.all-component-themes($theme);
+
+  --ui-radius-xl: 1.5rem;
+  --ui-radius-lg: 1rem;
+  --ui-transition-fluid: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+body {
+  color-scheme: light;
+  background-color: var(--mat-sys-surface-container-lowest);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+
