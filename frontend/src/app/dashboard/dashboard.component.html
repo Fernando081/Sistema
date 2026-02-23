@@ -7,43 +7,43 @@
 
     <mat-card-content>
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div class="rounded-xl border border-[#e9ecef] bg-white p-4 min-h-[120px] flex items-center gap-3">
-          <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-[#e8f2fc] text-[#1e88e5]">
+        <div class="kpi-tile">
+          <div class="kpi-icon kpi-icon-sales">
             <mat-icon>point_of_sale</mat-icon>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-wide text-slate-500 m-0">Ventas Hoy</p>
-            <h3 class="text-xl md:text-2xl font-bold text-slate-700 m-0">{{ metrics.ventasHoy | currency:'MXN' }}</h3>
+            <p class="kpi-label">Ventas Hoy</p>
+            <h3 class="kpi-value">{{ metrics.ventasHoy | currency:'MXN' }}</h3>
           </div>
         </div>
 
-        <div class="rounded-xl border border-[#e9ecef] bg-white p-4 min-h-[120px] flex items-center gap-3">
-          <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-[#fdf3e5] text-[#ffb22b]">
+        <div class="kpi-tile">
+          <div class="kpi-icon kpi-icon-warn">
             <mat-icon>account_balance_wallet</mat-icon>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-wide text-slate-500 m-0">Por Cobrar</p>
-            <h3 class="text-xl md:text-2xl font-bold text-slate-700 m-0">{{ metrics.porCobrar | currency:'MXN' }}</h3>
+            <p class="kpi-label">Por Cobrar</p>
+            <h3 class="kpi-value">{{ metrics.porCobrar | currency:'MXN' }}</h3>
           </div>
         </div>
 
-        <div class="rounded-xl border border-[#e9ecef] bg-white p-4 min-h-[120px] flex items-center gap-3">
-          <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-[#f1ebfa] text-[#7460ee]">
+        <div class="kpi-tile">
+          <div class="kpi-icon kpi-icon-purple">
             <mat-icon>money_off</mat-icon>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-wide text-slate-500 m-0">Por Pagar</p>
-            <h3 class="text-xl md:text-2xl font-bold text-slate-700 m-0">{{ metrics.porPagar | currency:'MXN' }}</h3>
+            <p class="kpi-label">Por Pagar</p>
+            <h3 class="kpi-value">{{ metrics.porPagar | currency:'MXN' }}</h3>
           </div>
         </div>
 
-        <div class="rounded-xl border border-[#e9ecef] bg-white p-4 min-h-[120px] flex items-center gap-3">
-          <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-[#fde9eb] text-[#fc4b6c]">
+        <div class="kpi-tile">
+          <div class="kpi-icon kpi-icon-danger">
             <mat-icon>warning</mat-icon>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-wide text-slate-500 m-0">Stock Bajo</p>
-            <h3 class="text-xl md:text-2xl font-bold text-slate-700 m-0">{{ metrics.conteoBajos }} prod.</h3>
+            <p class="kpi-label">Stock Bajo</p>
+            <h3 class="kpi-value">{{ metrics.conteoBajos }} prod.</h3>
           </div>
         </div>
       </div>

@@ -32,4 +32,43 @@ describe('AuthService', () => {
 
     expect(localStorage.getItem('access_token')).toBe('abc');
   });
+
+  describe('getDecodedToken', () => {
+    it('retorna null cuando no hay token almacenado', () => {
+      expect(service.getDecodedToken()).toBeNull();
+    });
+
+    it('retorna null para un token con menos de 3 segmentos', () => {
+      // token with only header and no payload
+      localStorage.setItem('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');
+      expect(service.getDecodedToken()).toBeNull();
+    });
+
+    it('retorna null para un payload que no es JSON válido', () => {
+      // second segment decodes to non-JSON text
+      const badPayload = btoa('not-json').replace(/=/g, '');
+      localStorage.setItem('access_token', `header.${badPayload}.sig`);
+      expect(service.getDecodedToken()).toBeNull();
+    });
+
+    it('decodifica un token con payload ASCII', () => {
+      // payload: {"sub":"admin","role":"ADMIN"}
+      localStorage.setItem(
+        'access_token',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiJ9.fakesig',
+      );
+      const result = service.getDecodedToken();
+      expect(result).toEqual(jasmine.objectContaining({ sub: 'admin', role: 'ADMIN' }));
+    });
+
+    it('decodifica correctamente un payload con caracteres no-ASCII (acentos)', () => {
+      // payload: {"sub":"José García","role":"USER"}
+      localStorage.setItem(
+        'access_token',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKb3PDqSBHYXJjw61hIiwicm9sZSI6IlVTRVIifQ.fakesig',
+      );
+      const result = service.getDecodedToken();
+      expect(result).toEqual(jasmine.objectContaining({ sub: 'José García', role: 'USER' }));
+    });
+  });
 });

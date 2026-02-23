@@ -8,3 +8,8 @@ export interface LoginResponse {
   token_type: 'Bearer';
   expires_in: number;
 }
+
+export interface DecodedToken {
+  sub?: string;
+  role?: string;
+}

@@ -18,35 +18,37 @@
       </div>
 
       <div class="profile-card">
-        <img
-          src="https://ui-avatars.com/api/?name={{ user?.sub || 'Administrador' }}&background=eef5f9&color=1e88e5"
-          alt="Avatar"
+        <div
           class="avatar"
-        />
+          role="img"
+          [attr.aria-label]="user?.sub || 'Administrador'"
+        >
+          {{ (user?.sub || 'Administrador')[0].toUpperCase() }}
+        </div>
         <h4>{{ user?.sub || 'Administrador' }}</h4>
         <p>{{ user?.role || 'Panel principal' }}</p>
       </div>
 
       <mat-nav-list class="app-nav-list">
-        <p class="nav-label">Principal</p>
+        <div matSubheader class="nav-label">Principal</div>
         <a mat-list-item routerLink="/dashboard" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>space_dashboard</mat-icon><span matListItemTitle>Dashboard</span></a>
         <a mat-list-item routerLink="/venta" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>point_of_sale</mat-icon><span matListItemTitle>Punto de Venta</span></a>
         <a mat-list-item routerLink="/facturas" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>receipt_long</mat-icon><span matListItemTitle>Historial Ventas</span></a>
 
-        <p class="nav-label mt">Cotizaciones</p>
+        <div matSubheader class="nav-label mt">Cotizaciones</div>
         <a mat-list-item routerLink="/cotizacion/nueva" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>request_quote</mat-icon><span matListItemTitle>Nueva Cotización</span></a>
         <a mat-list-item routerLink="/cotizacion/historial" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>history_toggle_off</mat-icon><span matListItemTitle>Historial Cotizaciones</span></a>
 
-        <p class="nav-label mt">Inventario y Compras</p>
+        <div matSubheader class="nav-label mt">Inventario y Compras</div>
         <a mat-list-item routerLink="/producto" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>inventory_2</mat-icon><span matListItemTitle>Productos</span></a>
         <a mat-list-item routerLink="/compra" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>shopping_cart</mat-icon><span matListItemTitle>Nueva Compra</span></a>
         <a mat-list-item routerLink="/compra/historial" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>history</mat-icon><span matListItemTitle>Historial Compras</span></a>
 
-        <p class="nav-label mt">Personas</p>
+        <div matSubheader class="nav-label mt">Personas</div>
         <a mat-list-item routerLink="/cliente" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>people_outline</mat-icon><span matListItemTitle>Clientes</span></a>
         <a mat-list-item routerLink="/proveedor" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>storefront</mat-icon><span matListItemTitle>Proveedores</span></a>
 
-        <p class="nav-label mt">Finanzas</p>
+        <div matSubheader class="nav-label mt">Finanzas</div>
         <a mat-list-item routerLink="/cobranza" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>payments</mat-icon><span matListItemTitle>Cobranza</span></a>
         <a mat-list-item routerLink="/cuentas-por-pagar" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>account_balance_wallet</mat-icon><span matListItemTitle>Cuentas por pagar</span></a>
       </mat-nav-list>
@@ -64,13 +66,14 @@
           <input
             matInput
             placeholder="Buscar producto, cliente, folio..."
+            aria-label="Buscar producto, cliente, folio"
             disabled
           />
         </mat-form-field>
 
         <span class="flex-auto"></span>
 
-        <button mat-icon-button class="mr-2">
+        <button mat-icon-button class="mr-2" aria-label="Notificaciones">
           <mat-icon matBadge="3" matBadgeColor="warn">notifications_none</mat-icon>
         </button>
         <button mat-button class="logout-btn" (click)="logout()">
