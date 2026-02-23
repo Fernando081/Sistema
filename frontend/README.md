@@ -57,3 +57,23 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Troubleshooting in containers / Codex
+
+If `npm run build` or `npm run start` fails with errors like:
+
+- `sh: 1: ng: Permission denied`
+- `You installed esbuild for another platform ... @esbuild/win32-x64`
+- `Cannot find module @rollup/rollup-linux-x64-gnu`
+
+it usually means `node_modules` was installed on another OS/architecture (for example Windows) and then reused in Linux.
+
+Recommended fix in Linux container:
+
+```bash
+rm -rf node_modules frontend/node_modules backend/node_modules
+npm cache verify
+npm ci
+```
+
+If your environment uses a private registry/proxy, make sure optional dependencies are allowed (esbuild/rollup platform packages are required by Angular tooling).
