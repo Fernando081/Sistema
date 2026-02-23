@@ -48,7 +48,7 @@ export class App {
   private readonly breakpointObserver = inject(BreakpointObserver);
 
   isLoginRoute = false;
-  user: AuthUser | null = null;
+  user: { sub?: string; role?: string } | null = null;
   readonly isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => result.matches),
     shareReplay(1),
@@ -62,10 +62,10 @@ export class App {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this.isLoginRoute = this.router.url.startsWith('/login');
-        this.user = this.getUserFromToken();
+        this.user = this.authService.getDecodedToken();
       });
     this.isLoginRoute = this.router.url.startsWith('/login');
-    this.user = this.getUserFromToken();
+    this.user = this.authService.getDecodedToken();
   }
 
   logout(): void {

@@ -31,24 +31,17 @@ export class AuthService {
 
   getDecodedToken(): { sub?: string; role?: string } | null {
     const token = this.getToken();
-    if (!token) return null;
+    if (!token) {
+      return null;
+    }
+    const segments = token.split('.');
+    if (segments.length < 2) {
+      return null;
+    }
+    const payload = segments[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = payload.padEnd(Math.ceil(payload.length / 4) * 4, '=');
     try {
-      const parts = token.split('.');
-      if (parts.length !== 3) {
-        return null;
-      }
-      const payload = parts[1];
-      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-      const paddingNeeded = base64.length % 4;
-      const paddedBase64 =
-        paddingNeeded === 0
-          ? base64
-          : paddingNeeded === 2
-          ? base64 + '=='
-          : paddingNeeded === 3
-          ? base64 + '='
-          : base64;
-      return JSON.parse(atob(paddedBase64)) as { sub?: string; role?: string };
+      return JSON.parse(atob(padded)) as { sub?: string; role?: string };
     } catch {
       return null;
     }
