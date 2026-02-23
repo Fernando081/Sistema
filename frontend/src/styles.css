@@ -103,6 +103,63 @@ tr.mdc-data-table__row:hover {
   animation: slideUpFade 0.45s ease-out forwards;
 }
 
+.kpi-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.kpi-icon-ventas {
+  background: var(--wrap-kpi-ventas-bg);
+  color: var(--wrap-kpi-ventas-color);
+}
+
+.kpi-icon-cobrar {
+  background: var(--wrap-kpi-cobrar-bg);
+  color: var(--wrap-kpi-cobrar-color);
+}
+
+.kpi-icon-pagar {
+  background: var(--wrap-kpi-pagar-bg);
+  color: var(--wrap-kpi-pagar-color);
+}
+
+.kpi-icon-stock {
+  background: var(--wrap-kpi-stock-bg);
+  color: var(--wrap-kpi-stock-color);
+}
+
+.topbar-search {
+  --mdc-outlined-text-field-container-shape: 999px;
+  --mdc-outlined-text-field-outline-color: rgba(255, 255, 255, 0.25);
+  --mdc-outlined-text-field-hover-outline-color: rgba(255, 255, 255, 0.45);
+  --mdc-outlined-text-field-focus-outline-color: #fff;
+}
+
+.topbar-search .mdc-text-field--outlined {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.topbar-search .mat-mdc-form-field-infix {
+  min-height: 40px !important;
+  padding-top: 0.45rem !important;
+  padding-bottom: 0.45rem !important;
+}
+
+.topbar-search input,
+.topbar-search .mat-icon {
+  color: #fff !important;
+}
+
+.topbar-search input::placeholder {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
 @media screen and (max-width: 768px) {
   .responsive-table .mat-mdc-table {
     background: transparent !important;

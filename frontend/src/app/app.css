@@ -20,6 +20,7 @@
   padding: 0 1.5rem;
   border-bottom: 1px solid #edf2f7;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .brand-logo {

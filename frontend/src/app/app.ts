@@ -16,6 +16,14 @@ import { filter, map, shareReplay } from 'rxjs';
 import { AuthService } from './auth/auth.service';
 import { DecodedToken } from './auth/auth.interface';
 
+type AuthUser = {
+  sub?: string;
+  role?: string;
+  // Optional JWT timestamp fields, aligned with backend JwtPayload
+  iat?: number;
+  exp?: number;
+};
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -65,5 +73,28 @@ export class App {
     this.authService.logout();
     this.user = null;
     this.router.navigate(['/login']);
+  }
+
+  private getUserFromToken(): AuthUser | null {
+    const token = this.authService.getToken();
+    if (!token) {
+      return null;
+    }
+
+    const segments = token.split('.');
+    if (segments.length !== 3) {
+      return null;
+    }
+
+    const payload = segments[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = payload.padEnd(Math.ceil(payload.length / 4) * 4, '=');
+
+    try {
+      const decoded = atob(padded);
+      const parsed = JSON.parse(decoded) as AuthUser;
+      return parsed;
+    } catch {
+      return null;
+    }
   }
 }
