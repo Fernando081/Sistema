@@ -62,11 +62,15 @@ For more information on using the Angular CLI, including detailed command refere
 
 If `npm run build` or `npm run start` fails with errors like:
 
-- `sh: 1: ng: Permission denied`
 - `You installed esbuild for another platform ... @esbuild/win32-x64`
 - `Cannot find module @rollup/rollup-linux-x64-gnu`
+- `Error: Cannot find module '@angular/cli/bin/ng.js'`
 
-it usually means `node_modules` was installed on another OS/architecture (for example Windows) and then reused in Linux.
+it usually means `node_modules` was installed on another OS/architecture (for example Windows) and then reused in Linux, or dependencies are missing entirely.
+
+> **Note:** Invoking `ng` directly (e.g. `npm run ng`) or running it from a terminal can still produce `sh: 1: ng: Permission denied` in environments where executable shims lose their bits. In that case, use the cleanup steps below to reinstall.
+
+Run all cleanup commands **from the repository root** (the directory containing both `frontend/` and `backend/`).
 
 Recommended fix in Linux container (bash):
 
@@ -91,7 +95,7 @@ If your environment uses a private registry/proxy, make sure optional dependenci
 
 Use this sequence only when dependencies were copied from another OS/architecture or when optional native packages are missing.
 
-1. `rm -rf node_modules frontend/node_modules backend/node_modules`
+1. `rm -rf node_modules frontend/node_modules backend/node_modules` *(run from repo root)*
    - Removes all installed dependencies so npm can reinstall binaries for the **current** platform.
    - In this repo, workspaces install primarily under root `node_modules`, but removing workspace folders as well ensures no stale packages remain.
 
@@ -103,7 +107,7 @@ Use this sequence only when dependencies were copied from another OS/architectur
    - Reinstalls dependencies exactly from `package-lock.json` (clean, reproducible install).
    - Prefer this in CI/containers over `npm install`.
 
-After reinstalling, retry:
+After reinstalling, retry (from repo root):
 
 ```bash
 npm run build
