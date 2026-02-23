@@ -28,4 +28,24 @@ export class AuthService {
   isAuthenticated(): boolean {
     return Boolean(this.getToken());
   }
+
+  getDecodedToken(): { sub?: string; role?: string } | null {
+    const token = this.getToken();
+    if (!token) return null;
+    const segments = token.split('.');
+    if (segments.length < 2) return null;
+    const base64 = segments[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+    try {
+      const binary = atob(padded);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      const jsonString = new TextDecoder('utf-8').decode(bytes);
+      return JSON.parse(jsonString) as { sub?: string; role?: string };
+    } catch {
+      return null;
+    }
+  }
 }

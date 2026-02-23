@@ -52,6 +52,13 @@
   height: 64px;
   border-radius: 999px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: var(--wrap-kpi-sales-bg);
+  color: var(--wrap-primary);
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 auto;
 }
 
 .profile-card h4 {
@@ -140,6 +147,14 @@
 .topbar-search {
   margin-left: 1rem;
   width: 260px;
+  --mdc-outlined-text-field-container-shape: 999px;
+  --mdc-outlined-text-field-outline-color: rgba(255, 255, 255, 0.25);
+  --mdc-outlined-text-field-hover-outline-color: rgba(255, 255, 255, 0.45);
+  --mdc-outlined-text-field-focus-outline-color: var(--wrap-topbar-text);
+  --mdc-outlined-text-field-disabled-input-text-color: rgba(255, 255, 255, 0.85);
+  --mat-form-field-container-height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
 }
 
 .logout-btn {
@@ -179,29 +194,6 @@
   font-size: 0.75rem;
   color: #90a4ae;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-}
-
-:host ::ng-deep .topbar-search .mdc-text-field--outlined {
-  --mdc-outlined-text-field-container-shape: 999px;
-  --mdc-outlined-text-field-outline-color: rgba(255, 255, 255, 0.25);
-  --mdc-outlined-text-field-hover-outline-color: rgba(255, 255, 255, 0.45);
-  --mdc-outlined-text-field-focus-outline-color: #fff;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-:host ::ng-deep .topbar-search .mat-mdc-form-field-infix {
-  min-height: 40px !important;
-  padding-top: 0.45rem !important;
-  padding-bottom: 0.45rem !important;
-}
-
-:host ::ng-deep .topbar-search input,
-:host ::ng-deep .topbar-search .mat-icon {
-  color: #fff !important;
-}
-
-:host ::ng-deep .topbar-search input::placeholder {
-  color: rgba(255, 255, 255, 0.75) !important;
 }
 
 @media (max-width: 900px) {
