@@ -14,6 +14,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter, map, shareReplay } from 'rxjs';
 import { AuthService } from './auth/auth.service';
+import { DecodedToken } from './auth/auth.interface';
 
 type AuthUser = {
   sub?: string;
@@ -48,7 +49,7 @@ export class App {
   private readonly breakpointObserver = inject(BreakpointObserver);
 
   isLoginRoute = false;
-  user: { sub?: string; role?: string } | null = null;
+  user: DecodedToken | null = null;
   readonly isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => result.matches),
     shareReplay(1),

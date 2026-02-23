@@ -34,35 +34,41 @@ describe('AuthService', () => {
   });
 
   describe('getDecodedToken', () => {
-    // Fake token: header.payload.signature (base64url-encoded payload)
-    // payload = {"sub":"testuser","role":"admin","iat":1000,"exp":9999999999}
-    const fakeToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9' +
-      '.eyJzdWIiOiJ0ZXN0dXNlciIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTAwMCwiZXhwIjo5OTk5OTk5OTk5fQ' +
-      '.fakesignature';
-
-    it('devuelve null cuando no hay token', () => {
+    it('retorna null cuando no hay token almacenado', () => {
       expect(service.getDecodedToken()).toBeNull();
     });
 
-    it('decodifica correctamente el payload del token', () => {
-      localStorage.setItem('access_token', fakeToken);
-
-      const result = service.getDecodedToken();
-
-      expect(result).not.toBeNull();
-      expect(result?.sub).toBe('testuser');
-      expect(result?.role).toBe('admin');
+    it('retorna null para un token con menos de 3 segmentos', () => {
+      // token with only header and no payload
+      localStorage.setItem('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');
+      expect(service.getDecodedToken()).toBeNull();
     });
 
-    it('devuelve null y emite advertencia con token malformado', () => {
-      localStorage.setItem('access_token', 'not.a.valid.jwt.token');
-      const warnSpy = spyOn(console, 'warn');
+    it('retorna null para un payload que no es JSON válido', () => {
+      // second segment decodes to non-JSON text
+      const badPayload = btoa('not-json').replace(/=/g, '');
+      localStorage.setItem('access_token', `header.${badPayload}.sig`);
+      expect(service.getDecodedToken()).toBeNull();
+    });
 
+    it('decodifica un token con payload ASCII', () => {
+      // payload: {"sub":"admin","role":"ADMIN"}
+      localStorage.setItem(
+        'access_token',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiJ9.fakesig',
+      );
       const result = service.getDecodedToken();
+      expect(result).toEqual(jasmine.objectContaining({ sub: 'admin', role: 'ADMIN' }));
+    });
 
-      expect(result).toBeNull();
-      expect(warnSpy).toHaveBeenCalled();
+    it('decodifica correctamente un payload con caracteres no-ASCII (acentos)', () => {
+      // payload: {"sub":"José García","role":"USER"}
+      localStorage.setItem(
+        'access_token',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKb3PDqSBHYXJjw61hIiwicm9sZSI6IlVTRVIifQ.fakesig',
+      );
+      const result = service.getDecodedToken();
+      expect(result).toEqual(jasmine.objectContaining({ sub: 'José García', role: 'USER' }));
     });
   });
 });

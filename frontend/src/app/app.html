@@ -12,37 +12,43 @@
       [opened]="!(isHandset$ | async)"
       class="wrap-sidenav"
     >
-      <a class="brand" routerLink="/dashboard">
+      <div class="brand" routerLink="/dashboard">
         <div class="brand-logo">RT</div>
-        <h2>Refacciones</h2>
-      </a>
+        <h2>Tu Negocio</h2>
+      </div>
 
       <div class="profile-card">
-        <mat-icon class="avatar">account_circle</mat-icon>
+        <div
+          class="avatar"
+          role="img"
+          [attr.aria-label]="user?.sub || 'Administrador'"
+        >
+          {{ (user?.sub || 'Administrador')[0].toUpperCase() }}
+        </div>
         <h4>{{ user?.sub || 'Administrador' }}</h4>
         <p>{{ user?.role || 'Panel principal' }}</p>
       </div>
 
       <mat-nav-list class="app-nav-list">
-        <h3 matSubheader class="nav-label">Principal</h3>
+        <div matSubheader class="nav-label">Principal</div>
         <a mat-list-item routerLink="/dashboard" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>space_dashboard</mat-icon><span matListItemTitle>Dashboard</span></a>
         <a mat-list-item routerLink="/venta" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>point_of_sale</mat-icon><span matListItemTitle>Punto de Venta</span></a>
         <a mat-list-item routerLink="/facturas" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>receipt_long</mat-icon><span matListItemTitle>Historial Ventas</span></a>
 
-        <h3 matSubheader class="nav-label mt">Cotizaciones</h3>
+        <div matSubheader class="nav-label mt">Cotizaciones</div>
         <a mat-list-item routerLink="/cotizacion/nueva" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>request_quote</mat-icon><span matListItemTitle>Nueva Cotización</span></a>
         <a mat-list-item routerLink="/cotizacion/historial" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>history_toggle_off</mat-icon><span matListItemTitle>Historial Cotizaciones</span></a>
 
-        <h3 matSubheader class="nav-label mt">Inventario y Compras</h3>
+        <div matSubheader class="nav-label mt">Inventario y Compras</div>
         <a mat-list-item routerLink="/producto" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>inventory_2</mat-icon><span matListItemTitle>Productos</span></a>
         <a mat-list-item routerLink="/compra" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>shopping_cart</mat-icon><span matListItemTitle>Nueva Compra</span></a>
         <a mat-list-item routerLink="/compra/historial" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>history</mat-icon><span matListItemTitle>Historial Compras</span></a>
 
-        <h3 matSubheader class="nav-label mt">Personas</h3>
+        <div matSubheader class="nav-label mt">Personas</div>
         <a mat-list-item routerLink="/cliente" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>people_outline</mat-icon><span matListItemTitle>Clientes</span></a>
         <a mat-list-item routerLink="/proveedor" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>storefront</mat-icon><span matListItemTitle>Proveedores</span></a>
 
-        <h3 matSubheader class="nav-label mt">Finanzas</h3>
+        <div matSubheader class="nav-label mt">Finanzas</div>
         <a mat-list-item routerLink="/cobranza" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>payments</mat-icon><span matListItemTitle>Cobranza</span></a>
         <a mat-list-item routerLink="/cuentas-por-pagar" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>account_balance_wallet</mat-icon><span matListItemTitle>Cuentas por pagar</span></a>
       </mat-nav-list>
@@ -54,14 +60,20 @@
           <mat-icon>menu</mat-icon>
         </button>
 
+        <!-- Topbar search placeholder: input is disabled until search functionality is implemented -->
         <mat-form-field appearance="outline" class="topbar-search">
           <mat-icon matPrefix>search</mat-icon>
-          <input matInput placeholder="Buscar producto, cliente, folio..." />
+          <input
+            matInput
+            placeholder="Buscar producto, cliente, folio..."
+            aria-label="Buscar producto, cliente, folio"
+            disabled
+          />
         </mat-form-field>
 
         <span class="flex-auto"></span>
 
-        <button mat-icon-button class="mr-2" aria-label="Ver notificaciones">
+        <button mat-icon-button class="mr-2" aria-label="Notificaciones">
           <mat-icon matBadge="3" matBadgeColor="warn">notifications_none</mat-icon>
         </button>
         <button mat-button class="logout-btn" (click)="logout()">
@@ -73,7 +85,6 @@
       <main class="app-content">
         <div class="page-head">
           <h3>Sistema ERP</h3>
-          <span>Home / Dashboard</span>
         </div>
 
         <router-outlet></router-outlet>

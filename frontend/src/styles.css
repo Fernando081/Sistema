@@ -5,32 +5,22 @@
   --wrap-card-bg: #ffffff;
   --wrap-text-title: #3e5569;
   --wrap-text-muted: #67757c;
-  --wrap-text-dark: #2f3d4a;
-  --wrap-text-nav: #54667a;
-  --wrap-text-label: #9aa8b5;
-  --wrap-text-icon: #a1aab2;
   --wrap-border: #e9ecef;
-  --wrap-border-light: #edf2f7;
   --wrap-primary: #1e88e5;
-  --wrap-primary-end: #2a95f6;
-  --wrap-primary-shadow: rgba(30, 136, 229, 0.3);
-  --wrap-nav-hover-bg: #f2f6f8;
-  --wrap-nav-hover-border: #dce9f4;
-  --wrap-table-header-bg: #f7f9fa;
-  --wrap-row-hover-bg: #fcfcfc;
-
-  --wrap-kpi-ventas-bg: #e8f2fc;
-  --wrap-kpi-ventas-color: #1e88e5;
-  --wrap-kpi-cobrar-bg: #fdf3e5;
-  --wrap-kpi-cobrar-color: #ffb22b;
-  --wrap-kpi-pagar-bg: #f1ebfa;
-  --wrap-kpi-pagar-color: #7460ee;
-  --wrap-kpi-stock-bg: #fde9eb;
-  --wrap-kpi-stock-color: #fc4b6c;
 
   --wrap-shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.05);
   --wrap-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.1);
   --wrap-radius: 12px;
+
+  --wrap-kpi-sales-bg: #e8f2fc;
+  --wrap-kpi-sales-color: #1e88e5;
+  --wrap-kpi-warn-bg: #fdf3e5;
+  --wrap-kpi-warn-color: #ffb22b;
+  --wrap-kpi-purple-bg: #f1ebfa;
+  --wrap-kpi-purple-color: #7460ee;
+  --wrap-kpi-danger-bg: #fde9eb;
+  --wrap-kpi-danger-color: #fc4b6c;
+  --wrap-topbar-text: #fff;
 }
 
 html,
@@ -40,6 +30,9 @@ body {
 
 body {
   margin: 0;
+  background-color: var(--wrap-bg);
+  color: var(--wrap-text-muted);
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
 }
 
 .mat-mdc-card {
@@ -71,11 +64,11 @@ body {
 }
 
 .mat-mdc-table {
-  background: transparent;
+  background: transparent !important;
 }
 
 th.mat-mdc-header-cell {
-  background-color: var(--wrap-table-header-bg) !important;
+  background-color: #f7f9fa !important;
   color: var(--wrap-text-title) !important;
   font-weight: 600 !important;
   font-size: 0.875rem !important;
@@ -91,7 +84,7 @@ td.mat-mdc-cell {
 }
 
 tr.mdc-data-table__row:hover {
-  background-color: var(--wrap-row-hover-bg) !important;
+  background-color: #fcfcfc !important;
 }
 
 @keyframes slideUpFade {
@@ -198,7 +191,7 @@ tr.mdc-data-table__row:hover {
   .responsive-table .mat-mdc-cell::before {
     content: attr(data-label);
     font-weight: 600;
-    color: #8b9bab;
+    color: var(--wrap-text-muted);
     font-size: 0.75rem;
     text-transform: uppercase;
   }
@@ -213,4 +206,62 @@ tr.mdc-data-table__row:hover {
     border-top: 1px dashed var(--wrap-border) !important;
     padding-top: 1rem !important;
   }
+}
+
+/* KPI tile classes for dashboard */
+.kpi-tile {
+  border-radius: 0.75rem;
+  border: 1px solid var(--wrap-border);
+  background: var(--wrap-card-bg);
+  padding: 1rem;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.kpi-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi-icon-sales { background: var(--wrap-kpi-sales-bg); color: var(--wrap-kpi-sales-color); }
+.kpi-icon-warn  { background: var(--wrap-kpi-warn-bg);  color: var(--wrap-kpi-warn-color); }
+.kpi-icon-purple { background: var(--wrap-kpi-purple-bg); color: var(--wrap-kpi-purple-color); }
+.kpi-icon-danger { background: var(--wrap-kpi-danger-bg); color: var(--wrap-kpi-danger-color); }
+
+.kpi-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--wrap-text-muted);
+  margin: 0;
+}
+
+.kpi-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--wrap-text-title);
+  margin: 0;
+}
+
+/* Topbar search: global scoped overrides (avoids ::ng-deep in component) */
+.topbar-search .mat-mdc-form-field-infix {
+  min-height: 40px;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
+
+.topbar-search input,
+.topbar-search .mat-icon {
+  color: var(--wrap-topbar-text);
+}
+
+.topbar-search input::placeholder {
+  color: rgba(255, 255, 255, 0.75);
 }
