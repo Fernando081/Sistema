@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.0.0",
   "scripts": {
-    "ng": "node ../node_modules/@angular/cli/bin/ng.js",
+    "ng": "node ./node_modules/@angular/cli/bin/ng.js",
     "start": "node ./node_modules/@angular/cli/bin/ng.js serve",
     "build": "node ./node_modules/@angular/cli/bin/ng.js build",
     "watch": "node ./node_modules/@angular/cli/bin/ng.js build --watch --configuration development",
