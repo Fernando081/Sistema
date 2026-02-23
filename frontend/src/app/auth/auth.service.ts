@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { LoginRequest, LoginResponse } from './auth.interface';
+import { LoginRequest, LoginResponse, DecodedToken } from './auth.interface';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -29,7 +29,7 @@ export class AuthService {
     return Boolean(this.getToken());
   }
 
-  getDecodedToken(): { sub?: string; role?: string } | null {
+  getDecodedToken(): DecodedToken | null {
     const token = this.getToken();
     if (!token) return null;
     const segments = token.split('.');
@@ -43,7 +43,7 @@ export class AuthService {
         bytes[i] = binary.charCodeAt(i);
       }
       const jsonString = new TextDecoder('utf-8').decode(bytes);
-      return JSON.parse(jsonString) as { sub?: string; role?: string };
+      return JSON.parse(jsonString) as DecodedToken;
     } catch {
       return null;
     }
