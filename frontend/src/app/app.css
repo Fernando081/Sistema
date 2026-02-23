@@ -18,8 +18,9 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0 1.5rem;
-  border-bottom: 1px solid #edf2f7;
+  border-bottom: 1px solid var(--wrap-border-light);
   cursor: pointer;
+  text-decoration: none;
 }
 
 .brand-logo {
@@ -29,22 +30,22 @@
   display: grid;
   place-items: center;
   color: #fff;
-  background: #1e88e5;
+  background: var(--wrap-primary);
   font-weight: 700;
-  box-shadow: 0 6px 14px rgba(30, 136, 229, 0.35);
+  box-shadow: 0 6px 14px var(--wrap-primary-shadow);
 }
 
 .brand h2 {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #2f3d4a;
+  color: var(--wrap-text-dark);
 }
 
 .profile-card {
   padding: 1.25rem;
   text-align: center;
-  border-bottom: 1px solid #edf2f7;
+  border-bottom: 1px solid var(--wrap-border-light);
 }
 
 .avatar {
@@ -56,13 +57,13 @@
 
 .profile-card h4 {
   margin: 0.6rem 0 0.2rem;
-  color: #3e5569;
+  color: var(--wrap-text-title);
 }
 
 .profile-card p {
   margin: 0;
   font-size: 0.75rem;
-  color: #8b9bab;
+  color: var(--wrap-text-label);
 }
 
 .app-nav-list {
@@ -78,7 +79,7 @@
 .nav-label {
   margin: 0.2rem 0 0.25rem;
   padding-left: 0.9rem;
-  color: #9aa8b5;
+  color: var(--wrap-text-label);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -91,20 +92,20 @@
 
 .wrap-nav-item {
   border-radius: 10px !important;
-  color: #54667a !important;
+  color: var(--wrap-text-nav) !important;
   border: 1px solid transparent;
   transition: all 0.3s ease;
 }
 
 .wrap-nav-item:hover {
-  background-color: #f2f6f8;
-  color: #1e88e5 !important;
-  border-color: #dce9f4;
+  background-color: var(--wrap-nav-hover-bg);
+  color: var(--wrap-primary) !important;
+  border-color: var(--wrap-nav-hover-border);
   transform: translateX(3px);
 }
 
 .wrap-nav-item .mat-icon {
-  color: #a1aab2 !important;
+  color: var(--wrap-text-icon) !important;
   transition: color 0.3s ease;
 }
 
@@ -114,23 +115,23 @@
 }
 
 .active-nav {
-  background: linear-gradient(90deg, #1e88e5 0%, #2a95f6 100%) !important;
+  background: linear-gradient(90deg, var(--wrap-primary) 0%, var(--wrap-primary-end) 100%) !important;
   color: #fff !important;
-  box-shadow: 0 6px 14px rgba(30, 136, 229, 0.3);
+  box-shadow: 0 6px 14px var(--wrap-primary-shadow);
 }
 
 .wrap-content-shell {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #eef5f9;
+  background: var(--wrap-bg);
 }
 
 .wrap-toolbar {
   min-height: 70px;
-  background: linear-gradient(90deg, #1e88e5 0%, #2a95f6 100%) !important;
+  background: linear-gradient(90deg, var(--wrap-primary) 0%, var(--wrap-primary-end) 100%) !important;
   color: #fff;
-  box-shadow: 0 8px 18px rgba(30, 136, 229, 0.28);
+  box-shadow: 0 8px 18px var(--wrap-primary-shadow);
   position: sticky;
   top: 0;
   z-index: 2;
@@ -167,7 +168,7 @@
 
 .page-head h3 {
   margin: 0;
-  color: #2f3d4a;
+  color: var(--wrap-text-dark);
   font-size: 1.5rem;
   font-weight: 700;
 }
@@ -177,31 +178,8 @@
   padding: 0.4rem 0.8rem;
   border-radius: 999px;
   font-size: 0.75rem;
-  color: #90a4ae;
+  color: var(--wrap-text-icon);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-}
-
-:host ::ng-deep .topbar-search .mdc-text-field--outlined {
-  --mdc-outlined-text-field-container-shape: 999px;
-  --mdc-outlined-text-field-outline-color: rgba(255, 255, 255, 0.25);
-  --mdc-outlined-text-field-hover-outline-color: rgba(255, 255, 255, 0.45);
-  --mdc-outlined-text-field-focus-outline-color: #fff;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-:host ::ng-deep .topbar-search .mat-mdc-form-field-infix {
-  min-height: 40px !important;
-  padding-top: 0.45rem !important;
-  padding-bottom: 0.45rem !important;
-}
-
-:host ::ng-deep .topbar-search input,
-:host ::ng-deep .topbar-search .mat-icon {
-  color: #fff !important;
-}
-
-:host ::ng-deep .topbar-search input::placeholder {
-  color: rgba(255, 255, 255, 0.75) !important;
 }
 
 @media (max-width: 900px) {
