@@ -1,0 +1,115 @@
+# Frontend
+
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.9.
+
+## Development server
+
+To start a local development server, run:
+
+```bash
+ng serve
+```
+
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## Code scaffolding
+
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+
+```bash
+ng generate component component-name
+```
+
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+
+```bash
+ng generate --help
+```
+
+## Building
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+## Running unit tests
+
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Troubleshooting in containers / Codex
+
+If `npm run build` or `npm run start` fails with errors like:
+
+- `You installed esbuild for another platform ... @esbuild/win32-x64`
+- `Cannot find module @rollup/rollup-linux-x64-gnu`
+- `Error: Cannot find module '@angular/cli/bin/ng.js'`
+
+it usually means `node_modules` was installed on another OS/architecture (for example Windows) and then reused in Linux, or dependencies are missing entirely.
+
+> **Note:** Invoking `ng` directly (e.g. `npm run ng`) or running it from a terminal can still produce `sh: 1: ng: Permission denied` in environments where executable shims lose their bits. In that case, use the cleanup steps below to reinstall.
+
+Run all cleanup commands **from the repository root** (the directory containing both `frontend/` and `backend/`).
+
+Recommended fix in Linux container (bash):
+
+```bash
+rm -rf node_modules frontend/node_modules backend/node_modules
+npm cache verify
+npm ci
+```
+
+If you are using **PowerShell on Windows**, use this equivalent cleanup command (PowerShell does not support `rm -rf`):
+
+```powershell
+Remove-Item -Recurse -Force node_modules, frontend/node_modules, backend/node_modules
+npm cache verify
+npm ci
+```
+
+If your environment uses a private registry/proxy, make sure optional dependencies are allowed (esbuild/rollup platform packages are required by Angular tooling).
+
+
+### What each recovery command does
+
+Use this sequence only when dependencies were copied from another OS/architecture or when optional native packages are missing.
+
+1. `rm -rf node_modules frontend/node_modules backend/node_modules` *(run from repo root)*
+   - Removes all installed dependencies so npm can reinstall binaries for the **current** platform.
+   - In this repo, workspaces install primarily under root `node_modules`, but removing workspace folders as well ensures no stale packages remain.
+
+2. `npm cache verify`
+   - Checks npm cache integrity and removes corrupted entries.
+   - Useful after interrupted installs or platform switches.
+
+3. `npm ci`
+   - Reinstalls dependencies exactly from `package-lock.json` (clean, reproducible install).
+   - Prefer this in CI/containers over `npm install`.
+
+After reinstalling, retry (from repo root):
+
+```bash
+npm run build
+npm --workspace frontend run start -- --host 0.0.0.0 --port 4200
+```

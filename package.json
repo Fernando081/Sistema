@@ -1,0 +1,11 @@
+{
+  "name": "sistema",
+  "private": true,
+  "workspaces": ["backend", "frontend"],
+  "scripts": {
+    "build": "npm --workspace backend run build && npm --workspace frontend run build",
+    "start:dev": "nest start --watch",
+    "start:backend": "npm --workspace backend run start",
+    "start:frontend": "npm --workspace frontend run start"
+  }
+}

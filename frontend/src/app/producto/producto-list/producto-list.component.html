@@ -1,0 +1,106 @@
+<!-- frontend/src/app/producto/producto-list/producto-list.component.html (REEMPLAZAR) -->
+
+<!-- 
+  ¡CAMBIO! Envolvemos todo en un mat-tab-group
+  para tener las dos pestañas que querías.
+-->
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+
+  <!-- Pestaña 1: Lista de Productos (Código que ya tenías) -->
+  <mat-tab label="Lista de Productos">
+    <mat-card class="mat-elevation-z0 !border-t-0 rounded-t-none">
+      <mat-card-header class="producto-card-header">
+        <mat-card-title class="!text-2xl !font-semibold">Gestión de Productos</mat-card-title>
+        <button mat-flat-button color="primary" (click)="abrirDialogo()">
+          <mat-icon>add</mat-icon>
+          Nuevo Producto
+        </button>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="w-full mb-4">
+          <mat-label>Buscar producto</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por Código, Descripción, Marca..." #input>
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <div *ngIf="isLoading" class="flex justify-center items-center p-8">
+          <mat-spinner diameter="50"></mat-spinner>
+          <span class="ml-4 text-lg">Cargando productos...</span>
+        </div>
+
+        <div class="overflow-auto" [hidden]="isLoading">
+          <table mat-table [dataSource]="dataSource" matSort class="w-full">
+            <!-- (Todas tus columnas <ng-container> de producto van aquí) -->
+            <ng-container matColumnDef="idProducto">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+              <td mat-cell *matCellDef="let element"> {{element.idProducto}} </td>
+            </ng-container>
+            <ng-container matColumnDef="codigo">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Código </th>
+              <td mat-cell *matCellDef="let element"> {{element.codigo}} </td>
+            </ng-container>
+            <ng-container matColumnDef="descripcion">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Descripción </th>
+              <td mat-cell *matCellDef="let element"> {{element.descripcion}} </td>
+            </ng-container>
+            <ng-container matColumnDef="categoriaNombre">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Categoría </th>
+              <td mat-cell *matCellDef="let element"> {{element.categoriaNombre}} </td>
+            </ng-container>
+            <ng-container matColumnDef="precioUnitario">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio </th>
+              <td mat-cell *matCellDef="let element"> {{element.precioUnitario | currency:'MXN':'symbol':'1.2-2'}} </td>
+            </ng-container>
+          <ng-container matColumnDef="existencia">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Existencia </th>
+              <td mat-cell *matCellDef="let element" 
+                  [class.text-red-600]="element.existencia <= 0"
+                  [class.font-bold]="element.existencia <= 0"> 
+                {{ element.existencia }} 
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef> Acciones </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button color="accent" (click)="verKardex(element)" matTooltip="Ver Historial (Kardex)">
+                  <mat-icon>history</mat-icon>
+                </button>
+                <button mat-icon-button color="primary" (click)="abrirDialogo(element)" matTooltip="Editar Producto">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="eliminarProducto(element.idProducto)" matTooltip="Eliminar Producto">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="displayedColumns.length" class="text-center p-4">
+                No se encontraron datos para el filtro "{{input.value}}"
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <mat-paginator 
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 25, 50]"
+          showFirstLastButtons
+          aria-label="Seleccionar página de productos">
+        </mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+
+  <!-- Pestaña 2: Gestionar Categorías (Aquí cargamos el nuevo componente) -->
+  <mat-tab label="Gestionar Categorías">
+    <!-- El padding (p-6) da espacio alrededor de la tarjeta de categorías -->
+    <div class="p-6">
+      <app-categoria-list></app-categoria-list>
+    </div>
+  </mat-tab>
+
+</mat-tab-group>
