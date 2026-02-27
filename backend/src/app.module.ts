@@ -23,6 +23,7 @@ import { CotizacionModule } from './cotizacion/cotizacion.module';
 import { PagoModule } from './pago/pago.module';
 import { PagoProveedorModule } from './pago-proveedor/pago-proveedor.module';
 import { AuthModule } from './auth/auth.module';
+import { ReportesModule } from './reportes/reportes.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
@@ -71,6 +72,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     PagoModule,
     PagoProveedorModule,
     AuthModule,
+    ReportesModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
