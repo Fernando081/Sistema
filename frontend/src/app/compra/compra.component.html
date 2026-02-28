@@ -19,7 +19,7 @@
       </mat-form-field>
     </mat-card>
 
-    <div class="flex-grow overflow-auto bg-white shadow rounded">
+    <div class="flex-grow overflow-auto shadow rounded" style="background-color: var(--wrap-card-bg)">
       <table mat-table [dataSource]="carrito" class="w-full">
         <ng-container matColumnDef="descripcion">
           <th mat-header-cell *matHeaderCellDef> Producto </th>
@@ -77,7 +77,7 @@
           </mat-autocomplete>
         </mat-form-field>
 
-        <div *ngIf="proveedorSeleccionado" class="bg-green-50 p-3 rounded text-sm mb-2">
+        <div *ngIf="proveedorSeleccionado" class="p-3 rounded text-sm mb-2" style="background-color: var(--wrap-bg); border: 1px solid var(--wrap-border);">
           <p class="font-bold">{{ proveedorSeleccionado.razonSocial }}</p>
           <p>RFC: {{ proveedorSeleccionado.rfc }}</p>
         </div>

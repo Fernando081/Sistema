@@ -1,5 +1,5 @@
 // frontend/src/app/dashboard/dashboard.component.ts
-import { Component, OnInit, afterNextRender } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,6 +25,7 @@ export interface ChartSeries {
 })
 export class DashboardComponent implements OnInit {
   metrics: DashboardMetrics | null = null;
+  chartsReady = false;
 
   // --- DATA PARA GRÁFICAS ---
   graficaVentas: ChartSeries[] = []; // Historial
@@ -57,15 +58,22 @@ export class DashboardComponent implements OnInit {
   // Tabla Stock Bajo
   displayedColumns: string[] = ['codigo', 'descripcion', 'existencia'];
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor(
+    private dashboardService: DashboardService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.dashboardService.getMetrics().subscribe((data) => {
       this.metrics = data;
 
       setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-      }, 50);
+         this.chartsReady = true;
+         this.cdr.detectChanges();
+         setTimeout(() => {
+             window.dispatchEvent(new Event('resize'));
+         }, 100);
+      }, 500);
 
       // 1. GRÁFICA DE VENTAS (HISTORIAL)
       if (data.grafica && data.grafica.length > 0) {

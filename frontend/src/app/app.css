@@ -4,7 +4,7 @@
   width: 280px;
   border-right: 0 !important;
   box-shadow: 5px 0 20px rgba(0, 0, 0, 0.05);
-  background: #fff !important;
+  background: var(--wrap-card-bg) !important;
 }
 
 .wrap-sidenav .mat-drawer-inner-container {
@@ -39,7 +39,7 @@
   margin: 0;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #2f3d4a;
+  color: var(--wrap-text-title);
 }
 
 .profile-card {
@@ -64,7 +64,7 @@
 
 .profile-card h4 {
   margin: 0.6rem 0 0.2rem;
-  color: #3e5569;
+  color: var(--wrap-text-title);
 }
 
 .profile-card p {
@@ -86,7 +86,7 @@
 .nav-label {
   margin: 0.2rem 0 0.25rem;
   padding-left: 0.9rem;
-  color: #9aa8b5;
+  color: var(--wrap-text-label, #9aa8b5);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -99,20 +99,20 @@
 
 .wrap-nav-item {
   border-radius: 10px !important;
-  color: #54667a !important;
+  color: var(--wrap-text-nav, #54667a) !important;
   border: 1px solid transparent;
   transition: all 0.3s ease;
 }
 
 .wrap-nav-item:hover {
-  background-color: #f2f6f8;
-  color: #1e88e5 !important;
-  border-color: #dce9f4;
+  background-color: var(--wrap-bg);
+  color: var(--wrap-primary, #1e88e5) !important;
+  border-color: var(--wrap-border, #dce9f4);
   transform: translateX(3px);
 }
 
 .wrap-nav-item .mat-icon {
-  color: #a1aab2 !important;
+  color: var(--wrap-icon-nav, #a1aab2) !important;
   transition: color 0.3s ease;
 }
 
@@ -131,7 +131,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #eef5f9;
+  background: var(--wrap-bg);
 }
 
 .wrap-toolbar {
@@ -183,7 +183,7 @@
 
 .page-head h3 {
   margin: 0;
-  color: #2f3d4a;
+  color: var(--wrap-text-title);
   font-size: 1.5rem;
   font-weight: 700;
 }
@@ -207,4 +207,18 @@
     align-items: flex-start;
     gap: 0.5rem;
   }
+}
+
+/* Dark mode overrides explicitly piercing encapsulation */
+:host-context(.dark) .wrap-nav-item {
+  color: #ffffff !important;
+}
+
+:host-context(.dark) .wrap-nav-item .mat-icon {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+:host-context(.dark) .nav-label {
+  color: #ffffff !important;
+  opacity: 0.7;
 }

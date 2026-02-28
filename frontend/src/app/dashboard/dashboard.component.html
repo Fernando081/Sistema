@@ -57,7 +57,7 @@
           ><mat-card-title>Tendencia de Ventas (7 Días)</mat-card-title></mat-card-header
         >
         <mat-card-content class="h-[320px] flex items-center justify-center mt-2">
-          @if (graficaVentas.length > 0) {
+          @if (chartsReady && graficaVentas.length > 0) {
             <div class="w-full h-full">
               <ngx-charts-area-chart
                 [results]="graficaVentas"
@@ -81,23 +81,25 @@
       <mat-card class="xl:col-span-4 animate-card">
         <mat-card-header><mat-card-title>Flujo de Dinero</mat-card-title></mat-card-header>
         <mat-card-content class="h-[320px] flex items-center justify-center mt-2">
-          <ngx-charts-bar-vertical
-            [results]="graficaFlujo"
-            [scheme]="colorFlujo"
-            [xAxis]="true"
-            [yAxis]="true"
-            [showXAxisLabel]="false"
-            [showYAxisLabel]="true"
-            [showDataLabel]="true"
-            [showGridLines]="false"
-          ></ngx-charts-bar-vertical>
+          @if (chartsReady) {
+            <ngx-charts-bar-vertical
+              [results]="graficaFlujo"
+              [scheme]="colorFlujo"
+              [xAxis]="true"
+              [yAxis]="true"
+              [showXAxisLabel]="false"
+              [showYAxisLabel]="true"
+              [showDataLabel]="true"
+              [showGridLines]="false"
+            ></ngx-charts-bar-vertical>
+          }
         </mat-card-content>
       </mat-card>
 
       <mat-card class="xl:col-span-5 animate-card">
         <mat-card-header><mat-card-title>🏆 Top 5 Más Vendidos</mat-card-title></mat-card-header>
         <mat-card-content class="h-[300px] flex items-center justify-center mt-2">
-          @if (graficaTop.length > 0) {
+          @if (chartsReady && graficaTop.length > 0) {
             <div class="w-full h-full">
               <ngx-charts-bar-horizontal
                 [results]="graficaTop"

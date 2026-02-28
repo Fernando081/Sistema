@@ -34,11 +34,11 @@
 }
 
 .dark {
-  --bg-primary: #121212;
-  --bg-card: #1e1e1e;
-  --text-main: #ffffff;
-  --text-muted: #b3b3b3;
-  --border-color: #333333;
+  --bg-primary: #1a1b26;
+  --bg-card: #24283b;
+  --text-main: #c0caf5;
+  --text-muted: #9aa5ce;
+  --border-color: #292e42;
   --primary-color: #4dc2ff;
 
   --wrap-bg: var(--bg-primary);
@@ -47,6 +47,15 @@
   --wrap-text-muted: var(--text-muted);
   --wrap-border: var(--border-color);
   --wrap-primary: var(--primary-color);
+  
+  --wrap-text-nav: #ffffff;
+  --wrap-icon-nav: rgba(255, 255, 255, 0.8);
+  --wrap-text-label: #ffffff;
+
+  --mdc-outlined-text-field-input-text-color: #ffffff;
+  --mdc-filled-text-field-input-text-color: #ffffff;
+  --mdc-outlined-text-field-caret-color: #ffffff;
+  --mdc-filled-text-field-caret-color: #ffffff;
 
   --wrap-shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.5);
   --wrap-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.8);
@@ -75,6 +84,41 @@ body {
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
+}
+
+/* Material Input Fixes (Tailwind preflight conflict) */
+.mdc-notched-outline__notch {
+  border-right: none !important;
+  border-left: none !important;
+}
+.mat-mdc-text-field-wrapper {
+  box-sizing: border-box !important;
+}
+
+/* Input background for Tokyo night */
+.dark .mat-mdc-text-field-wrapper {
+  background-color: #16161e !important;
+}
+
+/* Input text color for dark mode fallback */
+.dark input.mat-mdc-input-element,
+.dark textarea.mat-mdc-input-element,
+.dark .mat-mdc-select-value-text,
+.dark .mat-mdc-form-field-input-control {
+  color: #ffffff !important;
+}
+
+/* Sidebar dark mode text overrides */
+html.dark app-root .wrap-nav-item,
+html.dark app-root .wrap-nav-item .mdc-list-item__primary-text {
+  color: #ffffff !important;
+}
+html.dark app-root .wrap-nav-item .mat-icon {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+html.dark app-root .nav-label {
+  color: #ffffff !important;
+  opacity: 0.7 !important;
 }
 
 .mat-mdc-card {
@@ -350,10 +394,36 @@ tr.mdc-data-table__row:hover {
   color: var(--wrap-text-title);
 }
 
-/* Fix Tailwind conflict with Material Form Field Notched Outline */
-.mdc-notched-outline__leading,
-.mdc-notched-outline__notch,
-.mdc-notched-outline__trailing {
-  border-width: 1px !important;
-  border-style: solid !important;
+/* Final overrides applied via previous variables */
+
+/* Dark Mode Components (Paginator & Overlays) */
+.dark .cdk-overlay-pane .mat-mdc-autocomplete-panel,
+.dark .cdk-overlay-pane .mat-mdc-select-panel,
+.dark .cdk-overlay-pane .mat-mdc-menu-panel,
+.dark .mat-mdc-autocomplete-panel,
+.dark .mat-mdc-select-panel,
+.dark .mat-mdc-menu-panel {
+  background-color: var(--wrap-card-bg) !important;
+  color: var(--wrap-text-title) !important;
+}
+
+html.dark .mat-mdc-option,
+html.dark .mat-mdc-option .mdc-list-item__primary-text {
+  color: var(--wrap-text-title) !important;
+}
+
+html.dark .mat-mdc-option:hover,
+html.dark .mat-mdc-option.mdc-list-item--selected,
+html.dark .mat-mdc-option.mat-mdc-option-active {
+  background-color: var(--wrap-bg) !important;
+}
+
+.dark .mat-mdc-paginator,
+.dark .mat-mdc-paginator-container {
+  background-color: transparent !important;
+  color: var(--wrap-text-title) !important;
+}
+
+.dark .mat-mdc-paginator-icon {
+  fill: var(--wrap-text-title) !important;
 }
