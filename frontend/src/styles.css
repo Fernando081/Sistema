@@ -1,26 +1,65 @@
 /* frontend/src/styles.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --wrap-bg: #eef5f9;
-  --wrap-card-bg: #ffffff;
-  --wrap-text-title: #3e5569;
-  --wrap-text-muted: #67757c;
-  --wrap-border: #e9ecef;
-  --wrap-primary: #1e88e5;
+  --bg-primary: #f3f2f1;
+  --bg-card: #ffffff;
+  --text-main: #252423;
+  --text-muted: #605e5c;
+  --border-color: #e1dfdd;
+  --primary-color: #118dff;
+
+  --wrap-bg: var(--bg-primary);
+  --wrap-card-bg: var(--bg-card);
+  --wrap-text-title: var(--text-main);
+  --wrap-text-muted: var(--text-muted);
+  --wrap-border: var(--border-color);
+  --wrap-primary: var(--primary-color);
 
   --wrap-shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.05);
-  --wrap-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.1);
+  --wrap-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.15);
   --wrap-radius: 12px;
 
   --wrap-kpi-sales-bg: #e8f2fc;
-  --wrap-kpi-sales-color: #1e88e5;
+  --wrap-kpi-sales-color: #118dff;
   --wrap-kpi-warn-bg: #fdf3e5;
   --wrap-kpi-warn-color: #ffb22b;
   --wrap-kpi-purple-bg: #f1ebfa;
   --wrap-kpi-purple-color: #7460ee;
   --wrap-kpi-danger-bg: #fde9eb;
   --wrap-kpi-danger-color: #fc4b6c;
-  --wrap-topbar-text: #fff;
+  --wrap-topbar-text: #252423;
+}
+
+.dark {
+  --bg-primary: #121212;
+  --bg-card: #1e1e1e;
+  --text-main: #ffffff;
+  --text-muted: #b3b3b3;
+  --border-color: #333333;
+  --primary-color: #4dc2ff;
+
+  --wrap-bg: var(--bg-primary);
+  --wrap-card-bg: var(--bg-card);
+  --wrap-text-title: var(--text-main);
+  --wrap-text-muted: var(--text-muted);
+  --wrap-border: var(--border-color);
+  --wrap-primary: var(--primary-color);
+
+  --wrap-shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.5);
+  --wrap-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.8);
+
+  --wrap-kpi-sales-bg: #1a3a5c;
+  --wrap-kpi-sales-color: #4dc2ff;
+  --wrap-kpi-warn-bg: #4a3810;
+  --wrap-kpi-warn-color: #ffca28;
+  --wrap-kpi-purple-bg: #322659;
+  --wrap-kpi-purple-color: #b794f4;
+  --wrap-kpi-danger-bg: #5c1a24;
+  --wrap-kpi-danger-color: #fc8181;
+  --wrap-topbar-text: #ffffff;
 }
 
 html,
@@ -33,19 +72,22 @@ body {
   background-color: var(--wrap-bg);
   color: var(--wrap-text-muted);
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .mat-mdc-card {
   background-color: var(--wrap-card-bg);
   border-radius: var(--wrap-radius);
   box-shadow: var(--wrap-shadow-sm);
-  border: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--wrap-border);
+  transition: all 0.3s ease-in-out;
   overflow: hidden;
 }
 
 .mat-mdc-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   box-shadow: var(--wrap-shadow-hover);
 }
 
@@ -230,10 +272,22 @@ tr.mdc-data-table__row:hover {
   flex-shrink: 0;
 }
 
-.kpi-icon-sales { background: var(--wrap-kpi-sales-bg); color: var(--wrap-kpi-sales-color); }
-.kpi-icon-warn  { background: var(--wrap-kpi-warn-bg);  color: var(--wrap-kpi-warn-color); }
-.kpi-icon-purple { background: var(--wrap-kpi-purple-bg); color: var(--wrap-kpi-purple-color); }
-.kpi-icon-danger { background: var(--wrap-kpi-danger-bg); color: var(--wrap-kpi-danger-color); }
+.kpi-icon-sales {
+  background: var(--wrap-kpi-sales-bg);
+  color: var(--wrap-kpi-sales-color);
+}
+.kpi-icon-warn {
+  background: var(--wrap-kpi-warn-bg);
+  color: var(--wrap-kpi-warn-color);
+}
+.kpi-icon-purple {
+  background: var(--wrap-kpi-purple-bg);
+  color: var(--wrap-kpi-purple-color);
+}
+.kpi-icon-danger {
+  background: var(--wrap-kpi-danger-bg);
+  color: var(--wrap-kpi-danger-color);
+}
 
 .kpi-label {
   font-size: 0.75rem;
@@ -264,4 +318,28 @@ tr.mdc-data-table__row:hover {
 
 .topbar-search input::placeholder {
   color: rgba(255, 255, 255, 0.75);
+}
+
+/* ngx-charts dark mode overrides */
+.dark .ngx-charts text {
+  fill: var(--wrap-text-muted) !important;
+}
+
+.dark .ngx-charts .gridline-path {
+  stroke: var(--wrap-border) !important;
+}
+
+/* Material table styling in dark mode */
+.dark th.mat-mdc-header-cell {
+  background-color: #252525 !important;
+  color: var(--wrap-text-title) !important;
+}
+
+.dark td.mat-mdc-cell {
+  color: var(--wrap-text-muted) !important;
+  border-bottom-color: var(--wrap-border) !important;
+}
+
+.dark tr.mdc-data-table__row:hover {
+  background-color: #2b2b2b !important;
 }

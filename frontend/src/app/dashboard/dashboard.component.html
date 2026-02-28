@@ -1,108 +1,172 @@
 <!-- frontend/src/app/dashboard/dashboard.component.html -->
-<div class="grid grid-cols-1 gap-6" *ngIf="metrics">
-  <mat-card class="animate-card overflow-hidden">
-    <mat-card-header>
-      <mat-card-title>Resumen Ejecutivo</mat-card-title>
-    </mat-card-header>
+@if (metrics) {
+  <div class="grid grid-cols-1 gap-6">
+    <mat-card class="animate-card overflow-hidden">
+      <mat-card-header>
+        <mat-card-title>Resumen Ejecutivo</mat-card-title>
+      </mat-card-header>
 
-    <mat-card-content>
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div class="kpi-tile">
-          <div class="kpi-icon kpi-icon-sales">
-            <mat-icon>point_of_sale</mat-icon>
+      <mat-card-content>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div class="kpi-tile">
+            <div class="kpi-icon kpi-icon-sales">
+              <mat-icon>point_of_sale</mat-icon>
+            </div>
+            <div>
+              <p class="kpi-label">Ventas Hoy</p>
+              <h3 class="kpi-value">{{ metrics.ventasHoy | currency: 'MXN' }}</h3>
+            </div>
           </div>
-          <div>
-            <p class="kpi-label">Ventas Hoy</p>
-            <h3 class="kpi-value">{{ metrics.ventasHoy | currency:'MXN' }}</h3>
-          </div>
-        </div>
 
-        <div class="kpi-tile">
-          <div class="kpi-icon kpi-icon-warn">
-            <mat-icon>account_balance_wallet</mat-icon>
+          <div class="kpi-tile">
+            <div class="kpi-icon kpi-icon-warn">
+              <mat-icon>account_balance_wallet</mat-icon>
+            </div>
+            <div>
+              <p class="kpi-label">Por Cobrar</p>
+              <h3 class="kpi-value">{{ metrics.porCobrar | currency: 'MXN' }}</h3>
+            </div>
           </div>
-          <div>
-            <p class="kpi-label">Por Cobrar</p>
-            <h3 class="kpi-value">{{ metrics.porCobrar | currency:'MXN' }}</h3>
-          </div>
-        </div>
 
-        <div class="kpi-tile">
-          <div class="kpi-icon kpi-icon-purple">
-            <mat-icon>money_off</mat-icon>
+          <div class="kpi-tile">
+            <div class="kpi-icon kpi-icon-purple">
+              <mat-icon>money_off</mat-icon>
+            </div>
+            <div>
+              <p class="kpi-label">Por Pagar</p>
+              <h3 class="kpi-value">{{ metrics.porPagar | currency: 'MXN' }}</h3>
+            </div>
           </div>
-          <div>
-            <p class="kpi-label">Por Pagar</p>
-            <h3 class="kpi-value">{{ metrics.porPagar | currency:'MXN' }}</h3>
-          </div>
-        </div>
 
-        <div class="kpi-tile">
-          <div class="kpi-icon kpi-icon-danger">
-            <mat-icon>warning</mat-icon>
+          <div class="kpi-tile">
+            <div class="kpi-icon kpi-icon-danger">
+              <mat-icon>warning</mat-icon>
+            </div>
+            <div>
+              <p class="kpi-label">Stock Bajo</p>
+              <h3 class="kpi-value">{{ metrics.conteoBajos }} prod.</h3>
+            </div>
           </div>
-          <div>
-            <p class="kpi-label">Stock Bajo</p>
-            <h3 class="kpi-value">{{ metrics.conteoBajos }} prod.</h3>
-          </div>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-    <mat-card class="xl:col-span-8 animate-card">
-      <mat-card-header><mat-card-title>Tendencia de Ventas (7 Días)</mat-card-title></mat-card-header>
-      <mat-card-content class="h-[320px] flex items-center justify-center mt-2">
-        <div *ngIf="graficaVentas.length > 0; else noData" class="w-full h-full">
-          <ngx-charts-area-chart [results]="graficaVentas" [scheme]="colorVentas" [gradient]="true" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true" xAxisLabel="Fecha" yAxisLabel="Venta ($)" [autoScale]="true"></ngx-charts-area-chart>
         </div>
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="xl:col-span-4 animate-card">
-      <mat-card-header><mat-card-title>Flujo de Dinero</mat-card-title></mat-card-header>
-      <mat-card-content class="h-[320px] flex items-center justify-center mt-2">
-        <ngx-charts-bar-vertical [results]="graficaFlujo" [scheme]="colorFlujo" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="false" [showYAxisLabel]="true" [showDataLabel]="true"></ngx-charts-bar-vertical>
-      </mat-card-content>
-    </mat-card>
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <mat-card class="xl:col-span-8 animate-card">
+        <mat-card-header
+          ><mat-card-title>Tendencia de Ventas (7 Días)</mat-card-title></mat-card-header
+        >
+        <mat-card-content class="h-[320px] flex items-center justify-center mt-2">
+          @if (graficaVentas.length > 0) {
+            <div class="w-full h-full">
+              <ngx-charts-area-chart
+                [results]="graficaVentas"
+                [scheme]="colorVentas"
+                [gradient]="true"
+                [xAxis]="true"
+                [yAxis]="true"
+                [showXAxisLabel]="true"
+                xAxisLabel="Fecha"
+                yAxisLabel="Venta ($)"
+                [autoScale]="true"
+                [showGridLines]="false"
+              ></ngx-charts-area-chart>
+            </div>
+          } @else {
+            <ng-container *ngTemplateOutlet="noData"></ng-container>
+          }
+        </mat-card-content>
+      </mat-card>
 
-    <mat-card class="xl:col-span-5 animate-card">
-      <mat-card-header><mat-card-title>🏆 Top 5 Más Vendidos</mat-card-title></mat-card-header>
-      <mat-card-content class="h-[300px] flex items-center justify-center mt-2">
-        <div *ngIf="graficaTop.length > 0; else noData" class="w-full h-full">
-          <ngx-charts-bar-horizontal [results]="graficaTop" [scheme]="colorTop" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" xAxisLabel="Cantidad Vendida"></ngx-charts-bar-horizontal>
-        </div>
-      </mat-card-content>
-    </mat-card>
+      <mat-card class="xl:col-span-4 animate-card">
+        <mat-card-header><mat-card-title>Flujo de Dinero</mat-card-title></mat-card-header>
+        <mat-card-content class="h-[320px] flex items-center justify-center mt-2">
+          <ngx-charts-bar-vertical
+            [results]="graficaFlujo"
+            [scheme]="colorFlujo"
+            [xAxis]="true"
+            [yAxis]="true"
+            [showXAxisLabel]="false"
+            [showYAxisLabel]="true"
+            [showDataLabel]="true"
+            [showGridLines]="false"
+          ></ngx-charts-bar-vertical>
+        </mat-card-content>
+      </mat-card>
 
-    <mat-card class="xl:col-span-7 animate-card responsive-table">
-      <mat-card-header><mat-card-title>⚠️ Alerta de Reabastecimiento</mat-card-title></mat-card-header>
-      <mat-card-content class="mt-2 overflow-auto h-[300px]">
-        <table mat-table [dataSource]="metrics.listaBajos" class="w-full">
-          <ng-container matColumnDef="codigo">
-            <th mat-header-cell *matHeaderCellDef>Cód</th>
-            <td mat-cell *matCellDef="let e" data-label="Código">{{e.codigo}}</td>
-          </ng-container>
-          <ng-container matColumnDef="descripcion">
-            <th mat-header-cell *matHeaderCellDef>Descripción</th>
-            <td mat-cell *matCellDef="let e" class="text-xs font-medium" data-label="Descripción">{{e.descripcion}}</td>
-          </ng-container>
-          <ng-container matColumnDef="existencia">
-            <th mat-header-cell *matHeaderCellDef>Stock</th>
-            <td mat-cell *matCellDef="let e" class="font-bold text-right pr-4" data-label="Stock">{{e.existencia}}</td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      </mat-card-content>
-    </mat-card>
-  </div>
+      <mat-card class="xl:col-span-5 animate-card">
+        <mat-card-header><mat-card-title>🏆 Top 5 Más Vendidos</mat-card-title></mat-card-header>
+        <mat-card-content class="h-[300px] flex items-center justify-center mt-2">
+          @if (graficaTop.length > 0) {
+            <div class="w-full h-full">
+              <ngx-charts-bar-horizontal
+                [results]="graficaTop"
+                [scheme]="colorTop"
+                [xAxis]="true"
+                [yAxis]="true"
+                [showXAxisLabel]="true"
+                [showYAxisLabel]="true"
+                xAxisLabel="Cantidad Vendida"
+                [showGridLines]="false"
+              ></ngx-charts-bar-horizontal>
+            </div>
+          } @else {
+            <ng-container *ngTemplateOutlet="noData"></ng-container>
+          }
+        </mat-card-content>
+      </mat-card>
 
-  <ng-template #noData>
-    <div class="flex flex-col items-center justify-center h-full opacity-50">
-      <mat-icon class="scale-150 mb-2">bar_chart</mat-icon>
-      <p>No hay datos suficientes aún.</p>
+      <mat-card class="xl:col-span-7 animate-card responsive-table">
+        <mat-card-header
+          ><mat-card-title>⚠️ Alerta de Reabastecimiento</mat-card-title></mat-card-header
+        >
+        <mat-card-content class="mt-2 overflow-auto h-[300px]">
+          <table mat-table [dataSource]="metrics.listaBajos" class="w-full">
+            <ng-container matColumnDef="codigo">
+              <th mat-header-cell *matHeaderCellDef>Cód</th>
+              <td mat-cell *matCellDef="let e" data-label="Código">{{ e.codigo }}</td>
+            </ng-container>
+            <ng-container matColumnDef="descripcion">
+              <th mat-header-cell *matHeaderCellDef>Descripción</th>
+              <td mat-cell *matCellDef="let e" class="text-xs font-medium" data-label="Descripción">
+                {{ e.descripcion }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="existencia">
+              <th mat-header-cell *matHeaderCellDef>Stock</th>
+              <td mat-cell *matCellDef="let e" class="font-bold text-right pr-4" data-label="Stock">
+                {{ e.existencia }}
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
     </div>
-  </ng-template>
-</div>
+
+    <ng-template #noData>
+      <div class="flex flex-col items-center justify-center h-full opacity-50">
+        <mat-icon class="scale-150 mb-2">bar_chart</mat-icon>
+        <p>No hay datos suficientes aún.</p>
+      </div>
+    </ng-template>
+  </div>
+} @else {
+  <!-- Loading Skeletons -->
+  <div class="grid grid-cols-1 gap-6 animate-pulse">
+    <!-- Top KPI Row Skeleton -->
+    <div class="xl:col-span-12 h-32 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <!-- Area Chart Skeleton -->
+      <div class="xl:col-span-8 h-[380px] bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+      <!-- Bar Chart Skeleton -->
+      <div class="xl:col-span-4 h-[380px] bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+      <!-- Top Chart Skeleton -->
+      <div class="xl:col-span-5 h-[360px] bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+      <!-- Table Skeleton -->
+      <div class="xl:col-span-7 h-[360px] bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+    </div>
+  </div>
+}

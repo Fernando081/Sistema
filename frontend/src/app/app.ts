@@ -15,6 +15,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
 import { filter, map, shareReplay } from 'rxjs';
 import { AuthService } from './auth/auth.service';
 import { DecodedToken } from './auth/auth.interface';
+import { ThemeService } from './services/theme.service';
 
 type AuthUser = {
   sub?: string;
@@ -47,6 +48,7 @@ type AuthUser = {
 })
 export class App {
   private readonly breakpointObserver = inject(BreakpointObserver);
+  readonly themeService = inject(ThemeService);
 
   isLoginRoute = false;
   user: DecodedToken | null = null;
@@ -59,12 +61,10 @@ export class App {
     private readonly authService: AuthService,
     private readonly router: Router,
   ) {
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.isLoginRoute = this.router.url.startsWith('/login');
-        this.user = this.authService.getDecodedToken();
-      });
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+      this.isLoginRoute = this.router.url.startsWith('/login');
+      this.user = this.authService.getDecodedToken();
+    });
     this.isLoginRoute = this.router.url.startsWith('/login');
     this.user = this.authService.getDecodedToken();
   }
