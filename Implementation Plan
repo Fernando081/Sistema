@@ -1,0 +1,50 @@
+# Objective
+Refactor the Angular global UI/UX to a modern, Microsoft Power BI-style analytics interface. Implement a fully functional Dark Mode toggle using Angular Signals and strictly typed TypeScript 5.9.3.
+
+## Proposed Changes
+
+### Configuration & Theming
+#### [NEW] `c:\Sistema\frontend\tailwind.config.js`
+- Create Tailwind configuration with `darkMode: 'class'`.
+- Define the content array `['./src/**/*.{html,ts}']` to purge unused styles.
+
+#### [MODIFY] `c:\Sistema\frontend\src\styles.css`
+- Inject Tailwind layers (`@tailwind base; @tailwind components; @tailwind utilities;`).
+- Define CSS variables for Light Mode (`:root`) and Dark Mode (`.dark`).
+  - Light: `#f3f2f1` background, `#ffffff` cards, `#e1dfdd` borders.
+  - Dark: `#121212` background, `#1e1e1e` cards, `#333333` borders, muted neon chart colors.
+- Enhance `.mat-mdc-card` with soft shadows and `transform: translateY(-2px)` on hover, with smooth transitions.
+
+### Theme Management
+#### [NEW] `c:\Sistema\frontend\src\app\services\theme.service.ts`
+- Create `ThemeService` using Angular `signal<boolean>`.
+- Manage adding/removing the `dark` class from the `document.documentElement` or `body`.
+- Persist user choice in `localStorage`.
+
+#### [MODIFY] `c:\Sistema\frontend\src\app\app.ts` & `c:\Sistema\frontend\src\app\app.html`
+- Inject `ThemeService`.
+- Add a `mat-icon-button` to the `mat-toolbar` (in place of or next to the notifications button) that toggles between `light_mode` and `dark_mode` icons.
+
+### Dashboard Core (`c:\Sistema\frontend\src\app\dashboard\`)
+#### [MODIFY] `dashboard.component.ts`
+- Inject `ThemeService` to reactively update `ngx-charts` scheme colors and text based on the active theme.
+- Enhance strict typings ensuring no `any` is used for the API response.
+- Add loading state signal (`isLoading = signal(true)`).
+
+#### [MODIFY] `dashboard.component.html`
+- Refactor using modern control flow (`@if`, `@for`).
+- Implement Loading Skeletons for KPIs, Charts, and Table.
+- **Top Row**: 4 KPI cards applying the new Power BI style.
+- **Middle Row**: Adaptive `ngx-charts` inside Material cards with grids disabled.
+- **Bottom Row**: Responsive `mat-table` with alternating row colors.
+
+## Verification Plan
+### Automated Verification
+- Run strict TypeScript compilation checks (`npm run build` in `frontend`).
+
+### Manual Verification
+- Access the local development server at `http://127.0.0.1:4200` via the integrated browser.
+- Navigate to the Dashboard.
+- Click the Theme Toggle.
+- Verify that background, cards, tables, and `ngx-charts` adapt smoothly to Dark Mode without UI breakage or scrollbar issues.
+- Confirm loading skeletons are visible upon initial load before metrics resolve.
