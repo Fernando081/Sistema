@@ -331,7 +331,7 @@ tr.mdc-data-table__row:hover {
 
 /* Material table styling in dark mode */
 .dark th.mat-mdc-header-cell {
-  background-color: #252525 !important;
+  background-color: var(--bg-card) !important;
   color: var(--wrap-text-title) !important;
 }
 
@@ -341,5 +341,19 @@ tr.mdc-data-table__row:hover {
 }
 
 .dark tr.mdc-data-table__row:hover {
-  background-color: #2b2b2b !important;
+  background-color: var(--bg-primary) !important;
+}
+
+/* Material card styling in dark mode overlay */
+.dark .mat-mdc-card {
+  background-color: var(--wrap-card-bg);
+  color: var(--wrap-text-title);
+}
+
+/* Fix Tailwind conflict with Material Form Field Notched Outline */
+.mdc-notched-outline__leading,
+.mdc-notched-outline__notch,
+.mdc-notched-outline__trailing {
+  border-width: 1px !important;
+  border-style: solid !important;
 }

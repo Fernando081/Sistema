@@ -1,5 +1,5 @@
 // frontend/src/app/dashboard/dashboard.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -62,6 +62,10 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.dashboardService.getMetrics().subscribe((data) => {
       this.metrics = data;
+
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 50);
 
       // 1. GRÁFICA DE VENTAS (HISTORIAL)
       if (data.grafica && data.grafica.length > 0) {

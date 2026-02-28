@@ -27,14 +27,22 @@ export class ThemeService {
 
   private initTheme(): void {
     const savedTheme = localStorage.getItem('theme');
+    let prefersDark = false;
+
     if (savedTheme === 'dark') {
-      this.isDarkMode.set(true);
+      prefersDark = true;
     } else if (savedTheme === 'light') {
-      this.isDarkMode.set(false);
+      prefersDark = false;
     } else {
       // Fallback to system preference if no localStorage value
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.isDarkMode.set(prefersDark);
+      prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    
+    this.isDarkMode.set(prefersDark);
+    if (prefersDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
   }
 }
