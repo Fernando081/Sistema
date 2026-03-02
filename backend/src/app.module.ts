@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 
 // Módulos de Negocio
 import { ClienteModule } from './cliente/cliente.module';
@@ -32,6 +33,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
       isGlobal: true,
       envFilePath: ['.env', 'backend/.env'],
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {

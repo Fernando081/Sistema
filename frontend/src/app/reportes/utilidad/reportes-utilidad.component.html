@@ -7,19 +7,9 @@
         <mat-card-title>Top 5 Productos con mayor Utilidad Neta</mat-card-title>
       </mat-card-header>
       <mat-card-content class="h-[350px] flex items-center justify-center mt-2">
-        @if (graficaTop().length > 0) {
+        @if (productos().length > 0) {
           <div class="w-full h-full">
-            <ngx-charts-bar-vertical
-              [results]="graficaTop()"
-              [scheme]="colorTop"
-              [xAxis]="true"
-              [yAxis]="true"
-              [showXAxisLabel]="true"
-              [showYAxisLabel]="true"
-              xAxisLabel="Producto"
-              yAxisLabel="Utilidad Neta ($)"
-            >
-            </ngx-charts-bar-vertical>
+            <div echarts [options]="graficaTop()" class="w-full h-full"></div>
           </div>
         } @else {
           <div class="flex flex-col items-center justify-center h-full opacity-50">

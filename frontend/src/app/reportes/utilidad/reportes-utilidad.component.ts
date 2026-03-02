@@ -3,14 +3,15 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { EChartsOption } from 'echarts';
 import { ReportesService, ProductoUtilidad } from '../../services/reportes.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-reportes-utilidad',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatIconModule, MatTableModule, NgxChartsModule],
+  imports: [CommonModule, MatCardModule, MatIconModule, MatTableModule, NgxEchartsModule],
   templateUrl: './reportes-utilidad.component.html',
 })
 export class ReportesUtilidadComponent {
@@ -22,13 +23,23 @@ export class ReportesUtilidadComponent {
   });
 
   // Computed chart data
-  graficaTop = computed(() => {
+  graficaTop = computed<EChartsOption>(() => {
     const data = this.productos();
     const top5 = [...data].sort((a, b) => b.utilidadNeta - a.utilidadNeta).slice(0, 5);
-    return top5.map((item) => ({
-      name: item.descripcion,
-      value: item.utilidadNeta,
-    }));
+
+    return {
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      xAxis: { type: 'category', data: top5.map((item) => item.descripcion) },
+      yAxis: { type: 'value' },
+      series: [
+        {
+          name: 'Utilidad Neta',
+          type: 'bar',
+          data: top5.map((item) => item.utilidadNeta),
+          itemStyle: { color: '#1976D2' },
+        },
+      ],
+    };
   });
 
   // Table Configuration
@@ -40,7 +51,4 @@ export class ReportesUtilidadComponent {
     'utilidad_neta',
     'margen_porcentaje',
   ];
-
-  // Chart Colors (MaterialPro style)
-  colorTop: any = { domain: ['#1976D2', '#2196F3', '#64B5F6', '#90CAF9', '#BBDEFB'] };
 }

@@ -1,174 +1,581 @@
 <!-- frontend/src/app/dashboard/dashboard.component.html -->
-@if (metrics) {
+@if (dashboardData()) {
+  @let data = dashboardData()!;
+
   <div class="grid grid-cols-1 gap-6">
-    <mat-card class="animate-card overflow-hidden">
-      <mat-card-header>
-        <mat-card-title>Resumen Ejecutivo</mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content>
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          <div class="kpi-tile">
-            <div class="kpi-icon kpi-icon-sales">
-              <mat-icon>point_of_sale</mat-icon>
-            </div>
-            <div>
-              <p class="kpi-label">Ventas Hoy</p>
-              <h3 class="kpi-value">{{ metrics.ventasHoy | currency: 'MXN' }}</h3>
-            </div>
+    <!-- TOP ROW: Scorecards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
+      <!-- Scorecard Original 1: Ventas Hoy -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Ventas Hoy</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.metrics.ventasHoy | currency: 'MXN' }}
+            </h3>
           </div>
-
-          <div class="kpi-tile">
-            <div class="kpi-icon kpi-icon-warn">
-              <mat-icon>account_balance_wallet</mat-icon>
-            </div>
-            <div>
-              <p class="kpi-label">Por Cobrar</p>
-              <h3 class="kpi-value">{{ metrics.porCobrar | currency: 'MXN' }}</h3>
-            </div>
+          <div
+            class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400"
+          >
+            <mat-icon>point_of_sale</mat-icon>
           </div>
-
-          <div class="kpi-tile">
-            <div class="kpi-icon kpi-icon-purple">
-              <mat-icon>money_off</mat-icon>
-            </div>
-            <div>
-              <p class="kpi-label">Por Pagar</p>
-              <h3 class="kpi-value">{{ metrics.porPagar | currency: 'MXN' }}</h3>
-            </div>
-          </div>
-
-          <div class="kpi-tile">
-            <div class="kpi-icon kpi-icon-danger">
-              <mat-icon>warning</mat-icon>
-            </div>
-            <div>
-              <p class="kpi-label">Stock Bajo</p>
-              <h3 class="kpi-value">{{ metrics.conteoBajos }} prod.</h3>
-            </div>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-      <mat-card class="xl:col-span-8 animate-card">
-        <mat-card-header
-          ><mat-card-title>Tendencia de Ventas (7 Días)</mat-card-title></mat-card-header
-        >
-        <mat-card-content class="h-[320px] flex items-center justify-center mt-2">
-          @if (chartsReady && graficaVentas.length > 0) {
-            <div class="w-full h-full">
-              <ngx-charts-area-chart
-                [results]="graficaVentas"
-                [scheme]="colorVentas"
-                [gradient]="true"
-                [xAxis]="true"
-                [yAxis]="true"
-                [showXAxisLabel]="true"
-                xAxisLabel="Fecha"
-                yAxisLabel="Venta ($)"
-                [autoScale]="true"
-                [showGridLines]="false"
-              ></ngx-charts-area-chart>
-            </div>
-          } @else {
-            <ng-container *ngTemplateOutlet="noData"></ng-container>
-          }
         </mat-card-content>
       </mat-card>
 
-      <mat-card class="xl:col-span-4 animate-card">
-        <mat-card-header><mat-card-title>Flujo de Dinero</mat-card-title></mat-card-header>
-        <mat-card-content class="h-[320px] flex items-center justify-center mt-2">
-          @if (chartsReady) {
-            <ngx-charts-bar-vertical
-              [results]="graficaFlujo"
-              [scheme]="colorFlujo"
-              [xAxis]="true"
-              [yAxis]="true"
-              [showXAxisLabel]="false"
-              [showYAxisLabel]="true"
-              [showDataLabel]="true"
-              [showGridLines]="false"
-            ></ngx-charts-bar-vertical>
-          }
+      <!-- Scorecard Original 2: Por Cobrar -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Por Cobrar</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.metrics.porCobrar | currency: 'MXN' }}
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-amber-600 dark:text-amber-400"
+          >
+            <mat-icon>account_balance_wallet</mat-icon>
+          </div>
         </mat-card-content>
       </mat-card>
 
-      <mat-card class="xl:col-span-5 animate-card">
-        <mat-card-header><mat-card-title>🏆 Top 5 Más Vendidos</mat-card-title></mat-card-header>
-        <mat-card-content class="h-[300px] flex items-center justify-center mt-2">
-          @if (chartsReady && graficaTop.length > 0) {
-            <div class="w-full h-full">
-              <ngx-charts-bar-horizontal
-                [results]="graficaTop"
-                [scheme]="colorTop"
-                [xAxis]="true"
-                [yAxis]="true"
-                [showXAxisLabel]="true"
-                [showYAxisLabel]="true"
-                xAxisLabel="Cantidad Vendida"
-                [showGridLines]="false"
-              ></ngx-charts-bar-horizontal>
-            </div>
-          } @else {
-            <ng-container *ngTemplateOutlet="noData"></ng-container>
-          }
+      <!-- Scorecard Original 3: Por Pagar -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Por Pagar</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.metrics.porPagar | currency: 'MXN' }}
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400"
+          >
+            <mat-icon>money_off</mat-icon>
+          </div>
         </mat-card-content>
       </mat-card>
 
-      <mat-card class="xl:col-span-7 animate-card responsive-table">
-        <mat-card-header
-          ><mat-card-title>⚠️ Alerta de Reabastecimiento</mat-card-title></mat-card-header
-        >
-        <mat-card-content class="mt-2 overflow-auto h-[300px]">
-          <table mat-table [dataSource]="metrics.listaBajos" class="w-full">
-            <ng-container matColumnDef="codigo">
-              <th mat-header-cell *matHeaderCellDef>Cód</th>
-              <td mat-cell *matCellDef="let e" data-label="Código">{{ e.codigo }}</td>
-            </ng-container>
-            <ng-container matColumnDef="descripcion">
-              <th mat-header-cell *matHeaderCellDef>Descripción</th>
-              <td mat-cell *matCellDef="let e" class="text-xs font-medium" data-label="Descripción">
-                {{ e.descripcion }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="existencia">
-              <th mat-header-cell *matHeaderCellDef>Stock</th>
-              <td mat-cell *matCellDef="let e" class="font-bold text-right pr-4" data-label="Stock">
-                {{ e.existencia }}
-              </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-          </table>
+      <!-- Scorecard Original 4: Stock Bajo -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Stock Bajo</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.metrics.conteoBajos }} prod.
+            </h3>
+          </div>
+          <div class="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg text-red-600 dark:text-red-400">
+            <mat-icon>warning</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 1: Ingresos Netos -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Ingresos Netos</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.ventas.ingresos_netos | currency: 'MXN' }}
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400"
+          >
+            <mat-icon>attach_money</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 2: Ticket Promedio -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Ticket Promedio</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.ventas.ticket_promedio | currency: 'MXN' }}
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400"
+          >
+            <mat-icon>receipt</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 3: Valor Inventario -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Valor Inventario</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.inventario.valor_total_inventario | currency: 'MXN' }}
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-amber-600 dark:text-amber-400"
+          >
+            <mat-icon>inventory_2</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 4: Fill Rate -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Fill Rate</p>
+            <h3 class="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
+              {{ data.operaciones.tasa_cumplimiento | number: '1.2-2' }}%
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400"
+          >
+            <mat-icon>check_circle</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 5: LTV -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">LTV Promedio</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.clientes.valor_tiempo_vida | currency: 'MXN' }}
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400"
+          >
+            <mat-icon>groups</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 6: Margen Bruto -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Margen Bruto</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.ventas.margen_utilidad_bruta | number: '1.2-2' }}%
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-pink-100 dark:bg-pink-900/30 rounded-lg text-pink-600 dark:text-pink-400"
+          >
+            <mat-icon>trending_up</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <!-- Scorecard 7: Tasa Rotacion Inventario -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Rotación Inv.</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.inventario.tasa_rotacion_inventario | number: '1.2-2' }}x
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg text-cyan-600 dark:text-cyan-400"
+          >
+            <mat-icon>autorenew</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 8: Indice Quiebre Stock -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Quiebres Stock</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.inventario.indice_quiebre_stock | number: '1.0-0' }}
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg text-orange-600 dark:text-orange-400"
+          >
+            <mat-icon>production_quantity_limits</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 9: Dias Inventario -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Días Inventario</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.inventario.dias_inventario | number: '1.1-1' }}
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-teal-100 dark:bg-teal-900/30 rounded-lg text-teal-600 dark:text-teal-400"
+          >
+            <mat-icon>calendar_today</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 10: Tasa Retencion Clientes -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Retención Clientes</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.clientes.tasa_retencion_clientes | number: '1.2-2' }}%
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400"
+          >
+            <mat-icon>handshake</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 11: Quote to Win -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Conv. Cotiz.</p>
+            <h3 class="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
+              {{ data.operaciones.tasa_conversion_cotizaciones | number: '1.2-2' }}%
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400"
+          >
+            <mat-icon>monetization_on</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 12: Ventas Cruzadas -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Ventas Cruzadas</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.operaciones.indice_ventas_cruzadas | number: '1.2-2' }}
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400"
+          >
+            <mat-icon>add_shopping_cart</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 13: DPO -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">DPO (Días Cuentas)</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.clientes.dias_cuentas_por_pagar | number: '1.0-0' }}
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-deep-purple-100 dark:bg-deep-purple-900/30 rounded-lg text-deep-purple-600 dark:text-deep-purple-400"
+          >
+            <mat-icon>schedule</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 14: GMROI -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">GMROI</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.inventario.retorno_inversion_inventario | number: '1.2-2' }}x
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-emerald-600 dark:text-emerald-400"
+          >
+            <mat-icon>price_check</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 15: Descuento Promedio -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Desc. Promedio</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.ventas.descuento_promedio_otorgado | number: '1.2-2' }}%
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-rose-100 dark:bg-rose-900/30 rounded-lg text-rose-600 dark:text-rose-400"
+          >
+            <mat-icon>local_offer</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Scorecard 16: Costo Aterrizado -->
+      <mat-card class="animate-card overflow-hidden">
+        <mat-card-content class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Costo Aterrizado</p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ data.inventario.costo_aterrizado | currency: 'MXN' }}
+            </h3>
+          </div>
+          <div
+            class="p-3 bg-blue-gray-100 dark:bg-slate-700/30 rounded-lg text-slate-600 dark:text-slate-400"
+          >
+            <mat-icon>flight_land</mat-icon>
+          </div>
         </mat-card-content>
       </mat-card>
     </div>
 
-    <ng-template #noData>
-      <div class="flex flex-col items-center justify-center h-full opacity-50">
-        <mat-icon class="scale-150 mb-2">bar_chart</mat-icon>
-        <p>No hay datos suficientes aún.</p>
-      </div>
-    </ng-template>
+    <!-- MIDDLE ROWS: ECharts -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <!-- Area Chart: Tendencia de Ventas (Original) -->
+      <mat-card class="animate-card xl:col-span-2">
+        <mat-card-header>
+          <mat-card-title>Tendencia de Ventas (7 Días)</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="h-[350px] mt-2">
+          <div
+            echarts
+            [options]="data.chartTendenciaVentas"
+            [theme]="theme() ? 'dark' : 'light'"
+            class="w-full h-full"
+          ></div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Bar Chart -->
+      <mat-card class="animate-card">
+        <mat-card-header>
+          <mat-card-title>Top y Bottom 5 Categorías</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="h-[350px] mt-2">
+          <div
+            echarts
+            [options]="data.chartVentasPorCategoria"
+            [theme]="theme() ? 'dark' : 'light'"
+            class="w-full h-full"
+          ></div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Heatmap -->
+      <mat-card class="animate-card">
+        <mat-card-header>
+          <mat-card-title>Comportamiento de Ventas</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="h-[350px] mt-2">
+          <div
+            echarts
+            [options]="data.chartComportamientoHoraDia"
+            [theme]="theme() ? 'dark' : 'light'"
+            class="w-full h-full"
+          ></div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Doughnut Chart -->
+      <mat-card class="animate-card">
+        <mat-card-header>
+          <mat-card-title>Rentabilidad por Marca/Proveedor</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="h-[350px] mt-2">
+          <div
+            echarts
+            [options]="data.chartRentabilidad"
+            [theme]="theme() ? 'dark' : 'light'"
+            class="w-full h-full"
+          ></div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Line Chart -->
+      <mat-card class="animate-card">
+        <mat-card-header>
+          <mat-card-title>Tendencias: Devoluciones</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="h-[350px] mt-2">
+          <div
+            echarts
+            [options]="data.chartLineas"
+            [theme]="theme() ? 'dark' : 'light'"
+            class="w-full h-full"
+          ></div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Flujo de Dinero (Original) -->
+      <mat-card class="animate-card">
+        <mat-card-header>
+          <mat-card-title>Flujo de Dinero</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="h-[350px] mt-2">
+          <div
+            echarts
+            [options]="data.chartFlujoDinero"
+            [theme]="theme() ? 'dark' : 'light'"
+            class="w-full h-full"
+          ></div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Top 5 Más Vendidos (Original) -->
+      <mat-card class="animate-card">
+        <mat-card-header>
+          <mat-card-title>🏆 Top 5 Más Vendidos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="h-[350px] mt-2">
+          <div
+            echarts
+            [options]="data.chartTopOriginal"
+            [theme]="theme() ? 'dark' : 'light'"
+            class="w-full h-full"
+          ></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- BOTTOM ROW: Tables -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <!-- Table 3: Alerta de Reabastecimiento (Original) -->
+      <mat-card class="animate-card responsive-table">
+        <mat-card-header>
+          <mat-card-title>⚠️ Alerta de Reabastecimiento</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="mt-2 overflow-auto h-[300px]">
+          <table mat-table [dataSource]="data.metrics.listaBajos || []" class="w-full">
+            <ng-container matColumnDef="codigo">
+              <th mat-header-cell *matHeaderCellDef>Cód</th>
+              <td mat-cell *matCellDef="let e">{{ e.codigo }}</td>
+            </ng-container>
+            <ng-container matColumnDef="descripcion">
+              <th mat-header-cell *matHeaderCellDef>Descripción</th>
+              <td mat-cell *matCellDef="let e" class="text-xs font-medium">{{ e.descripcion }}</td>
+            </ng-container>
+            <ng-container matColumnDef="existencia">
+              <th mat-header-cell *matHeaderCellDef class="text-right">Stock</th>
+              <td mat-cell *matCellDef="let e" class="font-bold text-right pr-4">
+                {{ e.existencia }}
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="alertaColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: alertaColumns"></tr>
+          </table>
+          @if (!data.metrics.listaBajos?.length) {
+            <div class="p-4 text-center text-gray-500">No hay alertas.</div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Table 1: Cuentas por Cobrar (Aging Report) -->
+      <mat-card class="animate-card responsive-table">
+        <mat-card-header>
+          <mat-card-title>Aging Report (Por Cobrar)</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="mt-2 overflow-auto h-[300px]">
+          <table mat-table [dataSource]="data.clientes.cuentas_por_cobrar || []" class="w-full">
+            <ng-container matColumnDef="rango">
+              <th mat-header-cell *matHeaderCellDef>Rango de Días</th>
+              <td mat-cell *matCellDef="let e">{{ e.rango }}</td>
+            </ng-container>
+            <ng-container matColumnDef="monto">
+              <th mat-header-cell *matHeaderCellDef class="text-right">Monto</th>
+              <td mat-cell *matCellDef="let e" class="text-right font-bold text-red-500">
+                {{ e.monto | currency: 'MXN' }}
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="agingColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: agingColumns"></tr>
+          </table>
+          @if (!data.clientes.cuentas_por_cobrar?.length) {
+            <div class="p-4 text-center text-gray-500">No hay cuentas pendientes.</div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Table 2: Mercancía Lento Movimiento -->
+      <mat-card class="animate-card responsive-table">
+        <mat-card-header>
+          <mat-card-title>Lento Movimiento (>90 días sin ventas)</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="mt-2 overflow-auto h-[300px]">
+          <table
+            mat-table
+            [dataSource]="data.inventario.mercancia_lento_movimiento || []"
+            class="w-full"
+          >
+            <ng-container matColumnDef="codigo">
+              <th mat-header-cell *matHeaderCellDef>Cód</th>
+              <td mat-cell *matCellDef="let e">{{ e.codigo }}</td>
+            </ng-container>
+            <ng-container matColumnDef="descripcion">
+              <th mat-header-cell *matHeaderCellDef>Descripción</th>
+              <td mat-cell *matCellDef="let e" class="text-xs">{{ e.descripcion }}</td>
+            </ng-container>
+            <ng-container matColumnDef="dias_sin_ventas">
+              <th mat-header-cell *matHeaderCellDef>Días</th>
+              <td mat-cell *matCellDef="let e" class="text-center font-bold text-amber-500">
+                {{ e.dias_sin_ventas }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="existencia">
+              <th mat-header-cell *matHeaderCellDef class="text-right">Stock</th>
+              <td mat-cell *matCellDef="let e" class="text-right font-medium">
+                {{ e.existencia }}
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+          @if (!data.inventario.mercancia_lento_movimiento?.length) {
+            <div class="p-4 text-center text-gray-500">No hay productos de lento movimiento.</div>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 } @else {
   <!-- Loading Skeletons -->
   <div class="grid grid-cols-1 gap-6 animate-pulse">
     <!-- Top KPI Row Skeleton -->
-    <div class="xl:col-span-12 h-32 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
+      @for (i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track i) {
+        <div class="h-24 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+      }
+    </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-      <!-- Area Chart Skeleton -->
-      <div class="xl:col-span-8 h-[380px] bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
-      <!-- Bar Chart Skeleton -->
-      <div class="xl:col-span-4 h-[380px] bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
-      <!-- Top Chart Skeleton -->
-      <div class="xl:col-span-5 h-[360px] bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
-      <!-- Table Skeleton -->
-      <div class="xl:col-span-7 h-[360px] bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+    <!-- Charts Skeletons -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      @for (i of [1, 2, 3, 4, 5, 6, 7]; track i) {
+        <!-- Special class for the very first chart that is col-span-2 -->
+        <div
+          class="h-[400px] bg-gray-200 dark:bg-gray-800 rounded-xl"
+          [class.xl:col-span-2]="i === 1"
+        ></div>
+      }
+    </div>
+
+    <!-- Tables Skeletons -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="h-[360px] bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+      }
     </div>
   </div>
 }

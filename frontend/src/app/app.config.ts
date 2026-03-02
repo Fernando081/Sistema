@@ -9,13 +9,17 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { authInterceptor } from './auth/auth.interceptor';
 import { errorInterceptor } from './auth/error.interceptor';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideAnimations(),
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
-    importProvidersFrom(MatSnackBarModule),
+    importProvidersFrom(
+      MatSnackBarModule,
+      NgxEchartsModule.forRoot({ echarts: () => import('echarts') }),
+    ),
     { provide: MAT_DATE_LOCALE, useValue: 'es-MX' },
   ],
 };
