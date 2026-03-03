@@ -1,5 +1,6 @@
 // frontend/src/app/producto/producto-dialog/producto-dialog.component.ts
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormGroup,
@@ -36,7 +37,7 @@ import {
 } from '../../services/catalogos.service';
 
 import { Observable, of } from 'rxjs';
-import { debounceTime, switchMap, startWith, map } from 'rxjs/operators';
+import { debounceTime, switchMap, startWith, map, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-producto-dialog',
@@ -63,6 +64,8 @@ import { debounceTime, switchMap, startWith, map } from 'rxjs/operators';
 export class ProductoDialogComponent implements OnInit {
   form: FormGroup;
   isEditMode: boolean;
+  isSaving = signal(false);
+  destroyRef = inject(DestroyRef);
 
   // Observables Catálogos
   public categoria$!: Observable<Categoria[]>;
@@ -162,7 +165,7 @@ export class ProductoDialogComponent implements OnInit {
       this.cargarEquivalentes();
 
       // Cargar TODOS los productos para poder buscar equivalentes
-      this.productoService.getProductos().subscribe(
+      this.productoService.getProductos().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
         (prods) => {
           console.log('Raw data:', prods);
 
@@ -296,7 +299,7 @@ export class ProductoDialogComponent implements OnInit {
   }
 
   guardar(): void {
-    if (this.form.invalid) {
+    if (this.isSaving() || this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
@@ -324,7 +327,8 @@ export class ProductoDialogComponent implements OnInit {
       ? this.productoService.updateProducto(this.data.idProducto, dataToSave)
       : this.productoService.createProducto(dataToSave);
 
-    request.subscribe({
+    this.isSaving.set(true);
+    request.pipe(finalize(() => this.isSaving.set(false))).subscribe({
       next: () => {
         this.mostrarNotificacion(this.isEditMode ? 'Actualizado' : 'Creado');
         this.dialogRef.close(true);

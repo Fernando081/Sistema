@@ -1,5 +1,6 @@
 // backend/src/producto/producto.entity.ts (NUEVO ARCHIVO)
 import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
+import { APP_CONSTANTS } from '../common/constants/app.constants';
 
 @Entity({ name: 'producto' })
 export class Producto {
@@ -45,7 +46,7 @@ export class Producto {
   marca: string;
 
   // --- NUEVOS CAMPOS FISCALES ---
-  @Column({ name: 'ObjetoImpuesto', default: '02', length: 2 })
+  @Column({ name: 'ObjetoImpuesto', default: APP_CONSTANTS.TAX_OBJECT_DEFAULT, length: 2 })
   objetoImpuestoSat: string;
 
   @Column({
@@ -53,7 +54,7 @@ export class Producto {
     type: 'numeric',
     precision: 18,
     scale: 6,
-    default: 0.16,
+    default: APP_CONSTANTS.TAX_RATE_DEFAULT,
   })
   tasaIva: number;
 

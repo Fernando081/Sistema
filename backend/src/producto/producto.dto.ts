@@ -10,6 +10,7 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
+import { APP_CONSTANTS } from '../common/constants/app.constants';
 
 export class CreateProductoDto {
   @IsString()
@@ -59,11 +60,11 @@ export class CreateProductoDto {
   // --- NUEVOS CAMPOS ---
   @IsString()
   @IsOptional()
-  objetoImpuestoSat?: string; // '01', '02'
+  objetoImpuestoSat?: string; // APP_CONSTANTS.TAX_OBJECT_DEFAULT
 
   @IsNumber()
   @IsOptional()
-  tasaIva?: number; // 0.16
+  tasaIva?: number; // APP_CONSTANTS.TAX_RATE_DEFAULT
 
   @IsBoolean()
   @IsOptional()

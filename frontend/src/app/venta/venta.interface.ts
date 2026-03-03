@@ -59,3 +59,11 @@ export interface FacturaResumen {
   estatus: string; // 'Pendiente', 'Timbrada', etc.
   uuid?: string;
 }
+
+export interface DetalleFacturaDb {
+  cantidad: number;
+  descripcion_producto: string;
+  codigo_producto: string;
+  precio_unitario: number;
+  importe: number;
+}

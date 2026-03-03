@@ -19,8 +19,8 @@ export class VentaService {
     return this.http.post(API_URL, venta);
   }
 
-  getFacturas(): Observable<FacturaResumen[]> {
-    return this.http.get<FacturaResumen[]>(API_URL);
+  getFacturas(page: number = 1, limit: number = 10): Observable<any> {
+    return this.http.get<any>(`${API_URL}?page=${page}&limit=${limit}`);
   }
 
   getDetalleFactura(idFactura: number): Observable<any[]> {

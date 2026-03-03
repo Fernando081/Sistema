@@ -91,7 +91,7 @@
         <div class="flex justify-between text-2xl font-bold">
           <span>Total:</span> <span>{{totalGeneral | currency}}</span>
         </div>
-        <button mat-flat-button color="warn" class="w-full mt-4" (click)="guardar()" [disabled]="!clienteSeleccionado || carrito.length === 0">
+        <button mat-flat-button color="warn" class="w-full mt-4" (click)="guardar()" [disabled]="isSaving() || !clienteSeleccionado || carrito.length === 0">
           <mat-icon>picture_as_pdf</mat-icon> Generar Cotización
         </button>
       </mat-card-content>

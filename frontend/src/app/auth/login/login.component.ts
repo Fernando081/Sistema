@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -26,6 +27,7 @@ import { AuthService } from '../auth.service';
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
 
+  isSaving = signal(false);
   loading = false;
 
   form = this.fb.nonNullable.group({
@@ -39,19 +41,18 @@ export class LoginComponent {
   ) {}
 
   submit(): void {
-    if (this.form.invalid || this.loading) {
+    if (this.form.invalid || this.isSaving()) {
       return;
     }
 
-    this.loading = true;
-    this.authService.login(this.form.getRawValue()).subscribe({
+    this.isSaving.set(true);
+    this.authService.login(this.form.getRawValue()).pipe(
+      finalize(() => this.isSaving.set(false))
+    ).subscribe({
       next: () => {
-        this.loading = false;
         this.router.navigate(['/dashboard']);
       },
-      error: () => {
-        this.loading = false;
-      },
+      error: () => {},
     });
   }
 }

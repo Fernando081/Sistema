@@ -8,13 +8,14 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { APP_CONSTANTS } from '../common/constants/app.constants';
 
 // 1. DTO para cada Renglón del carrito (Concepto)
 export class ConceptoVentaDto {
   @IsNumber() idProducto: number;
   @IsString() claveProdServ: string;
   @IsString() claveUnidad: string;
-  @IsString() objetoImpuesto: string; // '02'
+  @IsString() objetoImpuesto: string; // APP_CONSTANTS.TAX_OBJECT_DEFAULT
   @IsString() codigo: string;
   @IsString() descripcion: string;
   @IsString() unidadDescripcion: string; // 'Pieza'

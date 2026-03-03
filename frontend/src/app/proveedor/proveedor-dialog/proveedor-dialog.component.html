@@ -93,6 +93,6 @@
 
   <div mat-dialog-actions align="end" class="mt-4">
     <button mat-button type="button" (click)="cerrar()">Cancelar</button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Guardar</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="isSaving() || form.invalid">Guardar</button>
   </div>
 </form>

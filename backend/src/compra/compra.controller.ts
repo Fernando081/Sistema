@@ -1,5 +1,4 @@
-// frontend/src/app/compra/compra.controller.ts
-import { Body, Controller, Post, Get, Param } from '@nestjs/common';
+import { Body, Controller, Post, Get, Param, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { CompraService } from './compra.service';
 import { CreateCompraDto } from './compra.dto';
 
@@ -13,8 +12,11 @@ export class CompraController {
   }
 
   @Get()
-  findAll() {
-    return this.compraService.findAll();
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    return this.compraService.findAll(page, limit);
   }
 
   @Get(':id/detalle')

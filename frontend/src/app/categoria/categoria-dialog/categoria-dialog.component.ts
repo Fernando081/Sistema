@@ -1,6 +1,7 @@
 // frontend/src/app/categoria/categoria-dialog/categoria-dialog.component.ts (REEMPLAZAR)
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, signal } from '@angular/core';
+import { finalize } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,6 +24,7 @@ import { Categoria } from '../categoria.interface';
 export class CategoriaDialogComponent implements OnInit {
   form: FormGroup;
   isEditMode: boolean;
+  isSaving = signal(false);
 
   constructor(
     private fb: FormBuilder,
@@ -46,7 +48,7 @@ export class CategoriaDialogComponent implements OnInit {
   }
 
   guardar(): void {
-    if (this.form.invalid) {
+    if (this.isSaving() || this.form.invalid) {
       this.form.markAllAsTouched(); 
       return;
     }
@@ -60,7 +62,8 @@ export class CategoriaDialogComponent implements OnInit {
       request = this.categoriaService.createCategoria(descripcion);
     }
 
-    request.subscribe({
+    this.isSaving.set(true);
+    request.pipe(finalize(() => this.isSaving.set(false))).subscribe({
       next: () => {
         const message = this.isEditMode ? 'Categoría actualizada' : 'Categoría creada';
         this.mostrarNotificacion(message);

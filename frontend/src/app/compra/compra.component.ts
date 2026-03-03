@@ -1,5 +1,5 @@
 // frontend/src/app/compra/compra.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -23,7 +23,7 @@ import { Producto } from '../producto/producto.interface';
 import { DetalleCompra, CreateCompra } from './compra.interface';
 
 import { Observable, of } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-compra',
@@ -40,9 +40,10 @@ import { map, startWith } from 'rxjs/operators';
 export class CompraComponent implements OnInit {
 
   // --- ESTADO ---
-  carrito: DetalleCompra[] = [];
+  carrito = signal<DetalleCompra[]>([]);
   proveedorSeleccionado: Proveedor | null = null;
-  totalGeneral = 0;
+  totalGeneral = computed(() => this.carrito().reduce((acc, item) => acc + item.importe, 0));
+  isSaving = signal(false);
   
   // Variable para crédito
   esCredito: boolean = false; 
@@ -83,7 +84,7 @@ export class CompraComponent implements OnInit {
     });
 
     this.productoService.getProductos().subscribe(data => {
-      this.listaProductos = data.map(p => ({
+      this.listaProductos = data.map((p: any) => ({
         idProducto: p['IdProducto'],
         codigo: p['Codigo'],
         descripcion: p['Descripcion'],
@@ -115,7 +116,7 @@ export class CompraComponent implements OnInit {
   }
 
   agregarProducto(producto: Producto) {
-    const existente = this.carrito.find(i => i.idProducto === producto.idProducto);
+    const existente = this.carrito().find(i => i.idProducto === producto.idProducto);
 
     if (existente) {
       existente.cantidad++;
@@ -129,45 +130,41 @@ export class CompraComponent implements OnInit {
         costoUnitario: 0,
         importe: 0
       };
-      this.carrito.push(nuevo);
+      this.carrito.update(items => [...items, nuevo]);
     }
 
     this.productoControl.setValue('');
-    this.carrito = [...this.carrito];
-    this.recalcularTotalGeneral();
+    if (existente) {
+      this.carrito.update(items => [...items]);
+    }
   }
 
   alCambiarValor(item: DetalleCompra) {
     if (item.cantidad < 1) item.cantidad = 1;
     if (item.costoUnitario < 0) item.costoUnitario = 0;
     this.recalcularRenglon(item);
-    this.recalcularTotalGeneral();
+    this.carrito.update(items => [...items]);
   }
 
   recalcularRenglon(item: DetalleCompra) {
     item.importe = item.cantidad * item.costoUnitario;
   }
 
-  recalcularTotalGeneral() {
-    this.totalGeneral = this.carrito.reduce((acc, item) => acc + item.importe, 0);
-  }
-
   eliminarDelCarrito(index: number) {
-    this.carrito.splice(index, 1);
-    this.carrito = [...this.carrito];
-    this.recalcularTotalGeneral();
+    this.carrito.update(items => items.filter((_, i) => i !== index));
   }
 
   guardarCompra() {
+    if (this.isSaving()) return;
     if (!this.proveedorSeleccionado) {
       this.mostrarNotificacion('Selecciona un proveedor');
       return;
     }
-    if (this.carrito.length === 0) {
+    if (this.carrito().length === 0) {
       this.mostrarNotificacion('El carrito está vacío');
       return;
     }
-    const sinCosto = this.carrito.some(i => i.costoUnitario <= 0);
+    const sinCosto = this.carrito().some(i => i.costoUnitario <= 0);
     if (sinCosto) {
         this.mostrarNotificacion('⚠️ Hay productos con Costo $0.00.');
         return;
@@ -178,8 +175,8 @@ export class CompraComponent implements OnInit {
       folioFactura: this.folioFacturaControl.value || '',
       esCredito: this.esCredito, // <--- ENVIAMOS EL VALOR DEL TOGGLE
       observaciones: this.observacionesControl.value || '',
-      total: Number(this.totalGeneral),
-      conceptos: this.carrito.map(item => ({
+      total: Number(this.totalGeneral()),
+      conceptos: this.carrito().map(item => ({
         idProducto: item.idProducto,
         descripcion: item.descripcion,
         codigo: item.codigo || '',
@@ -189,7 +186,10 @@ export class CompraComponent implements OnInit {
       }))
     };
 
-    this.compraService.crearCompra(compraPayload).subscribe({
+    this.isSaving.set(true);
+    this.compraService.crearCompra(compraPayload).pipe(
+      finalize(() => this.isSaving.set(false))
+    ).subscribe({
       next: (res) => {
         this.mostrarNotificacion('✅ Compra registrada correctamente.');
         this.limpiarTodo();
@@ -203,14 +203,13 @@ export class CompraComponent implements OnInit {
   }
 
   limpiarTodo() {
-    this.carrito = [];
+    this.carrito.set([]);
     this.proveedorSeleccionado = null;
     this.proveedorControl.setValue('');
     this.productoControl.setValue('');
     this.folioFacturaControl.setValue('');
     this.observacionesControl.setValue('');
     this.esCredito = false; // Resetear toggle
-    this.totalGeneral = 0;
   }
 
   mostrarNotificacion(msg: string) {

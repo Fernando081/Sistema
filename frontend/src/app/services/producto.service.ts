@@ -16,8 +16,8 @@ export class ProductoService {
 
   // --- CRUD BÁSICO ---
 
-  getProductos(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getProductos(page: number = 1, limit: number = 10): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}?page=${page}&limit=${limit}`);
   }
   
   getProductoById(id: number): Observable<any> {

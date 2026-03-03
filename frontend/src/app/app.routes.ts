@@ -12,11 +12,13 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     canActivate: [authGuard],
+    data: { roles: ['admin'] },
     loadComponent: () => import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
   {
     path: 'reportes/utilidad',
     canActivate: [authGuard],
+    data: { roles: ['admin'] },
     loadComponent: () => import('./reportes/utilidad/reportes-utilidad.component').then((m) => m.ReportesUtilidadComponent),
   },
   {

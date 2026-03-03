@@ -1,6 +1,6 @@
 // frontend/src/app/producto/producto-list/producto-list.component.ts (MODIFICAR)
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -38,11 +38,12 @@ import { ProductoKardexComponent } from '../producto-kardex/producto-kardex.comp
   templateUrl: './producto-list.component.html',
   styleUrls: ['./producto-list.component.css']
 })
-export class ProductoListComponent implements OnInit {
+export class ProductoListComponent implements OnInit, AfterViewInit {
   
   displayedColumns: string[] = ['idProducto', 'codigo', 'descripcion', 'categoriaNombre', 'precioUnitario','existencia', 'acciones'];
   dataSource = new MatTableDataSource<Producto>();
   isLoading = true;
+  totalItems = 0;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -57,14 +58,25 @@ export class ProductoListComponent implements OnInit {
     this.cargarProductos();
   }
 
+  ngAfterViewInit(): void {
+    this.paginator.page.subscribe(() => {
+      this.cargarProductos();
+    });
+  }
+
   cargarProductos(): void {
     this.isLoading = true;
-    this.productoService.getProductos()
+    const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
+    const limit = this.paginator ? this.paginator.pageSize : 10;
+    
+    this.productoService.getProductos(page, limit)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
-        next: (data) => {
+        next: (response) => {
+          const data = response.data || response;
+          this.totalItems = response.total || 0;
           // Mapeo limpio sin duplicados
-          const camelCaseData: Producto[] = data.map(prod => ({
+          const camelCaseData: Producto[] = data.map((prod: any) => ({
             idProducto: prod['IdProducto'],
             codigo: prod['Codigo'],
             idUnidad: prod['IdUnidad'],
@@ -95,8 +107,8 @@ export class ProductoListComponent implements OnInit {
           }));
           
           this.dataSource.data = camelCaseData;
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
+          // Removemos dataSource.paginator porque ahora se pagina en el servidor
+          // this.dataSource.sort = this.sort; // La ordenación también debería ir al servidor en el futuro
         },
         error: (err) => {
           this.mostrarNotificacion('Error al cargar productos: ' + (err.error?.message || err.message));
@@ -112,8 +124,10 @@ export class ProductoListComponent implements OnInit {
   }
 
   applyFilter(event: Event) {
-    // ... (esta función no cambia)
+    // Para filtros del lado del servidor idealmente iría al backend
     const filterValue = (event.target as HTMLInputElement).value;
+    // this.dataSource.filter ya no funciona igual con paginación de servidor, 
+    // pero lo dejamos para filtrar la página actual
     this.dataSource.filter = filterValue.trim().toLowerCase();
     
     this.dataSource.filterPredicate = (data: Producto, filter: string): boolean => {
@@ -123,8 +137,8 @@ export class ProductoListComponent implements OnInit {
       return descMatch || codigoMatch || marcaMatch;
     };
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    if (this.paginator) {
+      this.paginator.firstPage();
     }
   }
 

@@ -1,5 +1,5 @@
 // frontend/src/app/venta/factura-list/factura-list.component.ts
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -31,29 +31,41 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
   `]
 })
-export class FacturaListComponent implements OnInit {
+export class FacturaListComponent implements OnInit, AfterViewInit {
   
   displayedColumns: string[] = ['folio', 'fecha', 'receptor', 'rfc', 'total', 'estatus', 'acciones'];
   dataSource = new MatTableDataSource<FacturaResumen>();
+  totalItems = 0;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  snackBar: any;
 
   constructor(private ventaService: VentaService,
-              public dialog: MatDialog
+              public dialog: MatDialog,
+              private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.cargarFacturas();
   }
 
+  ngAfterViewInit(): void {
+    this.paginator.page.subscribe(() => {
+      this.cargarFacturas();
+    });
+  }
+
   cargarFacturas() {
-    this.ventaService.getFacturas().subscribe({
-      next: (data) => {
+    const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
+    const limit = this.paginator ? this.paginator.pageSize : 10;
+    
+    this.ventaService.getFacturas(page, limit).subscribe({
+      next: (response) => {
+        const data = response.data || response;
+        this.totalItems = response.total || 0;
         this.dataSource.data = data;
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        // this.dataSource.paginator = this.paginator;
+        // this.dataSource.sort = this.sort;
       },
       error: (err) => console.error('Error cargando facturas', err)
     });
@@ -63,8 +75,8 @@ export class FacturaListComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    if (this.paginator) {
+      this.paginator.firstPage();
     }
   }
 
@@ -86,7 +98,7 @@ export class FacturaListComponent implements OnInit {
     });
   }
 
-  enviarPorCorreo(row: any) {
+  enviarPorCorreo(row: FacturaResumen) {
     if (!confirm(`¿Enviar factura A${row.folio} al cliente por correo?`)) return;
     
     this.ventaService.enviarCorreo(row.id_factura).subscribe({

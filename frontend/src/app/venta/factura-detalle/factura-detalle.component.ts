@@ -6,7 +6,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { VentaService } from '../../services/venta.service';
-import { FacturaResumen } from '../venta.interface';
+import { FacturaResumen, DetalleFacturaDb } from '../venta.interface';
 
 @Component({
   selector: 'app-factura-detalle',
@@ -16,7 +16,7 @@ import { FacturaResumen } from '../venta.interface';
 })
 export class FacturaDetalleComponent implements OnInit {
   
-  detalles: any[] = [];
+  detalles: DetalleFacturaDb[] = [];
   displayedColumns: string[] = ['cant', 'unidad', 'desc', 'precio', 'importe'];
   isLoading = true;
 

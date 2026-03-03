@@ -26,3 +26,11 @@ export interface CompraResumen {
   nombre_proveedor: string;
   rfc_proveedor: string;
 }
+
+export interface DetalleCompraDb {
+  cantidad: number;
+  descripcion_producto: string;
+  codigo_producto: string;
+  costo_unitario: number;
+  importe: number;
+}

@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { CompraService } from '../../services/compra.service';
-import { CompraResumen } from '../compra.interface';
+import { CompraResumen, DetalleCompraDb } from '../compra.interface';
 
 @Component({
   selector: 'app-compra-detalle',
@@ -55,7 +55,7 @@ import { CompraResumen } from '../compra.interface';
   `
 })
 export class CompraDetalleComponent implements OnInit {
-  detalles: any[] = [];
+  detalles: DetalleCompraDb[] = [];
   constructor(
     public dialogRef: MatDialogRef<CompraDetalleComponent>,
     @Inject(MAT_DIALOG_DATA) public data: CompraResumen,

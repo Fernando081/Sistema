@@ -1,5 +1,7 @@
 // frontend/src/app/cliente/cliente-dialog/cliente-dialog.component.ts
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,6 +29,8 @@ import { CatalogosService, RegimenFiscal, UsoCFDI, FormaPago, MetodoPago, Estado
 export class ClienteDialogComponent implements OnInit {
   form: FormGroup;
   isEditMode: boolean;
+  isSaving = signal(false);
+  destroyRef = inject(DestroyRef);
 
   // Listas para Dropdowns
   regimenes$!: Observable<RegimenFiscal[]>;
@@ -102,7 +106,7 @@ export class ClienteDialogComponent implements OnInit {
     });
 
     // 3. Escuchar cambios en el Estado (Efecto Cascada)
-    this.form.get('idEstado')?.valueChanges.subscribe(idEstado => {
+    this.form.get('idEstado')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(idEstado => {
       if (idEstado) {
         // Si seleccionó estado: Desbloquear y cargar
         municipioControl?.enable();
@@ -133,7 +137,7 @@ export class ClienteDialogComponent implements OnInit {
   }
 
   guardar(): void {
-    if (this.form.invalid) {
+    if (this.isSaving() || this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
@@ -146,7 +150,8 @@ export class ClienteDialogComponent implements OnInit {
       request = this.clienteService.createCliente(formData);
     }
 
-    request.subscribe({
+    this.isSaving.set(true);
+    request.pipe(finalize(() => this.isSaving.set(false))).subscribe({
       next: () => {
         const message = this.isEditMode ? 'Cliente actualizado' : 'Cliente creado';
         this.mostrarNotificacion(message);

@@ -1,5 +1,5 @@
 // frontend/src/app/cotizacion/nueva-cotizacion/nueva-cotizacion.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -19,7 +19,7 @@ import { Producto } from '../../producto/producto.interface';
 import { Cliente } from '../../cliente/cliente.interface';
 
 import { Observable, of } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nueva-cotizacion',
@@ -42,6 +42,7 @@ export class NuevaCotizacionComponent implements OnInit {
   ivaGeneral = 0;
   retIsrGeneral = 0;
   totalGeneral = 0;
+  isSaving = signal(false);
 
   // Controles
   clienteControl = new FormControl<string | Cliente>('');
@@ -74,7 +75,7 @@ export class NuevaCotizacionComponent implements OnInit {
 
     // Cargar Productos
     this.productoService.getProductos().subscribe(data => {
-      this.listaProductos = data.map(p => ({
+      this.listaProductos = data.map((p: any) => ({
         idProducto: p['IdProducto'],
         codigo: p['Codigo'],
         descripcion: p['Descripcion'],
@@ -184,6 +185,7 @@ export class NuevaCotizacionComponent implements OnInit {
   }
 
   guardar() {
+    if (this.isSaving()) return;
     if (!this.clienteSeleccionado || this.carrito.length === 0) {
       this.snackBar.open('Selecciona cliente y productos', 'Ok', { duration: 3000 });
       return;
@@ -209,7 +211,10 @@ export class NuevaCotizacionComponent implements OnInit {
       }))
     };
 
-    this.cotizacionService.crear(dto).subscribe({
+    this.isSaving.set(true);
+    this.cotizacionService.crear(dto).pipe(
+      finalize(() => this.isSaving.set(false))
+    ).subscribe({
       next: (res) => {
         this.snackBar.open('Cotización Guardada', 'Ver PDF', { duration: 5000 })
           .onAction().subscribe(() => this.abrirPdf(res.id));

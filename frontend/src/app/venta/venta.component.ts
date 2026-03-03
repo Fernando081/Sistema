@@ -1,5 +1,5 @@
 // frontend/src/app/venta/venta.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -43,14 +43,14 @@ import { map, startWith, finalize } from 'rxjs/operators';
 export class VentaComponent implements OnInit {
   
   // --- VARIABLES DE ESTADO ---
-  carrito: ConceptoVenta[] = [];
+  carrito = signal<ConceptoVenta[]>([]);
   clienteSeleccionado: Cliente | null = null;
   
   // Totales Globales
-  subtotalGeneral = 0;
-  ivaGeneral = 0;
-  retIsrGeneral = 0;
-  totalGeneral = 0;
+  subtotalGeneral = computed(() => this.carrito().reduce((acc, item) => acc + this.toCents(item.importe), 0) / 100);
+  ivaGeneral = computed(() => this.carrito().reduce((acc, item) => acc + this.toCents(item.importeIva), 0) / 100);
+  retIsrGeneral = computed(() => this.carrito().reduce((acc, item) => acc + this.toCents(item.importeRetIsr), 0) / 100);
+  totalGeneral = computed(() => this.subtotalGeneral() + this.ivaGeneral() - this.retIsrGeneral());
 
   // Formularios y Controles
   clienteControl = new FormControl<string | Cliente>('');
@@ -71,7 +71,7 @@ export class VentaComponent implements OnInit {
   metodosPago$: Observable<MetodoPago[]> = of([]);
 
   displayedColumns: string[] = ['descripcion', 'cantidad', 'precio', 'importe', 'acciones'];
-  guardandoVenta = false;
+  isSaving = signal(false);
 
   constructor(
     private fb: FormBuilder,
@@ -106,7 +106,7 @@ export class VentaComponent implements OnInit {
 
     // 3. Cargar Productos (Mapeo COMPLETO)
     this.productoService.getProductos().subscribe(data => {
-      this.listaProductos = data.map(p => ({
+      this.listaProductos = data.map((p: any) => ({
         // Identificadores
         idProducto: p['IdProducto'],
         
@@ -174,7 +174,15 @@ export class VentaComponent implements OnInit {
     });
 
     // ¡IMPORTANTE! Recalcular impuestos porque cambió el RFC (Física vs Moral)
-    this.recalcularCarrito();
+    this.carrito.update(items => {
+        items.forEach(item => {
+            const prodOriginal = this.listaProductos.find(p => p.idProducto === item.idProducto);
+            if (prodOriginal) {
+                this.recalcularRenglon(item, prodOriginal);
+            }
+        });
+        return [...items];
+    });
   }
 
   // --- AGREGAR PRODUCTO AL CARRITO ---
@@ -187,7 +195,7 @@ export class VentaComponent implements OnInit {
     }
 
     // 2. Verificar si ya existe para solo sumar cantidad
-    const existente = this.carrito.find(item => item.idProducto === producto.idProducto);
+    const existente = this.carrito().find(item => item.idProducto === producto.idProducto);
     
     if (existente) {
       // Validar stock acumulado
@@ -222,15 +230,16 @@ export class VentaComponent implements OnInit {
       };
 
       this.recalcularRenglon(nuevoItem, producto);
-      this.carrito.push(nuevoItem);
+      this.carrito.update(items => [...items, nuevoItem]);
     }
 
     // Limpiar el buscador de productos
     this.productoControl.setValue('');
     
     // Actualizar la tabla visualmente
-    this.carrito = [...this.carrito]; 
-    this.recalcularTotalesGenerales();
+    if (existente) {
+      this.carrito.update(items => [...items]); 
+    }
   }
 
   // --- CEREBRO MATEMÁTICO (RESICO BLINDADO) ---
@@ -261,41 +270,18 @@ export class VentaComponent implements OnInit {
     }
   }
 
-  recalcularCarrito() {
-    this.carrito.forEach(item => {
-        const prodOriginal = this.listaProductos.find(p => p.idProducto === item.idProducto);
-        if (prodOriginal) {
-            this.recalcularRenglon(item, prodOriginal);
-        }
-    });
-    this.recalcularTotalesGenerales();
-  }
-
-  recalcularTotalesGenerales() {
-    const subtotalCents = this.carrito.reduce((acc, item) => acc + this.toCents(item.importe), 0);
-    const ivaCents = this.carrito.reduce((acc, item) => acc + this.toCents(item.importeIva), 0);
-    const retCents = this.carrito.reduce((acc, item) => acc + this.toCents(item.importeRetIsr), 0);
-
-    this.subtotalGeneral = this.fromCents(subtotalCents);
-    this.ivaGeneral = this.fromCents(ivaCents);
-    this.retIsrGeneral = this.fromCents(retCents);
-    this.totalGeneral = this.fromCents(subtotalCents + ivaCents - retCents);
-  }
-
   eliminarDelCarrito(index: number) {
-    this.carrito.splice(index, 1);
-    this.carrito = [...this.carrito]; // Refrescar tabla
-    this.recalcularTotalesGenerales();
+    this.carrito.update(items => items.filter((_, i) => i !== index));
   }
 
   // --- GUARDAR VENTA ---
   guardarVenta() {
-    if (this.guardandoVenta) return;
+    if (this.isSaving()) return;
     if (!this.clienteSeleccionado) {
       this.mostrarNotificacion('Debes seleccionar un cliente');
       return;
     }
-    if (this.carrito.length === 0) {
+    if (this.carrito().length === 0) {
       this.mostrarNotificacion('El carrito está vacío');
       return;
     }
@@ -322,18 +308,18 @@ export class VentaComponent implements OnInit {
       moneda: 'MXN',
       tipoCambio: 1,
 
-      subtotal: this.subtotalGeneral,
-      totalImpuestosTrasladados: this.ivaGeneral,
-      totalImpuestosRetenidos: this.retIsrGeneral,
-      total: this.totalGeneral,
+      subtotal: this.subtotalGeneral(),
+      totalImpuestosTrasladados: this.ivaGeneral(),
+      totalImpuestosRetenidos: this.retIsrGeneral(),
+      total: this.totalGeneral(),
 
-      conceptos: this.carrito
+      conceptos: this.carrito()
     };
 
-    this.guardandoVenta = true;
+    this.isSaving.set(true);
     this.ventaService.crearVenta(ventaPayload).pipe(
       finalize(() => {
-        this.guardandoVenta = false;
+        this.isSaving.set(false);
       })
     ).subscribe({
       next: (res) => {
@@ -349,11 +335,10 @@ export class VentaComponent implements OnInit {
 
   // --- UTILIDADES ---
   limpiarTodo() {
-    this.carrito = [];
+    this.carrito.set([]);
     this.clienteSeleccionado = null;
     this.clienteControl.setValue('');
     this.productoControl.setValue('');
-    this.recalcularTotalesGenerales();
     this.configForm.reset();
   }
 
@@ -453,8 +438,7 @@ export class VentaComponent implements OnInit {
       // 3. Recalcular todo el renglón (Importe, IVA, ISR)
       this.recalcularRenglon(item, prodOriginal);
       
-      // 4. Actualizar totales de la factura
-      this.recalcularTotalesGenerales();
+      this.carrito.update(items => [...items]);
     }
   }
 }

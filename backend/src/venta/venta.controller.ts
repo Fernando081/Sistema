@@ -1,5 +1,5 @@
 // backend/src/venta/venta.controller.ts
-import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Res, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import type { Response } from 'express';
 import { VentaService } from './venta.service';
 import { CreateVentaDto } from './venta.dto';
@@ -14,8 +14,11 @@ export class VentaController {
   }
 
   @Get()
-  findAll() {
-    return this.ventaService.findAll();
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    return this.ventaService.findAll(page, limit);
   }
 
   @Get(':id/detalle')

@@ -8,6 +8,8 @@ import {
   ParseIntPipe,
   Put,
   Delete,
+  Query,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { ProductoService } from './producto.service';
 import { CreateProductoDto, UpdateProductoDto } from './producto.dto';
@@ -22,8 +24,11 @@ export class ProductoController {
   }
 
   @Get()
-  findAll() {
-    return this.productoService.findAll();
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    return this.productoService.findAll(page, limit);
   }
 
   @Get(':id')

@@ -5,13 +5,32 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Producto } from './producto.entity';
 import { CreateProductoDto, UpdateProductoDto } from './producto.dto';
+import { APP_CONSTANTS } from '../common/constants/app.constants';
 
 @Injectable()
 export class ProductoService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
-  async findAll(): Promise<any[]> {
-    return this.dataSource.query('SELECT * FROM fn_get_productos()');
+  async findAll(page: number = 1, limit: number = 10): Promise<any> {
+    const offset = (page - 1) * limit;
+
+    const [totalResult, dataResult] = await Promise.all([
+      this.dataSource.query('SELECT COUNT(*) as count FROM fn_get_productos()'),
+      this.dataSource.query(
+        'SELECT * FROM fn_get_productos() LIMIT $1 OFFSET $2',
+        [limit, offset]
+      ),
+    ]);
+
+    const total = parseInt(totalResult[0].count, 10);
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data: dataResult,
+      total,
+      page,
+      totalPages,
+    };
   }
 
   async findOne(idProducto: number): Promise<any> {
@@ -44,8 +63,8 @@ export class ProductoService {
         createProductoDto.idClaveUnidad,
         createProductoDto.marca,
         // NUEVOS CAMPOS (Con valores por defecto)
-        createProductoDto.objetoImpuestoSat || '02',
-        createProductoDto.tasaIva ?? 0.16,
+        createProductoDto.objetoImpuestoSat || APP_CONSTANTS.TAX_OBJECT_DEFAULT,
+        createProductoDto.tasaIva ?? APP_CONSTANTS.TAX_RATE_DEFAULT,
         createProductoDto.aplicaRetencionIsr || false,
         createProductoDto.aplicaRetencionIva || false,
       ],
