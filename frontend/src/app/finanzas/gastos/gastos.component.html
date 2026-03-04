@@ -1,0 +1,226 @@
+<div
+  class="max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-xl mt-10 transition-colors duration-300"
+>
+  <div
+    class="flex items-center justify-between mb-8 pb-4 border-b border-gray-200 dark:border-gray-700"
+  >
+    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-8 w-8 text-blue-600 dark:text-blue-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      Registro de Gastos
+    </h1>
+    <button
+      (click)="downloadPDF()"
+      class="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+      Corte Semanal (PDF)
+    </button>
+  </div>
+
+  <!-- Messages Validation -->
+  <div
+    *ngIf="successMessage()"
+    class="mb-6 p-4 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-lg border border-green-200 dark:border-green-800 flex items-center gap-3 animate-fade-in"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    {{ successMessage() }}
+  </div>
+
+  <div
+    *ngIf="errorMessage()"
+    class="mb-6 p-4 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800 flex items-center gap-3 animate-fade-in"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+    {{ errorMessage() }}
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Concepto -->
+      <div class="col-span-1 md:col-span-2">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >Concepto</label
+        >
+        <input
+          type="text"
+          [ngModel]="concepto()"
+          (ngModelChange)="concepto.set($event)"
+          name="concepto"
+          class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+          placeholder="Ej. Pago de luz eléctrica"
+          required
+        />
+      </div>
+
+      <!-- Monto -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >Monto ($)</label
+        >
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="text-gray-500 dark:text-gray-400 sm:text-sm">$</span>
+          </div>
+          <input
+            type="number"
+            [ngModel]="monto()"
+            (ngModelChange)="monto.set($event)"
+            name="monto"
+            step="0.01"
+            min="0"
+            class="w-full pl-8 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+            placeholder="0.00"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Categoria -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >Categoría</label
+        >
+        <select
+          [ngModel]="categoria()"
+          (ngModelChange)="categoria.set($event)"
+          name="categoria"
+          class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none appearance-none"
+        >
+          <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+        </select>
+      </div>
+
+      <!-- Método de Pago -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >Método de Pago</label
+        >
+        <select
+          [ngModel]="metodoPago()"
+          (ngModelChange)="metodoPago.set($event)"
+          name="metodoPago"
+          class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none appearance-none"
+        >
+          <option *ngFor="let metodo of metodos" [value]="metodo">{{ metodo }}</option>
+        </select>
+      </div>
+
+      <!-- ID Compra (Condicional - Landed Cost Prorating) -->
+      <div
+        *ngIf="isLogistics()"
+        class="animate-fade-in-up bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800"
+      >
+        <label
+          class="block text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          ID de Compra (Prorrateo Landed Cost)
+        </label>
+        <input
+          type="number"
+          [ngModel]="idCompra()"
+          (ngModelChange)="idCompra.set($event)"
+          name="idCompra"
+          class="w-full px-4 py-3 rounded-lg border border-blue-300 dark:border-blue-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+          placeholder="Ej. 1024"
+        />
+        <p class="text-xs text-blue-600 dark:text-blue-400 mt-2">
+          Introduce el ID de una compra para distribuir automáticamente este flete sobre el costo
+          unitario de sus productos.
+        </p>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+      <button
+        type="submit"
+        [disabled]="loading()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-semibold transition-all shadow-md hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+      >
+        <svg
+          *ngIf="loading()"
+          class="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+        {{ loading() ? 'Registrando...' : 'Registrar Gasto' }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -13,28 +13,39 @@ export const routes: Routes = [
     path: 'dashboard',
     canActivate: [authGuard],
     data: { roles: ['admin'] },
-    loadComponent: () => import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
+    loadComponent: () =>
+      import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
   {
     path: 'reportes/utilidad',
     canActivate: [authGuard],
     data: { roles: ['admin'] },
-    loadComponent: () => import('./reportes/utilidad/reportes-utilidad.component').then((m) => m.ReportesUtilidadComponent),
+    loadComponent: () =>
+      import('./reportes/utilidad/reportes-utilidad.component').then(
+        (m) => m.ReportesUtilidadComponent,
+      ),
   },
   {
     path: 'cliente',
     canActivate: [authGuard],
-    loadComponent: () => import('./cliente/cliente-list/cliente-list.component').then((m) => m.ClienteListComponent),
+    loadComponent: () =>
+      import('./cliente/cliente-list/cliente-list.component').then((m) => m.ClienteListComponent),
   },
   {
     path: 'proveedor',
     canActivate: [authGuard],
-    loadComponent: () => import('./proveedor/proveedor-list/proveedor-list.component').then((m) => m.ProveedorListComponent),
+    loadComponent: () =>
+      import('./proveedor/proveedor-list/proveedor-list.component').then(
+        (m) => m.ProveedorListComponent,
+      ),
   },
   {
     path: 'producto',
     canActivate: [authGuard],
-    loadComponent: () => import('./producto/producto-list/producto-list.component').then((m) => m.ProductoListComponent),
+    loadComponent: () =>
+      import('./producto/producto-list/producto-list.component').then(
+        (m) => m.ProductoListComponent,
+      ),
   },
   {
     path: 'venta',
@@ -44,7 +55,8 @@ export const routes: Routes = [
   {
     path: 'facturas',
     canActivate: [authGuard],
-    loadComponent: () => import('./venta/factura-list/factura-list.component').then((m) => m.FacturaListComponent),
+    loadComponent: () =>
+      import('./venta/factura-list/factura-list.component').then((m) => m.FacturaListComponent),
   },
   {
     path: 'compra',
@@ -54,26 +66,43 @@ export const routes: Routes = [
   {
     path: 'cotizacion/nueva',
     canActivate: [authGuard],
-    loadComponent: () => import('./cotizacion/nueva-cotizacion/nueva-cotizacion.component').then((m) => m.NuevaCotizacionComponent),
+    loadComponent: () =>
+      import('./cotizacion/nueva-cotizacion/nueva-cotizacion.component').then(
+        (m) => m.NuevaCotizacionComponent,
+      ),
   },
   {
     path: 'cotizacion/historial',
     canActivate: [authGuard],
-    loadComponent: () => import('./cotizacion/cotizacion-list/cotizacion-list.component').then((m) => m.CotizacionListComponent),
+    loadComponent: () =>
+      import('./cotizacion/cotizacion-list/cotizacion-list.component').then(
+        (m) => m.CotizacionListComponent,
+      ),
   },
   {
     path: 'compra/historial',
     canActivate: [authGuard],
-    loadComponent: () => import('./compra/compra-list/compra-list.component').then((m) => m.CompraListComponent),
+    loadComponent: () =>
+      import('./compra/compra-list/compra-list.component').then((m) => m.CompraListComponent),
   },
   {
     path: 'cobranza',
     canActivate: [authGuard],
-    loadComponent: () => import('./pago/cobranza/cobranza.component').then((m) => m.CobranzaComponent),
+    loadComponent: () =>
+      import('./pago/cobranza/cobranza.component').then((m) => m.CobranzaComponent),
   },
   {
     path: 'cuentas-por-pagar',
     canActivate: [authGuard],
-    loadComponent: () => import('./pago/cuentas-por-pagar/cuentas-por-pagar.component').then((m) => m.CuentasPorPagarComponent),
+    loadComponent: () =>
+      import('./pago/cuentas-por-pagar/cuentas-por-pagar.component').then(
+        (m) => m.CuentasPorPagarComponent,
+      ),
+  },
+  {
+    path: 'gastos',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./finanzas/gastos/gastos.component').then((m) => m.GastosComponent),
   },
 ];
