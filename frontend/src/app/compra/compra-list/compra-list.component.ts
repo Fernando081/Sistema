@@ -18,14 +18,20 @@ import { CompraDetalleComponent } from '../compra-detalle/compra-detalle.compone
   selector: 'app-compra-list',
   standalone: true,
   imports: [
-    CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
-    MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
-    MatButtonModule, MatDialogModule
+    CommonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
   ],
   templateUrl: './compra-list.component.html',
 })
 export class CompraListComponent implements OnInit {
-  
   displayedColumns: string[] = ['fecha', 'proveedor', 'folio', 'total', 'acciones'];
   dataSource = new MatTableDataSource<CompraResumen>();
 
@@ -34,12 +40,12 @@ export class CompraListComponent implements OnInit {
 
   constructor(
     private compraService: CompraService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
-    this.compraService.getCompras().subscribe(data => {
-      this.dataSource.data = data;
+    this.compraService.getCompras(1, 1000).subscribe((res: any) => {
+      this.dataSource.data = res.data;
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     });

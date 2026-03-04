@@ -1,7 +1,14 @@
 // frontend/src/app/venta/venta.component.ts
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 // Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -33,29 +40,45 @@ import { map, startWith, finalize } from 'rxjs/operators';
   selector: 'app-venta',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, MatIconModule, MatTableModule,
-    MatAutocompleteModule, MatSelectModule, MatDividerModule, MatSnackBarModule, FormsModule, MatProgressSpinnerModule
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatDividerModule,
+    MatSnackBarModule,
+    FormsModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './venta.component.html',
   // Elimina styleUrls si no tienes el archivo CSS
 })
 export class VentaComponent implements OnInit {
-  
   // --- VARIABLES DE ESTADO ---
   carrito = signal<ConceptoVenta[]>([]);
   clienteSeleccionado: Cliente | null = null;
-  
+
   // Totales Globales
-  subtotalGeneral = computed(() => this.carrito().reduce((acc, item) => acc + this.toCents(item.importe), 0) / 100);
-  ivaGeneral = computed(() => this.carrito().reduce((acc, item) => acc + this.toCents(item.importeIva), 0) / 100);
-  retIsrGeneral = computed(() => this.carrito().reduce((acc, item) => acc + this.toCents(item.importeRetIsr), 0) / 100);
+  subtotalGeneral = computed(
+    () => this.carrito().reduce((acc, item) => acc + this.toCents(item.importe), 0) / 100,
+  );
+  ivaGeneral = computed(
+    () => this.carrito().reduce((acc, item) => acc + this.toCents(item.importeIva), 0) / 100,
+  );
+  retIsrGeneral = computed(
+    () => this.carrito().reduce((acc, item) => acc + this.toCents(item.importeRetIsr), 0) / 100,
+  );
   totalGeneral = computed(() => this.subtotalGeneral() + this.ivaGeneral() - this.retIsrGeneral());
 
   // Formularios y Controles
   clienteControl = new FormControl<string | Cliente>('');
   productoControl = new FormControl<string | Producto>('');
-  
+
   // Formulario de configuración de factura (Uso CFDI, Método Pago, etc.)
   configForm: FormGroup;
 
@@ -64,7 +87,7 @@ export class VentaComponent implements OnInit {
   productosFiltrados$: Observable<Producto[]> = of([]);
   listaClientes: Cliente[] = [];
   listaProductos: Producto[] = [];
-  
+
   // Catálogos SAT
   usosCfdi$: Observable<UsoCFDI[]> = of([]);
   formasPago$: Observable<FormaPago[]> = of([]);
@@ -79,12 +102,12 @@ export class VentaComponent implements OnInit {
     private clienteService: ClienteService,
     private catalogosService: CatalogosService,
     private ventaService: VentaService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {
     this.configForm = this.fb.group({
       idUsoCFDI: [null, Validators.required],
       idFormaPago: [null, Validators.required],
-      idMetodoPago: [null, Validators.required]
+      idMetodoPago: [null, Validators.required],
     });
   }
 
@@ -100,16 +123,16 @@ export class VentaComponent implements OnInit {
     this.metodosPago$ = this.catalogosService.getMetodosPago();
 
     // 2. Cargar Clientes (Service now handles mapping)
-    this.clienteService.getClientes().subscribe(data => {
+    this.clienteService.getClientes().subscribe((data) => {
       this.listaClientes = data;
     });
 
     // 3. Cargar Productos (Mapeo COMPLETO)
-    this.productoService.getProductos().subscribe(data => {
-      this.listaProductos = data.map((p: any) => ({
+    this.productoService.getProductos(1, 1000).subscribe((response: any) => {
+      this.listaProductos = response.data.map((p: any) => ({
         // Identificadores
         idProducto: p['IdProducto'],
-        
+
         // Datos Básicos
         codigo: p['Codigo'],
         descripcion: p['Descripcion'],
@@ -123,13 +146,13 @@ export class VentaComponent implements OnInit {
         idCategoria: p['IdCategoria'],
         idClaveProdOServ: p['IdClaveProdOServ'],
         idClaveUnidad: p['IdClaveUnidad'],
-        
+
         // Datos SAT (Joins)
         claveProdServ: p['ClaveProdServ'],
         descripcionProdServ: p['DescripcionProdServ'],
         claveUnidadSat: p['ClaveUnidadSat'],
         // OJO: En la interfaz es 'descripcionUnidadSat'
-        descripcionUnidadSat: p['DescripcionUnidadSat'], 
+        descripcionUnidadSat: p['DescripcionUnidadSat'],
 
         // Datos Fiscales (RESICO)
         objetoImpuestoSat: p['ObjetoImpuesto'],
@@ -137,7 +160,7 @@ export class VentaComponent implements OnInit {
         aplicaRetencionIsr: p['AplicaRetencionISR'],
         aplicaRetencionIva: p['AplicaRetencionIVA'],
         existencia: Number(p['Existencia']),
-        equivalentesIds: p['EquivalentesJSON'] || [] // Array de números [2, 5]
+        equivalentesIds: p['EquivalentesJSON'] || [], // Array de números [2, 5]
       })) as unknown as Producto[];
     });
   }
@@ -146,42 +169,42 @@ export class VentaComponent implements OnInit {
     // Filtro Clientes (Validación Objeto vs Texto)
     this.clientesFiltrados$ = this.clienteControl.valueChanges.pipe(
       startWith(''),
-      map(value => {
+      map((value) => {
         const termino = typeof value === 'string' ? value : (value as Cliente)?.razonSocial || '';
         return termino ? this._filtrarClientes(termino) : this.listaClientes.slice();
-      })
+      }),
     );
 
     // Filtro Productos (Validación Objeto vs Texto)
     this.productosFiltrados$ = this.productoControl.valueChanges.pipe(
       startWith(''),
-      map(value => {
+      map((value) => {
         const termino = typeof value === 'string' ? value : (value as Producto)?.descripcion || '';
         return termino ? this._filtrarProductos(termino) : this.listaProductos.slice();
-      })
+      }),
     );
   }
 
   // --- SELECCIÓN DE CLIENTE ---
   seleccionarCliente(cliente: Cliente) {
     this.clienteSeleccionado = cliente;
-    
+
     // Prellenar datos fiscales por defecto del cliente
     this.configForm.patchValue({
       idUsoCFDI: cliente.idUsoCFDI,
       idFormaPago: cliente.idFormaPago,
-      idMetodoPago: cliente.idMetodoDePago
+      idMetodoPago: cliente.idMetodoDePago,
     });
 
     // ¡IMPORTANTE! Recalcular impuestos porque cambió el RFC (Física vs Moral)
-    this.carrito.update(items => {
-        items.forEach(item => {
-            const prodOriginal = this.listaProductos.find(p => p.idProducto === item.idProducto);
-            if (prodOriginal) {
-                this.recalcularRenglon(item, prodOriginal);
-            }
-        });
-        return [...items];
+    this.carrito.update((items) => {
+      items.forEach((item) => {
+        const prodOriginal = this.listaProductos.find((p) => p.idProducto === item.idProducto);
+        if (prodOriginal) {
+          this.recalcularRenglon(item, prodOriginal);
+        }
+      });
+      return [...items];
     });
   }
 
@@ -195,8 +218,8 @@ export class VentaComponent implements OnInit {
     }
 
     // 2. Verificar si ya existe para solo sumar cantidad
-    const existente = this.carrito().find(item => item.idProducto === producto.idProducto);
-    
+    const existente = this.carrito().find((item) => item.idProducto === producto.idProducto);
+
     if (existente) {
       // Validar stock acumulado
       if (existente.cantidad + 1 > producto.existencia) {
@@ -213,32 +236,36 @@ export class VentaComponent implements OnInit {
         idProducto: producto.idProducto,
         codigo: producto.codigo,
         descripcion: producto.descripcion,
-        
-        unidadDescripcion: producto.descripcionUnidadSat || 'Unidad', 
+
+        unidadDescripcion: producto.descripcionUnidadSat || 'Unidad',
         claveProdServ: producto.claveProdServ || '01010101',
         claveUnidad: producto.claveUnidadSat || 'H87',
         objetoImpuesto: producto.objetoImpuestoSat || '02',
-        
+
         cantidad: 1,
         valorUnitario: Number(producto.precioUnitario),
-        importe: 0, 
+        importe: 0,
         descuento: 0,
-        
+
         // Impuestos
-        baseIva: 0, tasaIva: Number(producto.tasaIva), importeIva: 0,
-        baseRetIsr: 0, tasaRetIsr: producto.aplicaRetencionIsr ? 0.0125 : 0, importeRetIsr: 0
+        baseIva: 0,
+        tasaIva: Number(producto.tasaIva),
+        importeIva: 0,
+        baseRetIsr: 0,
+        tasaRetIsr: producto.aplicaRetencionIsr ? 0.0125 : 0,
+        importeRetIsr: 0,
       };
 
       this.recalcularRenglon(nuevoItem, producto);
-      this.carrito.update(items => [...items, nuevoItem]);
+      this.carrito.update((items) => [...items, nuevoItem]);
     }
 
     // Limpiar el buscador de productos
     this.productoControl.setValue('');
-    
+
     // Actualizar la tabla visualmente
     if (existente) {
-      this.carrito.update(items => [...items]); 
+      this.carrito.update((items) => [...items]);
     }
   }
 
@@ -250,28 +277,28 @@ export class VentaComponent implements OnInit {
 
     // 2. IVA
     if (item.objetoImpuesto === '02') {
-        item.baseIva = item.importe;
-        item.importeIva = this.fromCents(this.toCents(item.baseIva * item.tasaIva));
+      item.baseIva = item.importe;
+      item.importeIva = this.fromCents(this.toCents(item.baseIva * item.tasaIva));
     } else {
-        item.baseIva = 0;
-        item.importeIva = 0;
+      item.baseIva = 0;
+      item.importeIva = 0;
     }
 
     // 3. RETENCIÓN ISR (Lógica de Oro Blindada)
     // Validamos que exista cliente y que tenga RFC antes de medir su longitud
     const rfcCliente = this.clienteSeleccionado?.rfc || ''; // Si es null, usa ''
     const esClienteMoral = rfcCliente.length === 12; // Ahora '' tiene length 0, no truena
-    
+
     if (productoOriginal.aplicaRetencionIsr && esClienteMoral) {
-        item.baseRetIsr = item.importe;
-        item.importeRetIsr = this.fromCents(this.toCents(item.baseRetIsr * 0.0125)); // 1.25%
+      item.baseRetIsr = item.importe;
+      item.importeRetIsr = this.fromCents(this.toCents(item.baseRetIsr * 0.0125)); // 1.25%
     } else {
-        item.importeRetIsr = 0;
+      item.importeRetIsr = 0;
     }
   }
 
   eliminarDelCarrito(index: number) {
-    this.carrito.update(items => items.filter((_, i) => i !== index));
+    this.carrito.update((items) => items.filter((_, i) => i !== index));
   }
 
   // --- GUARDAR VENTA ---
@@ -286,9 +313,9 @@ export class VentaComponent implements OnInit {
       return;
     }
     if (this.configForm.invalid) {
-        this.configForm.markAllAsTouched();
-        this.mostrarNotificacion('Completa los datos fiscales (Uso CFDI, etc.)');
-        return;
+      this.configForm.markAllAsTouched();
+      this.mostrarNotificacion('Completa los datos fiscales (Uso CFDI, etc.)');
+      return;
     }
 
     const formValues = this.configForm.value;
@@ -299,7 +326,7 @@ export class VentaComponent implements OnInit {
       rfcReceptor: this.clienteSeleccionado.rfc,
       nombreReceptor: this.clienteSeleccionado.razonSocial,
       cpReceptor: this.clienteSeleccionado.codigoPostal,
-      
+
       regimenReceptor: '601', // Ajustar según lógica real
       usoCfdi: this._obtenerClaveUso(formValues.idUsoCFDI),
 
@@ -313,24 +340,27 @@ export class VentaComponent implements OnInit {
       totalImpuestosRetenidos: this.retIsrGeneral(),
       total: this.totalGeneral(),
 
-      conceptos: this.carrito()
+      conceptos: this.carrito(),
     };
 
     this.isSaving.set(true);
-    this.ventaService.crearVenta(ventaPayload).pipe(
-      finalize(() => {
-        this.isSaving.set(false);
-      })
-    ).subscribe({
-      next: (res) => {
-        this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
-        this.limpiarTodo();
-        this.ngOnInit();
-      },
-      error: () => {
-        // Error handling is done by the interceptor
-      },
-    });
+    this.ventaService
+      .crearVenta(ventaPayload)
+      .pipe(
+        finalize(() => {
+          this.isSaving.set(false);
+        }),
+      )
+      .subscribe({
+        next: (res) => {
+          this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
+          this.limpiarTodo();
+          this.ngOnInit();
+        },
+        error: () => {
+          // Error handling is done by the interceptor
+        },
+      });
   }
 
   // --- UTILIDADES ---
@@ -364,8 +394,8 @@ export class VentaComponent implements OnInit {
 
   private _filtrarClientes(termino: string): Cliente[] {
     const filterValue = termino.toLowerCase();
-    
-    return this.listaClientes.filter(c => {
+
+    return this.listaClientes.filter((c) => {
       const razonSocial = (c.razonSocial || '').toLowerCase();
       const rfc = (c.rfc || '').toLowerCase();
       return razonSocial.includes(filterValue) || rfc.includes(filterValue);
@@ -376,11 +406,11 @@ export class VentaComponent implements OnInit {
     const filterValue = termino.toLowerCase();
 
     // 1. Búsqueda Directa (Por texto)
-    const coincidenciasDirectas = this.listaProductos.filter(p => {
+    const coincidenciasDirectas = this.listaProductos.filter((p) => {
       const descripcion = (p.descripcion || '').toLowerCase();
       const codigo = (p.codigo || '').toLowerCase();
       // Reseteamos la bandera visual
-      p.esEquivalente = false; 
+      p.esEquivalente = false;
       return descripcion.includes(filterValue) || codigo.includes(filterValue);
     });
 
@@ -388,21 +418,21 @@ export class VentaComponent implements OnInit {
     // Recorremos las coincidencias directas y buscamos sus "hijos"
     const equivalentesEncontrados: Producto[] = [];
 
-    coincidenciasDirectas.forEach(padre => {
+    coincidenciasDirectas.forEach((padre) => {
       if (padre.equivalentesIds && padre.equivalentesIds.length > 0) {
         // Buscamos los productos reales usando los IDs
-        const hijos = this.listaProductos.filter(p => 
-            padre.equivalentesIds?.includes(p.idProducto)
+        const hijos = this.listaProductos.filter((p) =>
+          padre.equivalentesIds?.includes(p.idProducto),
         );
-        
-        hijos.forEach(hijo => {
-           // Solo lo agregamos si no estaba ya en la lista directa
-           if (!coincidenciasDirectas.includes(hijo)) {
-             // Clonamos el objeto para no afectar el original y marcarlo
-             const copiaHijo = { ...hijo }; 
-             copiaHijo.esEquivalente = true; // Marca visual
-             equivalentesEncontrados.push(copiaHijo);
-           }
+
+        hijos.forEach((hijo) => {
+          // Solo lo agregamos si no estaba ya en la lista directa
+          if (!coincidenciasDirectas.includes(hijo)) {
+            // Clonamos el objeto para no afectar el original y marcarlo
+            const copiaHijo = { ...hijo };
+            copiaHijo.esEquivalente = true; // Marca visual
+            equivalentesEncontrados.push(copiaHijo);
+          }
         });
       }
     });
@@ -416,7 +446,7 @@ export class VentaComponent implements OnInit {
     // OJO: Esto es una solución rápida. Lo ideal es guardar la CLAVE en la lista 'usosCfdi$'
     // y buscarla aquí. Asumiremos que 'G03' es el default si no la encontramos.
     // Puedes mejorar esto mapeando 'usosCfdi$' a una variable local.
-    return 'G03'; 
+    return 'G03';
   }
 
   // --- EDICIÓN EN TIEMPO REAL ---
@@ -426,8 +456,8 @@ export class VentaComponent implements OnInit {
     if (item.valorUnitario < 0) item.valorUnitario = 0;
 
     // 2. Buscar el producto original para checar stock y reglas fiscales
-    const prodOriginal = this.listaProductos.find(p => p.idProducto === item.idProducto);
-    
+    const prodOriginal = this.listaProductos.find((p) => p.idProducto === item.idProducto);
+
     if (prodOriginal) {
       // Validación de Stock
       if (item.cantidad > prodOriginal.existencia) {
@@ -437,8 +467,8 @@ export class VentaComponent implements OnInit {
 
       // 3. Recalcular todo el renglón (Importe, IVA, ISR)
       this.recalcularRenglon(item, prodOriginal);
-      
-      this.carrito.update(items => [...items]);
+
+      this.carrito.update((items) => [...items]);
     }
   }
 }

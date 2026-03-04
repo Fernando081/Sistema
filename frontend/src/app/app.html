@@ -28,7 +28,11 @@
       <mat-nav-list class="app-nav-list">
         <div matSubheader class="nav-label">Principal</div>
         @if (user?.role === 'admin') {
-          <a mat-list-item routerLink="/dashboard" routerLinkActive="active-nav" class="wrap-nav-item"
+          <a
+            mat-list-item
+            routerLink="/dashboard"
+            routerLinkActive="active-nav"
+            class="wrap-nav-item"
             ><mat-icon matListItemIcon>space_dashboard</mat-icon
             ><span matListItemTitle>Dashboard</span></a
           >
@@ -37,7 +41,8 @@
             routerLink="/reportes/utilidad"
             routerLinkActive="active-nav"
             class="wrap-nav-item"
-            ><mat-icon matListItemIcon>trending_up</mat-icon><span matListItemTitle>Utilidad</span></a
+            ><mat-icon matListItemIcon>trending_up</mat-icon
+            ><span matListItemTitle>Utilidad</span></a
           >
         }
         <a mat-list-item routerLink="/venta" routerLinkActive="active-nav" class="wrap-nav-item"
@@ -72,7 +77,12 @@
           ><mat-icon matListItemIcon>inventory_2</mat-icon
           ><span matListItemTitle>Productos</span></a
         >
-        <a mat-list-item routerLink="/compra" routerLinkActive="active-nav" class="wrap-nav-item"
+        <a
+          mat-list-item
+          routerLink="/compra"
+          routerLinkActive="active-nav"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="wrap-nav-item"
           ><mat-icon matListItemIcon>shopping_cart</mat-icon
           ><span matListItemTitle>Nueva Compra</span></a
         >

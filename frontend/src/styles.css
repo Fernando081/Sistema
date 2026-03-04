@@ -47,7 +47,7 @@
   --wrap-text-muted: var(--text-muted);
   --wrap-border: var(--border-color);
   --wrap-primary: var(--primary-color);
-  
+
   --wrap-text-nav: #ffffff;
   --wrap-icon-nav: rgba(255, 255, 255, 0.8);
   --wrap-text-label: #ffffff;
@@ -374,18 +374,18 @@ tr.mdc-data-table__row:hover {
 }
 
 /* Material table styling in dark mode */
-.dark th.mat-mdc-header-cell {
-  background-color: var(--bg-card) !important;
+html.dark th.mat-mdc-header-cell {
+  background-color: var(--wrap-card-bg) !important;
   color: var(--wrap-text-title) !important;
 }
 
-.dark td.mat-mdc-cell {
+html.dark td.mat-mdc-cell {
   color: var(--wrap-text-muted) !important;
   border-bottom-color: var(--wrap-border) !important;
 }
 
-.dark tr.mdc-data-table__row:hover {
-  background-color: var(--bg-primary) !important;
+html.dark tr.mdc-data-table__row:hover {
+  background-color: var(--wrap-bg) !important;
 }
 
 /* Material card styling in dark mode overlay */
@@ -397,12 +397,14 @@ tr.mdc-data-table__row:hover {
 /* Final overrides applied via previous variables */
 
 /* Dark Mode Components (Paginator & Overlays) */
-.dark .cdk-overlay-pane .mat-mdc-autocomplete-panel,
-.dark .cdk-overlay-pane .mat-mdc-select-panel,
-.dark .cdk-overlay-pane .mat-mdc-menu-panel,
-.dark .mat-mdc-autocomplete-panel,
-.dark .mat-mdc-select-panel,
-.dark .mat-mdc-menu-panel {
+html.dark .mat-mdc-dialog-surface,
+html.dark .mat-mdc-dialog-container,
+html.dark .cdk-overlay-pane .mat-mdc-autocomplete-panel,
+html.dark .cdk-overlay-pane .mat-mdc-select-panel,
+html.dark .cdk-overlay-pane .mat-mdc-menu-panel,
+html.dark .mat-mdc-autocomplete-panel,
+html.dark .mat-mdc-select-panel,
+html.dark .mat-mdc-menu-panel {
   background-color: var(--wrap-card-bg) !important;
   color: var(--wrap-text-title) !important;
 }

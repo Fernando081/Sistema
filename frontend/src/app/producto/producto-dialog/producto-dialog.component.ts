@@ -165,28 +165,31 @@ export class ProductoDialogComponent implements OnInit {
       this.cargarEquivalentes();
 
       // Cargar TODOS los productos para poder buscar equivalentes
-      this.productoService.getProductos().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
-        (prods) => {
-          console.log('Raw data:', prods);
+      this.productoService
+        .getProductos(1, 1000)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(
+          (response: any) => {
+            console.log('Raw data:', response);
 
-          // --- CORRECCIÓN: MAPEO MANUAL DE MAYÚSCULAS A MINÚSCULAS ---
-          this.listaTodosProductos = prods.map((p: any) => ({
-            idProducto: p.IdProducto,
-            codigo: p.Codigo,
-            descripcion: p.Descripcion,
-            precioUnitario: p.PrecioUnitario,
-            existencia: p.Existencia,
-            // Solo necesitamos estos campos para el buscador visual
-          })) as Producto[];
+            // --- CORRECCIÓN: MAPEO MANUAL DE MAYÚSCULAS A MINÚSCULAS ---
+            this.listaTodosProductos = response.data.map((p: any) => ({
+              idProducto: p.IdProducto,
+              codigo: p.Codigo,
+              descripcion: p.Descripcion,
+              precioUnitario: p.PrecioUnitario,
+              existencia: p.Existencia,
+              // Solo necesitamos estos campos para el buscador visual
+            })) as Producto[];
 
-          this.configurarBuscadorEquivalentes();
+            this.configurarBuscadorEquivalentes();
 
-          console.log('Productos mapeados (listos para buscar):', this.listaTodosProductos);
-        },
-        (error) => {
-          console.error('Error al cargar lista de productos:', error);
-        },
-      );
+            console.log('Productos mapeados (listos para buscar):', this.listaTodosProductos);
+          },
+          (error) => {
+            console.error('Error al cargar lista de productos:', error);
+          },
+        );
     }
   }
 

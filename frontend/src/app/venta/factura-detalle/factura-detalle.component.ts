@@ -2,6 +2,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { ChangeDetectorRef } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +16,6 @@ import { FacturaResumen, DetalleFacturaDb } from '../venta.interface';
   templateUrl: './factura-detalle.component.html',
 })
 export class FacturaDetalleComponent implements OnInit {
-  
   detalles: DetalleFacturaDb[] = [];
   displayedColumns: string[] = ['cant', 'unidad', 'desc', 'precio', 'importe'];
   isLoading = true;
@@ -23,7 +23,8 @@ export class FacturaDetalleComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<FacturaDetalleComponent>,
     @Inject(MAT_DIALOG_DATA) public data: FacturaResumen, // Recibimos el resumen (folio, total, etc.)
-    private ventaService: VentaService
+    private ventaService: VentaService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -31,8 +32,9 @@ export class FacturaDetalleComponent implements OnInit {
       next: (res) => {
         this.detalles = res;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
-      error: (err) => console.error(err)
+      error: (err) => console.error(err),
     });
   }
 
@@ -41,7 +43,7 @@ export class FacturaDetalleComponent implements OnInit {
   }
 
   imprimirTicket() {
-    this.ventaService.descargarPdf(this.data.id_factura).subscribe(blob => {
+    this.ventaService.descargarPdf(this.data.id_factura).subscribe((blob) => {
       const url = window.URL.createObjectURL(blob);
       window.open(url); // Abre en nueva pestaña
     });

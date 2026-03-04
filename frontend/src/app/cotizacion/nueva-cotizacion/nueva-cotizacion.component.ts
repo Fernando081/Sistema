@@ -14,7 +14,11 @@ import { MatDividerModule } from '@angular/material/divider';
 
 import { ProductoService } from '../../services/producto.service';
 import { ClienteService } from '../../services/cliente.service';
-import { CotizacionService, ConceptoCotizacion, CreateCotizacion } from '../../services/cotizacion.service';
+import {
+  CotizacionService,
+  ConceptoCotizacion,
+  CreateCotizacion,
+} from '../../services/cotizacion.service';
 import { Producto } from '../../producto/producto.interface';
 import { Cliente } from '../../cliente/cliente.interface';
 
@@ -25,18 +29,25 @@ import { map, startWith, finalize } from 'rxjs/operators';
   selector: 'app-nueva-cotizacion',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, FormsModule,
-    MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule,
-    MatIconModule, MatTableModule, MatAutocompleteModule, MatSnackBarModule,
-    MatDividerModule
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    MatAutocompleteModule,
+    MatSnackBarModule,
+    MatDividerModule,
   ],
   templateUrl: './nueva-cotizacion.component.html',
 })
 export class NuevaCotizacionComponent implements OnInit {
-  
   carrito: ConceptoCotizacion[] = [];
   clienteSeleccionado: Cliente | null = null;
-  
+
   // Totales
   subtotalGeneral = 0;
   ivaGeneral = 0;
@@ -47,7 +58,7 @@ export class NuevaCotizacionComponent implements OnInit {
   // Controles
   clienteControl = new FormControl<string | Cliente>('');
   productoControl = new FormControl<string | Producto>('');
-  
+
   listaClientes: Cliente[] = [];
   listaProductos: Producto[] = [];
   clientesFiltrados$: Observable<Cliente[]> = of([]);
@@ -59,7 +70,7 @@ export class NuevaCotizacionComponent implements OnInit {
     private productoService: ProductoService,
     private clienteService: ClienteService,
     private cotizacionService: CotizacionService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -69,13 +80,13 @@ export class NuevaCotizacionComponent implements OnInit {
 
   cargarCatalogos() {
     // Cargar Clientes (Service now handles mapping)
-    this.clienteService.getClientes().subscribe(data => {
+    this.clienteService.getClientes().subscribe((data) => {
       this.listaClientes = data;
     });
 
     // Cargar Productos
-    this.productoService.getProductos().subscribe(data => {
-      this.listaProductos = data.map((p: any) => ({
+    this.productoService.getProductos(1, 1000).subscribe((response: any) => {
+      this.listaProductos = response.data.map((p: any) => ({
         idProducto: p['IdProducto'],
         codigo: p['Codigo'],
         descripcion: p['Descripcion'],
@@ -83,7 +94,7 @@ export class NuevaCotizacionComponent implements OnInit {
         descripcionUnidadSat: p['DescripcionUnidadSat'],
         objetoImpuestoSat: p['ObjetoImpuesto'],
         tasaIva: p['TasaIVA'],
-        aplicaRetencionIsr: p['AplicaRetencionISR']
+        aplicaRetencionIsr: p['AplicaRetencionISR'],
       })) as unknown as Producto[];
     });
   }
@@ -91,18 +102,18 @@ export class NuevaCotizacionComponent implements OnInit {
   configurarAutocompletes() {
     this.clientesFiltrados$ = this.clienteControl.valueChanges.pipe(
       startWith(''),
-      map(val => {
+      map((val) => {
         const term = typeof val === 'string' ? val : (val as Cliente)?.razonSocial || '';
         return term ? this._filterCli(term) : this.listaClientes.slice();
-      })
+      }),
     );
 
     this.productosFiltrados$ = this.productoControl.valueChanges.pipe(
       startWith(''),
-      map(val => {
+      map((val) => {
         const term = typeof val === 'string' ? val : (val as Producto)?.descripcion || '';
         return term ? this._filterProd(term) : this.listaProductos.slice();
-      })
+      }),
     );
   }
 
@@ -112,7 +123,7 @@ export class NuevaCotizacionComponent implements OnInit {
   }
 
   agregarProducto(p: Producto) {
-    const existente = this.carrito.find(i => i.idProducto === p.idProducto);
+    const existente = this.carrito.find((i) => i.idProducto === p.idProducto);
     if (existente) {
       existente.cantidad++;
       this.recalcularRenglon(existente);
@@ -128,7 +139,7 @@ export class NuevaCotizacionComponent implements OnInit {
         importeRetIsr: 0,
         tasaIva: p.tasaIva,
         objetoImpuesto: p.objetoImpuestoSat,
-        aplicaRetencionIsr: p.aplicaRetencionIsr
+        aplicaRetencionIsr: p.aplicaRetencionIsr,
       };
       this.recalcularRenglon(nuevo);
       this.carrito.push(nuevo);
@@ -165,7 +176,7 @@ export class NuevaCotizacionComponent implements OnInit {
   }
 
   recalcularCarrito() {
-    this.carrito.forEach(item => {
+    this.carrito.forEach((item) => {
       this.recalcularRenglon(item);
     });
     this.recalcularTotales();
@@ -199,7 +210,7 @@ export class NuevaCotizacionComponent implements OnInit {
       totalImpuestos: Number(this.ivaGeneral),
       totalRetenciones: Number(this.retIsrGeneral),
       total: Number(this.totalGeneral),
-      conceptos: this.carrito.map(item => ({
+      conceptos: this.carrito.map((item) => ({
         idProducto: item.idProducto,
         descripcion: item.descripcion,
         unidadDescripcion: item.unidadDescripcion,
@@ -207,25 +218,28 @@ export class NuevaCotizacionComponent implements OnInit {
         valorUnitario: Number(item.valorUnitario),
         importe: Number(item.importe),
         importeIva: Number(item.importeIva),
-        importeRetIsr: Number(item.importeRetIsr)
-      }))
+        importeRetIsr: Number(item.importeRetIsr),
+      })),
     };
 
     this.isSaving.set(true);
-    this.cotizacionService.crear(dto).pipe(
-      finalize(() => this.isSaving.set(false))
-    ).subscribe({
-      next: (res) => {
-        this.snackBar.open('Cotización Guardada', 'Ver PDF', { duration: 5000 })
-          .onAction().subscribe(() => this.abrirPdf(res.id));
-        this.limpiar();
-      },
-      error: (e) => this.snackBar.open('Error: ' + e.message, 'Ok')
-    });
+    this.cotizacionService
+      .crear(dto)
+      .pipe(finalize(() => this.isSaving.set(false)))
+      .subscribe({
+        next: (res) => {
+          this.snackBar
+            .open('Cotización Guardada', 'Ver PDF', { duration: 5000 })
+            .onAction()
+            .subscribe(() => this.abrirPdf(res.id));
+          this.limpiar();
+        },
+        error: (e) => this.snackBar.open('Error: ' + e.message, 'Ok'),
+      });
   }
 
   abrirPdf(id: number) {
-    this.cotizacionService.descargarPdf(id).subscribe(blob => {
+    this.cotizacionService.descargarPdf(id).subscribe((blob) => {
       const url = window.URL.createObjectURL(blob);
       window.open(url);
     });
@@ -238,15 +252,19 @@ export class NuevaCotizacionComponent implements OnInit {
     this.recalcularTotales();
   }
 
-  displayCli(c: Cliente) { return c ? c.razonSocial : ''; }
-  displayProd(p: Producto) { return p ? p.descripcion : ''; }
-  
-  _filterCli(t: string) { 
-    const v = t.toLowerCase(); 
-    return this.listaClientes.filter(c => (c.razonSocial || '').toLowerCase().includes(v)); 
+  displayCli(c: Cliente) {
+    return c ? c.razonSocial : '';
   }
-  _filterProd(t: string) { 
-    const v = t.toLowerCase(); 
-    return this.listaProductos.filter(p => (p.descripcion || '').toLowerCase().includes(v)); 
+  displayProd(p: Producto) {
+    return p ? p.descripcion : '';
+  }
+
+  _filterCli(t: string) {
+    const v = t.toLowerCase();
+    return this.listaClientes.filter((c) => (c.razonSocial || '').toLowerCase().includes(v));
+  }
+  _filterProd(t: string) {
+    const v = t.toLowerCase();
+    return this.listaProductos.filter((p) => (p.descripcion || '').toLowerCase().includes(v));
   }
 }

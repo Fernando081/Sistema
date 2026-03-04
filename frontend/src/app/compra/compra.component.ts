@@ -1,7 +1,14 @@
 // frontend/src/app/compra/compra.component.ts
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 // Material
 import { MatCardModule } from '@angular/material/card';
@@ -29,24 +36,30 @@ import { map, startWith, finalize } from 'rxjs/operators';
   selector: 'app-compra',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, FormsModule,
-    MatCardModule, MatFormFieldModule, MatInputModule, 
-    MatButtonModule, MatIconModule, MatTableModule, 
-    MatAutocompleteModule, MatSnackBarModule,
-    MatSlideToggleModule // <--- AGREGAR
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    MatAutocompleteModule,
+    MatSnackBarModule,
+    MatSlideToggleModule, // <--- AGREGAR
   ],
   templateUrl: './compra.component.html',
 })
 export class CompraComponent implements OnInit {
-
   // --- ESTADO ---
   carrito = signal<DetalleCompra[]>([]);
   proveedorSeleccionado: Proveedor | null = null;
   totalGeneral = computed(() => this.carrito().reduce((acc, item) => acc + item.importe, 0));
   isSaving = signal(false);
-  
+
   // Variable para crédito
-  esCredito: boolean = false; 
+  esCredito: boolean = false;
 
   // --- FORMULARIOS ---
   proveedorControl = new FormControl<string | Proveedor>('');
@@ -66,7 +79,7 @@ export class CompraComponent implements OnInit {
     private compraService: CompraService,
     private proveedorService: ProveedorService,
     private productoService: ProductoService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -75,20 +88,20 @@ export class CompraComponent implements OnInit {
   }
 
   cargarCatalogos() {
-    this.proveedorService.getProveedores().subscribe(data => {
-      this.listaProveedores = data.map(p => ({
+    this.proveedorService.getProveedores().subscribe((data) => {
+      this.listaProveedores = data.map((p) => ({
         idProveedor: p['IdProveedor'],
         rfc: p['RFC'],
-        razonSocial: p['RazonSocial']
+        razonSocial: p['RazonSocial'],
       })) as unknown as Proveedor[];
     });
 
-    this.productoService.getProductos().subscribe(data => {
-      this.listaProductos = data.map((p: any) => ({
+    this.productoService.getProductos(1, 1000).subscribe((response: any) => {
+      this.listaProductos = response.data.map((p: any) => ({
         idProducto: p['IdProducto'],
         codigo: p['Codigo'],
         descripcion: p['Descripcion'],
-        existencia: Number(p['Existencia'])
+        existencia: Number(p['Existencia']),
       })) as unknown as Producto[];
     });
   }
@@ -96,18 +109,18 @@ export class CompraComponent implements OnInit {
   configurarAutocompletes() {
     this.proveedoresFiltrados$ = this.proveedorControl.valueChanges.pipe(
       startWith(''),
-      map(value => {
+      map((value) => {
         const termino = typeof value === 'string' ? value : (value as Proveedor)?.razonSocial || '';
         return termino ? this._filtrarProveedores(termino) : this.listaProveedores.slice();
-      })
+      }),
     );
 
     this.productosFiltrados$ = this.productoControl.valueChanges.pipe(
       startWith(''),
-      map(value => {
+      map((value) => {
         const termino = typeof value === 'string' ? value : (value as Producto)?.descripcion || '';
         return termino ? this._filtrarProductos(termino) : this.listaProductos.slice();
-      })
+      }),
     );
   }
 
@@ -116,7 +129,7 @@ export class CompraComponent implements OnInit {
   }
 
   agregarProducto(producto: Producto) {
-    const existente = this.carrito().find(i => i.idProducto === producto.idProducto);
+    const existente = this.carrito().find((i) => i.idProducto === producto.idProducto);
 
     if (existente) {
       existente.cantidad++;
@@ -128,14 +141,14 @@ export class CompraComponent implements OnInit {
         descripcion: producto.descripcion,
         cantidad: 1,
         costoUnitario: 0,
-        importe: 0
+        importe: 0,
       };
-      this.carrito.update(items => [...items, nuevo]);
+      this.carrito.update((items) => [...items, nuevo]);
     }
 
     this.productoControl.setValue('');
     if (existente) {
-      this.carrito.update(items => [...items]);
+      this.carrito.update((items) => [...items]);
     }
   }
 
@@ -143,7 +156,7 @@ export class CompraComponent implements OnInit {
     if (item.cantidad < 1) item.cantidad = 1;
     if (item.costoUnitario < 0) item.costoUnitario = 0;
     this.recalcularRenglon(item);
-    this.carrito.update(items => [...items]);
+    this.carrito.update((items) => [...items]);
   }
 
   recalcularRenglon(item: DetalleCompra) {
@@ -151,7 +164,7 @@ export class CompraComponent implements OnInit {
   }
 
   eliminarDelCarrito(index: number) {
-    this.carrito.update(items => items.filter((_, i) => i !== index));
+    this.carrito.update((items) => items.filter((_, i) => i !== index));
   }
 
   guardarCompra() {
@@ -164,10 +177,10 @@ export class CompraComponent implements OnInit {
       this.mostrarNotificacion('El carrito está vacío');
       return;
     }
-    const sinCosto = this.carrito().some(i => i.costoUnitario <= 0);
+    const sinCosto = this.carrito().some((i) => i.costoUnitario <= 0);
     if (sinCosto) {
-        this.mostrarNotificacion('⚠️ Hay productos con Costo $0.00.');
-        return;
+      this.mostrarNotificacion('⚠️ Hay productos con Costo $0.00.');
+      return;
     }
 
     const compraPayload: CreateCompra = {
@@ -176,30 +189,31 @@ export class CompraComponent implements OnInit {
       esCredito: this.esCredito, // <--- ENVIAMOS EL VALOR DEL TOGGLE
       observaciones: this.observacionesControl.value || '',
       total: Number(this.totalGeneral()),
-      conceptos: this.carrito().map(item => ({
+      conceptos: this.carrito().map((item) => ({
         idProducto: item.idProducto,
         descripcion: item.descripcion,
         codigo: item.codigo || '',
         cantidad: Number(item.cantidad),
         costoUnitario: Number(item.costoUnitario),
-        importe: Number(item.importe)
-      }))
+        importe: Number(item.importe),
+      })),
     };
 
     this.isSaving.set(true);
-    this.compraService.crearCompra(compraPayload).pipe(
-      finalize(() => this.isSaving.set(false))
-    ).subscribe({
-      next: (res) => {
-        this.mostrarNotificacion('✅ Compra registrada correctamente.');
-        this.limpiarTodo();
-        this.ngOnInit();
-      },
-      error: (err) => {
-        console.error(err);
-        this.mostrarNotificacion('Error: ' + (err.error?.message || err.message));
-      }
-    });
+    this.compraService
+      .crearCompra(compraPayload)
+      .pipe(finalize(() => this.isSaving.set(false)))
+      .subscribe({
+        next: (res) => {
+          this.mostrarNotificacion('✅ Compra registrada correctamente.');
+          this.limpiarTodo();
+          this.ngOnInit();
+        },
+        error: (err) => {
+          console.error(err);
+          this.mostrarNotificacion('Error: ' + (err.error?.message || err.message));
+        },
+      });
   }
 
   limpiarTodo() {
@@ -216,22 +230,28 @@ export class CompraComponent implements OnInit {
     this.snackBar.open(msg, 'Cerrar', { duration: 3000 });
   }
 
-  displayProveedor(p: Proveedor): string { return p ? p.razonSocial : ''; }
-  displayProducto(p: Producto): string { return p ? p.descripcion : ''; }
+  displayProveedor(p: Proveedor): string {
+    return p ? p.razonSocial : '';
+  }
+  displayProducto(p: Producto): string {
+    return p ? p.descripcion : '';
+  }
 
   private _filtrarProveedores(term: string): Proveedor[] {
     const val = term.toLowerCase();
-    return this.listaProveedores.filter(p => 
-      (p.razonSocial || '').toLowerCase().includes(val) || 
-      (p.rfc || '').toLowerCase().includes(val)
+    return this.listaProveedores.filter(
+      (p) =>
+        (p.razonSocial || '').toLowerCase().includes(val) ||
+        (p.rfc || '').toLowerCase().includes(val),
     );
   }
 
   private _filtrarProductos(term: string): Producto[] {
     const val = term.toLowerCase();
-    return this.listaProductos.filter(p => 
-      (p.descripcion || '').toLowerCase().includes(val) || 
-      (p.codigo || '').toLowerCase().includes(val)
+    return this.listaProductos.filter(
+      (p) =>
+        (p.descripcion || '').toLowerCase().includes(val) ||
+        (p.codigo || '').toLowerCase().includes(val),
     );
   }
 }
