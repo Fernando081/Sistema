@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Producto, CreateProductoDto, UpdateProductoDto, KardexItem } from '../producto/producto.interface';
+import { Producto, CreateProductoDto, UpdateProductoDto, KardexItem, SmartRestockItem } from '../producto/producto.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -62,5 +62,9 @@ export class ProductoService {
 
   eliminarEquivalente(id: number, idEq: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}/equivalentes/${idEq}`);
+  }
+
+  getSmartRestock(): Observable<SmartRestockItem[]> {
+    return this.http.get<SmartRestockItem[]>(`${this.apiUrl}/smart-restock`);
   }
 }

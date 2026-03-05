@@ -1,0 +1,40 @@
+CREATE OR REPLACE PROCEDURE sp_cancelar_factura(p_id_venta INT)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_estatus VARCHAR;
+    v_item RECORD;
+BEGIN
+    -- 1. Verificar existencia y estatus no cancelado
+    SELECT estatus::varchar INTO v_estatus FROM factura WHERE id_factura = p_id_venta;
+    IF v_estatus IS NULL THEN
+        RAISE EXCEPTION 'Factura no encontrada';
+    END IF;
+    IF v_estatus = 'Cancelada' THEN
+        RAISE EXCEPTION 'La factura ya se encuentra cancelada';
+    END IF;
+
+    -- 2. Cambiar estatus de la factura
+    UPDATE factura SET estatus = 'Cancelada'::estatus_factura_enum, saldo_pendiente = 0 WHERE id_factura = p_id_venta;
+
+    -- 3. Restaurar stock e insertar en Kardex
+    FOR v_item IN (SELECT id_producto, cantidad, valor_unitario FROM conceptofactura WHERE id_factura = p_id_venta) LOOP
+        -- Actualizar Existencia en producto
+        UPDATE producto SET "Existencia" = "Existencia" + v_item.cantidad WHERE "IdProducto" = v_item.id_producto;
+        
+        -- Insertar movimiento en kardex (ENTRADA POR DEVOLUCION)
+        INSERT INTO kardex (
+            id_producto, fecha, tipo_movimiento, cantidad,
+            stock_anterior, stock_resultante, precio_unitario, referencia, id_referencia
+        ) VALUES (
+            v_item.id_producto, NOW(), 'ENTRADA POR DEVOLUCION'::tipo_movimiento_kardex_enum, v_item.cantidad,
+            (SELECT "Existencia" - v_item.cantidad FROM producto WHERE "IdProducto" = v_item.id_producto), 
+            (SELECT "Existencia" FROM producto WHERE "IdProducto" = v_item.id_producto), 
+            v_item.valor_unitario, 'Cancelación de Factura', p_id_venta
+        );
+    END LOOP;
+
+    -- 4. Invalidar pagos relacionados
+    DELETE FROM pago WHERE id_factura = p_id_venta;
+END;
+$$;

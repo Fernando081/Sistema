@@ -4,7 +4,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Producto } from './producto.entity';
-import { CreateProductoDto, UpdateProductoDto } from './producto.dto';
+import { CreateProductoDto, UpdateProductoDto, SmartRestockItem } from './producto.dto';
 import { APP_CONSTANTS } from '../common/constants/app.constants';
 
 @Injectable()
@@ -177,6 +177,10 @@ export class ProductoService {
     );
 
     return resultado;
+  }
+
+  async getSmartRestock(): Promise<SmartRestockItem[]> {
+    return this.dataSource.query('SELECT * FROM vw_smart_restock');
   }
 
   async getHistorialPrecios(idProducto: number) {

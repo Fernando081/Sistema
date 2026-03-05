@@ -105,4 +105,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./finanzas/gastos/gastos.component').then((m) => m.GastosComponent),
   },
+  {
+    path: 'operaciones/smart-restock',
+    canActivate: [authGuard],
+    data: { roles: ['admin'] },
+    loadComponent: () =>
+      import('./operaciones/smart-restock/smart-restock.component').then(
+        (m) => m.SmartRestockComponent,
+      ),
+  },
 ];

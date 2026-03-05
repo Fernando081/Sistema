@@ -1,8 +1,7 @@
-<!-- frontend/src/app/pago/cuentas-por-pagar/cuentas-por-pagar.component.html -->
- <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="p-6 flex flex-col xl:flex-row gap-6">
   
-  <div class="flex flex-col gap-4">
-    <mat-card>
+  <div class="flex-1 w-full min-w-0 flex flex-col gap-4">
+    <mat-card class="w-full">
       <mat-card-header>
         <mat-icon mat-card-avatar class="text-red-600">money_off</mat-icon>
         <mat-card-title>Cuentas por Pagar</mat-card-title>
@@ -65,7 +64,7 @@
     </mat-card>
   </div>
 
-  <div class="flex flex-col gap-4" *ngIf="compraSeleccionada">
+  <div class="w-full md:w-[450px] shrink-0 flex flex-col gap-4" *ngIf="compraSeleccionada">
     <mat-card class="bg-red-50 border border-red-200 shadow-lg">
       <mat-card-header>
         <mat-card-title class="text-red-800">Registrar Salida de Dinero</mat-card-title>

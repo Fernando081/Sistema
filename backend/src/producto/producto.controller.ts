@@ -33,6 +33,11 @@ export class ProductoController {
     return this.productoService.findAll(page, limit, sort, order);
   }
 
+  @Get('smart-restock')
+  getSmartRestock() {
+    return this.productoService.getSmartRestock();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.productoService.findOne(id);

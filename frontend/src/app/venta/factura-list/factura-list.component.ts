@@ -90,11 +90,14 @@ export class FacturaListComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // --- FUNCIÓN PARA ABRIR EL DIÁLOGO ---
   verDetalle(factura: FacturaResumen) {
-    this.dialog.open(FacturaDetalleComponent, {
+    const dialogRef = this.dialog.open(FacturaDetalleComponent, {
       width: '800px',
       data: factura // Le pasamos toda la fila seleccionada
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cargarFacturas(); // Recargar la tabla por si el estatus cambió a cancelado
     });
   }
 

@@ -69,6 +69,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
+  <button mat-button color="warn" (click)="cancelarFactura()" *ngIf="data.estatus !== 'Cancelada'">
+    <mat-icon>cancel</mat-icon> Cancelar Venta
+  </button>
   <button mat-button (click)="cerrar()" class="dark:text-gray-300">Cerrar</button>
   <button mat-flat-button color="primary" (click)="imprimirTicket()">
     <mat-icon>print</mat-icon> Imprimir Factura

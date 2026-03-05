@@ -76,3 +76,13 @@ export class CreateProductoDto {
 }
 
 export class UpdateProductoDto extends PartialType(CreateProductoDto) {}
+
+export interface SmartRestockItem {
+  id_producto: number;
+  codigo: string;
+  descripcion: string;
+  unidades_vendidas_30d: number;
+  stock_actual: number;
+  precio_unitario: number;
+  margen: number;
+}

@@ -1,8 +1,7 @@
-<!-- frontend/src/app/pago/cobranza/cobranza.component.html -->
- <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="p-6 flex flex-col xl:flex-row gap-6">
   
-  <div class="flex flex-col gap-4">
-    <mat-card>
+  <div class="flex-1 w-full min-w-0 flex flex-col gap-4">
+    <mat-card class="w-full">
       <mat-card-header><mat-card-title>Facturas Pendientes de Cobro</mat-card-title></mat-card-header>
       <mat-card-content class="mt-2">
         <mat-form-field class="w-full">
@@ -52,7 +51,7 @@
     </mat-card>
   </div>
 
-  <div class="flex flex-col gap-4" *ngIf="facturaSeleccionada">
+  <div class="w-full md:w-[450px] shrink-0 flex flex-col gap-4" *ngIf="facturaSeleccionada">
     <mat-card class="bg-green-50 border border-green-200">
       <mat-card-header>
         <mat-card-title>Registrar Abono</mat-card-title>

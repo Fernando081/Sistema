@@ -46,3 +46,13 @@ export interface KardexItem {
 
 export type CreateProductoDto = Omit<Producto, 'idProducto' | 'categoriaNombre' | 'claveProdServ' | 'descripcionProdServ' | 'claveUnidadSat' | 'descripcionUnidadSat'>;
 export type UpdateProductoDto = Partial<CreateProductoDto>;
+
+export interface SmartRestockItem {
+  id_producto: number;
+  codigo: string;
+  descripcion: string;
+  unidades_vendidas_30d: number;
+  stock_actual: number;
+  precio_unitario: number;
+  margen: number;
+}

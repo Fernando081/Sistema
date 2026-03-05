@@ -34,4 +34,8 @@ export class VentaService {
   enviarCorreo(idFactura: number): Observable<any> {
     return this.http.post(`${API_URL}/${idFactura}/enviar-correo`, {});
   }
+
+  cancelarFactura(idFactura: number): Observable<any> {
+    return this.http.post(`${API_URL}/${idFactura}/cancelar`, {});
+  }
 }

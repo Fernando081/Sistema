@@ -119,4 +119,22 @@ export class VentaService {
     });
     return { message: `Correo enviado a ${datosEnvio.destinatario}` };
   }
+
+  async cancelarFactura(idFactura: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.query('CALL sp_cancelar_factura($1)', [idFactura]);
+      await queryRunner.commitTransaction();
+      return { message: 'Factura cancelada y stock restaurado en Kardex con éxito' };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
 }

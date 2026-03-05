@@ -1,0 +1,71 @@
+<div class="p-6 h-full flex flex-col max-h-screen">
+  <div class="mb-4">
+    <h1 class="text-2xl font-bold dark:text-white">Asistente Inteligente de Reabastecimiento</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400">
+      Sugerencias de compras basadas en la velocidad de ventas (últimos 30 días) y márgenes de utilidad.
+      Productos con alta rotación y alto margen se priorizan. Ojo si el Stock Actual es bajo.
+    </p>
+  </div>
+
+  <div *ngIf="isLoading" class="flex justify-center p-8">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <div class="mat-elevation-z8 flex-1 bg-white dark:bg-[#1f2937] overflow-auto rounded-md" *ngIf="!isLoading">
+    <table mat-table [dataSource]="dataSource" class="w-full">
+      <ng-container matColumnDef="codigo">
+        <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-700 dark:text-gray-300"> Código </th>
+        <td mat-cell *matCellDef="let element" class="dark:text-gray-300"> {{element.codigo}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="descripcion">
+        <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-700 dark:text-gray-300"> Descripción </th>
+        <td mat-cell *matCellDef="let element" class="dark:text-gray-300"> {{element.descripcion}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="vendidas">
+        <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-700 dark:text-gray-300"> Ventas 30d </th>
+        <td mat-cell *matCellDef="let element"> 
+            <span class="font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900 px-2 py-1 rounded">
+                {{element.unidades_vendidas_30d}} uds
+            </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="stock">
+        <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-700 dark:text-gray-300"> Stock Actual </th>
+        <td mat-cell *matCellDef="let element">
+            <span [ngClass]="{'text-red-500 font-bold bg-red-50 dark:bg-red-900': element.stock_actual <= 0, 'text-orange-500 font-semibold bg-orange-50 dark:bg-orange-900': element.stock_actual > 0 && element.stock_actual <= 5, 'text-green-600 dark:text-green-400': element.stock_actual > 5}" class="px-2 py-1 rounded">
+                {{element.stock_actual}}
+            </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="precio">
+        <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-700 dark:text-gray-300"> Precio U. </th>
+        <td mat-cell *matCellDef="let element" class="dark:text-gray-300"> {{element.precio_unitario | currency}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="margen">
+        <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-700 dark:text-gray-300"> Margen (%) </th>
+        <td mat-cell *matCellDef="let element"> 
+             <span [ngClass]="{'text-green-600 dark:text-green-400 font-bold': element.margen > 30, 'text-orange-500 dark:text-orange-400': element.margen > 10 && element.margen <= 30, 'text-red-500 dark:text-red-400 font-bold': element.margen <= 10}">
+                {{element.margen | number:'1.0-2'}}%
+             </span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"></tr>
+      
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell text-center p-6 text-gray-500 dark:text-gray-400" colspan="6">
+            <div class="flex flex-col items-center justify-center">
+                <mat-icon class="text-4xl text-gray-300 dark:text-gray-600 mb-2">shopping_basket</mat-icon>
+                No hay sugerencias disponibles de acuerdo a las ventas recientes.
+            </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

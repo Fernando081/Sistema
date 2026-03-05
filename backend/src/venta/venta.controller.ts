@@ -43,4 +43,9 @@ export class VentaController {
   enviarCorreo(@Param('id') id: number) {
     return this.ventaService.enviarFacturaPorCorreo(id);
   }
+
+  @Post(':id/cancelar')
+  cancelarFactura(@Param('id', ParseIntPipe) id: number) {
+    return this.ventaService.cancelarFactura(id);
+  }
 }
