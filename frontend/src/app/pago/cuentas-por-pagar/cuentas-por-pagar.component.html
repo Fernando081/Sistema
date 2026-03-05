@@ -6,30 +6,26 @@
       <mat-card-header>
         <mat-icon mat-card-avatar class="text-red-600">money_off</mat-icon>
         <mat-card-title>Cuentas por Pagar</mat-card-title>
-        <mat-card-subtitle>Selecciona un proveedor</mat-card-subtitle>
+        <mat-card-subtitle>Facturas pendientes a proveedores</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content class="mt-2">
         <mat-form-field class="w-full">
-          <mat-label>Buscar Proveedor</mat-label>
-          <input type="text" matInput [formControl]="proveedorControl" [matAutocomplete]="auto">
-          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProv" (optionSelected)="seleccionarProveedor($event.option.value)">
-            <mat-option *ngFor="let p of proveedoresFiltrados$ | async" [value]="p">
-              {{p.razonSocial}}
-            </mat-option>
-          </mat-autocomplete>
+          <mat-label>Filtrar por Proveedor o Folio</mat-label>
+          <input type="text" matInput [formControl]="filtroControl" placeholder="Ej. Distribuidora S.A, F-1002">
+          <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
-      </mat-card-content>
-    </mat-card>
 
-    <mat-card *ngIf="proveedorSeleccionado">
-      <mat-card-header><mat-card-title>Facturas Vencidas / Pendientes</mat-card-title></mat-card-header>
-      <mat-card-content>
-        <div class="overflow-auto max-h-[400px]">
+        <div class="overflow-auto max-h-[600px]">
           <table mat-table [dataSource]="deudasPendientes" class="w-full">
             
             <ng-container matColumnDef="folio">
               <th mat-header-cell *matHeaderCellDef> Factura Prov. </th>
               <td mat-cell *matCellDef="let row" class="font-mono text-xs"> {{row.folio_factura_proveedor || 'S/N'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="proveedor">
+              <th mat-header-cell *matHeaderCellDef> Proveedor </th>
+              <td mat-cell *matCellDef="let row" class="font-medium"> {{row.proveedor_nombre}} </td>
             </ng-container>
 
             <ng-container matColumnDef="fecha">
@@ -56,11 +52,11 @@
               </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-colors"></tr>
             <tr class="mat-row" *matNoDataRow>
-              <td class="mat-cell text-center p-4 text-gray-500" colspan="5">
-                No hay deudas pendientes con este proveedor. 🎉
+              <td class="mat-cell text-center p-4 text-gray-500" colspan="6">
+                No hay deudas pendientes registradas. 🎉
               </td>
             </tr>
           </table>

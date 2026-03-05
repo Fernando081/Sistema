@@ -19,6 +19,7 @@ import { PagoService, PagoDto } from '../../services/pago.service';
 import { Cliente } from '../../cliente/cliente.interface';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-cobranza',
@@ -31,15 +32,13 @@ import { map, startWith } from 'rxjs/operators';
   templateUrl: './cobranza.component.html',
 })
 export class CobranzaComponent implements OnInit {
-  // Cliente
-  clienteControl = new FormControl<string | Cliente>('');
-  clientesFiltrados$: Observable<Cliente[]> = of([]);
-  listaClientes: Cliente[] = [];
-  clienteSeleccionado: Cliente | null = null;
+  // Filtro
+  filtroControl = new FormControl<string>('');
 
   // Facturas Pendientes
+  facturasOriginales: any[] = [];
   facturasPendientes: any[] = [];
-  displayedColumns: string[] = ['folio', 'fecha', 'total', 'saldo', 'abono'];
+  displayedColumns: string[] = ['folio', 'cliente', 'fecha', 'total', 'saldo', 'abono'];
 
   // Formulario de Abono
   montoAbono = 0;
@@ -51,44 +50,35 @@ export class CobranzaComponent implements OnInit {
     // 2. INYECCIÓN EXPLÍCITA (Esto soluciona el error "No suitable injection token")
     @Inject(ClienteService) private clienteService: ClienteService,
     @Inject(PagoService) private pagoService: PagoService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.cargarClientes();
-  }
-
-  cargarClientes() {
-    this.clienteService.getClientes().subscribe(data => {
-      this.listaClientes = data;
-
-      this.clientesFiltrados$ = this.clienteControl.valueChanges.pipe(
-        startWith(''),
-        map(val => {
-           const term = typeof val === 'string' ? val : (val as Cliente)?.razonSocial || '';
-           return term ? this._filter(term) : this.listaClientes.slice();
-        })
-      );
-    });
-  }
-
-  _filter(val: string): Cliente[] {
-    const v = val.toLowerCase();
-    return this.listaClientes.filter(c => (c.razonSocial || '').toLowerCase().includes(v));
-  }
-
-  displayCli(c: Cliente) { return c ? c.razonSocial : ''; }
-
-  seleccionarCliente(c: Cliente) {
-    this.clienteSeleccionado = c;
     this.cargarPendientes();
+    this.filtroControl.valueChanges.subscribe(val => {
+      this.aplicarFiltro(val || '');
+    });
   }
 
   cargarPendientes() {
-    if (!this.clienteSeleccionado) return;
-    this.pagoService.getPendientes(this.clienteSeleccionado.idCliente).subscribe(res => {
-      this.facturasPendientes = res;
+    this.pagoService.getAllPendientes().subscribe({
+      next: (res) => {
+        this.facturasOriginales = (res as any).data || res;
+        this.aplicarFiltro(this.filtroControl.value || '');
+        this.cdr.detectChanges();
+      },
+      error: (e) => console.error(e)
     });
+  }
+
+  aplicarFiltro(term: string) {
+    const v = term.toLowerCase();
+    this.facturasPendientes = this.facturasOriginales.filter(f => 
+       (f.cliente_nombre || '').toLowerCase().includes(v) ||
+       (f.folio || '').toLowerCase().includes(v) ||
+       (f.serie || '').toLowerCase().includes(v)
+    );
   }
 
   seleccionarFactura(factura: any) {

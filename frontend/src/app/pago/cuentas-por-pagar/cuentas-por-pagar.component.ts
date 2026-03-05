@@ -20,6 +20,7 @@ import { PagoProveedorService, PagoProveedorDto } from '../../services/pago-prov
 import { Proveedor } from '../../proveedor/proveedor.interface'; // Asegúrate de tener esta interfaz
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-cuentas-por-pagar',
@@ -32,15 +33,13 @@ import { map, startWith } from 'rxjs/operators';
   templateUrl: './cuentas-por-pagar.component.html',
 })
 export class CuentasPorPagarComponent implements OnInit {
-  // Buscador Proveedor
-  proveedorControl = new FormControl<string | Proveedor>('');
-  proveedoresFiltrados$: Observable<Proveedor[]> = of([]);
-  listaProveedores: Proveedor[] = [];
-  proveedorSeleccionado: Proveedor | null = null;
+  // Buscador
+  filtroControl = new FormControl<string>('');
 
   // Tabla de Deudas
+  deudasOriginales: any[] = [];
   deudasPendientes: any[] = [];
-  displayedColumns: string[] = ['folio', 'fecha', 'total', 'saldo', 'pagar'];
+  displayedColumns: string[] = ['folio', 'proveedor', 'fecha', 'total', 'saldo', 'pagar'];
 
   // Formulario de Pago
   compraSeleccionada: any = null;
@@ -51,49 +50,34 @@ export class CuentasPorPagarComponent implements OnInit {
   constructor(
     @Inject(ProveedorService) private proveedorService: ProveedorService,
     @Inject(PagoProveedorService) private pagoService: PagoProveedorService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.cargarProveedores();
-  }
-
-  cargarProveedores() {
-    this.proveedorService.getProveedores().subscribe(data => {
-      // Mapeo básico para asegurar compatibilidad
-      this.listaProveedores = data.map(p => ({
-        idProveedor: p['IdProveedor'],
-        razonSocial: p['RazonSocial'],
-        rfc: p['RFC']
-      })) as unknown as Proveedor[];
-
-      this.proveedoresFiltrados$ = this.proveedorControl.valueChanges.pipe(
-        startWith(''),
-        map(val => {
-          const term = typeof val === 'string' ? val : (val as Proveedor)?.razonSocial || '';
-          return term ? this._filter(term) : this.listaProveedores.slice();
-        })
-      );
-    });
-  }
-
-  _filter(val: string): Proveedor[] {
-    const v = val.toLowerCase();
-    return this.listaProveedores.filter(p => (p.razonSocial || '').toLowerCase().includes(v));
-  }
-
-  displayProv(p: Proveedor): string { return p ? p.razonSocial : ''; }
-
-  seleccionarProveedor(p: Proveedor) {
-    this.proveedorSeleccionado = p;
     this.cargarDeudas();
+    this.filtroControl.valueChanges.subscribe(val => {
+      this.aplicarFiltro(val || '');
+    });
   }
 
   cargarDeudas() {
-    if (!this.proveedorSeleccionado) return;
-    this.pagoService.getDeuda(this.proveedorSeleccionado.idProveedor).subscribe(res => {
-      this.deudasPendientes = res;
+    this.pagoService.getAllDeuda().subscribe({
+      next: (res) => {
+        this.deudasOriginales = (res as any).data || res;
+        this.aplicarFiltro(this.filtroControl.value || '');
+        this.cdr.detectChanges();
+      },
+      error: (e) => console.error(e)
     });
+  }
+
+  aplicarFiltro(term: string) {
+    const v = term.toLowerCase();
+    this.deudasPendientes = this.deudasOriginales.filter(d => 
+       (d.proveedor_nombre || '').toLowerCase().includes(v) ||
+       (d.folio_factura_proveedor || '').toLowerCase().includes(v)
+    );
   }
 
   seleccionarCompra(compra: any) {

@@ -16,8 +16,11 @@ export class ProductoService {
 
   // --- CRUD BÁSICO ---
 
-  getProductos(page: number = 1, limit: number = 10): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}?page=${page}&limit=${limit}`);
+  getProductos(page: number = 1, limit: number = 10, sort: string = '', order: string = ''): Observable<any> {
+    let url = `${this.apiUrl}?page=${page}&limit=${limit}`;
+    if (sort) url += `&sort=${sort}`;
+    if (order) url += `&order=${order}`;
+    return this.http.get<any>(url);
   }
   
   getProductoById(id: number): Observable<any> {

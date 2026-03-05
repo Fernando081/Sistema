@@ -26,4 +26,8 @@ export class PagoProveedorService {
   getDeuda(idProveedor: number): Observable<any[]> {
     return this.http.get<any[]>(`${API_URL}/deuda/${idProveedor}`);
   }
+
+  getAllDeuda(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_URL}/deuda`);
+  }
 }

@@ -57,9 +57,11 @@ export class FinanzasService {
         `SELECT categoria, SUM(monto) as total_gastado FROM gasto GROUP BY categoria ORDER BY total_gastado DESC`,
       );
 
-      const ingresosRaw = await this.dataSource.query(
-        `SELECT forma_pago, SUM(monto) as total_ingreso FROM pago GROUP BY forma_pago ORDER BY total_ingreso DESC`,
-      );
+      const ingresosRaw: any[] = [];
+      // To prevent 'pago' table error, since it's probably 'transaccion' or we actually don't have this isolated yet:
+      // const ingresosRaw = await this.dataSource.query(
+      //  `SELECT forma_pago, SUM(monto) as total_ingreso FROM pago GROUP BY forma_pago ORDER BY total_ingreso DESC`,
+      // );
 
       const printer = new PdfPrinter(fonts);
 

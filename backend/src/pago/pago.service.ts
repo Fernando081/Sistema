@@ -42,11 +42,23 @@ export class PagoService {
   // Buscar facturas pendientes de un cliente (Para el selector)
   async getPendientesPorCliente(idCliente: number) {
     return this.dataSource.query(
-      `SELECT id_factura, serie, folio, fecha_emision, total, saldo_pendiente 
-       FROM factura 
-       WHERE id_cliente = $1 AND saldo_pendiente > 0 
+      `SELECT id_factura, f.id_cliente, serie, folio, fecha_emision, total, saldo_pendiente, c."RazonSocial" as cliente_nombre
+       FROM factura f
+       JOIN cliente c ON f.id_cliente = c."IdCliente"
+       WHERE f.id_cliente = $1 AND saldo_pendiente > 0 
        ORDER BY fecha_emision ASC`,
       [idCliente],
+    );
+  }
+
+  // Buscar TODAS las facturas pendientes
+  async getAllPendientes() {
+    return this.dataSource.query(
+      `SELECT id_factura, f.id_cliente, serie, folio, fecha_emision, total, saldo_pendiente, c."RazonSocial" as cliente_nombre
+       FROM factura f
+       JOIN cliente c ON f.id_cliente = c."IdCliente"
+       WHERE saldo_pendiente > 0 
+       ORDER BY fecha_emision ASC`
     );
   }
 }

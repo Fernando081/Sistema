@@ -3,54 +3,51 @@
   
   <div class="flex flex-col gap-4">
     <mat-card>
-      <mat-card-header><mat-card-title>Buscar Cliente</mat-card-title></mat-card-header>
+      <mat-card-header><mat-card-title>Facturas Pendientes de Cobro</mat-card-title></mat-card-header>
       <mat-card-content class="mt-2">
         <mat-form-field class="w-full">
-          <mat-label>Nombre o RFC</mat-label>
-          <input type="text" matInput [formControl]="clienteControl" [matAutocomplete]="auto">
-          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCli" (optionSelected)="seleccionarCliente($event.option.value)">
-            <mat-option *ngFor="let c of clientesFiltrados$ | async" [value]="c">
-              {{c.razonSocial}}
-            </mat-option>
-          </mat-autocomplete>
+          <mat-label>Filtrar por Cliente o Folio</mat-label>
+          <input type="text" matInput [formControl]="filtroControl" placeholder="Ej. Juan Pérez, A-123...">
+          <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
-      </mat-card-content>
-    </mat-card>
 
-    <mat-card *ngIf="clienteSeleccionado">
-      <mat-card-header><mat-card-title>Facturas con Saldo Pendiente</mat-card-title></mat-card-header>
-      <mat-card-content>
-        <table mat-table [dataSource]="facturasPendientes" class="w-full">
-          <ng-container matColumnDef="folio">
-            <th mat-header-cell *matHeaderCellDef> Folio </th>
-            <td mat-cell *matCellDef="let row"> {{row.serie}}{{row.folio}} </td>
-          </ng-container>
-          <ng-container matColumnDef="fecha">
-            <th mat-header-cell *matHeaderCellDef> Fecha </th>
-            <td mat-cell *matCellDef="let row"> {{row.fecha_emision | date:'shortDate'}} </td>
-          </ng-container>
-          <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef> Total </th>
-            <td mat-cell *matCellDef="let row"> {{row.total | currency}} </td>
-          </ng-container>
-          <ng-container matColumnDef="saldo">
-            <th mat-header-cell *matHeaderCellDef> Saldo </th>
-            <td mat-cell *matCellDef="let row" class="text-red-600 font-bold"> {{row.saldo_pendiente | currency}} </td>
-          </ng-container>
-          <ng-container matColumnDef="abono">
-            <th mat-header-cell *matHeaderCellDef> </th>
-            <td mat-cell *matCellDef="let row">
-               <button mat-icon-button color="accent" (click)="seleccionarFactura(row)">
-                 <mat-icon>payments</mat-icon>
-               </button>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell text-center p-4" colspan="5">Este cliente no tiene deudas.</td>
-          </tr>
-        </table>
+        <div class="overflow-auto max-h-[600px]">
+          <table mat-table [dataSource]="facturasPendientes" class="w-full">
+            <ng-container matColumnDef="folio">
+              <th mat-header-cell *matHeaderCellDef> Folio </th>
+              <td mat-cell *matCellDef="let row"> {{row.serie}}{{row.folio}} </td>
+            </ng-container>
+            <ng-container matColumnDef="cliente">
+              <th mat-header-cell *matHeaderCellDef> Cliente </th>
+              <td mat-cell *matCellDef="let row" class="font-medium"> {{row.cliente_nombre}} </td>
+            </ng-container>
+            <ng-container matColumnDef="fecha">
+              <th mat-header-cell *matHeaderCellDef> Fecha </th>
+              <td mat-cell *matCellDef="let row"> {{row.fecha_emision | date:'shortDate'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="total">
+              <th mat-header-cell *matHeaderCellDef> Total </th>
+              <td mat-cell *matCellDef="let row"> {{row.total | currency}} </td>
+            </ng-container>
+            <ng-container matColumnDef="saldo">
+              <th mat-header-cell *matHeaderCellDef> Saldo </th>
+              <td mat-cell *matCellDef="let row" class="text-red-600 font-bold"> {{row.saldo_pendiente | currency}} </td>
+            </ng-container>
+            <ng-container matColumnDef="abono">
+              <th mat-header-cell *matHeaderCellDef> </th>
+              <td mat-cell *matCellDef="let row">
+                 <button mat-icon-button color="accent" (click)="seleccionarFactura(row)" matTooltip="Abonar">
+                   <mat-icon>payments</mat-icon>
+                 </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-colors"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell text-center p-4 text-gray-500" colspan="6">No se encontraron facturas pendientes.</td>
+            </tr>
+          </table>
+        </div>
       </mat-card-content>
     </mat-card>
   </div>

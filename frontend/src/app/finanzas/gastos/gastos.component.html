@@ -43,6 +43,28 @@
     </button>
   </div>
 
+  <!-- Vista Rápida de Saldos -->
+  <div class="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl border border-blue-100 dark:border-blue-800">
+    <h2 class="text-xl font-bold mb-4 text-blue-900 dark:text-blue-100 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      Saldos Actuales
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
+        <div class="text-sm text-gray-500 mb-1">Caja Chica (Efectivo)</div>
+        <div class="text-2xl font-bold text-green-600 dark:text-green-400">
+          {{ saldos()[0]?.cajaChica || 0 | currency:'MXN':'symbol':'1.2-2' }}
+        </div>
+      </div>
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
+        <div class="text-sm text-gray-500 mb-1">Cuenta Banco (Transferencias)</div>
+        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+          {{ saldos()[0]?.cuentaBanco || 0 | currency:'MXN':'symbol':'1.2-2' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Messages Validation -->
   <div
     *ngIf="successMessage()"
@@ -223,4 +245,83 @@
       </button>
     </div>
   </form>
+
+  <!-- Historial de Gastos -->
+  <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3 mb-6">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+      </svg>
+      Historial de Gastos
+    </h2>
+    
+    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 hidden sm:block">
+      <table mat-table [dataSource]="gastosList()" class="w-full">
+        <!-- Fecha Column -->
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500"> Fecha </th>
+          <td mat-cell *matCellDef="let element" class="whitespace-nowrap"> 
+            {{ element.fecha | date:'dd/MM/yyyy HH:mm' }} 
+          </td>
+        </ng-container>
+
+        <!-- Concepto Column -->
+        <ng-container matColumnDef="concepto">
+          <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500"> Concepto </th>
+          <td mat-cell *matCellDef="let element"> {{ element.concepto }} </td>
+        </ng-container>
+
+        <!-- Categoría Column -->
+        <ng-container matColumnDef="categoria">
+          <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500"> Categoría </th>
+          <td mat-cell *matCellDef="let element"> 
+            <span class="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium">
+              {{ element.categoria }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Método Column -->
+        <ng-container matColumnDef="metodoPago">
+          <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500"> Método </th>
+          <td mat-cell *matCellDef="let element"> {{ element.metodoPago }} </td>
+        </ng-container>
+
+        <!-- Monto Column -->
+        <ng-container matColumnDef="monto">
+          <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500 text-right"> Monto </th>
+          <td mat-cell *matCellDef="let element" class="text-right font-semibold text-red-600 dark:text-red-400"> 
+            {{ element.monto | currency:'MXN':'symbol':'1.2-2' }} 
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsGastos"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsGastos;" class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"></tr>
+        
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center p-8 text-gray-500" [attr.colspan]="displayedColumnsGastos.length">
+            No hay gastos registrados.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Mobile view -->
+    <div class="sm:hidden space-y-4">
+      <div *ngFor="let gasto of gastosList()" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="font-semibold text-gray-800 dark:text-gray-100">{{ gasto.concepto }}</h3>
+          <span class="font-bold text-red-600 dark:text-red-400">{{ gasto.monto | currency:'MXN':'symbol':'1.2-2' }}</span>
+        </div>
+        <div class="text-sm text-gray-500 mb-2">{{ gasto.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+        <div class="flex gap-2 text-xs">
+          <span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-gray-700 dark:text-gray-300">{{ gasto.categoria }}</span>
+          <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded">{{ gasto.metodoPago }}</span>
+        </div>
+      </div>
+      <div *ngIf="gastosList().length === 0" class="text-center p-8 text-gray-500 bg-gray-50 dark:bg-gray-800 rounded-xl">
+        No hay gastos registrados.
+      </div>
+    </div>
+  </div>
 </div>

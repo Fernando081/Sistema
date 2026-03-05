@@ -72,8 +72,14 @@
       
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell text-center p-8 text-gray-400 italic" colspan="6">
-          <mat-icon class="block mx-auto text-4xl mb-2">history_toggle_off</mat-icon>
-          Aún no hay movimientos registrados para este producto.
+          <div *ngIf="isLoading">
+            <mat-icon class="block mx-auto text-4xl mb-2 animate-spin">sync</mat-icon>
+            Cargando historial...
+          </div>
+          <div *ngIf="!isLoading">
+            <mat-icon class="block mx-auto text-4xl mb-2">history_toggle_off</mat-icon>
+            Aún no hay movimientos registrados para este producto.
+          </div>
         </td>
       </tr>
     </table>

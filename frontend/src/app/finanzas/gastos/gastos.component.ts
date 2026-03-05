@@ -1,16 +1,17 @@
-import { Component, signal, inject, computed } from '@angular/core';
+import { Component, signal, inject, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FinanzasService, Gasto } from '../finanzas.service';
 import { environment } from '../../../environments/environment';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-gastos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatTableModule],
   templateUrl: './gastos.component.html',
 })
-export class GastosComponent {
+export class GastosComponent implements OnInit {
   private finanzasService = inject(FinanzasService);
 
   // Signals for form
@@ -39,6 +40,19 @@ export class GastosComponent {
   ];
   metodos = ['Transferencia', 'Efectivo', 'Tarjeta de Débito', 'Tarjeta de Crédito'];
 
+  gastosList = signal<any[]>([]);
+  saldos = signal<any[]>([]);
+  displayedColumnsGastos = ['fecha', 'concepto', 'categoria', 'metodoPago', 'monto'];
+
+  ngOnInit() {
+    this.cargarDatos();
+  }
+
+  cargarDatos() {
+    this.finanzasService.getGastos().subscribe(res => this.gastosList.set(res));
+    this.finanzasService.getSaldos().subscribe(res => this.saldos.set(res));
+  }
+
   onSubmit() {
     if (!this.concepto() || !this.monto() || !this.categoria() || !this.metodoPago()) {
       this.errorMessage.set('Por favor completa todos los campos requeridos.');
@@ -64,6 +78,7 @@ export class GastosComponent {
       next: () => {
         this.successMessage.set('Gasto registrado exitosamente.');
         this.resetForm();
+        this.cargarDatos(); // Refresh list after submitting
         this.loading.set(false);
       },
       error: (err) => {

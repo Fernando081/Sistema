@@ -17,6 +17,11 @@ export class PagoProveedorController {
     return this.pagoService.getPagosPorCompra(id);
   }
 
+  @Get('deuda')
+  getAllDeuda() {
+    return this.pagoService.getAllDeuda();
+  }
+
   @Get('deuda/:idProveedor')
   getDeuda(@Param('idProveedor') id: number) {
     return this.pagoService.getDeudaPorProveedor(id);

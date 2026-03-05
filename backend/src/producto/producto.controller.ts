@@ -27,8 +27,10 @@ export class ProductoController {
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('sort') sort?: string,
+    @Query('order') order?: string,
   ) {
-    return this.productoService.findAll(page, limit);
+    return this.productoService.findAll(page, limit, sort, order);
   }
 
   @Get(':id')

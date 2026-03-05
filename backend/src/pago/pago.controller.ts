@@ -17,6 +17,11 @@ export class PagoController {
     return this.pagoService.getPagosPorFactura(id);
   }
 
+  @Get('pendientes')
+  getAllPendientes() {
+    return this.pagoService.getAllPendientes();
+  }
+
   @Get('pendientes/:idCliente')
   getPendientes(@Param('idCliente') id: number) {
     return this.pagoService.getPendientesPorCliente(id);

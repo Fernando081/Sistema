@@ -31,16 +31,14 @@ import { ProductoKardexComponent } from '../producto-kardex/producto-kardex.comp
     MatButtonModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,
     MatProgressSpinnerModule, CurrencyPipe,
     MatTabsModule,
-    CategoriaListComponent,
-    ProductoDialogComponent,
-    ProductoKardexComponent
+    CategoriaListComponent
   ],
   templateUrl: './producto-list.component.html',
   styleUrls: ['./producto-list.component.css']
 })
 export class ProductoListComponent implements OnInit, AfterViewInit {
   
-  displayedColumns: string[] = ['idProducto', 'codigo', 'descripcion', 'categoriaNombre', 'precioUnitario','existencia', 'acciones'];
+  displayedColumns: string[] = ['codigo', 'descripcion', 'categoriaNombre', 'marca', 'ubicacion', 'precioUnitario','existencia', 'acciones'];
   dataSource = new MatTableDataSource<Producto>();
   isLoading = true;
   totalItems = 0;
@@ -59,17 +57,29 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.paginator.page.subscribe(() => {
-      this.cargarProductos();
-    });
+    if (this.sort) {
+      this.sort.sortChange.subscribe(() => {
+        if (this.paginator) {
+          this.paginator.pageIndex = 0;
+        }
+        this.cargarProductos();
+      });
+    }
+    if (this.paginator) {
+      this.paginator.page.subscribe(() => {
+        this.cargarProductos();
+      });
+    }
   }
 
   cargarProductos(): void {
     this.isLoading = true;
     const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
     const limit = this.paginator ? this.paginator.pageSize : 10;
+    const sort = this.sort ? this.sort.active : '';
+    const order = this.sort ? this.sort.direction : '';
     
-    this.productoService.getProductos(page, limit)
+    this.productoService.getProductos(page, limit, sort, order)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (response) => {
@@ -108,7 +118,7 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
           
           this.dataSource.data = camelCaseData;
           // Removemos dataSource.paginator porque ahora se pagina en el servidor
-          // this.dataSource.sort = this.sort; // La ordenación también debería ir al servidor en el futuro
+          this.dataSource.sort = this.sort; 
         },
         error: (err) => {
           this.mostrarNotificacion('Error al cargar productos: ' + (err.error?.message || err.message));

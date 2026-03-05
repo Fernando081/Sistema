@@ -39,11 +39,23 @@ export class PagoProveedorService {
   // Buscar compras que debemos pagar (Deuda)
   async getDeudaPorProveedor(idProveedor: number) {
     return this.dataSource.query(
-      `SELECT id_compra, folio_factura_proveedor, fecha_compra, total, saldo_pendiente 
-       FROM compra 
-       WHERE id_proveedor = $1 AND saldo_pendiente > 0.01
+      `SELECT id_compra, c.id_proveedor, folio_factura_proveedor, fecha_compra, total, saldo_pendiente, p."RazonSocial" as proveedor_nombre
+       FROM compra c
+       JOIN proveedor p ON c.id_proveedor = p."IdProveedor"
+       WHERE c.id_proveedor = $1 AND saldo_pendiente > 0.01
        ORDER BY fecha_compra ASC`,
       [idProveedor],
+    );
+  }
+
+  // Buscar TODA la deuda
+  async getAllDeuda() {
+    return this.dataSource.query(
+      `SELECT id_compra, c.id_proveedor, folio_factura_proveedor, fecha_compra, total, saldo_pendiente, p."RazonSocial" as proveedor_nombre
+       FROM compra c
+       JOIN proveedor p ON c.id_proveedor = p."IdProveedor"
+       WHERE saldo_pendiente > 0.01
+       ORDER BY fecha_compra ASC`
     );
   }
 }

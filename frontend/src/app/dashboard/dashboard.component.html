@@ -477,7 +477,7 @@
             <tr mat-header-row *matHeaderRowDef="alertaColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: alertaColumns"></tr>
           </table>
-          @if (!data.metrics.listaBajos?.length) {
+          @if (!data.metrics.listaBajos.length) {
             <div class="p-4 text-center text-gray-500">No hay alertas.</div>
           }
         </mat-card-content>
@@ -503,7 +503,7 @@
             <tr mat-header-row *matHeaderRowDef="agingColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: agingColumns"></tr>
           </table>
-          @if (!data.clientes.cuentas_por_cobrar?.length) {
+          @if (!data.clientes.cuentas_por_cobrar.length) {
             <div class="p-4 text-center text-gray-500">No hay cuentas pendientes.</div>
           }
         </mat-card-content>
@@ -543,7 +543,7 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
-          @if (!data.inventario.mercancia_lento_movimiento?.length) {
+          @if (!data.inventario.mercancia_lento_movimiento.length) {
             <div class="p-4 text-center text-gray-500">No hay productos de lento movimiento.</div>
           }
         </mat-card-content>

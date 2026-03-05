@@ -25,4 +25,8 @@ export class PagoService {
   getPendientes(idCliente: number): Observable<any[]> {
     return this.http.get<any[]>(`${API_URL}/pendientes/${idCliente}`);
   }
+
+  getAllPendientes(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_URL}/pendientes`);
+  }
 }
