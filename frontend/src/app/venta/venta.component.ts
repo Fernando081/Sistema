@@ -161,6 +161,7 @@ export class VentaComponent implements OnInit {
         aplicaRetencionIva: p['AplicaRetencionIVA'],
         existencia: Number(p['Existencia']),
         equivalentesIds: p['EquivalentesJSON'] || [], // Array de números [2, 5]
+        imagenes: p['imagenes'] || [],
       })) as unknown as Producto[];
     });
   }
@@ -254,6 +255,7 @@ export class VentaComponent implements OnInit {
         baseRetIsr: 0,
         tasaRetIsr: producto.aplicaRetencionIsr ? 0.0125 : 0,
         importeRetIsr: 0,
+        imagenes: producto.imagenes || [],
       };
 
       this.recalcularRenglon(nuevoItem, producto);

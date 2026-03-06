@@ -5,6 +5,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 // Módulos de Negocio
 import { ClienteModule } from './cliente/cliente.module';
@@ -26,6 +28,8 @@ import { PagoProveedorModule } from './pago-proveedor/pago-proveedor.module';
 import { AuthModule } from './auth/auth.module';
 import { ReportesModule } from './reportes/reportes.module';
 import { FinanzasModule } from './finanzas/finanzas.module';
+import { UploadModule } from './upload/upload.module';
+import { AuditoriaModule } from './auditoria/auditoria.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
@@ -63,6 +67,10 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
         };
       },
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
     ClienteModule,
     ProveedorModule,
     ProductoModule,
@@ -77,6 +85,8 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     AuthModule,
     ReportesModule,
     FinanzasModule,
+    UploadModule,
+    AuditoriaModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],

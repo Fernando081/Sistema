@@ -26,6 +26,15 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'reportes/auditoria',
+    canActivate: [authGuard],
+    data: { roles: ['admin'] },
+    loadComponent: () =>
+      import('./reportes/auditoria/auditoria').then(
+        (m) => m.Auditoria,
+      ),
+  },
+  {
     path: 'cliente',
     canActivate: [authGuard],
     loadComponent: () =>

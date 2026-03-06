@@ -65,8 +65,8 @@ export class ProductoService {
   // --- CORREGIDO PARA LOS NUEVOS PARÁMETROS ---
   async create(createProductoDto: CreateProductoDto): Promise<Producto> {
     const result = await this.dataSource.query(
-      // Ahora enviamos 14 parámetros
-      'SELECT * FROM fn_create_producto($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)',
+      // Ahora enviamos 15 parámetros
+      'SELECT * FROM fn_create_producto($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
       [
         createProductoDto.codigo,
         createProductoDto.idUnidad,
@@ -83,6 +83,7 @@ export class ProductoService {
         createProductoDto.tasaIva ?? APP_CONSTANTS.TAX_RATE_DEFAULT,
         createProductoDto.aplicaRetencionIsr || false,
         createProductoDto.aplicaRetencionIva || false,
+        createProductoDto.imagenes ? JSON.stringify(createProductoDto.imagenes) : '[]',
       ],
     );
     return result[0];
@@ -115,13 +116,14 @@ export class ProductoService {
       aplicaRetencionIsr: productoActual['AplicaRetencionISR'],
       aplicaRetencionIva: productoActual['AplicaRetencionIVA'],
       existencia: productoActual['Existencia'],
+      imagenes: productoActual['imagenes'],
     };
 
     const datos = { ...productoActualMapeado, ...updateProductoDto };
 
     const result = await this.dataSource.query(
-      // Ahora enviamos 15 parámetros (ID + 14 datos)
-      'SELECT * FROM fn_update_producto($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
+      // Ahora enviamos 16 parámetros (ID + 15 datos)
+      'SELECT * FROM fn_update_producto($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)',
       [
         idProducto,
         datos.codigo,
@@ -139,6 +141,7 @@ export class ProductoService {
         datos.tasaIva,
         datos.aplicaRetencionIsr,
         datos.aplicaRetencionIva,
+        datos.imagenes ? JSON.stringify(datos.imagenes) : '[]',
       ],
     );
     return result[0];

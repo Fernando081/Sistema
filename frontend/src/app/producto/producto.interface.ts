@@ -28,6 +28,7 @@ export interface Producto {
 
   equivalentesIds?: number[]; // Viene de la BD
   esEquivalente?: boolean;    // Lo usaremos en el frontend para colorear
+  imagenes?: string[];        // Opcional para las fotos Multer
 }
 
 // Interfaz específica para lo que devuelve tu query SQL de Kardex

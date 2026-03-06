@@ -8,6 +8,7 @@ import {
   IsNumber,
   Min,
   IsBoolean,
+  IsArray,
 } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 import { APP_CONSTANTS } from '../common/constants/app.constants';
@@ -73,6 +74,11 @@ export class CreateProductoDto {
   @IsBoolean()
   @IsOptional()
   aplicaRetencionIva?: boolean;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  imagenes?: string[];
 }
 
 export class UpdateProductoDto extends PartialType(CreateProductoDto) {}

@@ -6,6 +6,24 @@
     <div class="p-4">
       <form [formGroup]="form" (ngSubmit)="guardar()">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+          <div class="col-span-1 md:col-span-2 flex flex-col items-center mb-4 p-4 border-2 border-dashed border-gray-300 rounded-md bg-gray-50">
+            <span class="text-sm font-semibold text-gray-600 mb-2">Fotografías del Producto (Hasta 5)</span>
+            
+            <div class="flex flex-wrap items-center justify-center gap-4 mb-3" *ngIf="previewUrls().length > 0">
+              <div *ngFor="let prev of previewUrls(); let i = index" class="relative group">
+                <img [src]="prev.url" alt="Previsualización" class="w-24 h-24 object-cover rounded-md shadow-sm border border-gray-200" />
+                <button mat-mini-fab color="warn" type="button" class="absolute -top-2 -right-2 scale-75 opacity-0 group-hover:opacity-100 transition-opacity" (click)="eliminarImagenA(i)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <input type="file" #fileInput multiple (change)="onFileSelected($event)" accept="image/*" class="hidden" />
+            <button mat-stroked-button color="primary" type="button" (click)="fileInput.click()">
+              <mat-icon>upload</mat-icon> {{ previewUrls().length > 0 ? 'Añadir más fotos' : 'Seleccionar Imágenes' }}
+            </button>
+          </div>
+
           <mat-form-field class="w-full">
             <mat-label>Descripción</mat-label>
             <input matInput formControlName="descripcion" required />
@@ -131,23 +149,26 @@
   </mat-tab>
 
   <mat-tab label="Historial Precios" *ngIf="isEditMode">
-    <div class="p-6 flex flex-col items-center">
-      <h3 class="text-lg font-bold mb-4 text-gray-700">Evolución del Precio</h3>
+    <ng-template matTabContent>
+      <div class="p-6 flex flex-col items-center">
+        <h3 class="text-lg font-bold mb-4 text-gray-700">Evolución del Precio</h3>
 
-      <div class="h-[300px] w-full" *ngIf="chartData; else noData">
-        <div echarts [options]="chartData" class="w-full h-full"></div>
-      </div>
-
-      <ng-template #noData>
-        <div class="p-8 text-center text-gray-400 bg-gray-50 rounded w-full">
-          No hay cambios de precio registrados aún.
+        <div class="h-[300px] w-full" *ngIf="chartData() as options; else noData">
+          <div echarts [options]="options" class="w-full h-full"></div>
         </div>
-      </ng-template>
-    </div>
+
+        <ng-template #noData>
+          <div class="p-8 text-center text-gray-400 bg-gray-50 rounded w-full">
+            No hay cambios de precio registrados aún.
+          </div>
+        </ng-template>
+      </div>
+    </ng-template>
   </mat-tab>
 
   <mat-tab label="Equivalentes" *ngIf="isEditMode">
-    <div class="p-6">
+    <ng-template matTabContent>
+      <div class="p-6">
       <h3 class="text-base font-semibold mb-2">Vincular producto compatible</h3>
 
       <mat-form-field class="w-full" appearance="outline">
@@ -173,7 +194,7 @@
       <div class="mt-4">
         <h3 class="font-bold text-gray-700 border-b pb-2">Productos Vinculados:</h3>
         <mat-list role="list">
-          <mat-list-item *ngFor="let eq of equivalentes" role="listitem" class="hover:bg-gray-50">
+          <mat-list-item *ngFor="let eq of equivalentes()" role="listitem" class="hover:bg-gray-50">
             <mat-icon matListItemIcon class="text-gray-400">inventory_2</mat-icon>
             <span matListItemTitle class="font-medium">{{ eq.descripcion }}</span>
             <span matListItemLine class="text-sm text-gray-500">
@@ -191,12 +212,13 @@
         </mat-list>
 
         <div
-          *ngIf="equivalentes.length === 0"
+          *ngIf="equivalentes().length === 0"
           class="text-gray-400 text-sm mt-4 text-center italic"
         >
           No hay productos vinculados a este ítem.
         </div>
       </div>
-    </div>
+      </div>
+    </ng-template>
   </mat-tab>
 </mat-tab-group>

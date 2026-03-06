@@ -10,6 +10,7 @@ export interface ConceptoVenta {
   claveProdServ: string;
   claveUnidad: string;
   objetoImpuesto: string;
+  imagenes?: string[];
 
   // Matemáticas
   cantidad: number;

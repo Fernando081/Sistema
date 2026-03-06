@@ -11,6 +11,7 @@ import { Producto, CreateProductoDto, UpdateProductoDto, KardexItem, SmartRestoc
 export class ProductoService {
   
   private apiUrl = `${environment.apiBaseUrl}/producto`;
+  private uploadUrl = `${environment.apiBaseUrl}/upload`;
 
   constructor(private http: HttpClient) { }
 
@@ -66,5 +67,13 @@ export class ProductoService {
 
   getSmartRestock(): Observable<SmartRestockItem[]> {
     return this.http.get<SmartRestockItem[]>(`${this.apiUrl}/smart-restock`);
+  }
+
+  uploadImages(files: File[]): Observable<{ urls: string[]; message: string }> {
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('images', file);
+    }
+    return this.http.post<{ urls: string[]; message: string }>(this.uploadUrl, formData);
   }
 }

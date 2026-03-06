@@ -67,6 +67,9 @@ export class ProductoDialogComponent implements OnInit {
   isSaving = signal(false);
   destroyRef = inject(DestroyRef);
 
+  selectedFiles: File[] = [];
+  previewUrls = signal<{file?: File, url: string}[]>([]);
+
   // Observables Catálogos
   public categoria$!: Observable<Categoria[]>;
   public unidades$!: Observable<Unidad[]>;
@@ -76,7 +79,7 @@ export class ProductoDialogComponent implements OnInit {
 
   // --- VARIABLES PARA PESTAÑAS AVANZADAS ---
   historialPrecios: any[] = [];
-  equivalentes: any[] = [];
+  equivalentes = signal<any[]>([]);
 
   // Para el buscador de Equivalentes
   buscadorEquivalenteControl = new FormControl('');
@@ -84,7 +87,7 @@ export class ProductoDialogComponent implements OnInit {
   listaTodosProductos: Producto[] = []; // Cargaremos aquí todos para filtrar localmente
 
   // Gráfica
-  chartData: EChartsOption | null = null;
+  chartData = signal<EChartsOption | null>(null);
 
   constructor(
     private fb: FormBuilder,
@@ -143,6 +146,11 @@ export class ProductoDialogComponent implements OnInit {
     // 3. Si es edición, cargar datos extra
     if (this.isEditMode && this.data) {
       this.form.patchValue(this.data);
+
+      if (this.data.imagenes && this.data.imagenes.length > 0) {
+        const urls = this.data.imagenes.map(img => ({ url: `http://localhost:3000${img}` }));
+        this.previewUrls.set(urls);
+      }
 
       // Prellenado visual SAT
       if (this.data.idClaveProdOServ) {
@@ -253,7 +261,7 @@ export class ProductoDialogComponent implements OnInit {
 
   cargarEquivalentes() {
     this.productoService.getEquivalentes(this.data.idProducto).subscribe((res) => {
-      this.equivalentes = res;
+      this.equivalentes.set(res);
     });
   }
 
@@ -265,7 +273,7 @@ export class ProductoDialogComponent implements OnInit {
         const fechas = data.map((h) => new Date(h.fecha).toLocaleDateString());
         const precios = data.map((h) => Number(h.precio));
 
-        this.chartData = {
+        this.chartData.set({
           tooltip: { trigger: 'axis' },
           xAxis: { type: 'category', data: fechas },
           yAxis: { type: 'value' },
@@ -277,9 +285,9 @@ export class ProductoDialogComponent implements OnInit {
               itemStyle: { color: '#5AA454' },
             },
           ],
-        };
+        });
       } else {
-        this.chartData = null;
+        this.chartData.set(null);
       }
     });
   }
@@ -301,11 +309,67 @@ export class ProductoDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  onFileSelected(event: any) {
+    const files: FileList = event.target.files;
+    if (files && files.length > 0) {
+      Array.from(files).forEach((file) => {
+        this.selectedFiles.push(file);
+        
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.previewUrls.update(previews => [...previews, { file, url: e.target.result }]);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    // Resetear el input para permitir seleccionar la misma foto si se borró
+    event.target.value = '';
+  }
+
+  eliminarImagenA(index: number) {
+    const current = [...this.previewUrls()];
+    const removed = current.splice(index, 1)[0];
+    this.previewUrls.set(current);
+    
+    if (removed.file) {
+      this.selectedFiles = this.selectedFiles.filter(f => f !== removed.file);
+    }
+  }
+
   guardar(): void {
     if (this.isSaving() || this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
+    
+    this.isSaving.set(true);
+
+    if (this.selectedFiles.length > 0) {
+      this.productoService.uploadImages(this.selectedFiles).subscribe({
+        next: (res) => {
+          // Extraer URLs previas (las que NO son archivos nuevos)
+          const oldUrls = this.previewUrls()
+             .filter(p => !p.file)
+             .map(p => p.url.replace('http://localhost:3000', '')); // Quitar el host local para bd
+             
+          // Combinar historicas + nuevas
+          const finalUrls = [...oldUrls, ...res.urls];
+          this.ejecutarGuardado(finalUrls);
+        },
+        error: (err) => {
+          this.isSaving.set(false);
+          this.mostrarNotificacion('Error al subir imágenes: ' + err.message);
+        }
+      });
+    } else {
+      const oldUrls = this.previewUrls()
+         .filter(p => !p.file)
+         .map(p => p.url.replace('http://localhost:3000', ''));
+      this.ejecutarGuardado(oldUrls);
+    }
+  }
+
+  private ejecutarGuardado(imagenesArray: string[]) {
     const formData = this.form.getRawValue();
 
     const idClaveProdOServ = formData.claveProdServControl?.idClaveProdOServ
@@ -324,19 +388,21 @@ export class ProductoDialogComponent implements OnInit {
       idClaveUnidad,
       claveProdServControl: undefined,
       claveUnidadControl: undefined,
+      imagenes: imagenesArray
     };
 
     let request = this.isEditMode
       ? this.productoService.updateProducto(this.data.idProducto, dataToSave)
       : this.productoService.createProducto(dataToSave);
 
-    this.isSaving.set(true);
     request.pipe(finalize(() => this.isSaving.set(false))).subscribe({
       next: () => {
         this.mostrarNotificacion(this.isEditMode ? 'Actualizado' : 'Creado');
         this.dialogRef.close(true);
       },
-      error: (err) => this.mostrarNotificacion('Error: ' + err.message),
+      error: (err) => {
+        this.mostrarNotificacion('Error: ' + err.message);
+      },
     });
   }
 }

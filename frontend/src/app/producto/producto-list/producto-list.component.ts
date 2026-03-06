@@ -38,7 +38,7 @@ import { ProductoKardexComponent } from '../producto-kardex/producto-kardex.comp
 })
 export class ProductoListComponent implements OnInit, AfterViewInit {
   
-  displayedColumns: string[] = ['codigo', 'descripcion', 'categoriaNombre', 'marca', 'ubicacion', 'precioUnitario','existencia', 'acciones'];
+  displayedColumns: string[] = ['imagen_url', 'codigo', 'descripcion', 'categoriaNombre', 'marca', 'ubicacion', 'precioUnitario','existencia', 'acciones'];
   dataSource = new MatTableDataSource<Producto>();
   isLoading = true;
   totalItems = 0;
@@ -113,7 +113,8 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
             aplicaRetencionIva: prod['AplicaRetencionIVA'],
 
             // --- ¡ESTA ES LA LÍNEA QUE FALTABA! ---
-            existencia: Number(prod['Existencia'] || 0)
+            existencia: Number(prod['Existencia'] || 0),
+            imagenes: prod['imagenes'] || [],
           }));
           
           this.dataSource.data = camelCaseData;
