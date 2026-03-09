@@ -1,8 +1,13 @@
 <!-- frontend/src/app/cliente/cliente-dialog/cliente-dialog.component.html -->
-<h1 mat-dialog-title>{{ isEditMode ? 'Editar Cliente' : 'Nuevo Cliente' }}</h1>
+<div class="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50">
+  <h1 mat-dialog-title class="!m-0">{{ isEditMode ? 'Editar Cliente' : 'Nuevo Cliente' }}</h1>
+  <button mat-icon-button type="button" (click)="cerrar()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
 
 <form [formGroup]="form" (ngSubmit)="guardar()">
-  <div mat-dialog-content class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+  <div mat-dialog-content class="!p-6 !pt-4 grid grid-cols-1 md:grid-cols-2 gap-x-4">
     
     <mat-form-field class="w-full">
       <mat-label>RFC</mat-label>
@@ -93,8 +98,8 @@
 
   </div>
 
-  <div mat-dialog-actions align="end" class="mt-4">
-    <button mat-button type="button" (click)="cerrar()">Cancelar</button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="isSaving() || form.invalid">Guardar</button>
+  <div mat-dialog-actions align="end" class="!px-6 !py-4 border-t border-gray-100 bg-gray-50/30">
+    <button mat-stroked-button type="button" class="!rounded-lg" (click)="cerrar()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" class="!rounded-lg" [disabled]="isSaving() || form.invalid">Guardar</button>
   </div>
 </form>

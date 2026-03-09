@@ -62,8 +62,12 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" [attr.colspan]="displayedColumns.length" class="text-center p-4">
-            No se encontraron datos para el filtro "{{input.value}}"
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            <div class="flex flex-col items-center justify-center p-12 text-gray-400">
+              <mat-icon class="!w-16 !h-16 text-6xl mb-4 opacity-50">group</mat-icon>
+              <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-1">No hay registros aún</h3>
+              <p class="text-gray-500 text-sm">Registra a tus clientes aquí para facilitar facturaciones rápidas.</p>
+            </div>
           </td>
         </tr>
       </table>

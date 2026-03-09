@@ -118,8 +118,7 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
           }));
           
           this.dataSource.data = camelCaseData;
-          // Removemos dataSource.paginator porque ahora se pagina en el servidor
-          this.dataSource.sort = this.sort; 
+          // Paginación y Sorting ahora se delegan completamente al servidor.
         },
         error: (err) => {
           this.mostrarNotificacion('Error al cargar productos: ' + (err.error?.message || err.message));

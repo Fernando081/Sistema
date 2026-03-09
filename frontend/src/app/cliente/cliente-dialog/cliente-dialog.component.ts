@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select'; // Importante
+import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 
 import { ClienteService } from '../../services/cliente.service';
@@ -22,7 +23,7 @@ import { CatalogosService, RegimenFiscal, UsoCFDI, FormaPago, MetodoPago, Estado
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, MatSelectModule // <--- No olvides esto
+    MatInputModule, MatButtonModule, MatSelectModule, MatIconModule
   ],
   templateUrl: './cliente-dialog.component.html',
 })

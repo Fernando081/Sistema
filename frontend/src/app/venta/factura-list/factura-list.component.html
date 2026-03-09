@@ -7,9 +7,9 @@
         <h2 class="text-2xl font-semibold">Historial de Ventas</h2>
       </div>
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Buscar venta...</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Por Cliente, Folio, RFC..." #input>
+      <mat-form-field appearance="outline" class="full-width" matTooltip="La búsqueda rápida actualmente solo aplica a los resultados visibles en esta página.">
+        <mat-label>Buscar venta (Página Actual)</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar localmente..." #input>
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
@@ -43,8 +43,8 @@
           </ng-container>
 
           <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Total </th>
-            <td mat-cell *matCellDef="let row" class="font-medium"> 
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right pr-6"> Total </th>
+            <td mat-cell *matCellDef="let row" class="font-bold font-mono text-right pr-6"> 
               {{ row.total | currency:'MXN' }} 
             </td>
           </ng-container>
@@ -52,12 +52,12 @@
           <ng-container matColumnDef="estatus">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Estatus </th>
             <td mat-cell *matCellDef="let row">
-              <span class="px-3 py-1 rounded-full text-xs font-bold"
+              <span class="badge"
                 [ngClass]="{
-                  'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300': row.estatus === 'Pagada' || row.estatus === 'Pagado',
-                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300': row.estatus === 'Pendiente',
-                  'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300': row.estatus === 'Cancelada' || row.estatus === 'Cancelado',
-                  'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300': !['Pagada', 'Pagado', 'Pendiente', 'Cancelada', 'Cancelado'].includes(row.estatus)
+                  'badge-success': row.estatus === 'Pagada' || row.estatus === 'Pagado',
+                  'badge-warning': row.estatus === 'Pendiente',
+                  'badge-danger': row.estatus === 'Cancelada' || row.estatus === 'Cancelado',
+                  'badge-info': !['Pagada', 'Pagado', 'Pendiente', 'Cancelada', 'Cancelado'].includes(row.estatus)
                 }">
                 {{ row.estatus }}
               </span>
@@ -86,7 +86,13 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell text-center p-4" colspan="6">No hay ventas registradas.</td>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              <div class="flex flex-col items-center justify-center p-12 text-gray-400">
+                <mat-icon class="!w-16 !h-16 text-6xl mb-4 opacity-50">receipt_long</mat-icon>
+                <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-1">No hay registros aún</h3>
+                <p class="text-gray-500 text-sm">Comienza agregando nuevas ventas para que aparezcan aquí.</p>
+              </div>
+            </td>
           </tr>
         </table>
       </div>

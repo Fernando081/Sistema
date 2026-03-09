@@ -37,18 +37,19 @@
           </ng-container>
 
           <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Total </th>
-            <td mat-cell *matCellDef="let row"> {{row.total | currency}} </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right pr-6"> Total </th>
+            <td mat-cell *matCellDef="let row" class="font-bold font-mono text-right pr-6"> {{row.total | currency}} </td>
           </ng-container>
 
           <ng-container matColumnDef="estatus">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Estatus </th>
             <td mat-cell *matCellDef="let row">
-              <span class="px-2 py-1 rounded text-xs font-bold"
-                [class.bg-green-100]="row.estatus === 'Vigente'"
-                [class.text-green-800]="row.estatus === 'Vigente'"
-                [class.bg-blue-100]="row.estatus === 'Convertida'"
-                [class.text-blue-800]="row.estatus === 'Convertida'">
+              <span class="badge"
+                [ngClass]="{
+                  'badge-success': row.estatus === 'Vigente',
+                  'badge-info': row.estatus === 'Convertida',
+                  'badge-warning': row.estatus !== 'Vigente' && row.estatus !== 'Convertida'
+                }">
                 {{row.estatus}}
               </span>
             </td>
@@ -72,6 +73,15 @@
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              <div class="flex flex-col items-center justify-center p-12 text-gray-400">
+                <mat-icon class="!w-16 !h-16 text-6xl mb-4 opacity-50">request_quote</mat-icon>
+                <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-1">No hay registros aún</h3>
+                <p class="text-gray-500 text-sm">Comprueba tus filtros de búsqueda o agrega nuevos datos.</p>
+              </div>
+            </td>
+          </tr>
         </table>
       </div>
       <mat-paginator [pageSizeOptions]="[10, 25]"></mat-paginator>

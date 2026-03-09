@@ -38,6 +38,7 @@ import {
 
 import { Observable, of } from 'rxjs';
 import { debounceTime, switchMap, startWith, map, finalize } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-producto-dialog',
@@ -148,7 +149,8 @@ export class ProductoDialogComponent implements OnInit {
       this.form.patchValue(this.data);
 
       if (this.data.imagenes && this.data.imagenes.length > 0) {
-        const urls = this.data.imagenes.map(img => ({ url: `http://localhost:3000${img}` }));
+        const baseUrl = environment.apiBaseUrl.replace('/api/v1', '');
+        const urls = this.data.imagenes.map(img => ({ url: `${baseUrl}${img}` }));
         this.previewUrls.set(urls);
       }
 
@@ -348,9 +350,10 @@ export class ProductoDialogComponent implements OnInit {
       this.productoService.uploadImages(this.selectedFiles).subscribe({
         next: (res) => {
           // Extraer URLs previas (las que NO son archivos nuevos)
+          const baseUrl = environment.apiBaseUrl.replace('/api/v1', '');
           const oldUrls = this.previewUrls()
              .filter(p => !p.file)
-             .map(p => p.url.replace('http://localhost:3000', '')); // Quitar el host local para bd
+             .map(p => p.url.replace(baseUrl, '')); // Quitar el host local para bd
              
           // Combinar historicas + nuevas
           const finalUrls = [...oldUrls, ...res.urls];
@@ -362,9 +365,10 @@ export class ProductoDialogComponent implements OnInit {
         }
       });
     } else {
+      const baseUrl = environment.apiBaseUrl.replace('/api/v1', '');
       const oldUrls = this.previewUrls()
          .filter(p => !p.file)
-         .map(p => p.url.replace('http://localhost:3000', ''));
+         .map(p => p.url.replace(baseUrl, ''));
       this.ejecutarGuardado(oldUrls);
     }
   }

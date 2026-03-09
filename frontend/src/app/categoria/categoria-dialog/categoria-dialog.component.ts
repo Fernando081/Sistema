@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 import { CategoriaService } from '../../services/categoria.service';
 import { Categoria } from '../categoria.interface';
 
@@ -17,7 +18,7 @@ import { Categoria } from '../categoria.interface';
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule
+    MatInputModule, MatButtonModule, MatIconModule
   ],
   templateUrl: './categoria-dialog.component.html',
 })

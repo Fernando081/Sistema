@@ -429,3 +429,59 @@ html.dark .mat-mdc-option.mat-mdc-option-active {
 .dark .mat-mdc-paginator-icon {
   fill: var(--wrap-text-title) !important;
 }
+
+/* MISSION: Global Badges */
+.badge { @apply px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase inline-block; }
+.badge-success { @apply bg-[#e6f4ea] text-[#39cb7f]; }
+.badge-warning { @apply bg-[#fdf3e5] text-[#ffb22b]; }
+.badge-danger { @apply bg-[#fde9eb] text-[#fc4b6c]; }
+.badge-info { @apply bg-[#e8f2fc] text-[#1e88e5]; }
+
+/* MISSION: Material Input overrides */
+:root { 
+  --mdc-outlined-text-field-container-shape: 8px; 
+}
+.mat-mdc-text-field-wrapper:not(.mdc-text-field--focused) { 
+  background-color: #f8f9fa !important; 
+}
+.dark .mat-mdc-text-field-wrapper:not(.mdc-text-field--focused) { 
+  background-color: #16161e !important; 
+}
+
+/* MISSION: Page Transitions */
+@keyframes fadeInSlideUp { 
+  0% { opacity: 0; transform: translateY(10px); } 
+  100% { opacity: 1; transform: translateY(0); } 
+}
+main.app-content > *:not(.page-head):not(router-outlet) { 
+  animation: fadeInSlideUp 0.4s cubic-bezier(0.2, 0, 0, 1) forwards; 
+}
+
+/* MISSION: Modern Toasts (.premium-snackbar) */
+.premium-snackbar {
+  background-color: #ffffff !important;
+  color: #252423 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+  border-left: 4px solid #1e88e5 !important;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif !important;
+}
+.premium-snackbar .mdc-snackbar__label {
+  color: #252423 !important;
+}
+.premium-snackbar .mat-mdc-button {
+  color: #1e88e5 !important;
+  font-weight: 600 !important;
+}
+.dark .premium-snackbar {
+  background-color: #24283b !important;
+  color: #c0caf5 !important;
+  border-left: 4px solid #4dc2ff !important;
+}
+.dark .premium-snackbar .mdc-snackbar__label {
+  color: #c0caf5 !important;
+}
+.dark .premium-snackbar .mat-mdc-button {
+  color: #4dc2ff !important;
+}
+

@@ -1,6 +1,7 @@
 -- Migration 019: Set LIMIT and OFFSET on get_productos and get_facturas for paginated queries
 
 -- Update fn_get_facturas with LIMIT and OFFSET parameters
+DROP FUNCTION IF EXISTS public.fn_get_facturas();
 CREATE OR REPLACE FUNCTION public.fn_get_facturas(p_limit integer DEFAULT 10, p_offset integer DEFAULT 0)
  RETURNS SETOF factura
  LANGUAGE plpgsql
@@ -14,6 +15,7 @@ END;
 $function$;
 
 -- Update fn_get_productos with LIMIT and OFFSET parameters
+DROP FUNCTION IF EXISTS public.fn_get_productos();
 CREATE OR REPLACE FUNCTION public.fn_get_productos(p_limit integer DEFAULT 10, p_offset integer DEFAULT 0)
  RETURNS TABLE("IdProducto" integer, "Codigo" character varying, "IdUnidad" integer, "IdObjetoImpuesto" integer, "Descripcion" character varying, "PrecioUnitario" numeric, "IdCategoria" integer, "Ubicacion" character varying, "IdClaveProdOServ" integer, "IdClaveUnidad" integer, "Marca" character varying, "ObjetoImpuesto" character varying, "TasaIVA" numeric, "AplicaRetencionISR" boolean, "AplicaRetencionIVA" boolean, "Existencia" numeric, "CategoriaNombre" character varying, "ClaveProdServ" character varying, "DescripcionProdServ" text, "ClaveUnidadSat" character varying, "DescripcionUnidadSat" text, "EquivalentesJSON" jsonb, imagenes jsonb)
  LANGUAGE plpgsql
