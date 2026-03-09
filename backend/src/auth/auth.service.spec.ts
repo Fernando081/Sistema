@@ -21,10 +21,10 @@ describe('AuthService', () => {
     process.env.AUTH_PASSWORD = 'admin123';
     process.env.JWT_SECRET = 'test-secret';
     repoMock.findOne = jest.fn().mockResolvedValue(null);
-    repoMock.create = jest.fn((entity) => entity);
-    repoMock.save = jest.fn((entity) =>
-      Promise.resolve({ idUser: 1, ...entity }),
-    );
+    repoMock.create = jest.fn((entity?: any) => entity as any) as any;
+    repoMock.save = jest.fn((entity?: any) =>
+      Promise.resolve({ idUser: 1, ...entity } as any),
+    ) as any;
     service = new AuthService(repoMock);
     loggerErrorSpy = jest.spyOn(service['logger'], 'error');
     loggerLogSpy = jest.spyOn(service['logger'], 'log');

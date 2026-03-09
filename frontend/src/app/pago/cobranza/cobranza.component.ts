@@ -100,8 +100,24 @@ export class CobranzaComponent implements OnInit {
     };
 
     this.pagoService.registrar(dto).subscribe({
-      next: () => {
-        this.snackBar.open('Pago registrado con éxito', 'Ok', { duration: 3000 });
+      next: (res: any) => {
+        const snackRef = this.snackBar.open('Pago registrado con éxito', 'Ver Recibo (REP)', { duration: 6000 });
+        
+        snackRef.onAction().subscribe(() => {
+          if (res && res.idPago) {
+            this.pagoService.descargarRepPdf(res.idPago).subscribe({
+              next: (blob: Blob) => {
+                const url = window.URL.createObjectURL(blob);
+                window.open(url);
+              },
+              error: (err) => {
+                console.error('Error al descargar el PDF del REP:', err);
+                this.snackBar.open('No se pudo descargar el recibo', 'Ok', { duration: 3000 });
+              }
+            });
+          }
+        });
+
         this.facturaSeleccionada = null;
         this.montoAbono = 0;
         this.cargarPendientes();

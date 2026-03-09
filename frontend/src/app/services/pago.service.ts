@@ -14,6 +14,22 @@ export interface PagoDto {
   notas?: string;
 }
 
+export interface RepFacturaDto {
+  idFactura: number;
+  montoSaldado: number;
+}
+
+export interface RegistrarRepDto {
+  idCliente: number;
+  fechaPago: string;
+  formaPago: string;
+  moneda: string;
+  montoTotal: number;
+  cuentaBeneficiario?: string;
+  rfcBeneficiario?: string;
+  facturas: RepFacturaDto[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class PagoService {
   constructor(private http: HttpClient) {}
@@ -28,5 +44,29 @@ export class PagoService {
 
   getAllPendientes(): Observable<any[]> {
     return this.http.get<any[]>(`${API_URL}/pendientes`);
+  }
+
+  getPpdPendientes(idCliente: number): Observable<any[]> {
+    return this.http.get<any[]>(`${API_URL}/pendientes-ppd/${idCliente}`);
+  }
+
+  registrarRep(dto: RegistrarRepDto): Observable<any> {
+    return this.http.post(`${API_URL}/rep`, dto);
+  }
+
+  descargarRepPdf(idPago: number): Observable<Blob> {
+    return this.http.get(`${API_URL}/${idPago}/pdf`, { responseType: 'blob' });
+  }
+
+  descargarRepXml(idPago: number): Observable<Blob> {
+    return this.http.get(`${API_URL}/${idPago}/xml`, { responseType: 'blob' });
+  }
+
+  getHistorialReps(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_URL}/rep`);
+  }
+
+  cancelarRep(idRep: number): Observable<any> {
+    return this.http.post(`${API_URL}/rep/${idRep}/cancelar`, {});
   }
 }

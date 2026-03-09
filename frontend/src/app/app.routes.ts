@@ -128,4 +128,12 @@ export const routes: Routes = [
         (m) => m.SmartRestockComponent,
       ),
   },
+  {
+    path: 'rep-recibos',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./rep/rep-create/rep-create.component').then(
+        (m) => m.RepCreateComponent,
+      ),
+  },
 ];

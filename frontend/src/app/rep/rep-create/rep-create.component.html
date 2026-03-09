@@ -1,0 +1,211 @@
+<!-- frontend/src/app/rep/rep-create/rep-create.component.html -->
+<div class="p-6">
+  <mat-card class="mb-6 mb-card app-mat-card">
+    <mat-card-header>
+      <mat-card-title>Generar Recibo de Pago (REP) CFDI 4.0</mat-card-title>
+      <mat-card-subtitle>Abona a múltiples facturas PPD en un solo recibo</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="mt-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Selector de Cliente -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Buscar Cliente</mat-label>
+          <input matInput type="text" [formControl]="clienteControl" [matAutocomplete]="autoCliente" />
+          <mat-icon matSuffix>search</mat-icon>
+          <mat-autocomplete #autoCliente="matAutocomplete" [displayWith]="mostrarNombreCliente" (optionSelected)="onClienteSeleccionado($event)">
+            @for (c of clientesFiltrados | async; track c.idCliente) {
+              <mat-option [value]="c">
+                {{ c.razonSocial }} ({{ c.rfc }})
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <!-- Datos Generales del Pago -->
+        <div class="grid grid-cols-2 gap-2" [formGroup]="repForm">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Fecha de Pago</mat-label>
+            <input matInput type="date" formControlName="fechaPago" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Forma de Pago</mat-label>
+            <mat-select formControlName="formaPago">
+              <mat-option value="Efectivo">Efectivo</mat-option>
+              <mat-option value="Transferencia">Transferencia Electrónica</mat-option>
+              <mat-option value="Cheque">Cheque Nominativo</mat-option>
+              <mat-option value="Tarjeta de Credito">Tarjeta de Crédito</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Tabla de Facturas Pendientes (PPD) -->
+  @if (clienteSeleccionado) {
+    <mat-card class="mb-6 app-mat-card">
+      <mat-card-header>
+        <mat-card-title>Facturas Pendientes (PPD) de {{ clienteSeleccionado.razonSocial }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="overflow-x-auto mt-4">
+          <table mat-table [dataSource]="facturasPendientes" class="w-full">
+            <!-- Folio Column -->
+            <ng-container matColumnDef="folio">
+              <th mat-header-cell *matHeaderCellDef> Factura </th>
+              <td mat-cell *matCellDef="let f"> 
+                <span class="font-bold text-blue-600 dark:text-blue-400">{{ f.serie || '' }}-{{ f.folio }}</span><br>
+                <span class="text-xs text-gray-500">{{ f.fecha_emision | date:'shortDate' }}</span>
+              </td>
+            </ng-container>
+
+            <!-- Total Column -->
+            <ng-container matColumnDef="total">
+              <th mat-header-cell *matHeaderCellDef> Total Original </th>
+              <td mat-cell *matCellDef="let f"> {{ f.total | currency }} </td>
+            </ng-container>
+
+            <!-- Saldo Anterior Column -->
+            <ng-container matColumnDef="saldo">
+              <th mat-header-cell *matHeaderCellDef> Saldo Pendiente </th>
+              <td mat-cell *matCellDef="let f" class="font-bold text-red-500"> {{ f.saldo_pendiente | currency }} </td>
+            </ng-container>
+
+            <!-- Monto a Abonar Column (Input) -->
+            <ng-container matColumnDef="abono">
+              <th mat-header-cell *matHeaderCellDef> Monto a Abonar (MXN) </th>
+              <td mat-cell *matCellDef="let f">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-32 mt-2 mb-2">
+                  <span matPrefix class="mr-1">$</span>
+                  <input matInput type="number" min="0" [max]="f.saldo_pendiente" [(ngModel)]="f.montoSaldado" (ngModelChange)="validarMontoSaldado(f)">
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <!-- Saldo Insoluto Column -->
+            <ng-container matColumnDef="insoluto">
+              <th mat-header-cell *matHeaderCellDef> Nuevo Saldo </th>
+              <td mat-cell *matCellDef="let f" class="text-green-600 font-bold">
+                {{ (f.saldo_pendiente - (f.montoSaldado || 0)) | currency }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          
+          @if (facturasPendientes.length === 0) {
+            <div class="p-4 text-center text-gray-500 bg-gray-50 dark:bg-gray-800 rounded-lg mt-2">
+              El cliente no tiene facturas PPD con saldo pendiente.
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Resumen y Complementos CFDI -->
+    <mat-card class="app-mat-card">
+      <mat-card-header>
+        <mat-card-title>Detalles del Beneficiario</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4" [formGroup]="repForm">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>RFC Cuenta Beneficiario (Opcional)</mat-label>
+            <input matInput formControlName="rfcBeneficiario" placeholder="Ej. BBA830831LJ2" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Cuenta Beneficiario (Opcional)</mat-label>
+            <input matInput formControlName="cuentaBeneficiario" placeholder="Ej. 0123456789" />
+          </mat-form-field>
+        </div>
+
+        <div class="mt-6 flex flex-col md:flex-row items-center justify-between bg-blue-50 dark:bg-blue-900/40 p-6 rounded-xl border border-blue-100 dark:border-blue-800">
+          <div>
+            <h3 class="text-lg text-gray-700 dark:text-gray-300 m-0">Total del Recibo de Pago</h3>
+            <span class="text-xs text-gray-500 dark:text-gray-400">Sumatoria de abonos capturados</span>
+          </div>
+          <div class="text-3xl font-black text-blue-700 dark:text-blue-400">
+            {{ totalRep | currency }} <span class="text-lg font-normal">MXN</span>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+          <button mat-flat-button color="primary" class="h-12 px-8 text-lg rounded-full" [disabled]="totalRep <= 0 || !repForm.valid || isSaving" (click)="generarRep()">
+            <mat-icon>receipt_long</mat-icon> Timbrar REP CFDI 4.0
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Historial de REPs -->
+  <mat-card class="mt-6 app-mat-card">
+    <mat-card-header>
+      <mat-card-title>Historial de Recibos Electrónicos de Pago (REP)</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="overflow-x-auto mt-4">
+        <table mat-table [dataSource]="historialReps" class="w-full">
+          <ng-container matColumnDef="id_rep">
+            <th mat-header-cell *matHeaderCellDef> ID </th>
+            <td mat-cell *matCellDef="let r" class="font-bold"> REP-{{ r.id_rep }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fecha_pago">
+            <th mat-header-cell *matHeaderCellDef> Fecha </th>
+            <td mat-cell *matCellDef="let r"> {{ r.fecha_pago | date:'shortDate' }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="cliente">
+            <th mat-header-cell *matHeaderCellDef> Cliente </th>
+            <td mat-cell *matCellDef="let r"> {{ r.cliente_nombre }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef> Estado </th>
+            <td mat-cell *matCellDef="let r">
+              <span class="px-3 py-1 rounded-full text-xs font-bold" 
+                    [ngClass]="r.estado === 'Activo' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+                {{ r.estado }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef> Monto Total </th>
+            <td mat-cell *matCellDef="let r" class="font-bold text-blue-600"> {{ r.monto_total | currency }} {{ r.moneda }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let r">
+              <button mat-icon-button color="primary" matTooltip="Descargar PDF" (click)="descargarPdf(r.id_rep)">
+                <mat-icon>picture_as_pdf</mat-icon>
+              </button>
+              <button mat-icon-button color="accent" matTooltip="Descargar XML Pre-timbrado" (click)="descargarXml(r.id_rep)">
+                <mat-icon>data_object</mat-icon>
+              </button>
+              @if (r.estado === 'Activo') {
+                <button mat-icon-button color="warn" matTooltip="Cancelar REP y Restaurar Deuda" (click)="cancelarRep(r.id_rep)">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsHistorico"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsHistorico;"></tr>
+        </table>
+        @if (historialReps.length === 0) {
+          <div class="p-4 text-center text-gray-500 bg-gray-50 dark:bg-gray-800 rounded-lg mt-2">
+            No hay REPs registrados en el sistema.
+          </div>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
