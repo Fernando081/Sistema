@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { PagoService } from './pago.service';
+import { MetodoPago } from '../common/enums/app.enums';
 
 describe('PagoService', () => {
   it('registra pago y retorna id', async () => {
@@ -11,7 +12,7 @@ describe('PagoService', () => {
     const result = await service.registrarPago({
       idFactura: 1,
       monto: 55,
-      formaPago: 'Efectivo',
+      formaPago: MetodoPago.EFECTIVO,
       referencia: '',
       notas: '',
     });
@@ -29,7 +30,7 @@ describe('PagoService', () => {
       service.registrarPago({
         idFactura: 1,
         monto: 1,
-        formaPago: 'Efectivo',
+        formaPago: MetodoPago.EFECTIVO,
       } as any),
     ).rejects.toThrow(BadRequestException);
   });

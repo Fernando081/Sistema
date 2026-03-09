@@ -33,7 +33,7 @@ export class ProductoService {
     const [totalResult, dataResult] = await Promise.all([
       this.dataSource.query('SELECT COUNT(*) as count FROM fn_get_productos()'),
       this.dataSource.query(
-        `SELECT * FROM fn_get_productos()${orderClause} LIMIT $1 OFFSET $2`,
+        `SELECT * FROM fn_get_productos($1, $2)${orderClause}`,
         [limit, offset]
       ),
     ]);

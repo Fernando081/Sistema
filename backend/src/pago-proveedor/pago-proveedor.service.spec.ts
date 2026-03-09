@@ -1,4 +1,5 @@
 import { PagoProveedorService } from './pago-proveedor.service';
+import { MetodoPago } from '../common/enums/app.enums';
 
 describe('PagoProveedorService', () => {
   it('registra pago proveedor y retorna id', async () => {
@@ -10,7 +11,7 @@ describe('PagoProveedorService', () => {
     const result = await service.registrarPago({
       idCompra: 2,
       monto: 120,
-      formaPago: 'Transferencia',
+      formaPago: MetodoPago.TRANSFERENCIA,
       referencia: 'ABC',
       notas: '',
     });

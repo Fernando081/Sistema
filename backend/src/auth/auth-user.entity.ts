@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { RolUsuario } from '../common/enums/app.enums';
 
 @Entity({ name: 'auth_user' })
 export class AuthUser {
@@ -11,7 +12,7 @@ export class AuthUser {
   @Column({ name: 'password_hash' })
   passwordHash!: string;
 
-  @Column({ name: 'role', default: 'admin' })
+  @Column({ name: 'role', default: RolUsuario.ADMIN })
   role!: string;
 
   @Column({ name: 'is_active', default: true })

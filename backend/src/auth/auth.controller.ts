@@ -2,6 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from './auth.dto';
 import { Public } from './public.decorator';
+import { RolUsuario } from '../common/enums/app.enums';
 
 @Controller('auth')
 export class AuthController {
@@ -32,7 +33,7 @@ export class AuthController {
     return this.authService.register(
       body.username,
       body.password,
-      body.role ?? 'admin',
+      body.role ?? RolUsuario.ADMIN,
     );
   }
 }

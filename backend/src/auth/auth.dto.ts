@@ -6,6 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { RolUsuario } from '../common/enums/app.enums';
 
 export class LoginDto {
   @IsString()
@@ -30,6 +31,6 @@ export class RegisterDto {
 
   @IsOptional()
   @IsString()
-  @IsIn(['admin', 'user'])
-  role?: string;
+  @IsIn([RolUsuario.ADMIN, RolUsuario.USER])
+  role?: RolUsuario;
 }

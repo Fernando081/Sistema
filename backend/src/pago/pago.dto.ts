@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   Min,
 } from 'class-validator';
+import { MetodoPago } from '../common/enums/app.enums';
 
 export class RegistrarPagoDto {
   @IsNumber()
@@ -18,7 +19,7 @@ export class RegistrarPagoDto {
 
   @IsString()
   @IsNotEmpty()
-  formaPago: string; // 'Efectivo', 'Transferencia'
+  formaPago: string; // MetodoPago
 
   @IsString()
   @IsOptional()

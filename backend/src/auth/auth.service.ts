@@ -7,11 +7,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   createHmac,
-  randomBytes,
-  scryptSync,
   timingSafeEqual,
 } from 'node:crypto';
+import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
+import { RolUsuario } from '../common/enums/app.enums';
 import { LoginResponse, JwtPayload } from './auth.types';
 import { AuthUser } from './auth-user.entity';
 
@@ -22,7 +22,7 @@ export class AuthService {
     'JWT_SECRET',
     'dev-secret-change-me',
   );
-  private readonly authUser = this.getEnvOrDefault('AUTH_USERNAME', 'admin');
+  private readonly authUser = this.getEnvOrDefault('AUTH_USERNAME', RolUsuario.ADMIN);
   private readonly authPassword = this.getEnvOrDefault(
     'AUTH_PASSWORD',
     'admin123',
@@ -41,7 +41,7 @@ export class AuthService {
 
     if (isProduction) {
       const defaultJwtSecret = 'dev-secret-change-me';
-      const defaultUsername = 'admin';
+      const defaultUsername = RolUsuario.ADMIN;
       const defaultPassword = 'admin123';
 
       if (this.jwtSecret === defaultJwtSecret) {
@@ -72,7 +72,7 @@ export class AuthService {
   async register(
     username: string,
     password: string,
-    role = 'admin',
+    role = RolUsuario.ADMIN,
   ): Promise<{ idUser: number; username: string; role: string }> {
     const existingUser = await this.authUserRepository.findOne({
       where: { username },
@@ -82,9 +82,10 @@ export class AuthService {
       throw new ConflictException('El usuario ya existe');
     }
 
+    const passwordHash = await AuthService.hashPassword(password);
     const newUser = this.authUserRepository.create({
       username,
-      passwordHash: AuthService.hashPassword(password),
+      passwordHash,
       role,
       isActive: true,
     });
@@ -130,7 +131,7 @@ export class AuthService {
     const issuedAt = Math.floor(Date.now() / 1000);
     const payload: JwtPayload = {
       sub: username,
-      role: dbUser?.role || 'admin',
+      role: dbUser?.role || RolUsuario.ADMIN,
       idUser: dbUser?.idUser,
       iat: issuedAt,
       exp: issuedAt + this.expiresInSeconds,
@@ -180,7 +181,8 @@ export class AuthService {
         return null;
       }
 
-      return this.verifyPassword(password, user.passwordHash) ? user : null;
+      const isValid = await this.verifyPassword(password, user.passwordHash);
+      return isValid ? user : null;
     } catch {
       this.logger.error(
         'No se pudo validar auth contra BD. Se usará fallback por env.',
@@ -189,11 +191,10 @@ export class AuthService {
     }
   }
 
-  private verifyPassword(
+  private async verifyPassword(
     password: string,
     storedHash: string | null | undefined,
-  ): boolean {
-    // Validate that storedHash matches expected format (salt:hash) before splitting
+  ): Promise<boolean> {
     if (!storedHash || typeof storedHash !== 'string') {
       this.logger.error(
         'Invalid password hash: storedHash is null, undefined, empty, or not a string',
@@ -201,35 +202,11 @@ export class AuthService {
       return false;
     }
 
-    if (!storedHash.includes(':')) {
-      this.logger.error(
-        'Invalid password hash format: expected format with colon separator (salt:hash)',
-      );
-      return false;
-    }
-
-    const parts = storedHash.split(':');
-    if (parts.length !== 2) {
-      this.logger.error(
-        `Invalid password hash format: expected exactly one colon separator but found ${parts.length - 1}`,
-      );
-      return false;
-    }
-
-    const [salt, hash] = parts;
-    if (!salt || !hash) {
-      this.logger.error('Invalid password hash format: salt or hash is empty');
-      return false;
-    }
-
-    const passwordHash = scryptSync(password, salt, 64).toString('hex');
-    return this.safeCompare(passwordHash, hash);
+    return bcrypt.compare(password, storedHash);
   }
 
-  static hashPassword(password: string): string {
-    const salt = randomBytes(16).toString('hex');
-    const hash = scryptSync(password, salt, 64).toString('hex');
-    return `${salt}:${hash}`;
+  static async hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, 10);
   }
 
   private getEnvOrDefault(key: string, fallback: string): string {

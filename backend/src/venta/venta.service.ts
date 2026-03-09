@@ -78,7 +78,7 @@ export class VentaService {
     const [totalResult, dataResult] = await Promise.all([
       this.dataSource.query('SELECT COUNT(*) as count FROM fn_get_facturas()'),
       this.dataSource.query(
-        'SELECT * FROM fn_get_facturas() LIMIT $1 OFFSET $2',
+        'SELECT * FROM fn_get_facturas($1, $2)',
         [limit, offset]
       ),
     ]);

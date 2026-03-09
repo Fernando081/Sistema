@@ -2,6 +2,7 @@ import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
 import { AuthUser } from './auth-user.entity';
+import { RolUsuario } from '../common/enums/app.enums';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -16,7 +17,7 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env.AUTH_USERNAME = 'admin';
+    process.env.AUTH_USERNAME = RolUsuario.ADMIN;
     process.env.AUTH_PASSWORD = 'admin123';
     process.env.JWT_SECRET = 'test-secret';
     repoMock.findOne = jest.fn().mockResolvedValue(null);
@@ -35,30 +36,29 @@ describe('AuthService', () => {
   });
 
   it('genera token válido con credenciales fallback correctas', async () => {
-    const response = await service.login('admin', 'admin123');
+    const response = await service.login(RolUsuario.ADMIN, 'admin123');
     expect(response.access_token).toBeTruthy();
     const payload = service.verify(response.access_token);
-    expect(payload.sub).toBe('admin');
+    expect(payload.sub).toBe(RolUsuario.ADMIN);
   });
 
   it('rechaza credenciales inválidas', async () => {
-    await expect(service.login('admin', 'mal-password')).rejects.toThrow(
-      UnauthorizedException,
-    );
+    await expect(
+      service.login(RolUsuario.ADMIN, 'mal-password'),
+    ).rejects.toThrow(UnauthorizedException);
   });
 
-  it('registra usuario con password hasheado', async () => {
+  it('registra usuario con password hasheado con bcrypt', async () => {
     const result = await service.register(
       'nuevo-admin',
       'password123',
-      'admin',
+      RolUsuario.ADMIN,
     );
 
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(repoMock.create).toHaveBeenCalledWith(
       expect.objectContaining({
         username: 'nuevo-admin',
-        role: 'admin',
+        role: RolUsuario.ADMIN,
         isActive: true,
       }),
     );
@@ -68,23 +68,22 @@ describe('AuthService', () => {
     >;
     const createdUser = createCalls[0]?.[0];
 
-    expect(createdUser?.passwordHash).toContain(':');
+    expect(createdUser?.passwordHash).toContain('$2b$10$');
     expect(createdUser?.passwordHash).not.toContain('password123');
     expect(result).toEqual({
       idUser: 1,
       username: 'nuevo-admin',
-      role: 'admin',
+      role: RolUsuario.ADMIN,
     });
   });
 
   it('usa rol por defecto cuando no se proporciona', async () => {
     const result = await service.register('nuevo-por-defecto', 'password456');
 
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(repoMock.create).toHaveBeenCalledWith(
       expect.objectContaining({
         username: 'nuevo-por-defecto',
-        role: 'admin',
+        role: RolUsuario.ADMIN,
         isActive: true,
       }),
     );
@@ -94,21 +93,22 @@ describe('AuthService', () => {
     >;
     const createdUser = createCalls[createCalls.length - 1]?.[0];
 
-    expect(createdUser?.passwordHash).toContain(':');
+    expect(createdUser?.passwordHash).toContain('$2b$10$');
     expect(createdUser?.passwordHash).not.toContain('password456');
     expect(result).toEqual({
       idUser: 1,
       username: 'nuevo-por-defecto',
-      role: 'admin',
+      role: RolUsuario.ADMIN,
     });
   });
+  
   it('impide registrar usuario duplicado', async () => {
     repoMock.findOne = jest
       .fn()
       .mockResolvedValue({ idUser: 99, username: 'repetido' });
 
     await expect(
-      service.register('repetido', 'password123', 'admin'),
+      service.register('repetido', 'password123', RolUsuario.ADMIN),
     ).rejects.toThrow(ConflictException);
   });
 
@@ -116,13 +116,13 @@ describe('AuthService', () => {
     const result = await service.register(
       'usuario-con-log',
       'password789',
-      'user',
+      RolUsuario.USER,
     );
 
     expect(result).toEqual({
       idUser: 1,
       username: 'usuario-con-log',
-      role: 'user',
+      role: RolUsuario.USER,
     });
 
     expect(loggerLogSpy).toHaveBeenCalledWith(
@@ -138,19 +138,19 @@ describe('AuthService', () => {
     repoMock.save = jest.fn().mockRejectedValue(uniqueViolationError);
 
     await expect(
-      service.register('usuario-duplicado', 'password123', 'admin'),
+      service.register('usuario-duplicado', 'password123', RolUsuario.ADMIN),
     ).rejects.toThrow(ConflictException);
 
     await expect(
-      service.register('usuario-duplicado', 'password123', 'admin'),
+      service.register('usuario-duplicado', 'password123', RolUsuario.ADMIN),
     ).rejects.toThrow('El usuario ya existe');
   });
 
   it('valida usuario desde BD con hash', async () => {
-    const passwordHash = AuthService.hashPassword('secreto');
+    const passwordHash = await AuthService.hashPassword('secreto');
     repoMock.findOne = jest.fn().mockResolvedValue({
       username: 'fer',
-      role: 'admin',
+      role: RolUsuario.ADMIN,
       passwordHash,
       isActive: true,
     });
@@ -159,80 +159,10 @@ describe('AuthService', () => {
     expect(response.access_token).toBeTruthy();
   });
 
-  it('rechaza hash sin separador de colon', async () => {
-    const invalidHash = 'noseparatorhere';
+  it('rechaza hash nulo o inválido', async () => {
     repoMock.findOne = jest.fn().mockResolvedValue({
       username: 'fer',
-      role: 'admin',
-      passwordHash: invalidHash,
-      isActive: true,
-    });
-
-    await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(
-      UnauthorizedException,
-    );
-    expect(loggerErrorSpy).toHaveBeenCalledWith(
-      'Invalid password hash format: expected format with colon separator (salt:hash)',
-    );
-  });
-
-  it('rechaza hash con múltiples separadores', async () => {
-    // Create a valid hash first, then append :extra to test the parts.length !== 2 validation
-    const validHash = AuthService.hashPassword('test');
-    const invalidHash = `${validHash}:extra`;
-    repoMock.findOne = jest.fn().mockResolvedValue({
-      username: 'fer',
-      role: 'admin',
-      passwordHash: invalidHash,
-      isActive: true,
-    });
-
-    await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(
-      UnauthorizedException,
-    );
-    expect(loggerErrorSpy).toHaveBeenCalledWith(
-      'Invalid password hash format: expected exactly one colon separator but found 2',
-    );
-  });
-
-  it('rechaza hash con salt vacío', async () => {
-    const invalidHash = ':onlyhash';
-    repoMock.findOne = jest.fn().mockResolvedValue({
-      username: 'fer',
-      role: 'admin',
-      passwordHash: invalidHash,
-      isActive: true,
-    });
-
-    await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(
-      UnauthorizedException,
-    );
-    expect(loggerErrorSpy).toHaveBeenCalledWith(
-      'Invalid password hash format: salt or hash is empty',
-    );
-  });
-
-  it('rechaza hash con valor hash vacío', async () => {
-    const invalidHash = 'onlysalt:';
-    repoMock.findOne = jest.fn().mockResolvedValue({
-      username: 'fer',
-      role: 'admin',
-      passwordHash: invalidHash,
-      isActive: true,
-    });
-
-    await expect(service.login('fer', 'cualquier-password')).rejects.toThrow(
-      UnauthorizedException,
-    );
-    expect(loggerErrorSpy).toHaveBeenCalledWith(
-      'Invalid password hash format: salt or hash is empty',
-    );
-  });
-
-  it('rechaza hash nulo', async () => {
-    repoMock.findOne = jest.fn().mockResolvedValue({
-      username: 'fer',
-      role: 'admin',
+      role: RolUsuario.ADMIN,
       passwordHash: null,
       isActive: true,
     });
