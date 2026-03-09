@@ -23,7 +23,7 @@ export class VentaService {
     return this.ticketService.crearPdfFactura(resultado[0].datos);
   }
 
-  async create(createVentaDto: CreateVentaDto) {
+  async create(createVentaDto: CreateVentaDto, idVendedor?: number) {
     const conceptosJson = JSON.stringify(createVentaDto.conceptos);
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -32,7 +32,7 @@ export class VentaService {
 
     try {
       const result = await queryRunner.query(
-        `SELECT fn_crear_venta($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) as id_factura`,
+        `SELECT fn_crear_venta($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) as id_factura`,
         [
           createVentaDto.idCliente,
           createVentaDto.rfcReceptor,
@@ -50,6 +50,7 @@ export class VentaService {
           createVentaDto.total,
           '',
           conceptosJson,
+          idVendedor || null,
         ],
       );
 
@@ -65,6 +66,10 @@ export class VentaService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async getComisionesSemanales() {
+    return this.dataSource.query('SELECT * FROM fn_get_comisiones_semanales()');
   }
 
   async findAll(page: number = 1, limit: number = 10) {

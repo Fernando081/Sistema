@@ -1,16 +1,25 @@
 // backend/src/venta/venta.controller.ts
-import { Body, Controller, Get, Post, Param, Res, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Res, Query, DefaultValuePipe, ParseIntPipe, Req, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 import { VentaService } from './venta.service';
 import { CreateVentaDto } from './venta.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('venta')
 export class VentaController {
   constructor(private readonly ventaService: VentaService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createVentaDto: CreateVentaDto) {
-    return this.ventaService.create(createVentaDto);
+  create(@Body() createVentaDto: CreateVentaDto, @Req() req: any) {
+    const idVendedor = req.user?.idUser;
+    return this.ventaService.create(createVentaDto, idVendedor);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('comisiones')
+  getComisionesSemanales() {
+    return this.ventaService.getComisionesSemanales();
   }
 
   @Get()

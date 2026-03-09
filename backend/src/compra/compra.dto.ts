@@ -21,6 +21,11 @@ export class DetalleCompraDto {
   @IsNumber() cantidad: number;
   @IsNumber() costoUnitario: number;
   @IsNumber() importe: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  imagenes?: string[];
 }
 
 export class CreateCompraDto {

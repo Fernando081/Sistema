@@ -33,6 +33,11 @@ export class ConceptoVentaDto {
   @IsNumber() @IsOptional() baseRetIsr: number;
   @IsNumber() @IsOptional() tasaRetIsr: number;
   @IsNumber() @IsOptional() importeRetIsr: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  imagenes?: string[];
 }
 
 // 2. DTO para la Venta General (Cabecera)

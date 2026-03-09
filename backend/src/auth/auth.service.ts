@@ -111,7 +111,7 @@ export class AuthService {
   }
 
   async login(username: string, password: string): Promise<LoginResponse> {
-    const dbUser = await this.validateFromDatabase(username, password);
+    let dbUser = await this.validateFromDatabase(username, password);
 
     if (!dbUser) {
       const validUser = this.safeCompare(username, this.authUser);
@@ -120,12 +120,18 @@ export class AuthService {
       if (!validUser || !validPass) {
         throw new UnauthorizedException('Credenciales inválidas');
       }
+      
+      // Fallback auth succeeded, try to attach DB ID if user exists
+      dbUser = await this.authUserRepository.findOne({
+        where: { username, isActive: true },
+      });
     }
 
     const issuedAt = Math.floor(Date.now() / 1000);
     const payload: JwtPayload = {
       sub: username,
       role: dbUser?.role || 'admin',
+      idUser: dbUser?.idUser,
       iat: issuedAt,
       exp: issuedAt + this.expiresInSeconds,
     };

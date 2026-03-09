@@ -1,5 +1,5 @@
 // backend/src/cotizacion/cotizacion.dto.ts
-import { IsArray, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsNumber, IsString, ValidateNested, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ConceptoCotizacionDto {
@@ -11,6 +11,11 @@ export class ConceptoCotizacionDto {
   @IsNumber() importe: number;
   @IsNumber() importeIva: number;
   @IsNumber() importeRetIsr: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  imagenes?: string[];
 }
 
 export class CreateCotizacionDto {
