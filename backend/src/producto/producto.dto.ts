@@ -92,3 +92,31 @@ export interface SmartRestockItem {
   precio_unitario: number;
   margen: number;
 }
+
+export interface PrediccionDemandaItem {
+  id_producto: number;
+  codigo: string;
+  descripcion: string;
+  stock_actual: number;
+  precio_unitario: number;
+
+  // Moving averages
+  vendido_30d: number;
+  vendido_60d: number;
+  vendido_90d: number;
+  prom_diario_30d: number;
+  prom_diario_60d: number;
+  prom_diario_90d: number;
+
+  // Regression stats
+  pendiente_regresion: number;
+  intercepto_regresion: number;
+  r_cuadrado: number;
+  num_semanas: number;
+
+  // Trend & prediction
+  tendencia: 'ALTA' | 'BAJA' | 'ESTABLE';
+  demanda_proyectada_30d: number;
+  cantidad_sugerida_compra: number;
+}
+

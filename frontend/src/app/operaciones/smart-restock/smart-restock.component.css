@@ -1,0 +1,16 @@
+/* Smart Restock - Dark mode tab fix */
+:host ::ng-deep .mat-mdc-tab-labels .mdc-tab__text-label {
+  color: var(--mat-sys-on-surface, rgba(255,255,255,0.87)) !important;
+}
+
+:host ::ng-deep .mat-mdc-tab-labels .mdc-tab--active .mdc-tab__text-label {
+  color: var(--mat-sys-primary, #90caf9) !important;
+}
+
+:host ::ng-deep .mat-mdc-tab-labels .mat-mdc-tab .mat-icon {
+  color: inherit;
+}
+
+:host ::ng-deep .mat-mdc-tab-header {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}

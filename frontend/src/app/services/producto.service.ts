@@ -1,9 +1,9 @@
-// frontend/src/app/services/producto.service.ts (REEMPLAZAR)
+// frontend/src/app/services/producto.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Producto, CreateProductoDto, UpdateProductoDto, KardexItem, SmartRestockItem } from '../producto/producto.interface';
+import { Producto, CreateProductoDto, UpdateProductoDto, KardexItem, SmartRestockItem, PrediccionDemandaItem } from '../producto/producto.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -42,9 +42,6 @@ export class ProductoService {
 
   // --- MÉTODOS AVANZADOS (KARDEX, PRECIOS, EQUIVALENTES) ---
 
-  // CORRECCIÓN APLICADA: 
-  // Usamos `${this.apiUrl}/${idProducto}/kardex`
-  // Como apiUrl ya tiene '/producto', esto genera: .../api/v1/producto/123/kardex (CORRECTO)
   getKardex(idProducto: number): Observable<KardexItem[]> {
     return this.http.get<KardexItem[]>(`${this.apiUrl}/${idProducto}/kardex`);
   }
@@ -67,6 +64,15 @@ export class ProductoService {
 
   getSmartRestock(): Observable<SmartRestockItem[]> {
     return this.http.get<SmartRestockItem[]>(`${this.apiUrl}/smart-restock`);
+  }
+
+  // --- PREDICCIÓN DE DEMANDA (AI Smart Restock) ---
+  getPrediccionDemanda(): Observable<PrediccionDemandaItem[]> {
+    return this.http.get<PrediccionDemandaItem[]>(`${this.apiUrl}/prediccion-compras`);
+  }
+
+  refreshPrediccion(): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/prediccion-compras/refresh`, {});
   }
 
   uploadImages(files: File[]): Observable<{ urls: string[]; message: string }> {

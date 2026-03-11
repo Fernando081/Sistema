@@ -55,7 +55,13 @@ export class CompraComponent implements OnInit {
   // --- ESTADO ---
   carrito = signal<DetalleCompra[]>([]);
   proveedorSeleccionado: Proveedor | null = null;
-  totalGeneral = computed(() => this.carrito().reduce((acc, item) => acc + item.importe, 0));
+
+  // Totales derivados reactivamente via computed() — sin recalcularTotales manual
+  subtotalGeneral = computed(() =>
+    this.carrito().reduce((acc, item) => acc + (item.cantidad * item.costoUnitario), 0)
+  );
+  totalGeneral = this.subtotalGeneral; // Alias (las compras no tienen IVA separado por ahora)
+
   isSaving = signal(false);
 
   // Variable para crédito
@@ -133,7 +139,7 @@ export class CompraComponent implements OnInit {
 
     if (existente) {
       existente.cantidad++;
-      this.recalcularRenglon(existente);
+      this.carrito.update((items) => [...items]); // Trigger signal refresh
     } else {
       const nuevo: DetalleCompra = {
         idProducto: producto.idProducto,
@@ -147,20 +153,14 @@ export class CompraComponent implements OnInit {
     }
 
     this.productoControl.setValue('');
-    if (existente) {
-      this.carrito.update((items) => [...items]);
-    }
   }
 
   alCambiarValor(item: DetalleCompra) {
     if (item.cantidad < 1) item.cantidad = 1;
     if (item.costoUnitario < 0) item.costoUnitario = 0;
-    this.recalcularRenglon(item);
-    this.carrito.update((items) => [...items]);
-  }
-
-  recalcularRenglon(item: DetalleCompra) {
+    // importe se calcula por el computed, pero también lo actualizamos para el payload
     item.importe = item.cantidad * item.costoUnitario;
+    this.carrito.update((items) => [...items]);
   }
 
   eliminarDelCarrito(index: number) {

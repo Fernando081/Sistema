@@ -38,6 +38,16 @@ export class ProductoController {
     return this.productoService.getSmartRestock();
   }
 
+  @Get('prediccion-compras')
+  getPrediccionDemanda() {
+    return this.productoService.getPrediccionDemanda();
+  }
+
+  @Post('prediccion-compras/refresh')
+  refreshPrediccion() {
+    return this.productoService.refreshPrediccion();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.productoService.findOne(id);

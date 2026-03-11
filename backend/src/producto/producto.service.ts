@@ -4,7 +4,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Producto } from './producto.entity';
-import { CreateProductoDto, UpdateProductoDto, SmartRestockItem } from './producto.dto';
+import { CreateProductoDto, UpdateProductoDto, SmartRestockItem, PrediccionDemandaItem } from './producto.dto';
 import { APP_CONSTANTS } from '../common/constants/app.constants';
 
 @Injectable()
@@ -228,5 +228,17 @@ export class ProductoService {
       [idProducto, idEquivalente],
     );
     return { message: 'Equivalente eliminado' };
+  }
+
+  // --- PREDICCIÓN DE DEMANDA (AI Smart Restock) ---
+  async getPrediccionDemanda(): Promise<PrediccionDemandaItem[]> {
+    return this.dataSource.query(
+      'SELECT * FROM vw_prediccion_demanda WHERE cantidad_sugerida_compra > 0 ORDER BY cantidad_sugerida_compra DESC',
+    );
+  }
+
+  async refreshPrediccion(): Promise<{ message: string }> {
+    await this.dataSource.query('REFRESH MATERIALIZED VIEW CONCURRENTLY vw_prediccion_demanda');
+    return { message: 'Vista de predicción de demanda actualizada correctamente' };
   }
 }
