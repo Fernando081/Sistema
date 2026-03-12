@@ -33,17 +33,17 @@ export class CotizacionService {
     return this.dataSource.query('SELECT * FROM fn_get_cotizaciones()');
   }
 
-  async convertirAVenta(id: number) {
+  async convertirAVenta(id: number, idFormaPago: number, idMetodoPago: number) {
     try {
       const result = await this.dataSource.query(
-        'SELECT fn_convertir_cotizacion_a_venta($1) as id_factura',
-        [id],
+        'SELECT fn_convertir_cotizacion_a_venta($1, $2, $3) as id_factura',
+        [id, idFormaPago, idMetodoPago],
       );
       return {
         message: 'Cotización convertida en Venta exitosamente',
         idFactura: result[0].id_factura,
       };
-    } catch (error) {
+    } catch (error: any) {
       // Si el error viene de nuestro RAISE EXCEPTION en SQL
       if (error.message && error.message.includes('Stock insuficiente')) {
         // Devolvemos un error 400 limpio con el mensaje exacto de la BD

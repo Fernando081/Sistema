@@ -49,7 +49,7 @@ export class CotizacionService {
     return this.http.get(`${API_URL}/${id}/pdf`, { responseType: 'blob' });
   }
 
-  convertirEnVenta(id: number): Observable<any> {
-    return this.http.post(`${API_URL}/${id}/convertir`, {});
+  convertirEnVenta(id: number, idFormaPago: number, idMetodoPago: number): Observable<any> {
+    return this.http.post(`${API_URL}/${id}/convertir`, { idFormaPago, idMetodoPago });
   }
 }

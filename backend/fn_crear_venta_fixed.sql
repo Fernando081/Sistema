@@ -1,0 +1,90 @@
+CREATE OR REPLACE FUNCTION public.fn_crear_venta(p_id_cliente integer, p_rfc_receptor character varying, p_nombre_receptor character varying, p_cp_receptor character varying, p_regimen_receptor character varying, p_uso_cfdi character varying, p_id_forma_pago integer, p_id_metodo_pago integer, p_moneda character varying, p_tipo_cambio numeric, p_subtotal numeric, p_total_impuestos_trasladados numeric, p_total_impuestos_retenidos numeric, p_total numeric, p_observaciones text, p_conceptos_json jsonb)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+    v_id_factura INT;
+    v_folio INT;
+    v_metodo_clave VARCHAR;
+    v_saldo_inicial NUMERIC;
+    v_estatus_inicial VARCHAR;
+BEGIN
+    SELECT "Clave" INTO v_metodo_clave FROM metododepago WHERE "IdMetodoDePago" = p_id_metodo_pago;
+
+    IF v_metodo_clave = 'PUE' THEN
+        v_saldo_inicial := 0;
+        v_estatus_inicial := 'Pagada';
+    ELSE
+        v_saldo_inicial := p_total;
+        v_estatus_inicial := 'Pendiente';
+    END IF;
+
+    SELECT COALESCE(MAX(folio), 0) + 1 INTO v_folio FROM factura;
+
+    INSERT INTO factura (
+        id_cliente, serie, folio, fecha_emision, 
+        estatus, saldo_pendiente,
+        rfc_receptor, nombre_receptor, codigo_postal_receptor, 
+        regimen_fiscal_receptor_clave, uso_cfdi_clave, id_uso_cfdi,
+        id_forma_pago, id_metodo_pago, moneda, tipo_cambio,
+        subtotal, total_impuestos_trasladados, total_impuestos_retenidos, total
+    ) VALUES (
+        p_id_cliente, 'A', v_folio, NOW(), 
+        v_estatus_inicial::estatus_factura_enum,
+        v_saldo_inicial,
+        p_rfc_receptor, p_nombre_receptor, p_cp_receptor,
+        p_regimen_receptor, 
+        p_uso_cfdi, (SELECT "IdUsoCFDI" FROM usocfdi WHERE "Clave" = p_uso_cfdi LIMIT 1),
+        p_id_forma_pago, p_id_metodo_pago, p_moneda, p_tipo_cambio,
+        p_subtotal, p_total_impuestos_trasladados, p_total_impuestos_retenidos, p_total
+    ) RETURNING id_factura INTO v_id_factura;
+
+    INSERT INTO conceptofactura (
+        id_factura, id_producto, 
+        id_clave_prod_serv, id_clave_unidad, id_objeto_impuesto,
+        clave_sat, unidad_sat, objeto_impuesto_sat,
+        descripcion, cantidad, valor_unitario, importe, descuento,
+        base_iva, tasa_iva, importe_iva,
+        base_ret_isr, tasa_ret_isr, importe_ret_isr
+    )
+    SELECT 
+        v_id_factura,
+        (item->>'idProducto')::INT,
+        (SELECT "IdClaveProdOServ" FROM claveproductooservicio WHERE "Clave" = (item->>'claveProdServ') LIMIT 1),
+        (SELECT "IdClaveUnidad" FROM claveunidad WHERE "Clave" = (item->>'claveUnidad') LIMIT 1),
+        (SELECT "IdObjetoImpuesto" FROM objetoimpuesto WHERE "Clave" = (item->>'objetoImpuesto') LIMIT 1),
+        item->>'claveProdServ',
+        item->>'claveUnidad',
+        item->>'objetoImpuesto',
+        item->>'descripcion',
+        (item->>'cantidad')::NUMERIC,
+        (item->>'valorUnitario')::NUMERIC,
+        (item->>'importe')::NUMERIC,
+        COALESCE((item->>'descuento')::NUMERIC, 0),
+        (item->>'baseIva')::NUMERIC,
+        (item->>'tasaIva')::NUMERIC,
+        (item->>'importeIva')::NUMERIC,
+        (item->>'baseRetIsr')::NUMERIC,
+        (item->>'tasaRetIsr')::NUMERIC,
+        (item->>'importeRetIsr')::NUMERIC
+    FROM jsonb_array_elements(p_conceptos_json) AS item;
+
+    IF v_metodo_clave = 'PUE' THEN
+        DECLARE
+            v_forma_pago_nombre VARCHAR;
+        BEGIN
+            SELECT "Nombre" INTO v_forma_pago_nombre 
+            FROM formadepago 
+            WHERE "IdFormaPago" = p_id_forma_pago LIMIT 1;
+
+            INSERT INTO pago (
+                id_factura, fecha_pago, monto, forma_pago, referencia, notas
+            ) VALUES (
+                v_id_factura, NOW(), p_total, COALESCE(v_forma_pago_nombre, 'Efectivo'), '', 'Pago automático Venta PUE'
+            );
+        END;
+    END IF;
+
+    RETURN v_id_factura;
+END;
+$function$;

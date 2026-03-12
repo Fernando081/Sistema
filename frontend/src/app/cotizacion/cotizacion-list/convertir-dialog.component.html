@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Convertir Cotización a Venta</h2>
+<mat-dialog-content>
+  <p>Esta acción descontará inventario y generará una Venta definitiva para la cotización <strong>{{ data.folio }}</strong>.</p>
+  
+  <div class="form-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+    <!-- Método de Pago -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Método de Pago</mat-label>
+      <mat-select [(ngModel)]="idMetodoPago">
+        <mat-option *ngFor="let m of data.metodosPago" [value]="m.idMetodoDePago">
+          {{ m.clave }} - {{ m.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Forma de Pago -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Forma de Pago</mat-label>
+      <mat-select [(ngModel)]="idFormaPago">
+        <mat-option *ngFor="let f of data.formasPago" [value]="f.idFormaPago">
+          {{ f.clave }} - {{ f.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancelar</button>
+  <button mat-flat-button color="primary" [mat-dialog-close]="{ idFormaPago: idFormaPago, idMetodoPago: idMetodoPago }" [disabled]="!idFormaPago || !idMetodoPago">
+    Convertir a Venta
+  </button>
+</mat-dialog-actions>

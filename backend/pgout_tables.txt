@@ -1,0 +1,176 @@
+[
+  {
+    "table_name": "proveedor"
+  },
+  {
+    "table_name": "formadepago"
+  },
+  {
+    "table_name": "factura"
+  },
+  {
+    "table_name": "producto"
+  },
+  {
+    "table_name": "cotizacion"
+  },
+  {
+    "table_name": "cliente"
+  },
+  {
+    "table_name": "claveproductooservicio"
+  },
+  {
+    "table_name": "claveunidad"
+  },
+  {
+    "table_name": "metododepago"
+  },
+  {
+    "table_name": "usocfdi"
+  },
+  {
+    "table_name": "estado"
+  },
+  {
+    "table_name": "regimenfiscal"
+  },
+  {
+    "table_name": "municipio"
+  },
+  {
+    "table_name": "categoria"
+  },
+  {
+    "table_name": "auditoria"
+  },
+  {
+    "table_name": "auditoria_jsonb"
+  },
+  {
+    "table_name": "colonia"
+  },
+  {
+    "table_name": "cuentabancaria"
+  },
+  {
+    "table_name": "conceptofactura"
+  },
+  {
+    "table_name": "complementodepago"
+  },
+  {
+    "table_name": "bancos"
+  },
+  {
+    "table_name": "auth_user"
+  },
+  {
+    "table_name": "detalle_compra"
+  },
+  {
+    "table_name": "email"
+  },
+  {
+    "table_name": "emisor"
+  },
+  {
+    "table_name": "conceptocotizacion"
+  },
+  {
+    "table_name": "meses"
+  },
+  {
+    "table_name": "moneda"
+  },
+  {
+    "table_name": "impuestoproducto"
+  },
+  {
+    "table_name": "gasto"
+  },
+  {
+    "table_name": "pago"
+  },
+  {
+    "table_name": "inventario"
+  },
+  {
+    "table_name": "objetoimpuesto"
+  },
+  {
+    "table_name": "kardex"
+  },
+  {
+    "table_name": "localidad"
+  },
+  {
+    "table_name": "historial_correos"
+  },
+  {
+    "table_name": "impuesto"
+  },
+  {
+    "table_name": "pagosdetalleproveedor"
+  },
+  {
+    "table_name": "pagosproveedor"
+  },
+  {
+    "table_name": "relacioncfdi"
+  },
+  {
+    "table_name": "periodicidad"
+  },
+  {
+    "table_name": "saldos"
+  },
+  {
+    "table_name": "tasaocuota"
+  },
+  {
+    "table_name": "tipoentidad"
+  },
+  {
+    "table_name": "tipocomprobante"
+  },
+  {
+    "table_name": "pagodocumentos"
+  },
+  {
+    "table_name": "telefono"
+  },
+  {
+    "table_name": "timbrefiscaldigital"
+  },
+  {
+    "table_name": "producto_equivalente"
+  },
+  {
+    "table_name": "pago_proveedor"
+  },
+  {
+    "table_name": "rep_factura"
+  },
+  {
+    "table_name": "rep"
+  },
+  {
+    "table_name": "tipofactor"
+  },
+  {
+    "table_name": "tipomotivocancelacion"
+  },
+  {
+    "table_name": "vw_smart_restock"
+  },
+  {
+    "table_name": "unidad"
+  },
+  {
+    "table_name": "tiporelacion"
+  },
+  {
+    "table_name": "compra"
+  }
+]

@@ -1,0 +1,9 @@
+fn_get_formaspago
+fn_get_metodospago
+fn_actualizar_inventario
+fn_convertir_cotizacion_a_venta
+fn_crear_venta
+fn_crear_venta
+fn_kardex_venta
+fn_registrar_pago
+fn_registrar_pago_proveedor

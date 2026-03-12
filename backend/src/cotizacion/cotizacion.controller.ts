@@ -30,7 +30,10 @@ export class CotizacionController {
   }
 
   @Post(':id/convertir')
-  convertir(@Param('id') id: number) {
-    return this.service.convertirAVenta(id);
+  convertir(
+    @Param('id') id: number,
+    @Body() body: { idFormaPago: number; idMetodoPago: number }
+  ) {
+    return this.service.convertirAVenta(id, body.idFormaPago, body.idMetodoPago);
   }
 }

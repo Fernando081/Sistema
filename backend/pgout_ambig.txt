@@ -1,0 +1,14 @@
+[
+  {
+    "proname": "fn_convertir_cotizacion_a_venta",
+    "pg_get_function_identity_arguments": "p_id_cotizacion integer"
+  },
+  {
+    "proname": "fn_crear_venta",
+    "pg_get_function_identity_arguments": "p_id_cliente integer, p_rfc_receptor character varying, p_nombre_receptor character varying, p_cp_receptor character varying, p_regimen_receptor character varying, p_uso_cfdi character varying, p_id_forma_pago integer, p_id_metodo_pago integer, p_moneda character varying, p_tipo_cambio numeric, p_subtotal numeric, p_total_impuestos_trasladados numeric, p_total_impuestos_retenidos numeric, p_total numeric, p_observaciones text, p_conceptos_json jsonb, p_id_vendedor integer"
+  },
+  {
+    "proname": "fn_crear_venta",
+    "pg_get_function_identity_arguments": "p_id_cliente integer, p_rfc_receptor character varying, p_nombre_receptor character varying, p_cp_receptor character varying, p_regimen_receptor character varying, p_uso_cfdi character varying, p_id_forma_pago integer, p_id_metodo_pago integer, p_moneda character varying, p_tipo_cambio numeric, p_subtotal numeric, p_total_impuestos_trasladados numeric, p_total_impuestos_retenidos numeric, p_total numeric, p_observaciones text, p_conceptos_json jsonb"
+  }
+]

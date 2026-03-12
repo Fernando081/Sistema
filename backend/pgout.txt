@@ -1,0 +1,38 @@
+[
+  {
+    "column_name": "id_pago",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "id_factura",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "fecha_pago",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "monto",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "forma_pago",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "referencia",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "notas",
+    "data_type": "text"
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "id_cuenta_bancaria",
+    "data_type": "integer"
+  }
+]
