@@ -33,11 +33,11 @@ export class CotizacionService {
     return this.dataSource.query('SELECT * FROM fn_get_cotizaciones()');
   }
 
-  async convertirAVenta(id: number, idFormaPago: number, idMetodoPago: number) {
+  async convertirAVenta(id: number, idFormaPago: number, idMetodoPago: number, idVendedor: number) {
     try {
       const result = await this.dataSource.query(
-        'SELECT fn_convertir_cotizacion_a_venta($1, $2, $3) as id_factura',
-        [id, idFormaPago, idMetodoPago],
+        'SELECT fn_convertir_cotizacion_a_venta($1, $2, $3, $4) as id_factura',
+        [id, idFormaPago, idMetodoPago, idVendedor],
       );
       return {
         message: 'Cotización convertida en Venta exitosamente',

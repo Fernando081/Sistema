@@ -1,0 +1,17 @@
+[
+  {
+    "tgname": "trg_audit_jsonb_pago"
+  },
+  {
+    "tgname": "RI_ConstraintTrigger_c_33776"
+  },
+  {
+    "tgname": "RI_ConstraintTrigger_c_33777"
+  },
+  {
+    "tgname": "RI_ConstraintTrigger_c_33781"
+  },
+  {
+    "tgname": "RI_ConstraintTrigger_c_33782"
+  }
+]

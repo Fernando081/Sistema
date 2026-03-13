@@ -1,0 +1,54 @@
+[
+  {
+    "column_name": "id_cotizacion",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "id_cliente",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "folio",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "fecha_emision",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "fecha_vencimiento",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "nombre_receptor",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "rfc_receptor",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "subtotal",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "total_impuestos",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "total_retenciones",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "total",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "estatus",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone"
+  }
+]
