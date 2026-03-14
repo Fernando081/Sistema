@@ -1,0 +1,8 @@
+.mat-mdc-card {
+  max-height: unset !important;
+  overflow: visible !important;
+}
+
+.mdc-data-table__content {
+  overflow: visible !important;
+}

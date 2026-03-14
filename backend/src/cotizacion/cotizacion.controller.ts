@@ -1,5 +1,6 @@
+
 // backend/src/cotizacion/cotizacion.controller.ts
-import { Body, Controller, Get, Param, Post, Res, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res, Req, UseGuards, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { CotizacionService } from './cotizacion.service';
 import { CreateCotizacionDto } from './cotizacion.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -15,8 +16,12 @@ export class CotizacionController {
   }
 
   @Get()
-  findAll() {
-    return this.service.findAll();
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('term') term?: string,
+  ) {
+    return this.service.findAll(page, limit, term);
   }
 
   @Get(':id/pdf')

@@ -26,8 +26,9 @@ export class VentaController {
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('term') term?: string,
   ) {
-    return this.ventaService.findAll(page, limit);
+    return this.ventaService.findAll(page, limit, term);
   }
 
   @Get(':id/detalle')

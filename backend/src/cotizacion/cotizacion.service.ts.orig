@@ -29,10 +29,8 @@ export class CotizacionService {
     return { message: 'Cotización creada', id: result[0].id };
   }
 
-  async findAll(page: number = 1, limit: number = 10, term: string = ''): Promise<{ data: any[], total: number, page: number, totalPages: number }> {
+  async findAll(page: number = 1, limit: number = 10, term: string = '') {
     const offset = (page - 1) * limit;
-
-    console.log(`[CotizacionService] findAll args: page=${page}, limit=${limit}, term='${term}'`);
 
     const [totalResult, dataResult] = await Promise.all([
       this.dataSource.query('SELECT COUNT(*) as count FROM fn_get_cotizaciones(NULL, NULL, $1)', [term]),
@@ -41,8 +39,6 @@ export class CotizacionService {
         [limit, offset, term]
       ),
     ]);
-
-    console.log(`[CotizacionService] Data query returned ${dataResult?.length} rows`);
 
     const total = parseInt(totalResult[0].count, 10);
     const totalPages = Math.ceil(total / limit);

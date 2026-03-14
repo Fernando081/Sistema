@@ -18,9 +18,9 @@
       </mat-card-header>
 
       <mat-card-content>
-        <mat-form-field appearance="outline" class="w-full mb-4" matTooltip="La búsqueda rápida actualmente solo aplica a los resultados visibles en esta página.">
-          <mat-label>Buscar producto (Página Actual)</mat-label>
-          <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar localmente..." #input>
+        <mat-form-field appearance="outline" class="w-full mb-4" matTooltip="La búsqueda ahora es global en el servidor.">
+          <mat-label>Buscar producto</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Buscar por código, descripción, categoría o marca..." #input>
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
 

@@ -29,8 +29,9 @@ export class ProductoController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
     @Query('sort') sort?: string,
     @Query('order') order?: string,
+    @Query('term') term?: string,
   ) {
-    return this.productoService.findAll(page, limit, sort, order);
+    return this.productoService.findAll(page, limit, sort, order, term);
   }
 
   @Get('smart-restock')

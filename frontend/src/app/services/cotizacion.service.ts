@@ -41,8 +41,9 @@ export class CotizacionService {
     return this.http.post(API_URL, dto);
   }
 
-  getAll(): Observable<any[]> {
-    return this.http.get<any[]>(API_URL);
+  getAll(page: number = 1, limit: number = 10, term: string = ''): Observable<any> {
+    const url = term ? `${API_URL}?page=${page}&limit=${limit}&term=${encodeURIComponent(term)}` : `${API_URL}?page=${page}&limit=${limit}`;
+    return this.http.get<any>(url);
   }
 
   descargarPdf(id: number): Observable<Blob> {

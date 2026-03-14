@@ -271,21 +271,43 @@ export class PagoService {
       ]);
     }
 
-    // Tabla Impuestos por Documento
+    // Tabla Impuestos por Documento (Proporcionales al pago)
     const taxBody: any[][] = [
       [
         { text: 'Folio', style: 'th' },
         { text: 'Base', style: 'th' },
         { text: 'IVA 16% Trasladado', style: 'th' },
-        { text: 'ISR Retenido', style: 'th' },
+        { text: 'ISR Retenido (Moral)', style: 'th' },
       ]
     ];
+    
+    // Validar si es persona moral (longitud RFC = 12) para aplicar ISR
+    const esPersonaMoral = info.cliente_rfc && info.cliente_rfc.length === 12;
+
     for (const f of facturas) {
+      const montoPagado = parseFloat(f.monto_pagado) || 0;
+      
+      let base = 0;
+      let iva = 0;
+      let isr = 0;
+
+      if (esPersonaMoral) {
+        // Fórmula con Retención ISR 1.25%: Base = MontoPagado / (1 + 0.16 - 0.0125)
+        base = montoPagado / 1.1475;
+        iva = base * 0.16;
+        isr = base * 0.0125;
+      } else {
+        // Fórmula General (solo IVA 16%): Base = MontoPagado / 1.16
+        base = montoPagado / 1.16;
+        iva = base * 0.16;
+        isr = 0;
+      }
+
       taxBody.push([
         { text: `${f.serie || ''}-${f.folio}`, fontSize: 7 },
-        { text: fmtMoney(f.monto_pagado), fontSize: 7, alignment: 'right' },
-        { text: fmtMoney(f.impuestos_trasladados || 0), fontSize: 7, alignment: 'right' },
-        { text: fmtMoney(f.impuestos_retenidos || 0), fontSize: 7, alignment: 'right' },
+        { text: fmtMoney(base), fontSize: 7, alignment: 'right' },
+        { text: fmtMoney(iva), fontSize: 7, alignment: 'right' },
+        { text: fmtMoney(isr), fontSize: 7, alignment: 'right' },
       ]);
     }
 
@@ -443,6 +465,11 @@ export class PagoService {
       const saldoAnterior = parseFloat(f.saldo_anterior).toFixed(2);
       const saldoInsoluto = parseFloat(f.saldo_insoluto).toFixed(2);
       
+      // Aproximación de impuestos para el XML (asumiendo 16% IVA y 0% ISR por defecto)
+      const base = impPagado / 1.16;
+      const iva = base * 0.16;
+      const isr = 0;
+      
       doctosRelacionadosXml += `
         <pago20:DoctoRelacionado 
           IdDocumento="${f.uuid_factura || 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'}" 
@@ -454,7 +481,16 @@ export class PagoService {
           ImpSaldoAnt="${saldoAnterior}" 
           ImpPagado="${impPagado.toFixed(2)}" 
           ImpSaldoInsoluto="${saldoInsoluto}" 
-          ObjetoImpDR="01">
+          ObjetoImpDR="02">
+          
+          <pago20:ImpuestosDR>
+            <pago20:RetencionesDR>
+              ${isr > 0 ? `<pago20:RetencionDR BaseDR="${base.toFixed(2)}" ImpuestoDR="01" TipoFactorDR="Tasa" TasaOCuotaDR="0.012500" ImporteDR="${isr.toFixed(2)}" />` : ''}
+            </pago20:RetencionesDR>
+            <pago20:TrasladosDR>
+              <pago20:TrasladoDR BaseDR="${base.toFixed(2)}" ImpuestoDR="02" TipoFactorDR="Tasa" TasaOCuotaDR="0.160000" ImporteDR="${iva.toFixed(2)}" />
+            </pago20:TrasladosDR>
+          </pago20:ImpuestosDR>
         </pago20:DoctoRelacionado>`;
     }
 

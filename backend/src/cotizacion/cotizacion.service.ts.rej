@@ -1,0 +1,20 @@
+--- cotizacion.service.ts
++++ cotizacion.service.ts
+@@ -32,15 +32,17 @@
+   async findAll(page: number = 1, limit: number = 10, term: string = ''): Promise<{ data: any[], total: number, page: number, totalPages: number }> {
+     const offset = (page - 1) * limit;
++    console.log(`[CotizacionService] findAll args: page=${page}, limit=${limit}, term='${term}'`);
+ 
+     // Data Query
+     const query = `
+       SELECT * FROM fn_get_cotizaciones($1, $2, $3)
+     `;
+     const data = await this.dataSource.query(query, [limit, offset, term]);
++    console.log(`[CotizacionService] Data query returned ${data.length} rows`);
+ 
+     // Count Query
+     const countQuery = `
+       SELECT COUNT(*) as total 
+       FROM cotizacion
+       WHERE (\$1 = '' OR folio::text ILIKE '%' || \$1 || '%' OR ('C-' || folio::text) ILIKE '%' || \$1 || '%' OR nombre_receptor ILIKE '%' || \$1 || '%' OR rfc_receptor ILIKE '%' || \$1 || '%')
+     `;

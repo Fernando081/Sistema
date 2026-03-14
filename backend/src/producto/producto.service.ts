@@ -11,7 +11,7 @@ import { APP_CONSTANTS } from '../common/constants/app.constants';
 export class ProductoService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
-  async findAll(page: number = 1, limit: number = 10, sort?: string, order?: string): Promise<any> {
+  async findAll(page: number = 1, limit: number = 10, sort?: string, order?: string, term: string = ''): Promise<any> {
     const offset = (page - 1) * limit;
 
     const sortMap: Record<string, string> = {
@@ -31,10 +31,10 @@ export class ProductoService {
     }
 
     const [totalResult, dataResult] = await Promise.all([
-      this.dataSource.query('SELECT COUNT(*) as count FROM fn_get_productos()'),
+      this.dataSource.query('SELECT COUNT(*) as count FROM fn_get_productos(NULL, NULL, $1)', [term]),
       this.dataSource.query(
-        `SELECT * FROM fn_get_productos($1, $2)${orderClause}`,
-        [limit, offset]
+        `SELECT * FROM fn_get_productos($1, $2, $3)${orderClause}`,
+        [limit, offset, term]
       ),
     ]);
 

@@ -1,0 +1,17 @@
+--- venta.service.ts
++++ venta.service.ts
+@@ -75,12 +75,14 @@
+   async findAll(page: number = 1, limit: number = 10, term: string = '') {
+     const offset = (page - 1) * limit;
++    console.log(`[VentaService] findAll args: page=${page}, limit=${limit}, term='${term}'`);
+ 
+     const query = `
+       SELECT * FROM fn_get_facturas($1, $2, $3)
+     `;
+     const data = await this.dataSource.query(query, [limit, offset, term]);
++    console.log(`[VentaService] Data query returned ${data.length} rows`);
+ 
+     const countQuery = `
+       SELECT COUNT(*) as total 
+       FROM factura
+       WHERE (\$1 = '' OR folio::text ILIKE '%' || \$1 || '%' OR ('A' || folio::text) ILIKE '%' || \$1 || '%' OR nombre_receptor ILIKE '%' || \$1 || '%' OR rfc_receptor ILIKE '%' || \$1 || '%')

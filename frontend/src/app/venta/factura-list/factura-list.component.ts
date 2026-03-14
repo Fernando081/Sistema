@@ -1,5 +1,5 @@
 // frontend/src/app/venta/factura-list/factura-list.component.ts
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -15,6 +15,7 @@ import { FacturaResumen } from '../venta.interface';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // Importar Dialog
 import { FacturaDetalleComponent } from '../factura-detalle/factura-detalle.component'; // Importar Componente
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 
 @Component({
@@ -31,11 +32,13 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
   `]
 })
-export class FacturaListComponent implements OnInit, AfterViewInit {
+export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
   
   displayedColumns: string[] = ['folio', 'fecha', 'receptor', 'rfc', 'total', 'estatus', 'acciones'];
   dataSource = new MatTableDataSource<FacturaResumen>();
   totalItems = 0;
+  activeFilter = '';
+  searchSubject = new Subject<string>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -47,6 +50,21 @@ export class FacturaListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.cargarFacturas();
+
+    this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(term => {
+      this.activeFilter = term;
+      if (this.paginator) {
+        this.paginator.firstPage();
+      }
+      this.cargarFacturas();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubject.complete();
   }
 
   ngAfterViewInit(): void {
@@ -59,7 +77,7 @@ export class FacturaListComponent implements OnInit, AfterViewInit {
     const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
     const limit = this.paginator ? this.paginator.pageSize : 10;
     
-    this.ventaService.getFacturas(page, limit).subscribe({
+    this.ventaService.getFacturas(page, limit, this.activeFilter).subscribe({
       next: (response) => {
         const data = response.data || response;
         this.totalItems = response.total || 0;
@@ -73,11 +91,7 @@ export class FacturaListComponent implements OnInit, AfterViewInit {
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.paginator) {
-      this.paginator.firstPage();
-    }
+    this.searchSubject.next(filterValue.trim().toLowerCase());
   }
 
   // Función auxiliar para el color del chip de estatus

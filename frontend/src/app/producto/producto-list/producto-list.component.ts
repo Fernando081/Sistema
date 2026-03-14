@@ -1,6 +1,6 @@
 // frontend/src/app/producto/producto-list/producto-list.component.ts (MODIFICAR)
 
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -16,7 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProductoService } from '../../services/producto.service';
 import { Producto } from '../producto.interface';
 import { ProductoDialogComponent } from '../producto-dialog/producto-dialog.component';
-import { finalize } from 'rxjs';
+import { finalize, Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs'; // 1. Importar MatTabsModule
 import { CategoriaListComponent } from '../../categoria/categoria-list/categoria-list.component'; // 2. Importar CategoriaListComponent
@@ -36,12 +36,14 @@ import { ProductoKardexComponent } from '../producto-kardex/producto-kardex.comp
   templateUrl: './producto-list.component.html',
   styleUrls: ['./producto-list.component.css']
 })
-export class ProductoListComponent implements OnInit, AfterViewInit {
+export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
   
   displayedColumns: string[] = ['imagen_url', 'codigo', 'descripcion', 'categoriaNombre', 'marca', 'ubicacion', 'precioUnitario','existencia', 'acciones'];
   dataSource = new MatTableDataSource<Producto>();
   isLoading = true;
   totalItems = 0;
+  activeFilter = '';
+  searchSubject = new Subject<string>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -54,6 +56,21 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.cargarProductos();
+
+    this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(term => {
+      this.activeFilter = term;
+      if (this.paginator) {
+        this.paginator.firstPage();
+      }
+      this.cargarProductos();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubject.complete();
   }
 
   ngAfterViewInit(): void {
@@ -79,7 +96,7 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
     const sort = this.sort ? this.sort.active : '';
     const order = this.sort ? this.sort.direction : '';
     
-    this.productoService.getProductos(page, limit, sort, order)
+    this.productoService.getProductos(page, limit, sort, order, this.activeFilter)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (response) => {
@@ -134,22 +151,8 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
   }
 
   applyFilter(event: Event) {
-    // Para filtros del lado del servidor idealmente iría al backend
     const filterValue = (event.target as HTMLInputElement).value;
-    // this.dataSource.filter ya no funciona igual con paginación de servidor, 
-    // pero lo dejamos para filtrar la página actual
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-    
-    this.dataSource.filterPredicate = (data: Producto, filter: string): boolean => {
-      const descMatch = data.descripcion.toLowerCase().includes(filter);
-      const codigoMatch = (data.codigo?.toLowerCase().includes(filter)) ?? false;
-      const marcaMatch = (data.marca?.toLowerCase().includes(filter)) ?? false;
-      return descMatch || codigoMatch || marcaMatch;
-    };
-
-    if (this.paginator) {
-      this.paginator.firstPage();
-    }
+    this.searchSubject.next(filterValue.trim().toLowerCase());
   }
 
   abrirDialogo(producto?: Producto): void {

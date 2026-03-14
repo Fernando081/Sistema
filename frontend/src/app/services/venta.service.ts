@@ -23,8 +23,9 @@ export class VentaService {
     return this.http.get<any[]>(`${API_URL}/comisiones`);
   }
 
-  getFacturas(page: number = 1, limit: number = 10): Observable<any> {
-    return this.http.get<any>(`${API_URL}?page=${page}&limit=${limit}`);
+  getFacturas(page: number = 1, limit: number = 10, term: string = ''): Observable<any> {
+    const url = term ? `${API_URL}?page=${page}&limit=${limit}&term=${encodeURIComponent(term)}` : `${API_URL}?page=${page}&limit=${limit}`;
+    return this.http.get<any>(url);
   }
 
   getDetalleFactura(idFactura: number): Observable<any[]> {

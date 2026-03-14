@@ -103,15 +103,13 @@ export const routes: Routes = [
     path: 'cobranza',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./pago/cobranza/cobranza.component').then((m) => m.CobranzaComponent),
+      import('./rep/rep-create/rep-create.component').then((m) => m.RepCreateComponent),
   },
   {
-    path: 'cuentas-por-pagar',
+    path: 'operaciones/smart-restock',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./pago/cuentas-por-pagar/cuentas-por-pagar.component').then(
-        (m) => m.CuentasPorPagarComponent,
-      ),
+      import('./operaciones/smart-restock/smart-restock.component').then((m) => m.SmartRestockComponent),
   },
   {
     path: 'gastos',
@@ -120,20 +118,9 @@ export const routes: Routes = [
       import('./finanzas/gastos/gastos.component').then((m) => m.GastosComponent),
   },
   {
-    path: 'operaciones/smart-restock',
-    canActivate: [authGuard],
-    data: { roles: ['admin'] },
-    loadComponent: () =>
-      import('./operaciones/smart-restock/smart-restock.component').then(
-        (m) => m.SmartRestockComponent,
-      ),
-  },
-  {
-    path: 'rep-recibos',
+    path: 'cuentas-por-pagar',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./rep/rep-create/rep-create.component').then(
-        (m) => m.RepCreateComponent,
-      ),
-  },
+      import('./pago/cuentas-por-pagar/cuentas-por-pagar.component').then((m) => m.CuentasPorPagarComponent),
+  }
 ];

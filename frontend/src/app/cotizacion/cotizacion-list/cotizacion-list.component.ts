@@ -1,5 +1,5 @@
 // frontend/src/app/cotizacion/cotizacion-list/cotizacion-list.component.ts
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { CotizacionService } from '../../services/cotizacion.service';
 import { CatalogosService } from '../../services/catalogos.service';
 import { ConvertirDialogComponent } from './convertir-dialog.component';
@@ -28,10 +28,13 @@ import { ConvertirDialogComponent } from './convertir-dialog.component';
   ],
   templateUrl: './cotizacion-list.component.html',
 })
-export class CotizacionListComponent implements OnInit {
+export class CotizacionListComponent implements OnInit, AfterViewInit, OnDestroy {
   
   displayedColumns: string[] = ['folio', 'fecha', 'cliente', 'total', 'estatus', 'acciones'];
   dataSource = new MatTableDataSource<any>();
+  totalItems = 0;
+  activeFilter = '';
+  searchSubject = new Subject<string>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -45,14 +48,41 @@ export class CotizacionListComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarCotizaciones();
+
+    this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(term => {
+      this.activeFilter = term;
+      if (this.paginator) {
+        this.paginator.firstPage();
+      }
+      this.cargarCotizaciones();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubject.complete();
+  }
+
+  ngAfterViewInit(): void {
+    // Escuchar el paginador para recargar
+    if(this.paginator) {
+      this.paginator.page.subscribe(() => {
+        this.cargarCotizaciones();
+      });
+    }
   }
 
   cargarCotizaciones() {
-    this.cotizacionService.getAll().subscribe({
-      next: (data) => {
+    const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
+    const limit = this.paginator ? this.paginator.pageSize : 10;
+    
+    this.cotizacionService.getAll(page, limit, this.activeFilter).subscribe({
+      next: (response) => {
+        const data = response.data || response;
+        this.totalItems = response.total || 0;
         this.dataSource.data = data;
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
       },
       error: (e) => console.error(e)
     });
@@ -60,7 +90,7 @@ export class CotizacionListComponent implements OnInit {
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.searchSubject.next(filterValue.trim().toLowerCase());
   }
 
   descargarPdf(id: number) {

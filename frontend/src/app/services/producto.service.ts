@@ -17,10 +17,11 @@ export class ProductoService {
 
   // --- CRUD BÁSICO ---
 
-  getProductos(page: number = 1, limit: number = 10, sort: string = '', order: string = ''): Observable<any> {
+  getProductos(page: number = 1, limit: number = 10, sort: string = '', order: string = '', term: string = ''): Observable<any> {
     let url = `${this.apiUrl}?page=${page}&limit=${limit}`;
     if (sort) url += `&sort=${sort}`;
     if (order) url += `&order=${order}`;
+    if (term) url += `&term=${encodeURIComponent(term)}`;
     return this.http.get<any>(url);
   }
   

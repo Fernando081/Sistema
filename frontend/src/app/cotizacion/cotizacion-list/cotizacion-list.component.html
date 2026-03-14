@@ -11,7 +11,7 @@
     <mat-card-content>
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Buscar...</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Folio, Cliente..." #input>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Buscar por folio o cliente..." #input>
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
@@ -84,7 +84,7 @@
           </tr>
         </table>
       </div>
-      <mat-paginator [pageSizeOptions]="[10, 25]"></mat-paginator>
+      <mat-paginator [length]="totalItems" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" class="!bg-transparent text-gray-200"></mat-paginator>
     </mat-card-content>
   </mat-card>
 </div>
