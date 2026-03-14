@@ -1,0 +1,12 @@
+[
+  {
+    "table_name": "factura",
+    "column_name": "estatus",
+    "udt_name": "estatus_factura_enum"
+  },
+  {
+    "table_name": "kardex",
+    "column_name": "tipo_movimiento",
+    "udt_name": "tipo_movimiento_enum"
+  }
+]

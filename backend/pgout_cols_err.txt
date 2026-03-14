@@ -1,0 +1,158 @@
+[
+  {
+    "column_name": "id_factura",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "id_cliente",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "serie",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "folio",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "fecha_emision",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "estatus",
+    "data_type": "USER-DEFINED"
+  },
+  {
+    "column_name": "rfc_receptor",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "nombre_receptor",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "codigo_postal_receptor",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "regimen_fiscal_receptor_clave",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "uso_cfdi_clave",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "id_forma_pago",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "id_metodo_pago",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "id_uso_cfdi",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "tipo_comprobante",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "exportacion",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "moneda",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "tipo_cambio",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "subtotal",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "descuento",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "total_impuestos_trasladados",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "total_impuestos_retenidos",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "total",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "uuid",
+    "data_type": "uuid"
+  },
+  {
+    "column_name": "xml_timbrado",
+    "data_type": "text"
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "saldo_pendiente",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "id_vendedor",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "comision_vendedor",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "id_kardex",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "id_producto",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "fecha",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "tipo_movimiento",
+    "data_type": "USER-DEFINED"
+  },
+  {
+    "column_name": "cantidad",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "stock_anterior",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "stock_resultante",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "precio_unitario",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "referencia",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "id_referencia",
+    "data_type": "integer"
+  }
+]
