@@ -12,8 +12,7 @@ import {
   DefaultValuePipe,
 } from '@nestjs/common';
 import { ProductoService } from './producto.service';
-import { CreateProductoDto, UpdateProductoDto } from './producto.dto';
-
+import { CreateProductoDto, UpdateProductoDto, CreateCotizacionProvDto } from './producto.dto';
 @Controller('producto') // Endpoint: /api/v1/producto
 export class ProductoController {
   constructor(private readonly productoService: ProductoService) {}
@@ -96,5 +95,25 @@ export class ProductoController {
     @Param('idEq', ParseIntPipe) idEq: number,
   ) {
     return this.productoService.eliminarEquivalente(id, idEq);
+  }
+
+  // --- CRUCES Y ALTERNATIVAS ---
+  @Get(':id/alternativas')
+  getAlternativas(@Param('id', ParseIntPipe) id: number) {
+    return this.productoService.getAlternativas(id);
+  }
+
+  // --- COTIZACIONES PROVEEDORES ---
+  @Get(':id/cotizacion-prov')
+  getCotizacionesProveedor(@Param('id', ParseIntPipe) id: number) {
+    return this.productoService.getCotizacionesProveedor(id);
+  }
+
+  @Post(':id/cotizacion-prov')
+  addCotizacionProveedor(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: CreateCotizacionProvDto,
+  ) {
+    return this.productoService.addCotizacionProveedor(id, dto);
   }
 }

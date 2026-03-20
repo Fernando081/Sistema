@@ -120,3 +120,20 @@ export interface PrediccionDemandaItem {
   cantidad_sugerida_compra: number;
 }
 
+export class CreateCotizacionProvDto {
+  @IsInt()
+  idProveedor: number;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(100)
+  marcaOfrecida?: string;
+
+  @IsNumber()
+  @Min(0)
+  precioCotizado: number;
+
+  @IsInt()
+  @Min(0)
+  diasEntrega: number;
+}

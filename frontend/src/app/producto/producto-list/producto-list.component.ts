@@ -21,6 +21,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs'; // 1. Importar MatTabsModule
 import { CategoriaListComponent } from '../../categoria/categoria-list/categoria-list.component'; // 2. Importar CategoriaListComponent
 import { ProductoKardexComponent } from '../producto-kardex/producto-kardex.component';
+import { ProductoCotizacionesDialogComponent } from './producto-cotizaciones-dialog.component';
 
 @Component({
   selector: 'app-producto-list',
@@ -147,6 +148,17 @@ export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dialog.open(ProductoKardexComponent, {
       width: '600px',
       data: producto
+    });
+  }
+
+  verCotizacionesProveedor(producto: Producto) {
+    this.dialog.open(ProductoCotizacionesDialogComponent, {
+      width: '1500px',
+      maxWidth: '95vw',
+      data: {
+        idProducto: producto.idProducto,
+        productoNombre: producto.descripcion
+      }
     });
   }
 

@@ -83,4 +83,18 @@ export class ProductoService {
     }
     return this.http.post<{ urls: string[]; message: string }>(this.uploadUrl, formData);
   }
+
+  // --- COTIZACIONES PROVEEDOR ---
+  getCotizacionesProveedor(idProducto: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${idProducto}/cotizacion-prov`);
+  }
+
+  addCotizacionProveedor(idProducto: number, dto: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${idProducto}/cotizacion-prov`, dto);
+  }
+
+  // --- ALTERNATIVAS (CRUCES) ---
+  getAlternativas(idProducto: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${idProducto}/alternativas`);
+  }
 }

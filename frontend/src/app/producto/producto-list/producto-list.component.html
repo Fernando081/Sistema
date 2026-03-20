@@ -76,6 +76,9 @@
             <ng-container matColumnDef="acciones">
               <th mat-header-cell *matHeaderCellDef> Acciones </th>
               <td mat-cell *matCellDef="let element">
+                <button mat-icon-button class="text-green-600" (click)="verCotizacionesProveedor(element)" matTooltip="Ver Cotizaciones de Proveedores">
+                  <mat-icon>price_check</mat-icon>
+                </button>
                 <button mat-icon-button color="accent" (click)="verKardex(element)" matTooltip="Ver Historial (Kardex)">
                   <mat-icon>history</mat-icon>
                 </button>

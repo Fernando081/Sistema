@@ -21,9 +21,15 @@
                   </div>
                   <span class="text-xs" [class.text-red-600]="prod.existencia <= 0" [class.text-green-600]="prod.existencia > 0">Stock: {{ prod.existencia }}</span>
                 </div>
-                <div class="flex justify-between text-xs text-gray-500">
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
                   <span>{{ prod.codigo || 'S/N' }}<span *ngIf="prod.esEquivalente" class="text-blue-600 font-bold ml-2">(Sugerido)</span></span>
-                  <span>{{ prod.precioUnitario | currency }}</span>
+                  <div class="flex items-center gap-2">
+                    <span *ngIf="prod.existencia <= 0 && prod.alternativas && prod.alternativas.length > 0" class="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-500 font-bold px-2 py-0.5 rounded text-xs flex items-center">
+                      <mat-icon class="text-yellow-600 !w-3 !h-3 text-[14px] leading-none inline-block align-middle mr-1">info</mat-icon>
+                      0 en stock. Ver {{ prod.alternativas.length }} alternativas
+                    </span>
+                    <span>{{ prod.precioUnitario | currency }}</span>
+                  </div>
                 </div>
               </div>
             </mat-option>

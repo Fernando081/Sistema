@@ -1,0 +1,59 @@
+[
+  {
+    "column_name": "IdProveedor"
+  },
+  {
+    "column_name": "RFC"
+  },
+  {
+    "column_name": "RazonSocial"
+  },
+  {
+    "column_name": "Pais"
+  },
+  {
+    "column_name": "IdEstado"
+  },
+  {
+    "column_name": "IdMunicipio"
+  },
+  {
+    "column_name": "Ciudad"
+  },
+  {
+    "column_name": "Colonia"
+  },
+  {
+    "column_name": "Calle"
+  },
+  {
+    "column_name": "CodigoPostal"
+  },
+  {
+    "column_name": "NumeroExterior"
+  },
+  {
+    "column_name": "NumeroInterior"
+  },
+  {
+    "column_name": "Referencia"
+  },
+  {
+    "column_name": "IdMetodoDePago"
+  },
+  {
+    "column_name": "IdUsoCFDI"
+  },
+  {
+    "column_name": "IdFormaPago"
+  },
+  {
+    "column_name": "IdRegimenFiscal"
+  },
+  {
+    "column_name": "ClaveEstado"
+  },
+  {
+    "column_name": "ClaveMunicipio"
+  }
+]

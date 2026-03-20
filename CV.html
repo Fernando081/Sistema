@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV_Luis_Fernando_Ortega_FullStack</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #333;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 40px 50px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        header {
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 28px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #34495e;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        .contact-info {
+            font-size: 13px;
+            color: #555;
+            margin-top: 10px;
+        }
+        .contact-info span {
+            margin: 0 8px;
+        }
+        h2 {
+            font-size: 16px;
+            color: #2c3e50;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        p {
+            font-size: 13px;
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+        .skills-list {
+            font-size: 13px;
+            margin: 0;
+            padding-left: 20px;
+        }
+        .skills-list li {
+            margin-bottom: 5px;
+        }
+        .job {
+            margin-bottom: 15px;
+        }
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        .job-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+        .job-date {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .job-desc {
+            font-size: 13px;
+            margin: 5px 0 0 0;
+            padding-left: 20px;
+        }
+        .job-desc li {
+            margin-bottom: 4px;
+        }
+        
+        /* Reglas para la impresión a PDF */
+        @media print {
+            body {
+                background-color: #fff;
+            }
+            .container {
+                margin: 0;
+                padding: 20px;
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Luis Fernando Ortega Resendiz</h1>
+        <div class="subtitle">Junior Full Stack Web Developer</div>
+        <div class="contact-info">
+            <span>Tampico, Tamaulipas</span> | 
+            <span>833 309 58 45</span> | 
+            <span>Fernando_ortega081@hotmail.com</span><br>
+            <span>github.com/Fernando081</span> | 
+            <span>linkedin.com/in/fernando-ortega-74a53b23a</span>
+        </div>
+    </header>
+
+    <section>
+        <h2>Perfil Profesional</h2>
+        <p>Estudiante de 8º semestre de Ingeniería en Sistemas Computacionales en la Universidad Autónoma de Tamaulipas, enfocado en el desarrollo web Full Stack. Cuento con experiencia práctica construyendo aplicaciones de gestión empresarial de extremo a extremo. Apasionado por la creación de arquitecturas escalables, bases de datos relacionales y el desarrollo de interfaces de usuario dinámicas. Busco aportar mis habilidades técnicas en un entorno profesional mientras continúo mi crecimiento como desarrollador.</p>
+    </section>
+
+    <section>
+        <h2>Habilidades Técnicas</h2>
+        <ul class="skills-list">
+            <li><strong>Frontend:</strong> Angular, TypeScript, JavaScript, HTML5, CSS3.</li>
+            <li><strong>Backend:</strong> Node.js, NestJS, Java.</li>
+            <li><strong>Bases de Datos:</strong> PostgreSQL, SQL Server, MySQL.</li>
+            <li><strong>Herramientas y Entornos:</strong> Git, GitHub, Linux, Máquinas Virtuales (VMware, VirtualBox, Hyper-V).</li>
+            <li><strong>Otros Conocimientos:</strong> Unity (C#), Python, C++, PHP.</li>
+            <li><strong>Idiomas:</strong> Inglés (Intermedio - 80%).</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Experiencia en Desarrollo y Proyectos Destacados</h2>
+        
+        <div class="job">
+            <div class="job-header">
+                <span class="job-title">Desarrollador Full Stack | Sistema ERP, CRM y Punto de Venta</span>
+                <span class="job-date">Proyecto Activo</span>
+            </div>
+            <ul class="job-desc">
+                <li>Diseño y desarrollo desde cero de un sistema integral de facturación, control de inventario y estadísticas, optimizado para la gestión de refacciones y maquinaria pesada.</li>
+                <li>Implementación de la interfaz de usuario utilizando Angular y TypeScript para una navegación fluida y responsiva.</li>
+                <li>Construcción de una API REST robusta con Node.js y gestión eficiente de la base de datos relacional con PostgreSQL.</li>
+            </ul>
+        </div>
+
+        <div class="job">
+            <div class="job-header">
+                <span class="job-title">Desarrollador de Software | Sistema de Gestión Ganadera</span>
+                <span class="job-date">Proyecto en Desarrollo</span>
+            </div>
+            <ul class="job-desc">
+                <li>Desarrollo de un sistema de trazabilidad para ganado bovino, gestionando el ciclo de vida desde el nacimiento hasta la venta.</li>
+                <li>Diseño de módulos para control de inventario, registro de salud veterinaria y optimización de recursos.</li>
+            </ul>
+        </div>
+
+        <div class="job">
+            <div class="job-header">
+                <span class="job-title">Desarrollador Web y Móvil | App para Pacientes con Diabetes</span>
+                <span class="job-date">Septiembre 2025</span>
+            </div>
+            <ul class="job-desc">
+                <li>Creación de una aplicación integral enfocada en el sector salud como parte de la asignatura de Ingeniería de Software.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>Educación</h2>
+        <div class="job">
+            <div class="job-header">
+                <span class="job-title">Ingeniería en Sistemas Computacionales (8º Semestre)</span>
+                <span class="job-date">2018 - Actualidad</span>
+            </div>
+            <p style="margin: 0; font-size: 13px;">Universidad Autónoma de Tamaulipas (UAT)</p>
+        </div>
+        <div class="job" style="margin-top: 10px;">
+            <div class="job-header">
+                <span class="job-title">Técnico Analista Programador</span>
+                <span class="job-date">2015 - 2017</span>
+            </div>
+            <p style="margin: 0; font-size: 13px;">Facultad de Informática y Computación - ICEST</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Historial Laboral Adicional</h2>
+        <p style="margin-bottom: 5px;"><em>Experiencia previa aportando bases sólidas en lógica de negocios, facturación, cobranza y atención al cliente:</em></p>
+        <ul class="skills-list" style="list-style-type: square;">
+            <li><strong>Atención al Cliente:</strong> Monkey Papas (09/2024 - 01/2025)</li>
+            <li><strong>Auxiliar Administrativo (Facturación y Cobranza):</strong> Refacciones y Tractorepuestos Tampico (2018 - 11/2023)</li>
+            <li><strong>Auxiliar de Supervisor de Obra:</strong> Green City Construction Service (11/2023 - 02/2024)</li>
+            <li><strong>Ejecutivo de Ventas y Diseño:</strong> Consumibles Internacionales REYG (2017 - 2018)</li>
+        </ul>
+    </section>
+
+</div>
+
+</body>
+</html>

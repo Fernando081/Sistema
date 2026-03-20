@@ -241,4 +241,70 @@ export class ProductoService {
     await this.dataSource.query('REFRESH MATERIALIZED VIEW CONCURRENTLY vw_prediccion_demanda');
     return { message: 'Vista de predicción de demanda actualizada correctamente' };
   }
+
+  // --- COTIZACIONES PROVEEDORES ---
+  async getCotizacionesProveedor(idProducto: number) {
+    return this.dataSource.query(`
+      SELECT 
+        c.id_cotizacion_prov,
+        c.id_producto,
+        c.id_proveedor,
+        p."RazonSocial" as proveedor_nombre,
+        c.marca_ofrecida,
+        c.precio_cotizado,
+        c.dias_entrega,
+        c.fecha_registro
+      FROM producto_cotizacion_prov c
+      JOIN proveedor p ON c.id_proveedor = p."IdProveedor"
+      WHERE c.id_producto = $1
+      ORDER BY c.fecha_registro DESC
+    `, [idProducto]);
+  }
+
+  async addCotizacionProveedor(idProducto: number, dto: any) {
+    const result = await this.dataSource.query(`
+      INSERT INTO producto_cotizacion_prov (
+        id_producto, id_proveedor, marca_ofrecida, precio_cotizado, dias_entrega
+      ) VALUES ($1, $2, $3, $4, $5)
+      RETURNING id_cotizacion_prov
+    `, [
+      idProducto,
+      dto.idProveedor,
+      dto.marcaOfrecida || null,
+      dto.precioCotizado,
+      dto.diasEntrega || 0
+    return { 
+      message: 'Cotización guardada exitosamente', 
+      idCotizacionProv: result[0].id_cotizacion_prov 
+    };
+  }
+
+  // --- CRUCES / ALTERNATIVAS (BIDIRECCIONAL) ---
+  async getAlternativas(idProducto: number) {
+    return this.dataSource.query(`
+      SELECT 
+        p."IdProducto" as id_producto,
+        p."Codigo" as codigo,
+        p."Descripcion" as descripcion,
+        p."Marca" as marca,
+        p."PrecioUnitario" as precio,
+        p."Existencia" as stock
+      FROM producto p
+      INNER JOIN producto_cruce pc ON p."IdProducto" = pc.id_producto_destino
+      WHERE pc.id_producto_origen = $1
+      
+      UNION
+      
+      SELECT 
+        p."IdProducto" as id_producto,
+        p."Codigo" as codigo,
+        p."Descripcion" as descripcion,
+        p."Marca" as marca,
+        p."PrecioUnitario" as precio,
+        p."Existencia" as stock
+      FROM producto p
+      INNER JOIN producto_cruce pc ON p."IdProducto" = pc.id_producto_origen
+      WHERE pc.id_producto_destino = $1
+    `, [idProducto]);
+  }
 }

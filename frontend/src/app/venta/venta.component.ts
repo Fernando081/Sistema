@@ -22,6 +22,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { AlternativasDialogComponent } from './alternativas-dialog.component';
 
 // Servicios e Interfaces
 import { ProductoService } from '../services/producto.service';
@@ -54,6 +56,7 @@ import { map, startWith, finalize } from 'rxjs/operators';
     MatSnackBarModule,
     FormsModule,
     MatProgressSpinnerModule,
+    MatDialogModule
   ],
   templateUrl: './venta.component.html',
   // Elimina styleUrls si no tienes el archivo CSS
@@ -103,6 +106,7 @@ export class VentaComponent implements OnInit {
     private catalogosService: CatalogosService,
     private ventaService: VentaService,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {
     this.configForm = this.fb.group({
       idUsoCFDI: [null, Validators.required],
@@ -211,8 +215,28 @@ export class VentaComponent implements OnInit {
 
   // --- AGREGAR PRODUCTO AL CARRITO ---
   agregarProducto(producto: Producto) {
-    // 1. Validación de Stock (Bonita)
+    // 1. Validación de Stock + Interceptor de Sustitución en 1-Clic
     if (producto.existencia <= 0) {
+      if (producto.alternativas && producto.alternativas.length > 0) {
+        this.dialog.open(AlternativasDialogComponent, {
+           width: '800px',
+           data: {
+             productoOriginal: producto,
+             alternativas: producto.alternativas
+           }
+        }).afterClosed().subscribe(altSeleccionada => {
+           if (altSeleccionada) {
+              const prodReal = this.listaProductos.find(p => p.idProducto === altSeleccionada.id_producto);
+              if (prodReal) {
+                 this.agregarProducto(prodReal);
+              } else {
+                 this.mostrarNotificacion("Error: Producto alternativo no encontrado en memoria.");
+              }
+           }
+        });
+        return;
+      }
+
       this.mostrarNotificacion(`⚠️ No hay stock de "${producto.descripcion}".`);
       this.productoControl.setValue('');
       return;
@@ -413,7 +437,22 @@ export class VentaComponent implements OnInit {
       const codigo = (p.codigo || '').toLowerCase();
       // Reseteamos la bandera visual
       p.esEquivalente = false;
-      return descripcion.includes(filterValue) || codigo.includes(filterValue);
+
+      const coincide = descripcion.includes(filterValue) || codigo.includes(filterValue);
+
+      // --- LOGICA AUTOPILOT SMART RESTOCK OOS ---
+      if (coincide && p.existencia === 0 && !p.hasSearchedAlternativas) {
+        p.hasSearchedAlternativas = true;
+        this.productoService.getAlternativas(p.idProducto).subscribe({
+          next: (alts) => {
+            p.alternativas = alts;
+            // Fuerza actualización del autocompletado en la UI mutando el Observable
+            this.productoControl.setValue(this.productoControl.value);
+          }
+        });
+      }
+
+      return coincide;
     });
 
     // 2. Búsqueda de Equivalentes (Indirecta)

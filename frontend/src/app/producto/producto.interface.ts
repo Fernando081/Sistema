@@ -1,4 +1,14 @@
 // frontend/src/app/producto/producto.interface.ts (REEMPLAZAR)
+
+export interface ProductoAlternativa {
+  id_producto: number;
+  codigo: string;
+  descripcion: string;
+  marca: string;
+  precio: number;
+  stock: number;
+}
+
 export interface Producto {
   idProducto: number;
   codigo: string;
@@ -29,6 +39,8 @@ export interface Producto {
   equivalentesIds?: number[]; // Viene de la BD
   esEquivalente?: boolean;    // Lo usaremos en el frontend para colorear
   imagenes?: string[];        // Opcional para las fotos Multer
+  alternativas?: ProductoAlternativa[];
+  hasSearchedAlternativas?: boolean;
 }
 
 // Interfaz específica para lo que devuelve tu query SQL de Kardex

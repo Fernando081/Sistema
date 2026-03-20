@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV_Luis_Fernando_Ortega_FullStack_EN</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #333;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 40px 50px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        header {
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 28px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #34495e;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        .contact-info {
+            font-size: 13px;
+            color: #555;
+            margin-top: 10px;
+        }
+        .contact-info span {
+            margin: 0 8px;
+        }
+        h2 {
+            font-size: 16px;
+            color: #2c3e50;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        p {
+            font-size: 13px;
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+        .skills-list {
+            font-size: 13px;
+            margin: 0;
+            padding-left: 20px;
+        }
+        .skills-list li {
+            margin-bottom: 5px;
+        }
+        .job {
+            margin-bottom: 15px;
+        }
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        .job-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+        .job-date {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .job-desc {
+            font-size: 13px;
+            margin: 5px 0 0 0;
+            padding-left: 20px;
+        }
+        .job-desc li {
+            margin-bottom: 4px;
+        }
+        
+        /* Reglas para la impresión a PDF */
+        @media print {
+            body {
+                background-color: #fff;
+            }
+            .container {
+                margin: 0;
+                padding: 20px;
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Luis Fernando Ortega Resendiz</h1>
+        <div class="subtitle">Junior Full Stack Web Developer</div>
+        <div class="contact-info">
+            <span>Tampico, Tamaulipas</span> | 
+            <span>833 309 58 45</span> | 
+            <span>Fernando_ortega081@hotmail.com</span><br>
+            <span>github.com/Fernando081</span> | 
+            <span>linkedin.com/in/fernando-ortega-74a53b23a</span>
+        </div>
+    </header>
+
+    <section>
+        <h2>Professional Profile</h2>
+        <p>8th-semester Computer Systems Engineering student at the Universidad Autónoma de Tamaulipas, focused on Full Stack web development. I have hands-on experience building end-to-end enterprise management applications. Passionate about creating scalable architectures, relational databases, and developing dynamic user interfaces. Seeking to contribute my technical skills in a professional environment while continuing to grow as a developer.</p>
+    </section>
+
+    <section>
+        <h2>Technical Skills</h2>
+        <ul class="skills-list">
+            <li><strong>Frontend:</strong> Angular, TypeScript, JavaScript, HTML5, CSS3.</li>
+            <li><strong>Backend:</strong> Node.js, NestJS, Java.</li>
+            <li><strong>Databases:</strong> PostgreSQL, SQL Server, MySQL.</li>
+            <li><strong>Tools & Environments:</strong> Git, GitHub, Linux, Virtual Machines (VMware, VirtualBox, Hyper-V).</li>
+            <li><strong>Other Knowledge:</strong> Unity (C#), Python, C++, PHP.</li>
+            <li><strong>Languages:</strong> English (Intermediate - 80%).</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Development Experience & Highlighted Projects</h2>
+        
+        <div class="job">
+            <div class="job-header">
+                <span class="job-title">Full Stack Developer | ERP, CRM, and POS System</span>
+                <span class="job-date">Active Project</span>
+            </div>
+            <ul class="job-desc">
+                <li>Designed and developed from scratch a comprehensive billing, inventory control, and statistics system, optimized for the management of spare parts and heavy machinery.</li>
+                <li>Implemented the user interface using Angular and TypeScript for seamless and responsive navigation.</li>
+                <li>Built a robust RESTful API with Node.js and efficiently managed the relational database with PostgreSQL.</li>
+            </ul>
+        </div>
+
+        <div class="job">
+            <div class="job-header">
+                <span class="job-title">Software Developer | Livestock Management System</span>
+                <span class="job-date">In Development</span>
+            </div>
+            <ul class="job-desc">
+                <li>Developed a traceability system for cattle, managing the lifecycle from birth to sale.</li>
+                <li>Designed modules for inventory control, veterinary health records, and resource optimization.</li>
+            </ul>
+        </div>
+
+        <div class="job">
+            <div class="job-header">
+                <span class="job-title">Web & Mobile Developer | App for Diabetic Patients</span>
+                <span class="job-date">September 2025</span>
+            </div>
+            <ul class="job-desc">
+                <li>Created a comprehensive health-focused application as part of the Software Engineering course.</li>
+            </ul>
+        </div>
+    </section>
+    <br>
+    <br>
+    <br>
+    <br>
+    <section>
+        <h2>Education</h2>
+        <div class="job">
+            <div class="job-header">
+                <span class="job-title">B.S. in Computer Systems Engineering (8th Semester)</span>
+                <span class="job-date">2018 - Present</span>
+            </div>
+            <p style="margin: 0; font-size: 13px;">Universidad Autónoma de Tamaulipas (UAT)</p>
+        </div>
+        <div class="job" style="margin-top: 10px;">
+            <div class="job-header">
+                <span class="job-title">Programmer Analyst Technician</span>
+                <span class="job-date">2015 - 2017</span>
+            </div>
+            <p style="margin: 0; font-size: 13px;">Facultad de Informática y Computación - ICEST</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Additional Work Experience</h2>
+        <p style="margin-bottom: 5px;"><em>Previous experience providing solid foundations in business logic, billing, collections, and customer service:</em></p>
+        <ul class="skills-list" style="list-style-type: square;">
+            <li><strong>Customer Service:</strong> Monkey Papas (09/2024 - 01/2025)</li>
+            <li><strong>Administrative Assistant (Billing & Collections):</strong> Refacciones y Tractorepuestos Tampico (2018 - 11/2023)</li>
+            <li><strong>Construction Supervisor Assistant:</strong> Green City Construction Service (11/2023 - 02/2024)</li>
+            <li><strong>Sales and Design Executive:</strong> Consumibles Internacionales REYG (2017 - 2018)</li>
+        </ul>
+    </section>
+
+</div>
+
+</body>
+</html>
