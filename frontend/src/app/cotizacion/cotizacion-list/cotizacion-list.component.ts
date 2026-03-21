@@ -100,37 +100,34 @@ export class CotizacionListComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  // --- LA FUNCIÓN MODIFICADA ---
+  // --- LA FUNCIÓN MODIFICADA PARA CRM B2B ---
   convertir(row: any) {
-    // 1. Cargar catálogos
     forkJoin({
       formasPago: this.catalogosService.getFormasPago(),
       metodosPago: this.catalogosService.getMetodosPago()
     }).subscribe({
       next: (cats) => {
-        // 2. Abrir el modal
         const dialogRef = this.dialog.open(ConvertirDialogComponent, {
-          width: '500px',
+          width: '1100px', 
+          maxWidth: '95vw',
+          disableClose: true,
           data: {
+            idCotizacion: row.id_cotizacion,
             folio: row.folio,
             formasPago: cats.formasPago,
             metodosPago: cats.metodosPago
           }
         });
 
-        // 3. Suscribirse al cierre
-        dialogRef.afterClosed().subscribe(res => {
-          if (res && res.idFormaPago && res.idMetodoPago) {
-            // Confirmación secundaria
-            if (!confirm(`¿Estás seguro de efectuar la conversión?\nEsto descontará inventario y generará la factura de venta.`)) return;
-            
-            this.cotizacionService.convertirEnVenta(row.id_cotizacion, res.idFormaPago, res.idMetodoPago).subscribe({
+        dialogRef.afterClosed().subscribe(payload => {
+          if (payload) { // The dialog returns the strict ConvertirCotizacionDto JSON shape
+            this.cotizacionService.convertirCRM(row.id_cotizacion, payload).subscribe({
               next: (apiRes) => {
-                this.snackBar.open(`¡Éxito! Venta generada con ID: ${apiRes.idFactura}`, 'Cerrar', { duration: 5000 });
-                this.cargarCotizaciones(); // Recargar para ver el estatus 'Convertida'
+                this.snackBar.open(`¡Factura generada y rastreo CRM asignado! (ID: ${apiRes.idFactura})`, 'Cerrar', { duration: 6000 });
+                this.cargarCotizaciones();
               },
               error: (err) => {
-                this.snackBar.open('Error: ' + err.error.message, 'Cerrar');
+                this.snackBar.open('Error al convertir: ' + (err.error?.message || err.message), 'Cerrar', { duration: 5000 });
               }
             });
           }

@@ -65,6 +65,23 @@ export class CreateVentaDto {
   // LA LISTA DE PRODUCTOS
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => ConceptoVentaDto) // Transforma el JSON a objetos Concepto
+  @Type(() => ConceptoVentaDto)
   conceptos: ConceptoVentaDto[];
+}
+
+// 3. DTO para la Devolución Parcial (CFDI Egreso)
+export class DevolverArticuloDto {
+  @IsNumber() idProducto: number;
+  @IsNumber() cantidad: number;
+  @IsNumber() precioUnitario: number;
+}
+
+export class ProcesarDevolucionDto {
+  @IsString()
+  metodoReembolso: 'Efectivo' | 'Saldo a Favor';
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => DevolverArticuloDto)
+  articulos: DevolverArticuloDto[];
 }

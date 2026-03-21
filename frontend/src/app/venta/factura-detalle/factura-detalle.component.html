@@ -69,6 +69,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
+  <button mat-button class="text-indigo-600 dark:text-indigo-400" (click)="devolverFactura()" *ngIf="data.estatus !== 'Cancelada'">
+    <mat-icon>assignment_return</mat-icon> Devolución / Reembolso
+  </button>
   <button mat-button color="warn" (click)="cancelarFactura()" *ngIf="data.estatus !== 'Cancelada'">
     <mat-icon>cancel</mat-icon> Cancelar Venta
   </button>

@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { CreateVentaDto } from './venta.dto';
+import { CreateVentaDto, ProcesarDevolucionDto } from './venta.dto';
 import * as nodemailer from 'nodemailer';
 import { TicketService } from './ticket.service';
 import { TicketQueryResult } from './ticket.types';
@@ -140,6 +140,66 @@ export class VentaService {
       await queryRunner.commitTransaction();
       return { message: 'Factura cancelada y stock restaurado en Kardex con éxito' };
     } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async devolverParcial(idFactura: number, dto: ProcesarDevolucionDto, idUser?: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const articulosJson = JSON.stringify(dto.articulos);
+      
+      const typeOrmParams = [idFactura, dto.metodoReembolso, articulosJson, idUser || null];
+      require('fs').writeFileSync('c:\\Sistema\\backend\\_debug_typeorm.txt', JSON.stringify(typeOrmParams));
+
+      // 1. Database execution (Kardex, Saldos)
+      const result = await queryRunner.query(
+        `SELECT sp_procesar_devolucion_parcial($1::int, $2::varchar, $3::jsonb, $4::int) as id_devolucion`,
+        typeOrmParams
+      );
+      const idDevolucion = result[0].id_devolucion;
+
+      // 2. CFDI 4.0 Egreso Payload Modeling
+      const fact = await queryRunner.query('SELECT folio, uuid FROM factura WHERE id_factura = $1', [idFactura]);
+      const totalDevolucion = dto.articulos.reduce((acc, item) => acc + (item.cantidad * item.precioUnitario), 0);
+
+      const cfdiMock = {
+        Version: "4.0",
+        TipoDeComprobante: "E", // Egreso / Nota de Crédito
+        Total: totalDevolucion.toFixed(2),
+        Moneda: "MXN",
+        Exportacion: "01",
+        CfdiRelacionados: {
+          TipoRelacion: "01", // Nota de crédito de los documentos relacionados
+          CfdiRelacionado: [{ UUID: fact[0]?.uuid || "00000000-0000-0000-0000-000000000000" }]
+        },
+        Conceptos: dto.articulos.map(a => ({
+          ClaveProdServ: "84111506",
+          Cantidad: a.cantidad,
+          ClaveUnidad: "ACT",
+          Descripcion: "Devolución de Mercancía ref: " + fact[0]?.folio,
+          ValorUnitario: a.precioUnitario.toFixed(2),
+          Importe: (a.cantidad * a.precioUnitario).toFixed(2),
+          ObjetoImp: "02"
+        }))
+      };
+
+      await queryRunner.commitTransaction();
+
+      return {
+        message: 'Devolución parcial aplicada con éxito',
+        idDevolucion,
+        cfdiEgresoBase: cfdiMock
+      };
+    } catch (error) {
+      require('fs').writeFileSync('c:\\Sistema\\backend\\_debug_sp.txt', String(error?.message) + '\n' + String(error?.stack));
+      console.error('------- SP EXCEPTION -------', error.message, error.stack);
       await queryRunner.rollbackTransaction();
       throw error;
     } finally {

@@ -2,7 +2,7 @@
 import { Body, Controller, Get, Post, Param, Res, Query, DefaultValuePipe, ParseIntPipe, Req, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 import { VentaService } from './venta.service';
-import { CreateVentaDto } from './venta.dto';
+import { CreateVentaDto, ProcesarDevolucionDto } from './venta.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('venta')
@@ -57,5 +57,17 @@ export class VentaController {
   @Post(':id/cancelar')
   cancelarFactura(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.cancelarFactura(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/devolucion')
+  async devolverParcial(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: ProcesarDevolucionDto,
+    @Req() req: any
+  ) {
+    require('fs').writeFileSync('c:\\Sistema\\backend\\_debug_dto.txt', JSON.stringify({id, dto}, null, 2));
+    const idUsuario = req.user?.idUser;
+    return this.ventaService.devolverParcial(id, dto, idUsuario);
   }
 }

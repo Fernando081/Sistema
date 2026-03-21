@@ -33,3 +33,28 @@ export class CreateCotizacionDto {
   @Type(() => ConceptoCotizacionDto)
   conceptos: ConceptoCotizacionDto[];
 }
+
+export class ArticuloAceptadoDto {
+  @IsNumber() idConcepto: number;
+  @IsNumber() precioCierre: number;
+}
+
+export class ArticuloRechazadoDto {
+  @IsNumber() idConcepto: number;
+  @IsString() motivoRechazo: string;
+}
+
+export class ConvertirCotizacionDto {
+  @IsNumber() idFormaPago: number;
+  @IsNumber() idMetodoPago: number;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ArticuloAceptadoDto)
+  articulosAceptados: ArticuloAceptadoDto[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ArticuloRechazadoDto)
+  articulosRechazados: ArticuloRechazadoDto[];
+}

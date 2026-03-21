@@ -43,4 +43,8 @@ export class VentaService {
   cancelarFactura(idFactura: number): Observable<any> {
     return this.http.post(`${API_URL}/${idFactura}/cancelar`, {});
   }
+
+  devolverParcial(idFactura: number, payload: any): Observable<any> {
+    return this.http.post(`${API_URL}/${idFactura}/devolucion`, payload);
+  }
 }

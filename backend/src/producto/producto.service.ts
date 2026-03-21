@@ -273,6 +273,8 @@ export class ProductoService {
       dto.marcaOfrecida || null,
       dto.precioCotizado,
       dto.diasEntrega || 0
+    ]);
+
     return { 
       message: 'Cotización guardada exitosamente', 
       idCotizacionProv: result[0].id_cotizacion_prov 

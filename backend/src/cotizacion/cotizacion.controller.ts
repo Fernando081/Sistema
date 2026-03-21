@@ -2,7 +2,7 @@
 // backend/src/cotizacion/cotizacion.controller.ts
 import { Body, Controller, Get, Param, Post, Res, Req, UseGuards, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { CotizacionService } from './cotizacion.service';
-import { CreateCotizacionDto } from './cotizacion.dto';
+import { CreateCotizacionDto, ConvertirCotizacionDto } from './cotizacion.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import type { Response } from 'express';
 
@@ -24,6 +24,11 @@ export class CotizacionController {
     return this.service.findAll(page, limit, term);
   }
 
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.service.findOne(id);
+  }
+
   @Get(':id/pdf')
   async descargarPdf(@Param('id') id: number, @Res() res: Response) {
     const buffer = await this.service.generarPdf(id);
@@ -38,11 +43,11 @@ export class CotizacionController {
   @UseGuards(JwtAuthGuard)
   @Post(':id/convertir')
   convertir(
-    @Param('id') id: number,
-    @Body() body: { idFormaPago: number; idMetodoPago: number },
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: ConvertirCotizacionDto,
     @Req() req: any
   ) {
     const idVendedor = req.user?.idUser;
-    return this.service.convertirAVenta(id, body.idFormaPago, body.idMetodoPago, idVendedor);
+    return this.service.convertirParcial(id, dto, dto.idFormaPago, dto.idMetodoPago, idVendedor);
   }
 }

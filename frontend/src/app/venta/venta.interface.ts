@@ -62,6 +62,7 @@ export interface FacturaResumen {
 }
 
 export interface DetalleFacturaDb {
+  id_producto: number;
   cantidad: number;
   descripcion_producto: string;
   codigo_producto: string;

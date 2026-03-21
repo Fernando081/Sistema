@@ -1,72 +1,40 @@
-
---- factura ---
-id_factura: integer
-id_cliente: integer
-serie: character varying
-folio: integer
-fecha_emision: timestamp with time zone
-estatus: USER-DEFINED
-rfc_receptor: character varying
-nombre_receptor: character varying
-codigo_postal_receptor: character varying
-regimen_fiscal_receptor_clave: character varying
-uso_cfdi_clave: character varying
-id_forma_pago: integer
-id_metodo_pago: integer
-id_uso_cfdi: integer
-tipo_comprobante: character varying
-exportacion: character varying
-moneda: character varying
-tipo_cambio: numeric
-subtotal: numeric
-descuento: numeric
-total_impuestos_trasladados: numeric
-total_impuestos_retenidos: numeric
-total: numeric
-uuid: uuid
-xml_timbrado: text
-created_at: timestamp with time zone
-saldo_pendiente: numeric
-
---- detalle_factura ---
-
---- kardex ---
-id_kardex: integer
-id_producto: integer
-fecha: timestamp with time zone
-tipo_movimiento: USER-DEFINED
-cantidad: numeric
-stock_anterior: numeric
-stock_resultante: numeric
-precio_unitario: numeric
-referencia: character varying
-id_referencia: integer
-
---- pago ---
-id_pago: integer
-id_factura: integer
-fecha_pago: timestamp with time zone
-monto: numeric
-forma_pago: character varying
-referencia: character varying
-notas: text
-created_at: timestamp with time zone
-id_cuenta_bancaria: integer
-
---- producto ---
-IdProducto: integer
-Codigo: character varying
-IdUnidad: integer
-IdObjetoImpuesto: integer
-Descripcion: character varying
-PrecioUnitario: numeric
-IdCategoria: integer
-Ubicacion: character varying
-IdClaveProdOServ: integer
-IdClaveUnidad: integer
-Marca: character varying
-ObjetoImpuesto: character varying
-TasaIVA: numeric
-AplicaRetencionISR: boolean
-AplicaRetencionIVA: boolean
-Existencia: numeric
+cliente.IdCliente
+cliente.RFC
+cliente.RazonSocial
+cliente.Pais
+cliente.IdEstado
+cliente.IdMunicipio
+cliente.Ciudad
+cliente.Colonia
+cliente.Calle
+cliente.CodigoPostal
+cliente.NumeroExterior
+cliente.NumeroInterior
+cliente.Referencia
+cliente.IdMetodoDePago
+cliente.IdUsoCFDI
+cliente.IdFormaPago
+cliente.IdRegimenFiscal
+cliente.ClaveEstado
+cliente.ClaveMunicipio
+cliente.email
+cliente.saldo_a_favor
+devolucion.id_devolucion
+devolucion.id_factura
+devolucion.fecha
+devolucion.monto_total
+devolucion.metodo_reembolso
+devolucion.uuid_cfdi_egreso
+devolucion_detalle.id_devolucion
+devolucion_detalle.id_producto
+devolucion_detalle.cantidad
+devolucion_detalle.precio_unitario
+gasto.id_gasto
+gasto.fecha
+gasto.concepto
+gasto.monto
+gasto.categoria
+gasto.metodo_pago
+gasto.id_user
+gasto.id_compra
+gasto.created_at
