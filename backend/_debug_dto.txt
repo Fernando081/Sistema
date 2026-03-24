@@ -1,0 +1,13 @@
+{
+  "id": 93,
+  "dto": {
+    "metodoReembolso": "Saldo a Favor del Cliente",
+    "articulos": [
+      {
+        "idProducto": 3,
+        "cantidad": 1,
+        "precioUnitario": 2000
+      }
+    ]
+  }
+}

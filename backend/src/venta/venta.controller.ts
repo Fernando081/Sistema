@@ -31,6 +31,15 @@ export class VentaController {
     return this.ventaService.findAll(page, limit, term);
   }
 
+  @Get('devoluciones')
+  findAllDevoluciones(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('term') term?: string,
+  ) {
+    return this.ventaService.findAllDevoluciones(page, limit, term);
+  }
+
   @Get(':id/detalle')
   findDetalle(@Param('id') id: number) {
     return this.ventaService.findDetalle(id);
@@ -52,6 +61,19 @@ export class VentaController {
   @Post(':id/enviar-correo')
   enviarCorreo(@Param('id') id: number) {
     return this.ventaService.enviarFacturaPorCorreo(id);
+  }
+
+  @Get('devolucion/:id/pdf')
+  async descargarPdfDevolucion(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
+    const pdfBuffer = await this.ventaService.generarPdfDevolucion(id);
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `inline; filename="Nota_de_Credito_${id}.pdf"`,
+      'Content-Length': pdfBuffer.length,
+    });
+
+    res.end(pdfBuffer);
   }
 
   @Post(':id/cancelar')

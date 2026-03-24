@@ -5,14 +5,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { VentaService } from '../../services/venta.service';
+import { ClienteService } from '../../services/cliente.service';
 
 export interface DevolucionItem {
   idProducto: number;
   descripcion: string;
   cantidadComprada: number;
+  cantidadDevuelta: number;
+  cantidadDisponible: number;
   cantidadADevolver: number;
   precioUnitario: number;
 }
@@ -27,14 +30,21 @@ export interface DevolucionItem {
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatRadioModule,
+    MatSelectModule,
     FormsModule
   ],
   template: `
-    <h2 mat-dialog-title class="font-bold flex items-center gap-2 text-indigo-600 dark:text-white">
-      <mat-icon>assignment_return</mat-icon> Nueva Devolución / Nota de Crédito Parcial
+    <h2 mat-dialog-title class="font-bold flex items-center justify-between text-indigo-600 dark:text-white w-full">
+      <div class="flex items-center gap-2">
+        <mat-icon>assignment_return</mat-icon> Nueva Devolución / Nota de Crédito Parcial
+      </div>
+      @if (saldoCliente() !== null) {
+        <span class="text-sm bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 px-3 py-1 rounded-full font-semibold">
+          Saldo A Favor del Cliente: {{ saldoCliente() | currency }}
+        </span>
+      }
     </h2>
-    <mat-dialog-content class="!pb-6 !pt-4 min-w-[900px]">
+    <mat-dialog-content class="!pb-6 !pt-4 min-w-[1100px]">
       
       <div class="mb-4 text-sm text-gray-600 dark:text-gray-300">
         Indique únicamente la cantidad de piezas físicas que el cliente está devolviendo de la <b>Factura F-{{ data.folio }}</b>. El monto total será reembolsado e impactará la contabilidad según el método elegido.
@@ -45,9 +55,11 @@ export interface DevolucionItem {
           <thead class="bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 uppercase text-xs">
             <tr>
               <th scope="col" class="px-4 py-3">Código/Producto</th>
-              <th scope="col" class="px-4 py-3 text-center">Cant. Comprada</th>
+              <th scope="col" class="px-4 py-3 text-center">Compradas</th>
+              <th scope="col" class="px-4 py-3 text-center">Ya Devueltas</th>
+              <th scope="col" class="px-4 py-3 text-center font-bold text-indigo-700">Disponibles</th>
               <th scope="col" class="px-4 py-3 text-right">Precio Unitario</th>
-              <th scope="col" class="px-4 py-3 text-left w-48">Pzas. a Devolver</th>
+              <th scope="col" class="px-4 py-3 text-left w-48">Devolver Ahora</th>
               <th scope="col" class="px-4 py-3 text-right">Reembolso</th>
             </tr>
           </thead>
@@ -57,18 +69,21 @@ export interface DevolucionItem {
                 <td class="px-4 py-3">
                   <span class="font-medium dark:text-gray-100">{{ item.descripcion }}</span>
                 </td>
-                <td class="px-4 py-3 text-center font-bold text-gray-500 dark:text-gray-400">{{ item.cantidadComprada }}</td>
+                <td class="px-4 py-3 text-center font-bold text-gray-500">{{ item.cantidadComprada }}</td>
+                <td class="px-4 py-3 text-center text-red-500 font-semibold">{{ item.cantidadDevuelta > 0 ? item.cantidadDevuelta : '-' }}</td>
+                <td class="px-4 py-3 text-center font-black text-indigo-700 dark:text-indigo-400 rounded bg-indigo-50/50 dark:bg-indigo-900/20">{{ item.cantidadDisponible }}</td>
                 <td class="px-4 py-3 text-right text-gray-600 dark:text-gray-400 mb-0">{{ item.precioUnitario | currency }}</td>
                 <td class="px-4 py-3">
                   <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
-                    <input matInput type="number" min="0" [max]="item.cantidadComprada" 
+                    <input matInput type="number" min="0" [max]="item.cantidadDisponible" 
                            [(ngModel)]="item.cantidadADevolver" 
+                           [disabled]="item.cantidadDisponible <= 0"
                            (ngModelChange)="validarCantidad(item)" 
                            (change)="triggerRecalc()" 
                            (keyup)="triggerRecalc()">
                   </mat-form-field>
                 </td>
-                <td class="px-4 py-3 text-right font-bold text-indigo-600 dark:text-indigo-400">
+                <td class="px-4 py-3 text-right font-bold" [class.text-indigo-600]="item.cantidadADevolver > 0" [class.text-gray-400]="item.cantidadADevolver === 0">
                   {{ (item.cantidadADevolver * item.precioUnitario) | currency }}
                 </td>
               </tr>
@@ -78,12 +93,21 @@ export interface DevolucionItem {
       </div>
 
       <div class="flex gap-4 p-4 border rounded-lg bg-gray-50 dark:bg-slate-800 dark:border-slate-700 items-center justify-between">
-        <div>
-          <mat-label class="font-bold block mb-2 dark:text-white">Método de Reembolso:</mat-label>
-          <mat-radio-group [(ngModel)]="metodoReembolso" class="flex gap-6">
-            <mat-radio-button value="Efectivo" color="primary">Entregar Efectivo (Caja)</mat-radio-button>
-            <mat-radio-button value="Saldo a Favor" color="primary">Saldo a Favor del Cliente</mat-radio-button>
-          </mat-radio-group>
+        <div class="w-1/2">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
+            <mat-label>Método de Reembolso</mat-label>
+            <mat-select [(ngModel)]="metodoReembolso">
+              @if (data.saldo_pendiente > 0) {
+                <mat-option value="Abonar a Deuda de la Factura" class="text-indigo-600 font-bold">
+                  Abonar a Deuda de la Factura (Restan {{ data.saldo_pendiente | currency }})
+                </mat-option>
+              }
+              <mat-option value="Saldo a Favor del Cliente">Abonar al Saldo a Favor del Cliente</mat-option>
+              <mat-option value="Efectivo">Entregar Efectivo (Caja)</mat-option>
+              <mat-option value="Transferencia">Transferencia Electrónica</mat-option>
+              <mat-option value="Tarjeta">Tarjeta de Crédito / Débito</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </div>
 
@@ -112,7 +136,8 @@ export interface DevolucionItem {
 export class DevolucionDialogComponent implements OnInit {
   isConfirming = signal(false);
   isSaving = signal(false);
-  metodoReembolso = 'Saldo a Favor'; // Default safe option
+  saldoCliente = signal<number | null>(null);
+  metodoReembolso = 'Saldo a Favor del Cliente'; // Default safe option
   
   items = signal<DevolucionItem[]>([]);
   private recalcTrigger = signal(0);
@@ -123,25 +148,42 @@ export class DevolucionDialogComponent implements OnInit {
   });
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { idFactura: number; folio: string; conceptos: any[] },
-    private dialogRef: MatDialogRef<DevolucionDialogComponent>
+    @Inject(MAT_DIALOG_DATA) public data: { idFactura: number; folio: string; conceptos: any[]; estatus: string; saldo_pendiente: number; idCliente: number },
+    private dialogRef: MatDialogRef<DevolucionDialogComponent>,
+    private clienteService: ClienteService
   ) {}
 
   ngOnInit() {
     const mapped: DevolucionItem[] = this.data.conceptos.map(c => ({
       idProducto: c.id_producto,
-      descripcion: c.descripcion,
+      descripcion: c.descripcion_producto || c.descripcion,
       cantidadComprada: Number(c.cantidad),
+      cantidadDevuelta: Number(c.cantidad_devuelta || 0),
+      cantidadDisponible: Number(c.cantidad) - Number(c.cantidad_devuelta || 0),
       precioUnitario: Number(c.precio_unitario),
       cantidadADevolver: 0 // Default to not returning anything
     }));
     this.items.set(mapped);
+
+    // Default method initialization preference
+    if (this.data.saldo_pendiente > 0) {
+      this.metodoReembolso = 'Abonar a Deuda de la Factura';
+    }
+
+    if (this.data.idCliente) {
+      this.clienteService.getClienteById(this.data.idCliente).subscribe({
+        next: (cliente) => {
+          this.saldoCliente.set(cliente.saldoAFavor ?? 0);
+        },
+        error: (err) => console.error('Error fetching cliente balance', err)
+      });
+    }
   }
 
   validarCantidad(item: DevolucionItem) {
     if (item.cantidadADevolver < 0) item.cantidadADevolver = 0;
-    if (item.cantidadADevolver > item.cantidadComprada) {
-      item.cantidadADevolver = item.cantidadComprada;
+    if (item.cantidadADevolver > item.cantidadDisponible) {
+      item.cantidadADevolver = item.cantidadDisponible;
     }
     this.triggerRecalc();
   }

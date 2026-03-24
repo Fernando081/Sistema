@@ -1,0 +1,116 @@
+<mat-card class="mat-elevation-z4 m-4">
+  <mat-card-header class="bg-indigo-600/5 dark:bg-indigo-900/20 p-4 border-b dark:border-slate-700">
+    <mat-card-title class="text-2xl font-bold flex items-center gap-3 text-indigo-700 dark:text-indigo-400">
+      <mat-icon class="!w-8 !h-8 text-3xl">assignment_return</mat-icon>
+      Historial de Notas de Crédito / Devoluciones
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content class="p-0">
+    <!-- Filtros -->
+    <div class="px-6 py-4 border-b dark:border-slate-700">
+      <mat-form-field appearance="outline" class="w-full sm:w-96" subscriptSizing="dynamic">
+        <mat-label>Buscar por Folio, Cliente o RFC</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ej. F-123, ACME Corp..." #input>
+        <mat-icon matSuffix class="text-gray-400">search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Spinner -->
+    <div *ngIf="isLoading" class="flex flex-col items-center justify-center p-12">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span class="mt-4 text-gray-500 font-medium">Buscando devoluciones...</span>
+    </div>
+
+    <!-- Tabla Data -->
+    <div class="overflow-x-auto w-full" [hidden]="isLoading">
+      <table mat-table [dataSource]="dataSource" matSort class="w-full bg-white dark:bg-slate-900">
+
+        <!-- NC Folio Column -->
+        <ng-container matColumnDef="folio_nc">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-slate-800 font-bold text-gray-700 dark:text-gray-300"> Ref. NC </th>
+          <td mat-cell *matCellDef="let element" class="font-bold text-indigo-600 dark:text-indigo-400"> NC-{{element.id_devolucion}} </td>
+        </ng-container>
+
+        <!-- Invoice Folio Column -->
+        <ng-container matColumnDef="folio_factura">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-slate-800 font-bold text-gray-700 dark:text-gray-300"> Folio Factura </th>
+          <td mat-cell *matCellDef="let element" class="font-medium text-gray-600 dark:text-gray-300"> F-{{element.folio_factura}} </td>
+        </ng-container>
+
+        <!-- Fecha Column -->
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-slate-800 font-bold text-gray-700 dark:text-gray-300"> Fecha / Hora </th>
+          <td mat-cell *matCellDef="let element" class="text-sm text-gray-500 dark:text-gray-400"> {{element.fecha | date:'dd/MM/yyyy HH:mm'}} </td>
+        </ng-container>
+
+        <!-- Cliente Column -->
+        <ng-container matColumnDef="cliente">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-slate-800 font-bold text-gray-700 dark:text-gray-300"> Cliente </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="font-semibold text-slate-800 dark:text-slate-200">{{element.cliente}}</div>
+            <div class="text-xs text-slate-500">{{element.rfc}}</div>
+          </td>
+        </ng-container>
+
+        <!-- Metodo Column -->
+        <ng-container matColumnDef="metodo_reembolso">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-slate-800 font-bold text-gray-700 dark:text-gray-300"> Vía de Reembolso </th>
+          <td mat-cell *matCellDef="let element"> 
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+              [ngClass]="{
+                'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': element.metodo_reembolso.includes('Abonar a Deuda'),
+                'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300': element.metodo_reembolso.includes('Efectivo'),
+                'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': element.metodo_reembolso.includes('Saldo a Favor'),
+                'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300': !element.metodo_reembolso.includes('Abonar') && !element.metodo_reembolso.includes('Efectivo') && !element.metodo_reembolso.includes('Saldo')
+              }">
+              {{element.metodo_reembolso}}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Monto Column -->
+        <ng-container matColumnDef="monto_total">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-slate-800 font-bold text-gray-700 dark:text-gray-300 text-right"> Reembolso Total </th>
+          <td mat-cell *matCellDef="let element" class="text-right font-black text-gray-900 dark:text-white"> {{element.monto_total | currency}} </td>
+        </ng-container>
+
+        <!-- Acciones Column -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-50 dark:bg-slate-800 font-bold text-gray-700 dark:text-gray-300 text-center w-24"> CFDI </th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <button mat-icon-button color="primary" (click)="descargarCFDI(element.id_devolucion)" matTooltip="Descargar PDF (Comprobante Tipo E)">
+              <mat-icon>picture_as_pdf</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-black/5 dark:hover:bg-white/5 transition-colors"></tr>
+
+        <!-- Estado Vacío -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center p-12 py-16" [attr.colspan]="displayedColumns.length">
+            <div class="flex flex-col items-center">
+              <mat-icon class="!w-16 !h-16 text-6xl text-gray-300 mb-4">inventory_2</mat-icon>
+              <h3 class="text-xl font-bold text-gray-600 dark:text-gray-400">Sin Movimientos</h3>
+              <p class="text-gray-500">No se encontraron Notas de Crédito emitidas.</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    <!-- Paginator -->
+    <mat-paginator 
+      [length]="totalRegistros"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="border-t dark:border-slate-700 bg-white dark:bg-slate-900"
+      aria-label="Seleccionar página">
+    </mat-paginator>
+
+  </mat-card-content>
+</mat-card>

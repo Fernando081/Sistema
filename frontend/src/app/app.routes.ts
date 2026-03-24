@@ -62,6 +62,11 @@ export const routes: Routes = [
     loadComponent: () => import('./venta/venta.component').then((m) => m.VentaComponent),
   },
   {
+    path: 'devoluciones',
+    canActivate: [authGuard],
+    loadComponent: () => import('./venta/devolucion-list/devolucion-list').then((m) => m.DevolucionList),
+  },
+  {
     path: 'comisiones',
     canActivate: [authGuard],
     loadComponent: () => import('./venta/comisiones/comisiones.component').then((m) => m.ComisionesComponent),

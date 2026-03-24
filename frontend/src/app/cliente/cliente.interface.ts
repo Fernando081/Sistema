@@ -20,6 +20,7 @@ export interface Cliente {
   idFormaPago: number;
   idRegimenFiscal: number;
   email?: string | null;
+  saldoAFavor?: number;
 }
 
 export type CreateClienteDto = Omit<Cliente, 'idCliente'>;

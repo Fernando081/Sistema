@@ -110,7 +110,10 @@ export class TicketService {
     const totalConLetra = `(${textoImporte.trim()})`;
 
     // 2. Fechas
-    const fechaEmision = new Date(datos.fecha);
+    let fechaEmision = new Date(datos.fecha);
+    if (isNaN(fechaEmision.getTime())) {
+       fechaEmision = new Date(); // Fallback segurísimo
+    }
     const fechaVencimiento = new Date(fechaEmision);
     fechaVencimiento.setDate(fechaVencimiento.getDate() + 30);
     const fechaVencimientoStr = fechaVencimiento.toISOString().split('T')[0];

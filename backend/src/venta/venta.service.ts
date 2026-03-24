@@ -98,6 +98,28 @@ export class VentaService {
     };
   }
 
+  async findAllDevoluciones(page: number = 1, limit: number = 10, term: string = '') {
+    const offset = (page - 1) * limit;
+
+    const [totalResult, dataResult] = await Promise.all([
+      this.dataSource.query('SELECT * FROM fn_get_devoluciones_count($1)', [term]),
+      this.dataSource.query(
+        'SELECT * FROM fn_get_devoluciones($1, $2, $3)',
+        [limit, offset, term]
+      ),
+    ]);
+
+    const total = parseInt(totalResult[0]?.fn_get_devoluciones_count || 0, 10);
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data: dataResult,
+      total,
+      page,
+      totalPages,
+    };
+  }
+
   async findDetalle(idFactura: number) {
     return this.dataSource.query('SELECT * FROM fn_get_detalle_factura($1)', [
       idFactura,
@@ -184,11 +206,17 @@ export class VentaService {
           Cantidad: a.cantidad,
           ClaveUnidad: "ACT",
           Descripcion: "Devolución de Mercancía ref: " + fact[0]?.folio,
-          ValorUnitario: a.precioUnitario.toFixed(2),
+          ValorUnitario: (a.precioUnitario).toFixed(2),
           Importe: (a.cantidad * a.precioUnitario).toFixed(2),
           ObjetoImp: "02"
         }))
       };
+
+      // 3. Persist CFDI in devolucion table
+      await queryRunner.query(
+        'UPDATE devolucion SET cfdi_json = $1::jsonb WHERE id_devolucion = $2',
+        [JSON.stringify(cfdiMock), idDevolucion]
+      );
 
       await queryRunner.commitTransaction();
 
@@ -205,5 +233,61 @@ export class VentaService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async generarPdfDevolucion(idDevolucion: number): Promise<Buffer> {
+    const res = await this.dataSource.query(`
+      SELECT d.id_devolucion, d.fecha, d.monto_total, d.metodo_reembolso, d.cfdi_json,
+             f.folio as factura_folio, f.uuid as factura_uuid, f.moneda, f.tipo_cambio,
+             c."RFC" as rfc, c."RazonSocial" as razon_social, c."CodigoPostal" as cp,
+             c."Calle" as calle, c."NumeroExterior" as numero_exterior, c."Colonia" as colonia,
+             c."Ciudad" as ciudad, c."IdEstado" as id_estado, c."Pais" as pais
+      FROM devolucion d
+      JOIN factura f ON d.id_factura = f.id_factura
+      LEFT JOIN cliente c ON f.id_cliente = c."IdCliente"
+      WHERE d.id_devolucion = $1
+    `, [idDevolucion]);
+
+    if (!res || res.length === 0) {
+      throw new Error(`No se encontró la Devolución con ID ${idDevolucion}`);
+    }
+
+    const d = res[0];
+    const cfdi = d.cfdi_json || { Conceptos: [] };
+
+    const datosTicket: any = {
+      total: d.monto_total,
+      moneda: d.moneda || 'MXN',
+      fecha: d.fecha ? new Date(d.fecha).toISOString() : new Date().toISOString(),
+      folio: 'NC-' + d.id_devolucion,
+      serie: 'NC',
+      uso_cfdi: 'G02 (Devoluciones, Descuentos o Bonificaciones)',
+      forma_pago: 'NOTA DE CRÉDITO',
+      metodo_pago: d.metodo_reembolso,
+      subtotal: d.monto_total,
+      iva: 0,
+      retenciones: 0,
+      cliente: {
+        rfc: d.rfc || 'XAXX010101000',
+        nombre: d.razon_social || 'PÚBLICO EN GENERAL',
+        calle: d.calle,
+        numero_exterior: d.numero_exterior,
+        colonia: d.colonia,
+        ciudad: d.ciudad,
+        cp: d.cp,
+        estado: String(d.id_estado) || '',
+        municipio: d.ciudad
+      },
+      conceptos: cfdi.Conceptos?.map((c: any) => ({
+        cantidad: c.Cantidad,
+        clave_unidad: c.ClaveUnidad,
+        descripcion: c.Descripcion,
+        clave_prod_serv: c.ClaveProdServ,
+        precio: c.ValorUnitario,
+        importe: c.Importe
+      })) || []
+    };
+
+    return this.ticketService.crearPdfFactura(datosTicket);
   }
 }

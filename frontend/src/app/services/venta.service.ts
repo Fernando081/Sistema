@@ -32,12 +32,21 @@ export class VentaService {
     return this.http.get<any[]>(`${API_URL}/${idFactura}/detalle`);
   }
 
+  getDevoluciones(page: number = 1, limit: number = 10, term: string = ''): Observable<any> {
+    const url = term ? `${API_URL}/devoluciones?page=${page}&limit=${limit}&term=${encodeURIComponent(term)}` : `${API_URL}/devoluciones?page=${page}&limit=${limit}`;
+    return this.http.get<any>(url);
+  }
+
   descargarPdf(idFactura: number): Observable<Blob> {
     return this.http.get(`${API_URL}/${idFactura}/pdf`, { responseType: 'blob' });
   }
 
   enviarCorreo(idFactura: number): Observable<any> {
     return this.http.post(`${API_URL}/${idFactura}/enviar-correo`, {});
+  }
+
+  descargarPdfDevolucion(idDevolucion: number): Observable<Blob> {
+    return this.http.get(`${API_URL}/devolucion/${idDevolucion}/pdf`, { responseType: 'blob' });
   }
 
   cancelarFactura(idFactura: number): Observable<any> {

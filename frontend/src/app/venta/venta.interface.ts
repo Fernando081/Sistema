@@ -58,12 +58,15 @@ export interface FacturaResumen {
   rfc_receptor: string;
   total: number;
   estatus: string; // 'Pendiente', 'Timbrada', etc.
+  saldo_pendiente?: number;
+  id_cliente?: number;
   uuid?: string;
 }
 
 export interface DetalleFacturaDb {
   id_producto: number;
   cantidad: number;
+  cantidad_devuelta?: number;
   descripcion_producto: string;
   codigo_producto: string;
   precio_unitario: number;

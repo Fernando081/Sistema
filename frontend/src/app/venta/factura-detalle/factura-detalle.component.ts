@@ -80,12 +80,16 @@ export class FacturaDetalleComponent implements OnInit {
 
   devolverFactura() {
     const devRef = this.dialog.open(DevolucionDialogComponent, {
-      width: '1000px',
+      width: '1200px',
+      maxWidth: '95vw',
       disableClose: true,
       data: {
         idFactura: this.data.id_factura,
         folio: `${this.data.serie || ''}${this.data.folio}`,
-        conceptos: this.detalles
+        conceptos: this.detalles,
+        estatus: this.data.estatus,
+        saldo_pendiente: this.data.saldo_pendiente || 0,
+        idCliente: this.data.id_cliente
       }
     });
 

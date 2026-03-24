@@ -34,7 +34,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 export class ClienteListComponent implements OnInit {
   
   // ¡CAMBIO! Volvemos a usar camelCase (minúsculas)
-  displayedColumns: string[] = ['idCliente', 'rfc', 'razonSocial', 'codigoPostal', 'acciones'];
+  displayedColumns: string[] = ['idCliente', 'rfc', 'razonSocial', 'codigoPostal', 'saldoAFavor', 'acciones'];
   dataSource = new MatTableDataSource<Cliente>();
   isLoading = true;
 

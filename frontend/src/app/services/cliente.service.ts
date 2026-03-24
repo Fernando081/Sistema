@@ -26,6 +26,7 @@ interface ClienteApiResponse {
   IdFormaPago?: number;
   IdRegimenFiscal?: number;
   email?: string | null;
+  saldo_a_favor?: string | number;
 }
 
 @Injectable({
@@ -85,6 +86,7 @@ export class ClienteService {
       idFormaPago: Number(apiCliente.IdFormaPago || 0),
       idRegimenFiscal: Number(apiCliente.IdRegimenFiscal || 0),
       email: apiCliente.email ?? null,
+      saldoAFavor: Number(apiCliente.saldo_a_favor || 0),
     };
   }
 }
