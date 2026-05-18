@@ -1,6 +1,7 @@
 // frontend/src/app/cliente/cliente-list/cliente-list.component.ts
 
 import { Component, OnInit, ViewChild } from '@angular/core';
+import anime from 'animejs';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -60,6 +61,7 @@ export class ClienteListComponent implements OnInit {
           this.dataSource.data = data;
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
+          setTimeout(() => this.animarEntradaTabla(), 0);
         },
         error: (err) => {
           this.mostrarNotificacion('Error al cargar clientes: ' + (err.error?.message || err.message));
@@ -110,5 +112,9 @@ export class ClienteListComponent implements OnInit {
 
   mostrarNotificacion(mensaje: string) {
     this.snackBar.open(mensaje, 'Cerrar', { duration: 3000 });
+  }
+
+  animarEntradaTabla() {
+    anime({ targets: '.mat-mdc-row', translateY: [20, 0], opacity: [0, 1], delay: anime.stagger(50), duration: 400, easing: 'easeOutCubic' });
   }
 }

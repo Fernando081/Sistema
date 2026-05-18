@@ -1,5 +1,6 @@
 // frontend/src/app/venta/factura-list/factura-list.component.ts
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import anime from 'animejs';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -15,6 +16,8 @@ import { FacturaResumen } from '../venta.interface';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // Importar Dialog
 import { FacturaDetalleComponent } from '../factura-detalle/factura-detalle.component'; // Importar Componente
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 
@@ -24,7 +27,8 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
   imports: [
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
-    MatButtonModule, MatChipsModule, MatDialogModule, MatSnackBarModule
+    MatButtonModule, MatChipsModule, MatDialogModule, MatSnackBarModule,
+    MatButtonToggleModule, FormsModule
   ],
   templateUrl: './factura-list.component.html',
   styles: [`
@@ -38,6 +42,7 @@ export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
   dataSource = new MatTableDataSource<FacturaResumen>();
   totalItems = 0;
   activeFilter = '';
+  activeTipo = '';
   searchSubject = new Subject<string>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -77,11 +82,12 @@ export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
     const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
     const limit = this.paginator ? this.paginator.pageSize : 10;
     
-    this.ventaService.getFacturas(page, limit, this.activeFilter).subscribe({
+    this.ventaService.getFacturas(page, limit, this.activeFilter, this.activeTipo).subscribe({
       next: (response) => {
         const data = response.data || response;
         this.totalItems = response.total || 0;
         this.dataSource.data = data;
+        setTimeout(() => this.animarEntradaTabla(), 0);
         // this.dataSource.paginator = this.paginator;
         // this.dataSource.sort = this.sort;
       },
@@ -92,6 +98,13 @@ export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.searchSubject.next(filterValue.trim().toLowerCase());
+  }
+
+  onTipoChange(event: any) {
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+    this.cargarFacturas();
   }
 
   // Función auxiliar para el color del chip de estatus
@@ -122,5 +135,9 @@ export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
       next: () => this.snackBar.open('📧 Correo enviado correctamente', 'Ok', { duration: 4000 }),
       error: (err) => this.snackBar.open('Error: ' + (err.error?.message || err.message), 'Ok')
     });
+  }
+
+  animarEntradaTabla() {
+    anime({ targets: '.mat-mdc-row', translateY: [20, 0], opacity: [0, 1], delay: anime.stagger(50), duration: 400, easing: 'easeOutCubic' });
   }
 }

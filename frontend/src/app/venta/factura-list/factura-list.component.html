@@ -3,15 +3,23 @@
   <mat-card class="mat-elevation-z4">
     <mat-card-content>
       
-      <div class="card-header">
-        <h2 class="text-2xl font-semibold">Historial de Ventas</h2>
+      <div class="card-header flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-semibold dark:text-white">Historial de Facturas</h2>
       </div>
 
-      <mat-form-field appearance="outline" class="full-width" matTooltip="La búsqueda rápida actualmente solo aplica a los resultados visibles en esta página.">
-        <mat-label>Buscar venta (Página Actual)</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar localmente..." #input>
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
+      <div class="flex flex-col md:flex-row gap-4 mb-4">
+        <mat-form-field appearance="outline" class="flex-grow" matTooltip="La búsqueda rápida actualmente solo aplica a los resultados visibles en esta página.">
+          <mat-label>Buscar venta (Página Actual)</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar localmente..." #input>
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <mat-button-toggle-group [(ngModel)]="activeTipo" (change)="onTipoChange($event)" aria-label="Tipo Comprobante" class="h-[56px]">
+          <mat-button-toggle value="">Todas</mat-button-toggle>
+          <mat-button-toggle value="I">Ingresos</mat-button-toggle>
+          <mat-button-toggle value="E">Egresos</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
 
       <div class="overflow-auto">
         <table mat-table [dataSource]="dataSource" matSort class="full-width">

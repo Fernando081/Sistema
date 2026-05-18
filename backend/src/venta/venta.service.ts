@@ -23,16 +23,36 @@ export class VentaService {
     return this.ticketService.crearPdfFactura(resultado[0].datos);
   }
 
+  async getFacturasRelacionables(idCliente: number) {
+    return this.dataSource.query(
+      `SELECT id_factura, serie, folio, COALESCE(uuid, '00000000-0000-0000-0000-000000000000') as uuid, fecha_emision, total 
+       FROM factura 
+       WHERE id_cliente = $1 
+       ORDER BY fecha_emision DESC`,
+      [idCliente]
+    );
+  }
+
   async create(createVentaDto: CreateVentaDto, idVendedor?: number) {
     const conceptosJson = JSON.stringify(createVentaDto.conceptos);
     const queryRunner = this.dataSource.createQueryRunner();
+
+    const tipoComprobante = createVentaDto.tipoComprobante || 'I';
+    const serie = createVentaDto.serie || 'A';
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
+      // 1. Calcular el folio con MAX(folio) filtrando por serie
+      const folioResult = await queryRunner.query(
+        'SELECT COALESCE(MAX(folio), 0) + 1 AS next_folio FROM factura WHERE serie = $1',
+        [serie]
+      );
+      const folio = parseInt(folioResult[0].next_folio, 10);
+
       const result = await queryRunner.query(
-        `SELECT fn_crear_venta($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) as id_factura`,
+        `SELECT fn_crear_venta($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) as id_factura`,
         [
           createVentaDto.idCliente,
           createVentaDto.rfcReceptor,
@@ -51,14 +71,44 @@ export class VentaService {
           '',
           conceptosJson,
           idVendedor || null,
+          folio,
+          serie,
+          tipoComprobante
         ],
       );
+
+      const idFactura = result[0].id_factura;
+
+      // 2. Insertar cfdi_relacionado si existen
+      if (createVentaDto.cfdisRelacionados && createVentaDto.cfdisRelacionados.length > 0) {
+        for (const relacion of createVentaDto.cfdisRelacionados) {
+          await queryRunner.query(
+            `INSERT INTO cfdi_relacionado (id_factura, tipo_relacion, uuid_relacionado) VALUES ($1, $2, $3)`,
+            [idFactura, relacion.tipoRelacion, relacion.uuidRelacionado]
+          );
+        }
+      }
+
+      // 3. Lógica Financiera de Reembolso para Egresos
+      if (tipoComprobante === 'E' && createVentaDto.metodoReembolso) {
+        if (createVentaDto.metodoReembolso === 'Saldo a Favor') {
+          await queryRunner.query(
+            'UPDATE cliente SET saldo_a_favor = saldo_a_favor + $1 WHERE "IdCliente" = $2',
+            [createVentaDto.total, createVentaDto.idCliente]
+          );
+        } else if (createVentaDto.metodoReembolso === 'Efectivo') {
+          await queryRunner.query(
+            'INSERT INTO gasto (concepto, monto, categoria, metodo_pago, id_user) VALUES ($1, $2, $3, $4, $5)',
+            ['DEVOLUCION EFECTIVO NOTA DE CREDITO ' + serie + '-' + folio, createVentaDto.total, 'Devoluciones y Reembolsos', 'Efectivo', idVendedor || null]
+          );
+        }
+      }
 
       await queryRunner.commitTransaction();
 
       return {
         message: 'Venta registrada con éxito',
-        idFactura: result[0].id_factura,
+        idFactura: idFactura,
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -72,16 +122,16 @@ export class VentaService {
     return this.dataSource.query('SELECT * FROM fn_get_comisiones_semanales()');
   }
 
-  async findAll(page: number = 1, limit: number = 10, term: string = '') {
+  async findAll(page: number = 1, limit: number = 10, term: string = '', tipo: string = '') {
     const offset = (page - 1) * limit;
 
-    console.log(`[VentaService] findAll args: page=${page}, limit=${limit}, term='${term}'`);
+    console.log(`[VentaService] findAll args: page=${page}, limit=${limit}, term='${term}', tipo='${tipo}'`);
 
     const [totalResult, dataResult] = await Promise.all([
-      this.dataSource.query('SELECT COUNT(*) as count FROM fn_get_facturas(NULL, NULL, $1)', [term]),
+      this.dataSource.query('SELECT COUNT(*) as count FROM fn_get_facturas(NULL, NULL, $1, $2)', [term, tipo]),
       this.dataSource.query(
-        'SELECT * FROM fn_get_facturas($1, $2, $3)',
-        [limit, offset, term]
+        'SELECT * FROM fn_get_facturas($1, $2, $3, $4)',
+        [limit, offset, term, tipo]
       ),
     ]);
 
@@ -98,27 +148,6 @@ export class VentaService {
     };
   }
 
-  async findAllDevoluciones(page: number = 1, limit: number = 10, term: string = '') {
-    const offset = (page - 1) * limit;
-
-    const [totalResult, dataResult] = await Promise.all([
-      this.dataSource.query('SELECT * FROM fn_get_devoluciones_count($1)', [term]),
-      this.dataSource.query(
-        'SELECT * FROM fn_get_devoluciones($1, $2, $3)',
-        [limit, offset, term]
-      ),
-    ]);
-
-    const total = parseInt(totalResult[0]?.fn_get_devoluciones_count || 0, 10);
-    const totalPages = Math.ceil(total / limit);
-
-    return {
-      data: dataResult,
-      total,
-      page,
-      totalPages,
-    };
-  }
 
   async findDetalle(idFactura: number) {
     return this.dataSource.query('SELECT * FROM fn_get_detalle_factura($1)', [
@@ -169,125 +198,5 @@ export class VentaService {
     }
   }
 
-  async devolverParcial(idFactura: number, dto: ProcesarDevolucionDto, idUser?: number) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
 
-    try {
-      const articulosJson = JSON.stringify(dto.articulos);
-      
-      const typeOrmParams = [idFactura, dto.metodoReembolso, articulosJson, idUser || null];
-      require('fs').writeFileSync('c:\\Sistema\\backend\\_debug_typeorm.txt', JSON.stringify(typeOrmParams));
-
-      // 1. Database execution (Kardex, Saldos)
-      const result = await queryRunner.query(
-        `SELECT sp_procesar_devolucion_parcial($1::int, $2::varchar, $3::jsonb, $4::int) as id_devolucion`,
-        typeOrmParams
-      );
-      const idDevolucion = result[0].id_devolucion;
-
-      // 2. CFDI 4.0 Egreso Payload Modeling
-      const fact = await queryRunner.query('SELECT folio, uuid FROM factura WHERE id_factura = $1', [idFactura]);
-      const totalDevolucion = dto.articulos.reduce((acc, item) => acc + (item.cantidad * item.precioUnitario), 0);
-
-      const cfdiMock = {
-        Version: "4.0",
-        TipoDeComprobante: "E", // Egreso / Nota de Crédito
-        Total: totalDevolucion.toFixed(2),
-        Moneda: "MXN",
-        Exportacion: "01",
-        CfdiRelacionados: {
-          TipoRelacion: "01", // Nota de crédito de los documentos relacionados
-          CfdiRelacionado: [{ UUID: fact[0]?.uuid || "00000000-0000-0000-0000-000000000000" }]
-        },
-        Conceptos: dto.articulos.map(a => ({
-          ClaveProdServ: "84111506",
-          Cantidad: a.cantidad,
-          ClaveUnidad: "ACT",
-          Descripcion: "Devolución de Mercancía ref: " + fact[0]?.folio,
-          ValorUnitario: (a.precioUnitario).toFixed(2),
-          Importe: (a.cantidad * a.precioUnitario).toFixed(2),
-          ObjetoImp: "02"
-        }))
-      };
-
-      // 3. Persist CFDI in devolucion table
-      await queryRunner.query(
-        'UPDATE devolucion SET cfdi_json = $1::jsonb WHERE id_devolucion = $2',
-        [JSON.stringify(cfdiMock), idDevolucion]
-      );
-
-      await queryRunner.commitTransaction();
-
-      return {
-        message: 'Devolución parcial aplicada con éxito',
-        idDevolucion,
-        cfdiEgresoBase: cfdiMock
-      };
-    } catch (error) {
-      require('fs').writeFileSync('c:\\Sistema\\backend\\_debug_sp.txt', String(error?.message) + '\n' + String(error?.stack));
-      console.error('------- SP EXCEPTION -------', error.message, error.stack);
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
-  }
-
-  async generarPdfDevolucion(idDevolucion: number): Promise<Buffer> {
-    const res = await this.dataSource.query(`
-      SELECT d.id_devolucion, d.fecha, d.monto_total, d.metodo_reembolso, d.cfdi_json,
-             f.folio as factura_folio, f.uuid as factura_uuid, f.moneda, f.tipo_cambio,
-             c."RFC" as rfc, c."RazonSocial" as razon_social, c."CodigoPostal" as cp,
-             c."Calle" as calle, c."NumeroExterior" as numero_exterior, c."Colonia" as colonia,
-             c."Ciudad" as ciudad, c."IdEstado" as id_estado, c."Pais" as pais
-      FROM devolucion d
-      JOIN factura f ON d.id_factura = f.id_factura
-      LEFT JOIN cliente c ON f.id_cliente = c."IdCliente"
-      WHERE d.id_devolucion = $1
-    `, [idDevolucion]);
-
-    if (!res || res.length === 0) {
-      throw new Error(`No se encontró la Devolución con ID ${idDevolucion}`);
-    }
-
-    const d = res[0];
-    const cfdi = d.cfdi_json || { Conceptos: [] };
-
-    const datosTicket: any = {
-      total: d.monto_total,
-      moneda: d.moneda || 'MXN',
-      fecha: d.fecha ? new Date(d.fecha).toISOString() : new Date().toISOString(),
-      folio: 'NC-' + d.id_devolucion,
-      serie: 'NC',
-      uso_cfdi: 'G02 (Devoluciones, Descuentos o Bonificaciones)',
-      forma_pago: 'NOTA DE CRÉDITO',
-      metodo_pago: d.metodo_reembolso,
-      subtotal: d.monto_total,
-      iva: 0,
-      retenciones: 0,
-      cliente: {
-        rfc: d.rfc || 'XAXX010101000',
-        nombre: d.razon_social || 'PÚBLICO EN GENERAL',
-        calle: d.calle,
-        numero_exterior: d.numero_exterior,
-        colonia: d.colonia,
-        ciudad: d.ciudad,
-        cp: d.cp,
-        estado: String(d.id_estado) || '',
-        municipio: d.ciudad
-      },
-      conceptos: cfdi.Conceptos?.map((c: any) => ({
-        cantidad: c.Cantidad,
-        clave_unidad: c.ClaveUnidad,
-        descripcion: c.Descripcion,
-        clave_prod_serv: c.ClaveProdServ,
-        precio: c.ValorUnitario,
-        importe: c.Importe
-      })) || []
-    };
-
-    return this.ticketService.crearPdfFactura(datosTicket);
-  }
 }

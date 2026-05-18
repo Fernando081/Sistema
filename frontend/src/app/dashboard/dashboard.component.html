@@ -11,7 +11,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Ventas Hoy</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.metrics.ventasHoy | currency: 'MXN' }}
+              {{ ventasHoyAnimado() | currency: 'MXN' }}
             </h3>
           </div>
           <div
@@ -28,7 +28,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Por Cobrar</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.metrics.porCobrar | currency: 'MXN' }}
+              {{ porCobrarAnimado() | currency: 'MXN' }}
             </h3>
           </div>
           <div
@@ -45,7 +45,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Por Pagar</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.metrics.porPagar | currency: 'MXN' }}
+              {{ porPagarAnimado() | currency: 'MXN' }}
             </h3>
           </div>
           <div
@@ -62,7 +62,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Stock Bajo</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.metrics.conteoBajos }} prod.
+              {{ conteoBajosAnimado() }} prod.
             </h3>
           </div>
           <div class="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg text-red-600 dark:text-red-400">
@@ -77,7 +77,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Ingresos Netos</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.ventas.ingresos_netos | currency: 'MXN' }}
+              {{ ingresosNetosAnimado() | currency: 'MXN' }}
             </h3>
           </div>
           <div
@@ -94,7 +94,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Ticket Promedio</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.ventas.ticket_promedio | currency: 'MXN' }}
+              {{ ticketPromedioAnimado() | currency: 'MXN' }}
             </h3>
           </div>
           <div
@@ -111,7 +111,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Valor Inventario</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.inventario.valor_total_inventario | currency: 'MXN' }}
+              {{ valorInventarioAnimado() | currency: 'MXN' }}
             </h3>
           </div>
           <div
@@ -128,7 +128,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Fill Rate</p>
             <h3 class="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
-              {{ data.operaciones.tasa_cumplimiento | number: '1.2-2' }}%
+              {{ tasaCumplimientoAnimado() | number: '1.2-2' }}%
             </h3>
           </div>
           <div
@@ -145,7 +145,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">LTV Promedio</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.clientes.valor_tiempo_vida | currency: 'MXN' }}
+              {{ valorTiempoVidaAnimado() | currency: 'MXN' }}
             </h3>
           </div>
           <div
@@ -162,7 +162,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Margen Bruto</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.ventas.margen_utilidad_bruta | number: '1.2-2' }}%
+              {{ margenUtilidadBrutaAnimado() | number: '1.2-2' }}%
             </h3>
           </div>
           <div
@@ -178,7 +178,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Rotación Inv.</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.inventario.tasa_rotacion_inventario | number: '1.2-2' }}x
+              {{ tasaRotacionInventarioAnimado() | number: '1.2-2' }}x
             </h3>
           </div>
           <div
@@ -195,7 +195,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Quiebres Stock</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.inventario.indice_quiebre_stock | number: '1.0-0' }}
+              {{ indiceQuiebreStockAnimado() | number: '1.0-0' }}
             </h3>
           </div>
           <div
@@ -212,7 +212,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Días Inventario</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.inventario.dias_inventario | number: '1.1-1' }}
+              {{ diasInventarioAnimado() | number: '1.1-1' }}
             </h3>
           </div>
           <div
@@ -229,7 +229,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Retención Clientes</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.clientes.tasa_retencion_clientes | number: '1.2-2' }}%
+              {{ tasaRetencionClientesAnimado() | number: '1.2-2' }}%
             </h3>
           </div>
           <div
@@ -246,7 +246,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Conv. Cotiz.</p>
             <h3 class="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
-              {{ data.operaciones.tasa_conversion_cotizaciones | number: '1.2-2' }}%
+              {{ tasaConversionCotizacionesAnimado() | number: '1.2-2' }}%
             </h3>
           </div>
           <div
@@ -263,7 +263,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Ventas Cruzadas</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.operaciones.indice_ventas_cruzadas | number: '1.2-2' }}
+              {{ indiceVentasCruzadasAnimado() | number: '1.2-2' }}
             </h3>
           </div>
           <div
@@ -280,7 +280,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">DPO (Días Cuentas)</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.clientes.dias_cuentas_por_pagar | number: '1.0-0' }}
+              {{ diasCuentasPorPagarAnimado() | number: '1.0-0' }}
             </h3>
           </div>
           <div
@@ -297,7 +297,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">GMROI</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.inventario.retorno_inversion_inventario | number: '1.2-2' }}x
+              {{ retornoInversionInventarioAnimado() | number: '1.2-2' }}x
             </h3>
           </div>
           <div
@@ -314,7 +314,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Desc. Promedio</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.ventas.descuento_promedio_otorgado | number: '1.2-2' }}%
+              {{ descuentoPromedioOtorgadoAnimado() | number: '1.2-2' }}%
             </h3>
           </div>
           <div
@@ -331,7 +331,7 @@
           <div>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Costo Aterrizado</p>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {{ data.inventario.costo_aterrizado | currency: 'MXN' }}
+              {{ costoAterrizadoAnimado() | currency: 'MXN' }}
             </h3>
           </div>
           <div

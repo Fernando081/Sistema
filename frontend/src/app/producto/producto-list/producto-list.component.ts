@@ -1,6 +1,7 @@
 // frontend/src/app/producto/producto-list/producto-list.component.ts (MODIFICAR)
 
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import anime from 'animejs';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -136,6 +137,7 @@ export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
           }));
           
           this.dataSource.data = camelCaseData;
+          setTimeout(() => this.animarEntradaTabla(), 0);
           // Paginación y Sorting ahora se delegan completamente al servidor.
         },
         error: (err) => {
@@ -199,5 +201,9 @@ export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
   mostrarNotificacion(mensaje: string) {
     // ... (esta función no cambia)
     this.snackBar.open(mensaje, 'Cerrar', { duration: 3000 });
+  }
+
+  animarEntradaTabla() {
+    anime({ targets: '.mat-mdc-row', translateY: [20, 0], opacity: [0, 1], delay: anime.stagger(50), duration: 400, easing: 'easeOutCubic' });
   }
 }

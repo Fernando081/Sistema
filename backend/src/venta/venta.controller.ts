@@ -27,17 +27,9 @@ export class VentaController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
     @Query('term') term?: string,
+    @Query('tipo') tipo?: string,
   ) {
-    return this.ventaService.findAll(page, limit, term);
-  }
-
-  @Get('devoluciones')
-  findAllDevoluciones(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
-    @Query('term') term?: string,
-  ) {
-    return this.ventaService.findAllDevoluciones(page, limit, term);
+    return this.ventaService.findAll(page, limit, term, tipo);
   }
 
   @Get(':id/detalle')
@@ -63,33 +55,8 @@ export class VentaController {
     return this.ventaService.enviarFacturaPorCorreo(id);
   }
 
-  @Get('devolucion/:id/pdf')
-  async descargarPdfDevolucion(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
-    const pdfBuffer = await this.ventaService.generarPdfDevolucion(id);
-
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `inline; filename="Nota_de_Credito_${id}.pdf"`,
-      'Content-Length': pdfBuffer.length,
-    });
-
-    res.end(pdfBuffer);
-  }
-
   @Post(':id/cancelar')
   cancelarFactura(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.cancelarFactura(id);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post(':id/devolucion')
-  async devolverParcial(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: ProcesarDevolucionDto,
-    @Req() req: any
-  ) {
-    require('fs').writeFileSync('c:\\Sistema\\backend\\_debug_dto.txt', JSON.stringify({id, dto}, null, 2));
-    const idUsuario = req.user?.idUser;
-    return this.ventaService.devolverParcial(id, dto, idUsuario);
   }
 }

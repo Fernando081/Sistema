@@ -2,7 +2,8 @@
 
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, AfterViewInit } from '@angular/core';
+import anime from 'animejs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -46,7 +47,7 @@ type AuthUser = {
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
+export class App implements AfterViewInit {
   private readonly breakpointObserver = inject(BreakpointObserver);
   readonly themeService = inject(ThemeService);
 
@@ -96,6 +97,19 @@ export class App {
     } catch {
       return null;
     }
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      anime({
+        targets: '.wrap-nav-item',
+        translateX: [-30, 0],
+        opacity: [0, 1],
+        duration: 500,
+        delay: anime.stagger(60),
+        easing: 'easeOutQuart'
+      });
+    }, 100);
   }
 }
 // Rebuild

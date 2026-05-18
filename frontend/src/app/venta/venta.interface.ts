@@ -46,6 +46,11 @@ export interface Venta {
   totalImpuestosRetenidos: number;
   total: number;
 
+  tipoComprobante?: string;
+  serie?: string;
+  metodoReembolso?: string;
+  cfdisRelacionados?: { tipoRelacion: string; uuidRelacionado: string }[];
+
   conceptos: ConceptoVenta[];
 }
 

@@ -1,0 +1,3 @@
+const { Client } = require('pg'); 
+const client = new Client({ host: '127.0.0.1', port: 5432, user: 'postgres', password: 'F8pz6u4oi**', database: 'BD_local_Proyecto' }); 
+client.connect().then(() => client.query(`SELECT proname FROM pg_proc WHERE proname LIKE '%kpi%' OR proname LIKE '%comision%' OR proname LIKE '%dash%' OR proname LIKE '%venta%'`).then(res => { console.log("FUNCTIONS:", res.rows.map(r=>r.proname)); client.query(`SELECT table_name FROM information_schema.views WHERE table_schema='public'`).then(res2 => { console.log("VIEWS:", res2.rows.map(r=>r.table_name)); client.end();})}))

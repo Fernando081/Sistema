@@ -10,8 +10,6 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { VentaService } from '../../services/venta.service';
 import { FacturaResumen, DetalleFacturaDb } from '../venta.interface';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog.component';
-import { DevolucionDialogComponent } from './devolucion-dialog.component';
-
 @Component({
   selector: 'app-factura-detalle',
   standalone: true,
@@ -78,33 +76,4 @@ export class FacturaDetalleComponent implements OnInit {
     });
   }
 
-  devolverFactura() {
-    const devRef = this.dialog.open(DevolucionDialogComponent, {
-      width: '1200px',
-      maxWidth: '95vw',
-      disableClose: true,
-      data: {
-        idFactura: this.data.id_factura,
-        folio: `${this.data.serie || ''}${this.data.folio}`,
-        conceptos: this.detalles,
-        estatus: this.data.estatus,
-        saldo_pendiente: this.data.saldo_pendiente || 0,
-        idCliente: this.data.id_cliente
-      }
-    });
-
-    devRef.afterClosed().subscribe(payload => {
-      if (payload) {
-        this.ventaService.devolverParcial(this.data.id_factura, payload).subscribe({
-          next: (res: any) => {
-            this.snackBar.open(`¡Nota de Crédito generada! (Ref: ${res.idDevolucion})`, 'OK', { duration: 6000 });
-            this.cerrar(); // Cerrar el detalle para que se refresque el historial
-          },
-          error: (err: any) => {
-            this.snackBar.open(err.error?.message || 'Error al procesar la devolución', 'Cerrar', { duration: 5000 });
-          }
-        });
-      }
-    });
-  }
 }

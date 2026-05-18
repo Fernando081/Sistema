@@ -42,6 +42,21 @@ export class ConceptoVentaDto {
 
 // 2. DTO para la Venta General (Cabecera)
 export class CreateVentaDto {
+  @IsString()
+  @IsOptional()
+  tipoComprobante?: string;
+
+  @IsString()
+  @IsOptional()
+  serie?: string;
+
+  @IsString()
+  @IsOptional()
+  metodoReembolso?: string;
+
+  @IsArray()
+  @IsOptional()
+  cfdisRelacionados?: { tipoRelacion: string; uuidRelacionado: string }[];
   @IsNumber() idCliente: number;
 
   // Datos fiscales del receptor (Snapshot)

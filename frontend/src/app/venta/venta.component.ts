@@ -1,11 +1,13 @@
 // frontend/src/app/venta/venta.component.ts
 import { Component, OnInit, signal, computed } from '@angular/core';
+import anime from 'animejs';
 import { CommonModule } from '@angular/common';
 import {
   FormsModule,
   FormBuilder,
   FormControl,
   FormGroup,
+  FormArray,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -24,6 +26,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { AlternativasDialogComponent } from './alternativas-dialog.component';
+import { BuscadorFacturasDialogComponent } from './buscador-facturas-dialog.component';
 
 // Servicios e Interfaces
 import { ProductoService } from '../services/producto.service';
@@ -109,9 +112,59 @@ export class VentaComponent implements OnInit {
     private dialog: MatDialog
   ) {
     this.configForm = this.fb.group({
+      tipoComprobante: ['I', Validators.required],
+      serie: ['F', Validators.required],
+      metodoReembolso: ['Saldo a Favor'], // Default for Egreso
       idUsoCFDI: [null, Validators.required],
       idFormaPago: [null, Validators.required],
       idMetodoPago: [null, Validators.required],
+      cfdisRelacionados: this.fb.array([])
+    });
+
+    // Cambiar serie automáticamente según tipo de comprobante
+    this.configForm.get('tipoComprobante')?.valueChanges.subscribe(val => {
+      if (val === 'I') {
+        this.configForm.get('serie')?.setValue('F');
+        this.configForm.get('metodoReembolso')?.clearValidators();
+      } else if (val === 'E') {
+        this.configForm.get('serie')?.setValue('NC');
+        this.configForm.get('metodoReembolso')?.setValidators(Validators.required);
+      }
+      this.configForm.get('metodoReembolso')?.updateValueAndValidity();
+    });
+  }
+
+  // --- GETTERS FORM ARRAY ---
+  get cfdisRelacionados(): FormArray {
+    return this.configForm.get('cfdisRelacionados') as FormArray;
+  }
+
+  addCfdiRelacionado() {
+    this.cfdisRelacionados.push(this.fb.group({
+      tipoRelacion: ['01', Validators.required],
+      uuidRelacionado: ['', [Validators.required, Validators.pattern(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)]]
+    }));
+  }
+
+  removeCfdiRelacionado(index: number) {
+    this.cfdisRelacionados.removeAt(index);
+  }
+
+  abrirBuscadorFacturas(index: number) {
+    if (!this.clienteSeleccionado) {
+      this.mostrarNotificacion('Primero debes seleccionar un cliente.');
+      return;
+    }
+
+    const dialogRef = this.dialog.open(BuscadorFacturasDialogComponent, {
+      width: '700px',
+      data: { idCliente: this.clienteSeleccionado.idCliente }
+    });
+
+    dialogRef.afterClosed().subscribe(uuid => {
+      if (uuid) {
+        this.cfdisRelacionados.at(index).patchValue({ uuidRelacionado: uuid });
+      }
     });
   }
 
@@ -293,6 +346,16 @@ export class VentaComponent implements OnInit {
     if (existente) {
       this.carrito.update((items) => [...items]);
     }
+
+    // Animación Pop
+    setTimeout(() => {
+      anime({ 
+        targets: '.totals-card', 
+        scale: [1, 1.02, 1], 
+        duration: 300, 
+        easing: 'easeInOutSine' 
+      });
+    }, 0);
   }
 
   // --- CEREBRO MATEMÁTICO (RESICO BLINDADO) ---
@@ -365,6 +428,11 @@ export class VentaComponent implements OnInit {
       totalImpuestosTrasladados: this.ivaGeneral(),
       totalImpuestosRetenidos: this.retIsrGeneral(),
       total: this.totalGeneral(),
+
+      tipoComprobante: formValues.tipoComprobante,
+      serie: formValues.serie,
+      metodoReembolso: formValues.tipoComprobante === 'E' ? formValues.metodoReembolso : undefined,
+      cfdisRelacionados: formValues.cfdisRelacionados,
 
       conceptos: this.carrito(),
     };

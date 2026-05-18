@@ -117,9 +117,59 @@
         </div>
 
         <div [formGroup]="configForm" class="flex flex-col gap-2">
+          <div class="flex gap-2">
+            <mat-form-field class="w-1/2 text-sm"><mat-label>Tipo Comprobante</mat-label><mat-select formControlName="tipoComprobante"><mat-option value="I">I - Ingreso</mat-option><mat-option value="E">E - Egreso</mat-option></mat-select></mat-form-field>
+            <mat-form-field class="w-1/2 text-sm"><mat-label>Serie</mat-label><mat-select formControlName="serie"><mat-option value="F">F (Factura)</mat-option><mat-option value="NC">NC (Nota de Crédito)</mat-option></mat-select></mat-form-field>
+          </div>
           <mat-form-field class="w-full text-sm"><mat-label>Uso CFDI</mat-label><mat-select formControlName="idUsoCFDI"><mat-option *ngFor="let u of usosCfdi$ | async" [value]="u.idUsoCFDI">{{ u.clave }} - {{ u.nombre }}</mat-option></mat-select></mat-form-field>
           <mat-form-field class="w-full text-sm"><mat-label>Método de Pago</mat-label><mat-select formControlName="idMetodoPago"><mat-option *ngFor="let m of metodosPago$ | async" [value]="m.idMetodoDePago">{{ m.clave }} - {{ m.nombre }}</mat-option></mat-select></mat-form-field>
           <mat-form-field class="w-full text-sm"><mat-label>Forma de Pago</mat-label><mat-select formControlName="idFormaPago"><mat-option *ngFor="let f of formasPago$ | async" [value]="f.idFormaPago">{{ f.clave }} - {{ f.nombre }}</mat-option></mat-select></mat-form-field>
+
+          <!-- Opciones Financieras Adicionales para Egreso -->
+          <mat-form-field *ngIf="configForm.get('tipoComprobante')?.value === 'E'" class="w-full text-sm mt-2">
+            <mat-label>Método de Reembolso</mat-label>
+            <mat-select formControlName="metodoReembolso">
+              <mat-option value="Saldo a Favor">Saldo a Favor del Cliente</mat-option>
+              <mat-option value="Efectivo">Devolución en Efectivo</mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-divider class="my-2"></mat-divider>
+          <div class="flex justify-between items-center mb-1">
+            <span class="font-medium text-sm text-gray-700 dark:text-gray-300">CFDIs Relacionados</span>
+            <button mat-icon-button color="primary" type="button" (click)="addCfdiRelacionado()">
+              <mat-icon>add_circle</mat-icon>
+            </button>
+          </div>
+          <div formArrayName="cfdisRelacionados" class="flex flex-col gap-3 mt-2">
+            <div *ngFor="let rel of cfdisRelacionados.controls; let i=index" [formGroupName]="i" class="flex flex-col gap-2 bg-[var(--mat-sys-surface-container)] p-3 rounded relative border border-gray-200 dark:border-gray-700">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-gray-500 uppercase">Documento Relacionado {{i + 1}}</span>
+                <button mat-icon-button color="warn" type="button" (click)="removeCfdiRelacionado(i)" class="!w-6 !h-6 !p-0 -mr-1">
+                  <mat-icon class="!w-5 !h-5 text-[20px] leading-none">close</mat-icon>
+                </button>
+              </div>
+              <mat-form-field class="w-full text-xs" subscriptSizing="dynamic">
+                <mat-label>Tipo Relación</mat-label>
+                <mat-select formControlName="tipoRelacion" panelClass="!w-max !max-w-[100vw]">
+                  <mat-option value="01">01 - Nota de crédito de los documentos relacionados</mat-option>
+                  <mat-option value="02">02 - Nota de débito de los documentos relacionados</mat-option>
+                  <mat-option value="03">03 - Devolución de mercancía sobre facturas o traslados previos</mat-option>
+                  <mat-option value="04">04 - Sustitución de los CFDI previos</mat-option>
+                  <mat-option value="05">05 - Traslados de mercancías facturados previamente</mat-option>
+                  <mat-option value="06">06 - Factura generada por los traslados previos</mat-option>
+                  <mat-option value="07">07 - CFDI por aplicación de anticipo</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="w-full text-xs" subscriptSizing="dynamic">
+                <mat-label>UUID Relacionado</mat-label>
+                <input matInput formControlName="uuidRelacionado" placeholder="Ej: 1234...">
+                <button matSuffix mat-icon-button color="primary" type="button" (click)="abrirBuscadorFacturas(i)" title="Buscar Factura">
+                  <mat-icon>search</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+          </div>
         </div>
       </mat-card-content>
     </mat-card>

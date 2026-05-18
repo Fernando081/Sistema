@@ -1,5 +1,6 @@
 // frontend/src/app/dashboard/dashboard.component.ts
-import { Component, inject } from '@angular/core';
+import { Component, inject, effect, signal, WritableSignal } from '@angular/core';
+import anime from 'animejs';
 import { CommonModule, CurrencyPipe, PercentPipe, DecimalPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,6 +29,28 @@ import { ThemeService } from '../services/theme.service';
 export class DashboardComponent {
   private dashboardService = inject(DashboardService);
   private themeService = inject(ThemeService);
+
+  // Animated Signals
+  ventasHoyAnimado = signal(0);
+  porCobrarAnimado = signal(0);
+  porPagarAnimado = signal(0);
+  conteoBajosAnimado = signal(0);
+  ingresosNetosAnimado = signal(0);
+  ticketPromedioAnimado = signal(0);
+  valorInventarioAnimado = signal(0);
+  tasaCumplimientoAnimado = signal(0);
+  valorTiempoVidaAnimado = signal(0);
+  margenUtilidadBrutaAnimado = signal(0);
+  tasaRotacionInventarioAnimado = signal(0);
+  indiceQuiebreStockAnimado = signal(0);
+  diasInventarioAnimado = signal(0);
+  tasaRetencionClientesAnimado = signal(0);
+  tasaConversionCotizacionesAnimado = signal(0);
+  indiceVentasCruzadasAnimado = signal(0);
+  diasCuentasPorPagarAnimado = signal(0);
+  retornoInversionInventarioAnimado = signal(0);
+  descuentoPromedioOtorgadoAnimado = signal(0);
+  costoAterrizadoAnimado = signal(0);
 
   theme = this.themeService.isDarkMode;
 
@@ -68,6 +91,45 @@ export class DashboardComponent {
   displayedColumns = ['codigo', 'descripcion', 'dias_sin_ventas', 'existencia'];
   agingColumns = ['rango', 'monto'];
   alertaColumns = ['codigo', 'descripcion', 'existencia'];
+
+  constructor() {
+    effect(() => {
+      const data = this.dashboardData();
+      if (data) {
+        this.animateValue(Number(data.metrics?.ventasHoy) || 0, this.ventasHoyAnimado);
+        this.animateValue(Number(data.metrics?.porCobrar) || 0, this.porCobrarAnimado);
+        this.animateValue(Number(data.metrics?.porPagar) || 0, this.porPagarAnimado);
+        this.animateValue(Number(data.metrics?.conteoBajos) || 0, this.conteoBajosAnimado);
+        this.animateValue(Number(data.ventas?.ingresos_netos) || 0, this.ingresosNetosAnimado);
+        this.animateValue(Number(data.ventas?.ticket_promedio) || 0, this.ticketPromedioAnimado);
+        this.animateValue(Number(data.inventario?.valor_total_inventario) || 0, this.valorInventarioAnimado);
+        this.animateValue(Number(data.operaciones?.tasa_cumplimiento) || 0, this.tasaCumplimientoAnimado);
+        this.animateValue(Number(data.clientes?.valor_tiempo_vida) || 0, this.valorTiempoVidaAnimado);
+        this.animateValue(Number(data.ventas?.margen_utilidad_bruta) || 0, this.margenUtilidadBrutaAnimado);
+        this.animateValue(Number(data.inventario?.tasa_rotacion_inventario) || 0, this.tasaRotacionInventarioAnimado);
+        this.animateValue(Number(data.inventario?.indice_quiebre_stock) || 0, this.indiceQuiebreStockAnimado);
+        this.animateValue(Number(data.inventario?.dias_inventario) || 0, this.diasInventarioAnimado);
+        this.animateValue(Number(data.clientes?.tasa_retencion_clientes) || 0, this.tasaRetencionClientesAnimado);
+        this.animateValue(Number(data.operaciones?.tasa_conversion_cotizaciones) || 0, this.tasaConversionCotizacionesAnimado);
+        this.animateValue(Number(data.operaciones?.indice_ventas_cruzadas) || 0, this.indiceVentasCruzadasAnimado);
+        this.animateValue(Number(data.clientes?.dias_cuentas_por_pagar) || 0, this.diasCuentasPorPagarAnimado);
+        this.animateValue(Number(data.inventario?.retorno_inversion_inventario) || 0, this.retornoInversionInventarioAnimado);
+        this.animateValue(Number(data.ventas?.descuento_promedio_otorgado) || 0, this.descuentoPromedioOtorgadoAnimado);
+        this.animateValue(Number(data.inventario?.costo_aterrizado) || 0, this.costoAterrizadoAnimado);
+      }
+    });
+  }
+
+  private animateValue(targetValue: number, sig: WritableSignal<number>) {
+    const obj = { val: 0 };
+    anime({
+      targets: obj,
+      val: targetValue,
+      duration: 1500,
+      easing: 'easeOutExpo',
+      update: () => sig.set(obj.val)
+    });
+  }
 
   private buildTendenciaVentasChart(grafica: { name: string; value: number }[]): EChartsOption {
     const dates = grafica.map((g) => g.name || 'S/F');
