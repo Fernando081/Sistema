@@ -73,6 +73,12 @@ export const routes: Routes = [
       import('./venta/factura-list/factura-list.component').then((m) => m.FacturaListComponent),
   },
   {
+    path: 'facturas/global',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./venta/factura-global/factura-global.component').then((m) => m.FacturaGlobalComponent),
+  },
+  {
     path: 'compra',
     canActivate: [authGuard],
     loadComponent: () => import('./compra/compra.component').then((m) => m.CompraComponent),

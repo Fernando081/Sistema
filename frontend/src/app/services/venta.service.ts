@@ -52,4 +52,18 @@ export class VentaService {
   getFacturasRelacionables(idCliente: number): Observable<FacturaResumen[]> {
     return this.http.get<FacturaResumen[]>(`${environment.apiBaseUrl}/factura/cliente/${idCliente}/relacionables`);
   }
+
+  getTicketsPendientesGlobal(fechaInicio: string, fechaFin: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiBaseUrl}/factura/global/tickets-pendientes`, {
+      params: { fechaInicio, fechaFin }
+    });
+  }
+
+  generarFacturaGlobal(fechaInicio: string, fechaFin: string, idsTickets: number[]): Observable<any> {
+    return this.http.post<any>(`${environment.apiBaseUrl}/factura/global/generar`, {
+      fechaInicio,
+      fechaFin,
+      idsTickets
+    });
+  }
 }

@@ -69,6 +69,9 @@ export class Factura {
   @Column({ name: 'uuid', type: 'uuid', nullable: true })
   uuid: string;
 
+  @Column({ name: 'id_factura_global', type: 'int', nullable: true })
+  idFacturaGlobal: number;
+
   @OneToMany(() => CfdiRelacionado, cfdiRelacionado => cfdiRelacionado.factura)
   cfdisRelacionados: CfdiRelacionado[];
 }

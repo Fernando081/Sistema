@@ -86,6 +86,10 @@
   </div>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end" class="border-t !pt-2">
+<mat-dialog-actions class="border-t !pt-2 flex justify-between items-center w-full">
+  <button mat-flat-button color="primary" class="bg-indigo-600 text-white rounded-lg px-4 flex items-center gap-1" (click)="abrirAjusteManual()">
+    <mat-icon>tune</mat-icon>
+    <span>Ajustar Stock</span>
+  </button>
   <button mat-button (click)="dialogRef.close()">Cerrar</button>
 </mat-dialog-actions>

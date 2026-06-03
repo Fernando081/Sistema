@@ -97,4 +97,8 @@ export class ProductoService {
   getAlternativas(idProducto: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/${idProducto}/alternativas`);
   }
+
+  ajustarInventario(idProducto: number, cantidad: number, tipo: string, motivo: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${idProducto}/ajustar-inventario`, { cantidad, tipo, motivo });
+  }
 }

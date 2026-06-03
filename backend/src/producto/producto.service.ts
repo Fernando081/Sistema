@@ -309,4 +309,17 @@ export class ProductoService {
       WHERE pc.id_producto_destino = $1
     `, [idProducto]);
   }
+
+  async ajustarInventario(idProducto: number, cantidad: number, tipo: string, motivo: string) {
+    await this.dataSource.query(
+      'CALL sp_ajustar_inventario($1, $2, $3, $4)',
+      [idProducto, cantidad, tipo, motivo]
+    );
+
+    const updated = await this.findOne(idProducto);
+    return {
+      message: 'Ajuste de inventario realizado con éxito',
+      existencia: Number(updated.Existencia || updated['Existencia'] || 0)
+    };
+  }
 }

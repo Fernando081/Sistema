@@ -116,4 +116,12 @@ export class ProductoController {
   ) {
     return this.productoService.addCotizacionProveedor(id, dto);
   }
+
+  @Post(':id/ajustar-inventario')
+  ajustarInventario(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { cantidad: number; tipo: string; motivo: string },
+  ) {
+    return this.productoService.ajustarInventario(id, body.cantidad, body.tipo, body.motivo);
+  }
 }

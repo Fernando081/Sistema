@@ -1,0 +1,233 @@
+<!-- frontend/src/app/venta/factura-global/factura-global.component.html -->
+<div class="space-y-6 p-1 md:p-4">
+  <!-- Encabezado Principal -->
+  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 text-white shadow-xl">
+    <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight">Facturación Global</h1>
+        <p class="mt-2 text-indigo-100 max-w-xl">
+          Agrupa y factura múltiples tickets de venta al público en general. Busca por rango de fechas, selecciona los tickets a incluir y genera la factura con el RFC genérico <code class="bg-white/10 px-2 py-0.5 rounded text-white font-mono">XAXX010101000</code>.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <mat-icon class="text-4xl opacity-80 h-10 w-10">receipt_long</mat-icon>
+      </div>
+    </div>
+    <!-- Círculos de fondo decorativos -->
+    <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl"></div>
+    <div class="absolute -left-10 -bottom-10 h-40 w-40 rounded-full bg-black/10 blur-2xl"></div>
+  </div>
+
+  <!-- Panel de Filtros -->
+  <mat-card class="border border-gray-200/50 dark:border-gray-800/50 bg-white dark:bg-[#1f2335] shadow-lg rounded-2xl overflow-hidden transition-all duration-300">
+    <mat-card-content class="p-6">
+      <form [formGroup]="dateForm" (ngSubmit)="buscarTickets()" class="flex flex-col md:flex-row md:items-center gap-4">
+        
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Fecha de Inicio</mat-label>
+          <input matInput [matDatepicker]="pickerInicio" formControlName="fechaInicio">
+          <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+          <mat-datepicker #pickerInicio></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Fecha de Fin</mat-label>
+          <input matInput [matDatepicker]="pickerFin" formControlName="fechaFin">
+          <mat-datepicker-toggle matIconSuffix [for]="pickerFin"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFin></mat-datepicker>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" type="submit" class="h-[54px] px-8 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-all duration-300 flex items-center gap-2" [disabled]="isLoading() || isSaving()">
+          <mat-icon *ngIf="!isLoading()">search</mat-icon>
+          <mat-spinner diameter="20" color="accent" *ngIf="isLoading()"></mat-spinner>
+          <span>Buscar Ventas</span>
+        </button>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Estado de carga / buscando -->
+  <div *ngIf="isLoading()" class="flex flex-col items-center justify-center py-20">
+    <mat-spinner diameter="50" color="primary"></mat-spinner>
+    <p class="mt-4 text-gray-500 dark:text-gray-400 font-medium">Buscando tickets de venta pendientes...</p>
+  </div>
+
+  <!-- Resultados de Búsqueda -->
+  <div *ngIf="!isLoading() && searchDone()" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- Tabla de Tickets (Lado Izquierdo, Ocupa 2 columnas) -->
+    <div class="lg:col-span-2 space-y-4">
+      <mat-card class="border border-gray-200/50 dark:border-gray-800/50 bg-white dark:bg-[#1f2335] shadow-lg rounded-2xl overflow-hidden">
+        <mat-card-header class="px-6 py-4 border-b border-gray-100 dark:border-gray-800/50 flex justify-between items-center">
+          <mat-card-title class="text-lg font-bold flex items-center gap-2">
+            <mat-icon class="text-indigo-500">point_of_sale</mat-icon>
+            Tickets Pendientes ({{ dataSource.data.length }})
+          </mat-card-title>
+        </mat-card-header>
+
+        <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
+          <!-- Si no hay registros -->
+          <div *ngIf="dataSource.data.length === 0" class="flex flex-col items-center justify-center py-20 text-gray-500 dark:text-gray-400">
+            <mat-icon class="text-6xl mb-3 opacity-40">assignment_turned_in</mat-icon>
+            <p class="font-semibold text-lg">¡Todo al día!</p>
+            <p class="text-sm">No se encontraron tickets de venta sin facturar en este rango de fechas.</p>
+          </div>
+
+          <table mat-table [dataSource]="dataSource" class="w-full" *ngIf="dataSource.data.length > 0">
+            
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef class="w-14">
+                <mat-checkbox (change)="$event ? masterToggle() : null"
+                              [checked]="selection.hasValue() && isAllSelected()"
+                              [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                              (change)="$event ? selection.toggle(row) : null"
+                              [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <!-- Folio/Serie -->
+            <ng-container matColumnDef="folio">
+              <th mat-header-cell *matHeaderCellDef class="font-bold">Folio</th>
+              <td mat-cell *matCellDef="let element" class="font-mono font-semibold">
+                {{ element.serie }}-{{ element.folio }}
+              </td>
+            </ng-container>
+
+            <!-- Fecha -->
+            <ng-container matColumnDef="fecha">
+              <th mat-header-cell *matHeaderCellDef class="font-bold">Fecha</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.fechaEmision | date: 'dd/MM/yyyy HH:mm' }}
+              </td>
+            </ng-container>
+
+            <!-- Cliente -->
+            <ng-container matColumnDef="cliente">
+              <th mat-header-cell *matHeaderCellDef class="font-bold">Cliente</th>
+              <td mat-cell *matCellDef="let element" class="max-w-[150px] truncate" [matTooltip]="element.nombreReceptor">
+                {{ element.nombreReceptor }}
+              </td>
+            </ng-container>
+
+            <!-- RFC -->
+            <ng-container matColumnDef="rfc">
+              <th mat-header-cell *matHeaderCellDef class="font-bold">RFC</th>
+              <td mat-cell *matCellDef="let element" class="font-mono text-xs">
+                {{ element.rfcReceptor }}
+              </td>
+            </ng-container>
+
+            <!-- Subtotal -->
+            <ng-container matColumnDef="subtotal">
+              <th mat-header-cell *matHeaderCellDef class="font-bold text-right">Subtotal</th>
+              <td mat-cell *matCellDef="let element" class="text-right">
+                {{ element.subtotal | currency }}
+              </td>
+            </ng-container>
+
+            <!-- IVA -->
+            <ng-container matColumnDef="iva">
+              <th mat-header-cell *matHeaderCellDef class="font-bold text-right">IVA</th>
+              <td mat-cell *matCellDef="let element" class="text-right text-gray-500">
+                {{ element.totalImpuestosTrasladados | currency }}
+              </td>
+            </ng-container>
+
+            <!-- Total -->
+            <ng-container matColumnDef="total">
+              <th mat-header-cell *matHeaderCellDef class="font-bold text-right">Total</th>
+              <td mat-cell *matCellDef="let element" class="text-right font-semibold text-indigo-600 dark:text-indigo-400">
+                {{ element.total | currency }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)" class="hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors"></tr>
+          </table>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Panel de Facturación (Lado Derecho, Ocupa 1 columna) -->
+    <div class="lg:col-span-1">
+      <div class="sticky top-6 space-y-6">
+        
+        <!-- Tarjeta de Totales a Facturar -->
+        <mat-card class="totals-card-global border border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20 shadow-xl rounded-2xl overflow-hidden">
+          <mat-card-header class="px-6 py-4 border-b border-indigo-500/20">
+            <mat-card-title class="text-lg font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
+              <mat-icon>analytics</mat-icon>
+              Resumen Global
+            </mat-card-title>
+          </mat-card-header>
+          
+          <mat-card-content class="p-6 space-y-4">
+            
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-500 dark:text-gray-400">Tickets Seleccionados</span>
+              <span class="font-bold bg-indigo-600/10 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full font-mono">
+                {{ selection.selected.length }} de {{ dataSource.data.length }}
+              </span>
+            </div>
+
+            <mat-divider class="opacity-30"></mat-divider>
+
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-500 dark:text-gray-400">Subtotal Acumulado</span>
+              <span class="font-semibold text-gray-800 dark:text-gray-200">{{ selectedSubtotal() | currency }}</span>
+            </div>
+
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-500 dark:text-gray-400">IVA 16% Acumulado</span>
+              <span class="font-semibold text-gray-800 dark:text-gray-200">{{ selectedIva() | currency }}</span>
+            </div>
+
+            <mat-divider class="opacity-50"></mat-divider>
+
+            <div class="flex justify-between items-end py-2">
+              <span class="text-base font-bold text-gray-900 dark:text-white">TOTAL FACTURA GLOBAL</span>
+              <span class="text-2xl font-black text-indigo-600 dark:text-indigo-400 font-mono">
+                {{ selectedTotal() | currency }}
+              </span>
+            </div>
+
+            <!-- Datos de Facturación Requeridos -->
+            <div class="bg-white/50 dark:bg-black/20 p-4 rounded-xl space-y-2 border border-gray-200/50 dark:border-gray-800/50 text-xs">
+              <p class="font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider text-[10px]">Datos de Emisión Fiscal (CFDI 4.0)</p>
+              <div class="grid grid-cols-3 gap-1">
+                <span class="text-gray-500">RFC:</span>
+                <span class="col-span-2 font-mono font-semibold text-gray-800 dark:text-gray-200">XAXX010101000</span>
+                
+                <span class="text-gray-500">Nombre:</span>
+                <span class="col-span-2 font-semibold text-gray-800 dark:text-gray-200">PUBLICO EN GENERAL</span>
+                
+                <span class="text-gray-500">Regimen:</span>
+                <span class="col-span-2 font-semibold text-gray-800 dark:text-gray-200">616 - Sin obligaciones</span>
+
+                <span class="text-gray-500">Uso:</span>
+                <span class="col-span-2 font-semibold text-gray-800 dark:text-gray-200">S01 - Sin efectos</span>
+              </div>
+            </div>
+
+            <!-- Acción de Generación -->
+            <button mat-flat-button color="accent" class="w-full py-6 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold text-base transition-all duration-300 shadow-md flex items-center justify-center gap-2" [disabled]="selection.selected.length === 0 || isSaving()" (click)="generarFacturaGlobal()">
+              <mat-spinner diameter="24" color="accent" *ngIf="isSaving()"></mat-spinner>
+              <mat-icon *ngIf="!isSaving()">cloud_done</mat-icon>
+              <span>Generar Factura Global</span>
+            </button>
+
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </div>
+
+  </div>
+</div>
