@@ -1,26 +1,36 @@
-<div class="min-h-screen flex items-center justify-center bg-slate-100 p-4">
-  <mat-card class="w-full max-w-md p-6 !shadow-lg">
-    <h1 class="text-2xl font-semibold mb-2">Iniciar sesión</h1>
-    <p class="text-slate-500 mb-4">Accede al sistema de ventas e inventario.</p>
+<main class="min-h-screen grid lg:grid-cols-2 bg-[var(--wrap-bg)]">
+  <section class="hidden lg:flex relative overflow-hidden bg-[#0f2742] text-white p-14 flex-col justify-between">
+    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_10%,#d98e18_0,transparent_35%),radial-gradient(circle_at_90%_80%,#247a43_0,transparent_30%)]"></div>
+    <div class="relative flex items-center gap-4"><div class="w-14 h-14 rounded-2xl bg-[#d98e18] text-[#111827] grid place-items-center font-black">RTT</div><div class="leading-tight"><h1 class="m-0 whitespace-nowrap text-xl font-extrabold">Refacciones y Tractorepuestos</h1><p class="m-0 whitespace-nowrap text-xl font-extrabold text-white">Tampico</p></div></div>
+    <div class="relative max-w-xl"><p class="uppercase tracking-[.2em] text-amber-400 text-sm font-bold">Operación conectada</p><h2 class="text-5xl leading-tight font-black mb-5">La refacción correcta, con información clara.</h2><p class="text-xl text-slate-300">Ventas, inventario, compras, cobranza y relaciones comerciales en un solo lugar.</p></div>
+    <p class="relative text-sm text-slate-400">ERP + CRM para servicio pesado diésel</p>
+  </section>
+  <section class="flex items-center justify-center p-5 md:p-10">
+  <mat-card class="w-full max-w-md p-7 md:p-9 !shadow-xl erp-static-card">
+    <div class="lg:hidden flex items-center gap-3 mb-7"><div class="w-11 h-11 shrink-0 rounded-xl bg-[#0f2742] text-white grid place-items-center text-xs font-black">RTT</div><div class="leading-tight text-[var(--wrap-text-title)]"><strong class="block whitespace-nowrap text-base">Refacciones y Tractorepuestos</strong><strong class="block whitespace-nowrap text-base">Tampico</strong></div></div>
+    <p class="text-[#a76809] uppercase tracking-widest text-xs font-bold mb-2">Bienvenido</p>
+    <h2 class="text-3xl font-extrabold mb-2 text-[var(--wrap-text-title)]">Iniciar sesión</h2>
+    <p class="text-[var(--wrap-text-muted)] mb-7">Accede a tu espacio de trabajo.</p>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
       <mat-form-field appearance="outline">
         <mat-label>Usuario</mat-label>
-        <input matInput formControlName="username" />
+        <input matInput formControlName="username" autocomplete="username" maxlength="100" />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Contraseña</mat-label>
-        <input matInput type="password" formControlName="password" required />
+        <input matInput type="password" formControlName="password" autocomplete="current-password" required />
       </mat-form-field>
 
-      <button mat-flat-button color="primary" type="submit" [disabled]="isSaving() || form.invalid">
-        <span *ngIf="!loading">Entrar</span>
-        <span *ngIf="loading" class="inline-flex items-center gap-2">
+      <button mat-flat-button color="primary" type="submit" class="!min-h-12 !text-base" [disabled]="isSaving() || form.invalid">
+        <span *ngIf="!isSaving()">Entrar</span>
+        <span *ngIf="isSaving()" class="inline-flex items-center gap-2">
           <mat-spinner diameter="18"></mat-spinner>
           Ingresando...
         </span>
       </button>
     </form>
   </mat-card>
-</div>
+  </section>
+</main>

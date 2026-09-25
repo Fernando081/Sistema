@@ -5,6 +5,7 @@ import { CotizacionService } from './cotizacion.service';
 import { CreateCotizacionDto, ConvertirCotizacionDto } from './cotizacion.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import type { Response } from 'express';
+import { JwtPayload } from '../auth/auth.types';
 
 @Controller('cotizacion')
 export class CotizacionController {
@@ -45,7 +46,7 @@ export class CotizacionController {
   convertir(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: ConvertirCotizacionDto,
-    @Req() req: any
+    @Req() req: { user: JwtPayload }
   ) {
     const idVendedor = req.user?.idUser;
     return this.service.convertirParcial(id, dto, dto.idFormaPago, dto.idMetodoPago, idVendedor);

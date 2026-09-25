@@ -1,5 +1,8 @@
 // frontend/src/app/venta/venta.component.ts
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, DestroyRef, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { roundMoney } from '../shared/document-download';
+import { productImageUrl } from '../shared/api-url';
 import anime from 'animejs';
 import { CommonModule } from '@angular/common';
 import {
@@ -31,15 +34,17 @@ import { BuscadorFacturasDialogComponent } from './buscador-facturas-dialog.comp
 // Servicios e Interfaces
 import { ProductoService } from '../services/producto.service';
 import { ClienteService } from '../services/cliente.service';
-import { CatalogosService, FormaPago, MetodoPago, UsoCFDI } from '../services/catalogos.service';
+import { CatalogosService, FormaPago, MetodoPago, UsoCFDI, RegimenFiscal } from '../services/catalogos.service';
 import { VentaService } from '../services/venta.service';
+import { ComercialService } from '../services/comercial.service';
 import { Producto } from '../producto/producto.interface';
 import { Cliente } from '../cliente/cliente.interface';
 import { ConceptoVenta, Venta } from './venta.interface';
+import { AuthService } from '../auth/auth.service';
 
 // RxJS
-import { Observable, of } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map, startWith, finalize, switchMap, tap, shareReplay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-venta',
@@ -62,9 +67,12 @@ import { map, startWith, finalize } from 'rxjs/operators';
     MatDialogModule
   ],
   templateUrl: './venta.component.html',
-  // Elimina styleUrls si no tienes el archivo CSS
+  styleUrl: './venta.component.css',
 })
 export class VentaComponent implements OnInit {
+  @ViewChild('productSearchInput') productSearchInput?: ElementRef<HTMLInputElement>;
+  readonly productImageUrl = productImageUrl;
+  readonly canEditPrice = inject(AuthService).getDecodedToken()?.role === 'admin';
   // --- VARIABLES DE ESTADO ---
   carrito = signal<ConceptoVenta[]>([]);
   clienteSeleccionado: Cliente | null = null;
@@ -79,7 +87,7 @@ export class VentaComponent implements OnInit {
   retIsrGeneral = computed(
     () => this.carrito().reduce((acc, item) => acc + this.toCents(item.importeRetIsr), 0) / 100,
   );
-  totalGeneral = computed(() => this.subtotalGeneral() + this.ivaGeneral() - this.retIsrGeneral());
+  totalGeneral = computed(() => roundMoney(this.subtotalGeneral() + this.ivaGeneral() - this.retIsrGeneral()));
 
   // Formularios y Controles
   clienteControl = new FormControl<string | Cliente>('');
@@ -102,11 +110,24 @@ export class VentaComponent implements OnInit {
   displayedColumns: string[] = ['descripcion', 'cantidad', 'precio', 'importe', 'acciones'];
   isSaving = signal(false);
 
+  onImageError(event: Event) {
+    const image = event.currentTarget as HTMLImageElement;
+    image.hidden = true;
+    (image.nextElementSibling as HTMLElement | null)?.removeAttribute('hidden');
+  }
+  private pendingRequestId: string | null = null;
+  private readonly destroyRef = inject(DestroyRef);
+  private usosCfdi: UsoCFDI[] = [];
+  private regimenes: RegimenFiscal[] = [];
+  private idFacturaOrigen?: number;
+  private readonly draftKey = 'rtt-venta-draft-v1';
+
   constructor(
     private fb: FormBuilder,
     private productoService: ProductoService,
     private clienteService: ClienteService,
     private catalogosService: CatalogosService,
+    private comercialService: ComercialService,
     private ventaService: VentaService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
@@ -122,7 +143,7 @@ export class VentaComponent implements OnInit {
     });
 
     // Cambiar serie automáticamente según tipo de comprobante
-    this.configForm.get('tipoComprobante')?.valueChanges.subscribe(val => {
+    this.configForm.get('tipoComprobante')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(val => {
       if (val === 'I') {
         this.configForm.get('serie')?.setValue('F');
         this.configForm.get('metodoReembolso')?.clearValidators();
@@ -161,9 +182,10 @@ export class VentaComponent implements OnInit {
       data: { idCliente: this.clienteSeleccionado.idCliente }
     });
 
-    dialogRef.afterClosed().subscribe(uuid => {
-      if (uuid) {
-        this.cfdisRelacionados.at(index).patchValue({ uuidRelacionado: uuid });
+    dialogRef.afterClosed().subscribe(factura => {
+      if (factura) {
+        this.cfdisRelacionados.at(index).patchValue({ uuidRelacionado: factura.uuid });
+        this.idFacturaOrigen = factura.id_factura;
       }
     });
   }
@@ -171,56 +193,29 @@ export class VentaComponent implements OnInit {
   ngOnInit(): void {
     this.cargarCatalogos();
     this.configurarAutocompletes();
+    this.clienteControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
+      if (typeof value === 'string' || !value) {
+        this.clienteSeleccionado = null;
+        this.idFacturaOrigen = undefined;
+        this.cfdisRelacionados.clear();
+      }
+    });
   }
 
   cargarCatalogos() {
     // 1. Cargar Catálogos SAT
-    this.usosCfdi$ = this.catalogosService.getUsosCFDI();
+    this.usosCfdi$ = this.catalogosService.getUsosCFDI().pipe(tap(rows => this.usosCfdi = rows), shareReplay({ bufferSize: 1, refCount: true }));
+    this.catalogosService.getRegimenesFiscales().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(rows => this.regimenes = rows);
     this.formasPago$ = this.catalogosService.getFormasPago();
     this.metodosPago$ = this.catalogosService.getMetodosPago();
 
     // 2. Cargar Clientes (Service now handles mapping)
     this.clienteService.getClientes().subscribe((data) => {
       this.listaClientes = data;
+      this.clienteControl.updateValueAndValidity({ emitEvent: true });
+      this.restaurarBorrador();
     });
 
-    // 3. Cargar Productos (Mapeo COMPLETO)
-    this.productoService.getProductos(1, 1000).subscribe((response: any) => {
-      this.listaProductos = response.data.map((p: any) => ({
-        // Identificadores
-        idProducto: p['IdProducto'],
-
-        // Datos Básicos
-        codigo: p['Codigo'],
-        descripcion: p['Descripcion'],
-        precioUnitario: p['PrecioUnitario'],
-        marca: p['Marca'],
-        ubicacion: p['Ubicacion'],
-
-        // IDs Relacionales
-        idUnidad: p['IdUnidad'],
-        idObjetoImpuesto: p['IdObjetoImpuesto'],
-        idCategoria: p['IdCategoria'],
-        idClaveProdOServ: p['IdClaveProdOServ'],
-        idClaveUnidad: p['IdClaveUnidad'],
-
-        // Datos SAT (Joins)
-        claveProdServ: p['ClaveProdServ'],
-        descripcionProdServ: p['DescripcionProdServ'],
-        claveUnidadSat: p['ClaveUnidadSat'],
-        // OJO: En la interfaz es 'descripcionUnidadSat'
-        descripcionUnidadSat: p['DescripcionUnidadSat'],
-
-        // Datos Fiscales (RESICO)
-        objetoImpuestoSat: p['ObjetoImpuesto'],
-        tasaIva: p['TasaIVA'],
-        aplicaRetencionIsr: p['AplicaRetencionISR'],
-        aplicaRetencionIva: p['AplicaRetencionIVA'],
-        existencia: Number(p['Existencia']),
-        equivalentesIds: p['EquivalentesJSON'] || [], // Array de números [2, 5]
-        imagenes: p['imagenes'] || [],
-      })) as unknown as Producto[];
-    });
   }
 
   configurarAutocompletes() {
@@ -236,15 +231,28 @@ export class VentaComponent implements OnInit {
     // Filtro Productos (Validación Objeto vs Texto)
     this.productosFiltrados$ = this.productoControl.valueChanges.pipe(
       startWith(''),
-      map((value) => {
-        const termino = typeof value === 'string' ? value : (value as Producto)?.descripcion || '';
-        return termino ? this._filtrarProductos(termino) : this.listaProductos.slice();
-      }),
+      debounceTime(250),
+      map((value) => typeof value === 'string' ? value.trim() : ''),
+      distinctUntilChanged(),
+      switchMap((termino) => this.productoService.buscarProductos(termino).pipe(
+        tap((productos) => {
+          for (const producto of productos) {
+            const index = this.listaProductos.findIndex((p) => p.idProducto === producto.idProducto);
+            if (index >= 0) this.listaProductos[index] = producto;
+            else this.listaProductos.push(producto);
+          }
+        }),
+        catchError(() => of([])),
+      )),
     );
   }
 
   // --- SELECCIÓN DE CLIENTE ---
   seleccionarCliente(cliente: Cliente) {
+    if (this.clienteSeleccionado?.idCliente !== cliente.idCliente) {
+      this.idFacturaOrigen = undefined;
+      this.cfdisRelacionados.clear();
+    }
     this.clienteSeleccionado = cliente;
 
     // Prellenar datos fiscales por defecto del cliente
@@ -264,12 +272,52 @@ export class VentaComponent implements OnInit {
       });
       return [...items];
     });
+    this.refreshCommercialPrices();
+    this.guardarBorrador(false);
+  }
+
+  private refreshCommercialPrices() {
+    const client = this.clienteSeleccionado;
+    const items = this.carrito();
+    if (!client || !items.length || this.configForm.value.tipoComprobante === 'E') return;
+    forkJoin(items.map((item) => this.comercialService.simular({
+      idCliente: client.idCliente,
+      idProducto: item.idProducto,
+      cantidad: item.cantidad,
+    }))).subscribe({
+      next: (simulations) => {
+        if (simulations.some((result) => result.credito.bloqueado)) {
+          this.mostrarNotificacion('El cliente está bloqueado por política comercial.');
+          return;
+        }
+        this.carrito.update((current) => current.map((item, index) => {
+          item.valorUnitario = Number(simulations[index].precioSugerido);
+          const product = this.listaProductos.find((candidate) => candidate.idProducto === item.idProducto);
+          if (product) this.recalcularRenglon(item, product);
+          return item;
+        }));
+        this.guardarBorrador(false);
+      },
+      error: () => this.mostrarNotificacion('No se pudieron actualizar los precios del cliente.'),
+    });
   }
 
   // --- AGREGAR PRODUCTO AL CARRITO ---
-  agregarProducto(producto: Producto) {
+  stockDisponible(producto: Producto): number {
+    return Number(producto.disponible ?? producto.existencia ?? 0);
+  }
+
+  agregarProducto(producto: Producto, commercialChecked = false) {
     // 1. Validación de Stock + Interceptor de Sustitución en 1-Clic
-    if (producto.existencia <= 0) {
+    if (this.stockDisponible(producto) <= 0 && this.configForm.value.tipoComprobante !== 'E') {
+      if (!producto.hasSearchedAlternativas) {
+        producto.hasSearchedAlternativas = true;
+        this.productoService.getAlternativas(producto.idProducto).subscribe({
+          next: alternativas => { producto.alternativas = alternativas; this.agregarProducto(producto); },
+          error: () => { producto.hasSearchedAlternativas = false; },
+        });
+        return;
+      }
       if (producto.alternativas && producto.alternativas.length > 0) {
         this.dialog.open(AlternativasDialogComponent, {
            width: '800px',
@@ -283,7 +331,9 @@ export class VentaComponent implements OnInit {
               if (prodReal) {
                  this.agregarProducto(prodReal);
               } else {
-                 this.mostrarNotificacion("Error: Producto alternativo no encontrado en memoria.");
+                 this.productoService.getProductoById(altSeleccionada.id_producto).subscribe({
+                   next: alternate => { this.listaProductos.push(alternate); this.agregarProducto(alternate); }, error: () => {},
+                 });
               }
            }
         });
@@ -295,18 +345,39 @@ export class VentaComponent implements OnInit {
       return;
     }
 
+    if (!commercialChecked && this.clienteSeleccionado && this.configForm.value.tipoComprobante !== 'E') {
+      const current = this.carrito().find((item) => item.idProducto === producto.idProducto);
+      const quantity = Number(current?.cantidad || 0) + 1;
+      this.comercialService.simular({
+        idCliente: this.clienteSeleccionado.idCliente,
+        idProducto: producto.idProducto,
+        cantidad: quantity,
+      }).subscribe({
+        next: (simulation) => {
+          if (simulation.credito.bloqueado) {
+            this.mostrarNotificacion('El cliente está bloqueado por política comercial.');
+            return;
+          }
+          this.agregarProducto({ ...producto, precioUnitario: simulation.precioSugerido }, true);
+        },
+        error: () => this.mostrarNotificacion('No se pudo validar el precio comercial del producto.'),
+      });
+      return;
+    }
+
     // 2. Verificar si ya existe para solo sumar cantidad
     const existente = this.carrito().find((item) => item.idProducto === producto.idProducto);
 
     if (existente) {
       // Validar stock acumulado
-      if (existente.cantidad + 1 > producto.existencia) {
-        this.mostrarNotificacion(`⚠️ Stock insuficiente. Solo quedan ${producto.existencia}.`);
+      if (existente.cantidad + 1 > this.stockDisponible(producto) && this.configForm.value.tipoComprobante !== 'E') {
+        this.mostrarNotificacion(`⚠️ Stock insuficiente. Solo quedan ${this.stockDisponible(producto)} disponibles.`);
         this.productoControl.setValue('');
         return;
       }
 
       existente.cantidad++;
+      existente.valorUnitario = Number(producto.precioUnitario);
       this.recalcularRenglon(existente, producto);
     } else {
       // 3. Crear nuevo concepto
@@ -346,6 +417,7 @@ export class VentaComponent implements OnInit {
     if (existente) {
       this.carrito.update((items) => [...items]);
     }
+    this.guardarBorrador(false);
 
     // Animación Pop
     setTimeout(() => {
@@ -380,14 +452,23 @@ export class VentaComponent implements OnInit {
 
     if (productoOriginal.aplicaRetencionIsr && esClienteMoral) {
       item.baseRetIsr = item.importe;
+      item.tasaRetIsr = 0.0125;
       item.importeRetIsr = this.fromCents(this.toCents(item.baseRetIsr * 0.0125)); // 1.25%
     } else {
+      item.baseRetIsr = 0;
+      item.tasaRetIsr = 0;
       item.importeRetIsr = 0;
     }
   }
 
   eliminarDelCarrito(index: number) {
     this.carrito.update((items) => items.filter((_, i) => i !== index));
+    this.guardarBorrador(false);
+  }
+
+  cambiarCantidad(item: ConceptoVenta, delta: number) {
+    item.cantidad = Math.max(1, item.cantidad + delta);
+    this.alCambiarValor(item);
   }
 
   // --- GUARDAR VENTA ---
@@ -408,16 +489,29 @@ export class VentaComponent implements OnInit {
     }
 
     const formValues = this.configForm.value;
+    const usoCfdi = this.usosCfdi.find(uso => uso.idUsoCFDI === formValues.idUsoCFDI)?.clave;
+    const regimenReceptor = this.regimenes.find(regimen => regimen.idRegimenFiscal === this.clienteSeleccionado!.idRegimenFiscal)?.clave;
+    if (!usoCfdi || !regimenReceptor) {
+      this.mostrarNotificacion('Selecciona un uso CFDI válido y revisa el régimen fiscal del cliente.'); return;
+    }
+    if (formValues.tipoComprobante === 'E' && !this.idFacturaOrigen) {
+      this.mostrarNotificacion('Relaciona la factura original usando el buscador para registrar la nota de crédito.'); return;
+    }
+    if (this.carrito().some(item => !Number.isFinite(item.cantidad) || item.cantidad <= 0 || !Number.isFinite(item.valorUnitario) || item.valorUnitario < 0)) {
+      this.mostrarNotificacion('Revisa las cantidades y precios de los productos.'); return;
+    }
 
     const ventaPayload: Venta = {
+      requestId: this.pendingRequestId || (this.pendingRequestId = crypto.randomUUID()),
       idCliente: this.clienteSeleccionado.idCliente,
       // Snapshot de datos del cliente
       rfcReceptor: this.clienteSeleccionado.rfc,
       nombreReceptor: this.clienteSeleccionado.razonSocial,
       cpReceptor: this.clienteSeleccionado.codigoPostal,
 
-      regimenReceptor: '601', // Ajustar según lógica real
-      usoCfdi: this._obtenerClaveUso(formValues.idUsoCFDI),
+      regimenReceptor,
+      usoCfdi,
+      idFacturaOrigen: formValues.tipoComprobante === 'E' ? this.idFacturaOrigen : undefined,
 
       idFormaPago: formValues.idFormaPago,
       idMetodoPago: formValues.idMetodoPago,
@@ -448,8 +542,8 @@ export class VentaComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.mostrarNotificacion('Venta guardada con éxito. Folio: ' + res.idFactura);
+          this.pendingRequestId = null;
           this.limpiarTodo();
-          this.ngOnInit();
         },
         error: () => {
           // Error handling is done by the interceptor
@@ -463,7 +557,48 @@ export class VentaComponent implements OnInit {
     this.clienteSeleccionado = null;
     this.clienteControl.setValue('');
     this.productoControl.setValue('');
-    this.configForm.reset();
+    this.cfdisRelacionados.clear();
+    this.configForm.reset({ tipoComprobante: 'I', serie: 'F', metodoReembolso: 'Saldo a Favor' });
+    this.idFacturaOrigen = undefined;
+    this.pendingRequestId = null;
+    try { localStorage.removeItem(this.draftKey); } catch { /* almacenamiento no disponible */ }
+  }
+
+  guardarBorrador(notify = true) {
+    if (!this.carrito().length && !this.clienteSeleccionado) return;
+    try {
+      localStorage.setItem(this.draftKey, JSON.stringify({
+        savedAt: new Date().toISOString(), carrito: this.carrito(), idCliente: this.clienteSeleccionado?.idCliente,
+        config: { idUsoCFDI: this.configForm.value.idUsoCFDI, idFormaPago: this.configForm.value.idFormaPago, idMetodoPago: this.configForm.value.idMetodoPago },
+      }));
+      if (notify) this.mostrarNotificacion('Borrador guardado en este equipo');
+    } catch { if (notify) this.mostrarNotificacion('No fue posible guardar el borrador'); }
+  }
+
+  descartarVenta() {
+    if (!this.carrito().length && !this.clienteSeleccionado) return;
+    this.limpiarTodo();
+    this.mostrarNotificacion('Venta descartada');
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleShortcuts(event: KeyboardEvent) {
+    if (event.key === 'F2') { event.preventDefault(); this.productSearchInput?.nativeElement.focus(); }
+    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') { event.preventDefault(); this.guardarVenta(); }
+  }
+
+  private restaurarBorrador() {
+    if (this.carrito().length || this.clienteSeleccionado) return;
+    try {
+      const raw = localStorage.getItem(this.draftKey);
+      if (!raw) return;
+      const draft = JSON.parse(raw) as { carrito?: ConceptoVenta[]; idCliente?: number; config?: Record<string, number> };
+      if (Array.isArray(draft.carrito)) this.carrito.set(draft.carrito);
+      const cliente = this.listaClientes.find(item => item.idCliente === draft.idCliente);
+      if (cliente) { this.clienteSeleccionado = cliente; this.clienteControl.setValue(cliente, { emitEvent: false }); }
+      if (draft.config) this.configForm.patchValue(draft.config, { emitEvent: false });
+      if (draft.carrito?.length) this.mostrarNotificacion('Se recuperó tu venta en proceso');
+    } catch { localStorage.removeItem(this.draftKey); }
   }
 
   mostrarNotificacion(msg: string) {
@@ -509,7 +644,7 @@ export class VentaComponent implements OnInit {
       const coincide = descripcion.includes(filterValue) || codigo.includes(filterValue);
 
       // --- LOGICA AUTOPILOT SMART RESTOCK OOS ---
-      if (coincide && p.existencia === 0 && !p.hasSearchedAlternativas) {
+      if (coincide && this.stockDisponible(p) === 0 && !p.hasSearchedAlternativas) {
         p.hasSearchedAlternativas = true;
         this.productoService.getAlternativas(p.idProducto).subscribe({
           next: (alts) => {
@@ -561,23 +696,24 @@ export class VentaComponent implements OnInit {
   // --- EDICIÓN EN TIEMPO REAL ---
   alCambiarValor(item: ConceptoVenta) {
     // 1. Validaciones básicas (No negativos)
-    if (item.cantidad < 1) item.cantidad = 1;
-    if (item.valorUnitario < 0) item.valorUnitario = 0;
+    if (!Number.isFinite(item.cantidad) || item.cantidad < 0.0001) item.cantidad = 1;
+    if (!Number.isFinite(item.valorUnitario) || item.valorUnitario < 0) item.valorUnitario = 0;
 
     // 2. Buscar el producto original para checar stock y reglas fiscales
     const prodOriginal = this.listaProductos.find((p) => p.idProducto === item.idProducto);
 
     if (prodOriginal) {
       // Validación de Stock
-      if (item.cantidad > prodOriginal.existencia) {
-        this.mostrarNotificacion(`⚠️ Stock insuficiente. Máximo: ${prodOriginal.existencia}`);
-        item.cantidad = prodOriginal.existencia; // Regresamos al máximo posible
+      if (item.cantidad > this.stockDisponible(prodOriginal) && this.configForm.value.tipoComprobante !== 'E') {
+        this.mostrarNotificacion(`⚠️ Stock insuficiente. Máximo disponible: ${this.stockDisponible(prodOriginal)}`);
+        item.cantidad = this.stockDisponible(prodOriginal);
       }
 
       // 3. Recalcular todo el renglón (Importe, IVA, ISR)
       this.recalcularRenglon(item, prodOriginal);
 
       this.carrito.update((items) => [...items]);
+      this.guardarBorrador(false);
     }
   }
 }

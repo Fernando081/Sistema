@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,7 +28,6 @@ export class LoginComponent {
   private readonly fb = inject(FormBuilder);
 
   isSaving = signal(false);
-  loading = false;
 
   form = this.fb.nonNullable.group({
     username: ['', [Validators.required]],
@@ -38,6 +37,7 @@ export class LoginComponent {
   constructor(
     private readonly authService: AuthService,
     private readonly router: Router,
+    private readonly route: ActivatedRoute,
   ) {}
 
   submit(): void {
@@ -50,7 +50,10 @@ export class LoginComponent {
       finalize(() => this.isSaving.set(false))
     ).subscribe({
       next: () => {
-        this.router.navigate(['/dashboard']);
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        const safeReturn = returnUrl?.startsWith('/') && !returnUrl.startsWith('//') && !returnUrl.startsWith('/login');
+        const home = this.authService.getDecodedToken()?.role === 'admin' ? '/dashboard' : '/venta';
+        this.router.navigateByUrl(safeReturn ? returnUrl! : home);
       },
       error: () => {},
     });

@@ -1,59 +1,64 @@
 // backend/src/cotizacion/cotizacion.dto.ts
-import { IsArray, IsNumber, IsString, ValidateNested, IsOptional } from 'class-validator';
+import { ArrayMinSize, ArrayMaxSize, IsInt, MaxLength, IsArray, IsNumber, IsString, Min, ValidateNested, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ConceptoCotizacionDto {
-  @IsNumber() idProducto: number;
+  @IsInt() @Min(1) idProducto: number;
   @IsString() descripcion: string;
   @IsString() unidadDescripcion: string;
-  @IsNumber() cantidad: number;
-  @IsNumber() valorUnitario: number;
-  @IsNumber() importe: number;
-  @IsNumber() importeIva: number;
-  @IsNumber() importeRetIsr: number;
+  @IsNumber({ maxDecimalPlaces: 6 }) @Min(0.000001) cantidad: number;
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) valorUnitario: number;
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) importe: number;
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) importeIva: number;
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) importeRetIsr: number;
 
   @IsOptional()
   @IsArray()
+  @ArrayMaxSize(500)
   @IsString({ each: true })
   imagenes?: string[];
 }
 
 export class CreateCotizacionDto {
-  @IsNumber() idCliente: number;
+  @IsInt() @Min(1) idCliente: number;
   @IsString() nombreReceptor: string;
   @IsString() rfcReceptor: string;
 
-  @IsNumber() subtotal: number;
-  @IsNumber() totalImpuestos: number;
-  @IsNumber() totalRetenciones: number;
-  @IsNumber() total: number;
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) subtotal: number;
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) totalImpuestos: number;
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) totalRetenciones: number;
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) total: number;
 
   @IsArray()
+  @ArrayMaxSize(500)
+  @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => ConceptoCotizacionDto)
   conceptos: ConceptoCotizacionDto[];
 }
 
 export class ArticuloAceptadoDto {
-  @IsNumber() idConcepto: number;
-  @IsNumber() precioCierre: number;
+  @IsInt() @Min(1) idConcepto: number;
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) precioCierre: number;
 }
 
 export class ArticuloRechazadoDto {
-  @IsNumber() idConcepto: number;
-  @IsString() motivoRechazo: string;
+  @IsInt() @Min(1) idConcepto: number;
+  @IsString() @MaxLength(100) motivoRechazo: string;
 }
 
 export class ConvertirCotizacionDto {
-  @IsNumber() idFormaPago: number;
-  @IsNumber() idMetodoPago: number;
+  @IsInt() @Min(1) idFormaPago: number;
+  @IsInt() @Min(1) idMetodoPago: number;
 
   @IsArray()
+  @ArrayMaxSize(500)
   @ValidateNested({ each: true })
   @Type(() => ArticuloAceptadoDto)
   articulosAceptados: ArticuloAceptadoDto[];
 
   @IsArray()
+  @ArrayMaxSize(500)
   @ValidateNested({ each: true })
   @Type(() => ArticuloRechazadoDto)
   articulosRechazados: ArticuloRechazadoDto[];

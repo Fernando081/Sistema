@@ -1,6 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from './roles.decorator';
+import { JwtPayload } from './auth.types';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -16,7 +17,7 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     
-    const { user } = context.switchToHttp().getRequest();
+    const { user } = context.switchToHttp().getRequest<{ user?: JwtPayload }>();
     
     if (!user || !user.role || !requiredRoles.includes(user.role)) {
       throw new ForbiddenException('No tienes permisos suficientes (Requiere rol: ' + requiredRoles.join(', ') + ')');

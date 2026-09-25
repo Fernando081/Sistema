@@ -24,7 +24,7 @@ import { AuditoriaService, AuditLog } from '../../services/auditoria.service';
   styleUrls: ['./auditoria.css']
 })
 export class Auditoria implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['timestamp', 'db_user', 'action', 'table_name', 'cambios'];
+  displayedColumns: string[] = ['timestamp', 'app_user', 'action', 'table_name', 'cambios'];
   dataSource = new MatTableDataSource<AuditLog>([]);
   isLoading = signal(true);
 

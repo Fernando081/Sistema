@@ -5,9 +5,10 @@ export interface UtilidadProductoRaw {
   descripcion: string;
   cantidad_vendida: string;
   ingresos_totales: string;
-  costo_total: string;
-  utilidad_neta: string;
-  margen_porcentaje: string;
+  costo_total: string | null;
+  utilidad_bruta: string | null;
+  margen_porcentaje: string | null;
+  costo_conocido: boolean;
 }
 
 export interface UtilidadProductoResponse {
@@ -16,7 +17,8 @@ export interface UtilidadProductoResponse {
   descripcion: string;
   cantidadVendida: number;
   ingresosTotales: number;
-  costoTotal: number;
-  utilidadNeta: number;
-  margenPorcentaje: number;
+  costoTotal: number | null;
+  utilidadBruta: number | null;
+  margenPorcentaje: number | null;
+  costoConocido: boolean;
 }

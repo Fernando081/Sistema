@@ -16,8 +16,8 @@ export class CompraService {
   crearCompra(compra: CreateCompra): Observable<any> {
     return this.http.post(API_URL, compra);
   }
-  getCompras(page: number = 1, limit: number = 1000): Observable<any> {
-    return this.http.get<any>(`${API_URL}?page=${page}&limit=${limit}`);
+  getCompras(page = 1, limit = 10, term = '', sortBy = '', sortOrder = ''): Observable<any> {
+    return this.http.get<any>(API_URL, { params: { page, limit, term, sortBy, sortOrder } });
   }
 
   getDetalleCompra(id: number): Observable<any[]> {

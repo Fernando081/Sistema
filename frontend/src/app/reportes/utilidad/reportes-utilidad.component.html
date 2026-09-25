@@ -1,10 +1,11 @@
 <!-- frontend/src/app/reportes/utilidad/reportes-utilidad.component.html -->
 <div class="grid grid-cols-1 gap-6">
+  @if (loadError()) { <p role="alert">No se pudo cargar el reporte de utilidad. Revisa la conexión e inténtalo nuevamente.</p> }
   <!-- Top Section: Charts -->
   <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
     <mat-card class="xl:col-span-12 animate-card">
       <mat-card-header>
-        <mat-card-title>Top 5 Productos con mayor Utilidad Neta</mat-card-title>
+        <mat-card-title>Top 5 productos con mayor margen bruto conocido</mat-card-title>
       </mat-card-header>
       <mat-card-content class="h-[350px] flex items-center justify-center mt-2">
         @if (productos().length > 0) {
@@ -58,21 +59,21 @@
           <ng-container matColumnDef="costos">
             <th mat-header-cell *matHeaderCellDef>Costos</th>
             <td mat-cell *matCellDef="let e" class="text-right pr-4" data-label="Costos">
-              {{ e.costoTotal | currency: 'MXN' }}
+              {{ e.costoConocido ? (e.costoTotal | currency: 'MXN') : 'Costo no registrado' }}
             </td>
           </ng-container>
 
           <!-- Utilidad Neta Column -->
           <ng-container matColumnDef="utilidad_neta">
-            <th mat-header-cell *matHeaderCellDef>Utilidad Neta</th>
+            <th mat-header-cell *matHeaderCellDef>Margen Bruto</th>
             <td
               mat-cell
               *matCellDef="let e"
               class="text-right pr-4 font-bold"
-              [ngClass]="e.utilidadNeta >= 0 ? 'text-green-600' : 'text-red-500'"
-              data-label="Utilidad Neta"
+              [ngClass]="(e.utilidadBruta || 0) >= 0 ? 'text-green-600' : 'text-red-500'"
+              data-label="Margen Bruto"
             >
-              {{ e.utilidadNeta | currency: 'MXN' }}
+              {{ e.costoConocido ? (e.utilidadBruta | currency: 'MXN') : 'No calculable' }}
             </td>
           </ng-container>
 
@@ -83,10 +84,10 @@
               mat-cell
               *matCellDef="let e"
               class="text-right pr-4"
-              [ngClass]="e.margenPorcentaje >= 0 ? 'text-green-600' : 'text-red-500'"
+              [ngClass]="(e.margenPorcentaje || 0) >= 0 ? 'text-green-600' : 'text-red-500'"
               data-label="Margen (%)"
             >
-              {{ e.margenPorcentaje | number: '1.2-2' }}%
+              {{ e.costoConocido ? ((e.margenPorcentaje | number: '1.2-2') + '%') : 'N/D' }}
             </td>
           </ng-container>
 

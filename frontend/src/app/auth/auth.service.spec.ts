@@ -34,6 +34,16 @@ describe('AuthService', () => {
   });
 
   describe('getDecodedToken', () => {
+    it('rechaza payload válido cuando falta el segmento de firma', () => {
+      localStorage.setItem('access_token', `header.${btoa(JSON.stringify({exp: Date.now() / 1000 + 60}))}`);
+      expect(service.getDecodedToken()).toBeNull();
+    });
+    it('elimina tokens vencidos sin iniciar otra petición HTTP', () => {
+      localStorage.setItem('access_token', `header.${btoa(JSON.stringify({exp: 1}))}.sig`);
+      expect(service.isAuthenticated()).toBeFalse();
+      expect(service.getToken()).toBeNull();
+      httpMock.expectNone(`${environment.apiBaseUrl}/auth/logout`);
+    });
     it('retorna null cuando no hay token almacenado', () => {
       expect(service.getDecodedToken()).toBeNull();
     });

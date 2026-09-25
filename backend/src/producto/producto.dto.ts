@@ -9,9 +9,11 @@ import {
   Min,
   IsBoolean,
   IsArray,
+  IsIn,
+  Max,
+  ArrayMaxSize,
 } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
-import { APP_CONSTANTS } from '../common/constants/app.constants';
 
 export class CreateProductoDto {
   @IsString()
@@ -65,6 +67,8 @@ export class CreateProductoDto {
 
   @IsNumber()
   @IsOptional()
+  @Min(0)
+  @Max(1)
   tasaIva?: number; // APP_CONSTANTS.TAX_RATE_DEFAULT
 
   @IsBoolean()
@@ -76,6 +80,7 @@ export class CreateProductoDto {
   aplicaRetencionIva?: boolean;
 
   @IsArray()
+  @ArrayMaxSize(20)
   @IsString({ each: true })
   @IsOptional()
   imagenes?: string[];
@@ -122,6 +127,7 @@ export interface PrediccionDemandaItem {
 
 export class CreateCotizacionProvDto {
   @IsInt()
+  @Min(1)
   idProveedor: number;
 
   @IsString()
@@ -136,4 +142,34 @@ export class CreateCotizacionProvDto {
   @IsInt()
   @Min(0)
   diasEntrega: number;
+}
+
+export class AjustarInventarioDto {
+  @IsNumber({ maxDecimalPlaces: 6 })
+  @Min(0.000001)
+  cantidad: number;
+
+  @IsString()
+  @IsIn(['ENTRADA POR AJUSTE', 'SALIDA POR MERMA/AJUSTE'])
+  tipo: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(255)
+  motivo: string;
+}
+
+export class CreateNumeroParteDto {
+  @IsString() @IsIn(['OEM', 'Fabricante', 'Alterno']) tipo: string;
+  @IsString() @IsOptional() @MaxLength(80) fabricante?: string;
+  @IsString() @IsNotEmpty() @MaxLength(80) numero: string;
+}
+
+export class CreateAplicacionDto {
+  @IsString() @IsOptional() @MaxLength(80) fabricanteEquipo?: string;
+  @IsString() @IsOptional() @MaxLength(100) modelo?: string;
+  @IsString() @IsOptional() @MaxLength(100) motor?: string;
+  @IsInt() @Min(1900) @Max(2200) @IsOptional() anioDesde?: number;
+  @IsInt() @Min(1900) @Max(2200) @IsOptional() anioHasta?: number;
+  @IsString() @IsOptional() @MaxLength(255) restricciones?: string;
 }

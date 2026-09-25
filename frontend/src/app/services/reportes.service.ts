@@ -9,9 +9,10 @@ export interface ProductoUtilidad {
   descripcion: string;
   cantidadVendida: number;
   ingresosTotales: number;
-  costoTotal: number;
-  utilidadNeta: number;
-  margenPorcentaje: number;
+  costoTotal: number | null;
+  utilidadBruta: number | null;
+  margenPorcentaje: number | null;
+  costoConocido: boolean;
 }
 
 const API_URL = `${environment.apiBaseUrl}/reportes`;

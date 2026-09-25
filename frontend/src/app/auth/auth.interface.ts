@@ -13,4 +13,6 @@ export interface DecodedToken {
   sub?: string;
   role?: string;
   idUser?: number;
+  iat?: number;
+  exp?: number;
 }

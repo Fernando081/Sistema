@@ -3,11 +3,11 @@
     <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-indigo-600">
       Bitácora de Movimientos
     </h1>
-    <p class="text-gray-500 font-medium">Historial criptográfico inmutable de todos los cambios.</p>
+    <p class="text-gray-500 font-medium">Registro de cambios en datos operativos críticos.</p>
   </div>
 
   <mat-card class="mat-elevation-z2 rounded-xl">
-    <div *ngIf="isLoading()" class="absolute inset-0 bg-white/50 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
+    <div *ngIf="isLoading()" class="absolute inset-0 bg-white/50 dark:bg-slate-950/70 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
       <mat-spinner diameter="48" class="mb-4"></mat-spinner>
       <span class="text-lg font-medium text-gray-700">Analizando registros de sistema...</span>
     </div>
@@ -20,10 +20,10 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="db_user">
-        <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-700 bg-gray-50 border-b-2"> Usuario DB </th>
+      <ng-container matColumnDef="app_user">
+        <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-700 bg-gray-50 border-b-2"> Usuario </th>
         <td mat-cell *matCellDef="let log" class="font-mono text-sm">
-          {{ log.db_user }}
+          {{ log.app_username || ('DB: ' + log.db_user) }}
         </td>
       </ng-container>
 
@@ -51,14 +51,14 @@
       <ng-container matColumnDef="cambios">
         <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-700 bg-gray-50 border-b-2"> Jsonb Diff / Diferencias </th>
         <td mat-cell *matCellDef="let log" class="py-2 pr-4 min-w-[300px]">
-          <div *ngFor="let m of getDiff(log.old_record, log.new_record, log.action)" class="text-xs mb-1 p-2 rounded bg-gray-50/50 border border-gray-100 shadow-sm flex flex-col gap-1">
-            <span class="font-semibold text-indigo-600 uppercase tracking-tight">{{ m.field }}</span>
+          <div *ngFor="let m of getDiff(log.old_record, log.new_record, log.action)" class="text-xs mb-1 p-2 rounded bg-gray-50/50 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 shadow-sm flex flex-col gap-1">
+            <span class="font-semibold text-indigo-600 dark:text-indigo-300 uppercase tracking-tight">{{ m.field }}</span>
             <div class="flex items-center gap-2 font-mono" *ngIf="log.action === 'UPDATE'">
               <span class="bg-red-50 text-red-600 px-1 rounded break-all line-through opacity-80 decoration-red-400">{{ m.old }}</span>
               <mat-icon class="text-gray-400 !w-4 !h-4 text-[16px]">arrow_forward</mat-icon>
               <span class="bg-green-50 text-green-600 px-1 rounded break-all">{{ m.new }}</span>
             </div>
-            <div *ngIf="log.action === 'INSERT' || log.action === 'DELETE'" class="text-gray-600 font-mono text-[10px] break-all">
+            <div *ngIf="log.action === 'INSERT' || log.action === 'DELETE'" class="text-gray-600 dark:text-gray-200 font-mono text-[10px] break-all">
               {{ log.action === 'INSERT' ? m.new : m.old | slice:0:300 }}...
             </div>
           </div>
@@ -66,7 +66,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-colors"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"></tr>
       
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell text-center p-8 text-gray-500" colspan="5">

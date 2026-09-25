@@ -2,7 +2,7 @@ import { Component, signal, inject, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FinanzasService, Gasto } from '../finanzas.service';
-import { environment } from '../../../environments/environment';
+import { downloadDocument, localDate } from '../../shared/document-download';
 import { MatTableModule } from '@angular/material/table';
 
 @Component({
@@ -54,7 +54,8 @@ export class GastosComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.concepto() || !this.monto() || !this.categoria() || !this.metodoPago()) {
+    if (this.loading()) return;
+    if (!this.concepto().trim() || !Number.isFinite(this.monto()) || Number(this.monto()) <= 0 || !this.categoria() || !this.metodoPago()) {
       this.errorMessage.set('Por favor completa todos los campos requeridos.');
       return;
     }
@@ -64,7 +65,7 @@ export class GastosComponent implements OnInit {
     this.successMessage.set('');
 
     const payload: Gasto = {
-      concepto: this.concepto(),
+      concepto: this.concepto().trim(),
       monto: this.monto()!,
       categoria: this.categoria(),
       metodoPago: this.metodoPago(),
@@ -98,32 +99,9 @@ export class GastosComponent implements OnInit {
   }
 
   downloadPDF() {
-    const pdfUrl = `${environment.apiBaseUrl}/finanzas/corte-pdf`;
-
-    // Check if auth token is needed for the download
-    const token = localStorage.getItem('access_token');
-
-    // The preferred way for protected downloads in browser is fetching as blob or using an auth proxy.
-    // Assuming we can pass token or using fetch to get Blob.
-    fetch(pdfUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error('Error validando autorización para PDF');
-        return response.blob();
-      })
-      .then((blob) => {
-        const url = window.URL.createObjectURL(blob);
-        window.open(url, '_blank');
-        // Revoking after opening usually works, but a slight timeout ensures it's read by the new tab
-        setTimeout(() => window.URL.revokeObjectURL(url), 1000);
-      })
-      .catch((err) => {
-        console.error(err);
-        this.errorMessage.set('No se pudo descargar el reporte PDF.');
-      });
+    this.finanzasService.getCortePdf().subscribe({
+      next: blob => downloadDocument(blob, `Corte_${localDate()}.pdf`),
+      error: () => this.errorMessage.set('No se pudo descargar el reporte PDF.'),
+    });
   }
 }

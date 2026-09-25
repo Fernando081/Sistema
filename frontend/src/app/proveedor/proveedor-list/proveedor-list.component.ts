@@ -18,6 +18,7 @@ import { Proveedor } from '../proveedor.interface'; // CAMBIO
 import { ProveedorDialogComponent } from '../proveedor-dialog/proveedor-dialog.component'; // CAMBIO
 import { finalize } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ConfirmService } from '../../shared/confirm.service';
 
 @Component({
   selector: 'app-proveedor-list', // CAMBIO
@@ -43,7 +44,8 @@ export class ProveedorListComponent implements OnInit {
   constructor(
     private proveedorService: ProveedorService, // CAMBIO
     public dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private confirm: ConfirmService,
   ) {}
 
   ngOnInit(): void {
@@ -114,7 +116,8 @@ export class ProveedorListComponent implements OnInit {
   }
 
   eliminarProveedor(idProveedor: number): void { // CAMBIO
-    if (confirm('¿Estás seguro de que deseas eliminar este proveedor?')) {
+    this.confirm.ask({ title: 'Eliminar proveedor', message: 'Se eliminará el proveedor si no existen compras o saldos que deban conservarse.', confirmLabel: 'Eliminar proveedor' }).subscribe(confirmed => {
+      if (!confirmed) return;
       this.proveedorService.deleteProveedor(idProveedor).subscribe({ // CAMBIO
         next: () => {
           this.mostrarNotificacion('Proveedor eliminado con éxito'); // CAMBIO
@@ -124,7 +127,7 @@ export class ProveedorListComponent implements OnInit {
           this.mostrarNotificacion('Error al eliminar proveedor: ' + (err.error?.message || err.message));
         }
       });
-    }
+    });
   }
 
   mostrarNotificacion(mensaje: string) {

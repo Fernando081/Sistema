@@ -6,17 +6,21 @@ import {
   IsNotEmpty,
   Min,
   IsArray,
-  ValidateNested
+  ValidateNested,
+  ArrayMinSize,
+  ArrayMaxSize,
+  IsInt,
+  IsDateString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { MetodoPago } from '../common/enums/app.enums';
 
 export class RegistrarPagoDto {
-  @IsNumber()
+  @IsInt()
+  @Min(1)
   @IsNotEmpty()
   idFactura: number;
 
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0.01)
   monto: number;
 
@@ -34,18 +38,21 @@ export class RegistrarPagoDto {
 }
 
 export class RepFacturaDto {
-  @IsNumber()
+  @IsInt()
+  @Min(1)
   idFactura: number;
 
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0.01)
   montoSaldado: number;
 }
 
 export class RegistrarRepDto {
-  @IsNumber()
+  @IsInt()
+  @Min(1)
   idCliente: number;
 
-  @IsString()
+  @IsDateString({ strict: true })
   @IsNotEmpty()
   fechaPago: string;
 
@@ -56,7 +63,7 @@ export class RegistrarRepDto {
   @IsString()
   moneda: string;
 
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0.01)
   montoTotal: number;
 
@@ -69,6 +76,8 @@ export class RegistrarRepDto {
   rfcBeneficiario?: string;
 
   @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(500)
   @ValidateNested({ each: true })
   @Type(() => RepFacturaDto)
   facturas: RepFacturaDto[];

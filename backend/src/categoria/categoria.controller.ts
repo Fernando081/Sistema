@@ -10,6 +10,8 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
+import { Roles } from '../auth/roles.decorator';
+import { RolUsuario } from '../common/enums/app.enums';
 import { CategoriaService } from './categoria.service';
 import { CreateCategoriaDto, UpdateCategoriaDto } from './categoria.dto';
 
@@ -18,6 +20,7 @@ export class CategoriaController {
   constructor(private readonly categoriaService: CategoriaService) {}
 
   @Post()
+  @Roles(RolUsuario.ADMIN)
   create(@Body() createCategoriaDto: CreateCategoriaDto) {
     return this.categoriaService.create(createCategoriaDto);
   }
@@ -33,6 +36,7 @@ export class CategoriaController {
   }
 
   @Put(':id')
+  @Roles(RolUsuario.ADMIN)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoriaDto: UpdateCategoriaDto,
@@ -41,6 +45,7 @@ export class CategoriaController {
   }
 
   @Delete(':id')
+  @Roles(RolUsuario.ADMIN)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.categoriaService.remove(id);
   }

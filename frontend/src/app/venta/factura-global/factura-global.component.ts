@@ -1,5 +1,6 @@
 // frontend/src/app/venta/factura-global/factura-global.component.ts
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -63,6 +64,8 @@ export class FacturaGlobalComponent implements OnInit {
   dateForm: FormGroup;
   dataSource = new MatTableDataSource<PendingTicket>([]);
   selection = new SelectionModel<PendingTicket>(true, []);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly selectedTickets = signal<PendingTicket[]>([]);
   
   // State variables
   isLoading = signal(false);
@@ -83,15 +86,15 @@ export class FacturaGlobalComponent implements OnInit {
 
   // Computed totals for selected tickets
   selectedSubtotal = computed(() => {
-    return this.selection.selected.reduce((acc, t) => acc + Number(t.subtotal || 0), 0);
+    return this.selectedTickets().reduce((acc, t) => acc + Number(t.subtotal || 0), 0);
   });
   
   selectedIva = computed(() => {
-    return this.selection.selected.reduce((acc, t) => acc + Number(t.totalImpuestosTrasladados || 0), 0);
+    return this.selectedTickets().reduce((acc, t) => acc + Number(t.totalImpuestosTrasladados || 0), 0);
   });
 
   selectedTotal = computed(() => {
-    return this.selection.selected.reduce((acc, t) => acc + Number(t.total || 0), 0);
+    return this.selectedTickets().reduce((acc, t) => acc + Number(t.total || 0), 0);
   });
 
   constructor(
@@ -111,11 +114,20 @@ export class FacturaGlobalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.selection.changed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.selectedTickets.set([...this.selection.selected]));
+    this.dateForm.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.selection.clear();
+      this.dataSource.data = [];
+      this.searchDone.set(false);
+    });
     this.buscarTickets();
   }
 
   buscarTickets() {
-    if (this.dateForm.invalid) return;
+    if (this.dateForm.invalid || this.isLoading() || this.isSaving()) return;
+    if (this.dateForm.value.fechaInicio > this.dateForm.value.fechaFin) {
+      this.mostrarNotificacion('La fecha inicial debe ser anterior o igual a la fecha final.'); return;
+    }
 
     this.isLoading.set(true);
     this.searchDone.set(false);
@@ -127,6 +139,9 @@ export class FacturaGlobalComponent implements OnInit {
 
     this.ventaService.getTicketsPendientesGlobal(iniStr, finStr).subscribe({
       next: (res) => {
+        if (iniStr !== this.formatDate(this.dateForm.value.fechaInicio) || finStr !== this.formatDate(this.dateForm.value.fechaFin)) {
+          this.isLoading.set(false); return;
+        }
         this.dataSource.data = res.tickets || [];
         this.isLoading.set(false);
         this.searchDone.set(true);
@@ -142,6 +157,7 @@ export class FacturaGlobalComponent implements OnInit {
   }
 
   generarFacturaGlobal() {
+    if (this.isSaving() || this.isLoading() || !this.searchDone() || this.dateForm.invalid) return;
     if (this.selection.selected.length === 0) {
       this.mostrarNotificacion('Debes seleccionar al menos un ticket para agrupar.');
       return;

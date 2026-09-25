@@ -96,7 +96,7 @@ export class AjusteInventarioDialogComponent {
   }
 
   guardarAjuste() {
-    if (this.ajusteForm.invalid) return;
+    if (this.isSaving() || this.ajusteForm.invalid) return;
 
     this.isSaving.set(true);
     const { cantidad, tipo, motivo } = this.ajusteForm.value;

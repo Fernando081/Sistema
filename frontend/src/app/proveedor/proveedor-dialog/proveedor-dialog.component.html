@@ -1,7 +1,7 @@
 <!-- frontend/src/app/proveedor/proveedor-dialog/proveedor-dialog.component.html (REEMPLAZAR) -->
 <div class="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50">
   <h1 mat-dialog-title class="!m-0">{{ isEditMode ? 'Editar Proveedor' : 'Nuevo Proveedor' }}</h1>
-  <button mat-icon-button type="button" (click)="cerrar()">
+  <button mat-icon-button type="button" (click)="cerrar()" aria-label="Cerrar formulario de proveedor">
     <mat-icon>close</mat-icon>
   </button>
 </div>
@@ -11,7 +11,7 @@
     
     <mat-form-field class="w-full">
       <mat-label>RFC</mat-label>
-      <input matInput formControlName="rfc" required oninput="this.value = this.value.toUpperCase()" placeholder="RFC del Proveedor">
+      <input matInput formControlName="rfc" required maxlength="13" class="uppercase" placeholder="RFC del Proveedor">
       <mat-error *ngIf="form.get('rfc')?.hasError('required')">El RFC es requerido</mat-error>
     </mat-form-field>
 

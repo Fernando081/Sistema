@@ -114,7 +114,7 @@ export class CatalogosService {
   buscarClaveProdServ(termino: string): Observable<ClaveProdServ[]> {
     if (!termino || termino.trim().length < 3) return of([]);
     
-    return this.http.get<any[]>(`${API_URL}/clave-prod-serv/buscar?q=${termino}`).pipe(
+    return this.http.get<any[]>(`${API_URL}/clave-prod-serv/buscar`, { params: { q: termino } }).pipe(
         map(data => data.map(item => ({
             idClaveProdOServ: item.IdClaveProdOServ,
             clave: item.Clave,
@@ -126,7 +126,7 @@ export class CatalogosService {
   buscarClaveUnidad(termino: string): Observable<ClaveUnidad[]> {
     if (!termino || termino.trim().length < 2) return of([]);
 
-    return this.http.get<any[]>(`${API_URL}/clave-unidad/buscar?q=${termino}`).pipe(
+    return this.http.get<any[]>(`${API_URL}/clave-unidad/buscar`, { params: { q: termino } }).pipe(
         map(data => data.map(item => ({
             idClaveUnidad: item.IdClaveUnidad,
             clave: item.Clave,

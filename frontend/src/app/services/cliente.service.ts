@@ -7,6 +7,25 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Cliente, CreateClienteDto, UpdateClienteDto } from '../cliente/cliente.interface';
 
+export interface ClienteContacto { idContacto: number; nombre: string; cargo?: string | null; telefono?: string | null; email?: string | null; canalPreferido: string; esPrincipal: boolean; notas?: string | null; }
+export interface ClienteUnidad360 { idUnidad: number; vin?: string | null; esn?: string | null; numeroEconomico?: string | null; marca?: string | null; modelo?: string | null; anio?: number | null; motor?: string | null; transmision?: string | null; diferencial?: string | null; placas?: string | null; notas?: string | null; }
+export interface ClienteCotizacion360 { idCotizacion: number; folio: number; estatus: string; total: number; idUnidad?: number | null; }
+export interface ClientePedido360 { idPedido: number; folio: number; estado: string; total: number; idUnidad?: number | null; createdAt: string; }
+export interface ClienteFactura360 { idFactura: number; serie: string; folio: number; fechaEmision: string; estatus: string; total: number; saldoPendiente: number; idUnidad?: number | null; }
+export interface ClienteGarantia360 { idGarantia: number; estado: string; motivo: string; cantidad: number; createdAt: string; factura: string; producto: string; }
+export interface ClienteOportunidad360 { idOportunidad: number; empresa: string; etapa: string; montoEstimado: number; siguienteAccion?: string | null; fechaSiguienteAccion?: string | null; }
+export interface Cliente360 {
+  cliente: Cliente;
+  resumen: { saldoPendiente: number; ventasAcumuladas: number; unidades: number; pedidosAbiertos: number; garantiasAbiertas: number };
+  contactos: ClienteContacto[];
+  unidades: ClienteUnidad360[];
+  cotizaciones: ClienteCotizacion360[];
+  pedidos: ClientePedido360[];
+  facturas: ClienteFactura360[];
+  garantias: ClienteGarantia360[];
+  oportunidades: ClienteOportunidad360[];
+}
+
 interface ClienteApiResponse {
   IdCliente?: number;
   RFC?: string;
@@ -48,6 +67,20 @@ export class ClienteService {
     return this.http.get<ClienteApiResponse>(`${this.apiUrl}/${id}`).pipe(
       map((cliente) => this.toCliente(cliente)),
     );
+  }
+
+  getCliente360(id: number): Observable<Cliente360> {
+    return this.http.get<Omit<Cliente360, 'cliente'> & { cliente: ClienteApiResponse }>(`${this.apiUrl}/${id}/360`).pipe(
+      map((result) => ({ ...result, cliente: this.toCliente(result.cliente) })),
+    );
+  }
+
+  addContacto(id: number, contacto: Omit<ClienteContacto, 'idContacto'>) {
+    return this.http.post<{ idContacto: number }>(`${this.apiUrl}/${id}/contactos`, contacto);
+  }
+
+  deleteContacto(id: number, idContacto: number) {
+    return this.http.delete(`${this.apiUrl}/${id}/contactos/${idContacto}`);
   }
 
   createCliente(cliente: CreateClienteDto): Observable<Cliente> {

@@ -29,6 +29,8 @@ export interface ConceptoVenta {
 }
 
 export interface Venta {
+  requestId?: string;
+  idFacturaOrigen?: number;
   idCliente: number;
   rfcReceptor: string;
   nombreReceptor: string;
@@ -69,11 +71,15 @@ export interface FacturaResumen {
 }
 
 export interface DetalleFacturaDb {
+  id_concepto: number;
   id_producto: number;
   cantidad: number;
   cantidad_devuelta?: number;
   descripcion_producto: string;
+  unidad: string;
   codigo_producto: string;
   precio_unitario: number;
   importe: number;
+  importe_iva: number;
+  importe_ret_isr: number;
 }

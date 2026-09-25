@@ -1,5 +1,6 @@
 // frontend/src/app/venta/factura-list/factura-list.component.ts
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import anime from 'animejs';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -18,7 +19,8 @@ import { FacturaDetalleComponent } from '../factura-detalle/factura-detalle.comp
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
+import { ConfirmService } from '../../shared/confirm.service';
 
 
 @Component({
@@ -44,13 +46,16 @@ export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
   activeFilter = '';
   activeTipo = '';
   searchSubject = new Subject<string>();
+  private readonly destroyRef = inject(DestroyRef);
+  private request?: Subscription;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private ventaService: VentaService,
               public dialog: MatDialog,
-              private snackBar: MatSnackBar
+              private snackBar: MatSnackBar,
+              private confirm: ConfirmService,
   ) {}
 
   ngOnInit(): void {
@@ -58,11 +63,11 @@ export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.searchSubject.pipe(
       debounceTime(400),
-      distinctUntilChanged()
+      distinctUntilChanged(), takeUntilDestroyed(this.destroyRef)
     ).subscribe(term => {
       this.activeFilter = term;
       if (this.paginator) {
-        this.paginator.firstPage();
+        this.paginator.pageIndex = 0;
       }
       this.cargarFacturas();
     });
@@ -70,19 +75,21 @@ export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.searchSubject.complete();
+    this.request?.unsubscribe();
   }
 
   ngAfterViewInit(): void {
-    this.paginator.page.subscribe(() => {
+    this.paginator.page.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.cargarFacturas();
     });
   }
 
   cargarFacturas() {
+    this.request?.unsubscribe();
     const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
     const limit = this.paginator ? this.paginator.pageSize : 10;
     
-    this.ventaService.getFacturas(page, limit, this.activeFilter, this.activeTipo).subscribe({
+    this.request = this.ventaService.getFacturas(page, limit, this.activeFilter, this.activeTipo).subscribe({
       next: (response) => {
         const data = response.data || response;
         this.totalItems = response.total || 0;
@@ -102,7 +109,7 @@ export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onTipoChange(event: any) {
     if (this.paginator) {
-      this.paginator.firstPage();
+      this.paginator.pageIndex = 0;
     }
     this.cargarFacturas();
   }
@@ -129,11 +136,12 @@ export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   enviarPorCorreo(row: FacturaResumen) {
-    if (!confirm(`¿Enviar factura A${row.folio} al cliente por correo?`)) return;
-    
-    this.ventaService.enviarCorreo(row.id_factura).subscribe({
-      next: () => this.snackBar.open('📧 Correo enviado correctamente', 'Ok', { duration: 4000 }),
-      error: (err) => this.snackBar.open('Error: ' + (err.error?.message || err.message), 'Ok')
+    this.confirm.ask({ title: 'Enviar factura', message: `La factura A${row.folio} se enviará al correo registrado del cliente.`, confirmLabel: 'Enviar correo', tone: 'primary' }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.ventaService.enviarCorreo(row.id_factura).subscribe({
+        next: () => this.snackBar.open('Correo enviado correctamente', 'Ok', { duration: 4000 }),
+        error: (err) => this.snackBar.open('Error: ' + (err.error?.message || err.message), 'Ok'),
+      });
     });
   }
 

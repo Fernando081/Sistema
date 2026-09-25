@@ -12,12 +12,15 @@ import {
   DefaultValuePipe,
 } from '@nestjs/common';
 import { ProductoService } from './producto.service';
-import { CreateProductoDto, UpdateProductoDto, CreateCotizacionProvDto } from './producto.dto';
+import { AjustarInventarioDto, CreateAplicacionDto, CreateNumeroParteDto, CreateProductoDto, UpdateProductoDto, CreateCotizacionProvDto } from './producto.dto';
+import { Roles } from '../auth/roles.decorator';
+import { RolUsuario } from '../common/enums/app.enums';
 @Controller('producto') // Endpoint: /api/v1/producto
 export class ProductoController {
   constructor(private readonly productoService: ProductoService) {}
 
   @Post()
+  @Roles(RolUsuario.ADMIN)
   create(@Body() createProductoDto: CreateProductoDto) {
     return this.productoService.create(createProductoDto);
   }
@@ -44,6 +47,7 @@ export class ProductoController {
   }
 
   @Post('prediccion-compras/refresh')
+  @Roles(RolUsuario.ADMIN)
   refreshPrediccion() {
     return this.productoService.refreshPrediccion();
   }
@@ -54,6 +58,7 @@ export class ProductoController {
   }
 
   @Put(':id')
+  @Roles(RolUsuario.ADMIN)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductoDto: UpdateProductoDto,
@@ -62,6 +67,7 @@ export class ProductoController {
   }
 
   @Delete(':id')
+  @Roles(RolUsuario.ADMIN)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.productoService.remove(id);
   }
@@ -82,6 +88,7 @@ export class ProductoController {
   }
 
   @Post(':id/equivalentes/:idEq')
+  @Roles(RolUsuario.ADMIN)
   agregarEquivalente(
     @Param('id', ParseIntPipe) id: number,
     @Param('idEq', ParseIntPipe) idEq: number,
@@ -90,6 +97,7 @@ export class ProductoController {
   }
 
   @Delete(':id/equivalentes/:idEq')
+  @Roles(RolUsuario.ADMIN)
   eliminarEquivalente(
     @Param('id', ParseIntPipe) id: number,
     @Param('idEq', ParseIntPipe) idEq: number,
@@ -110,6 +118,7 @@ export class ProductoController {
   }
 
   @Post(':id/cotizacion-prov')
+  @Roles(RolUsuario.ADMIN)
   addCotizacionProveedor(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: CreateCotizacionProvDto,
@@ -118,10 +127,41 @@ export class ProductoController {
   }
 
   @Post(':id/ajustar-inventario')
+  @Roles(RolUsuario.ADMIN)
   ajustarInventario(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: { cantidad: number; tipo: string; motivo: string },
+    @Body() body: AjustarInventarioDto,
   ) {
     return this.productoService.ajustarInventario(id, body.cantidad, body.tipo, body.motivo);
+  }
+
+  @Get(':id/numeros-parte')
+  getNumerosParte(@Param('id', ParseIntPipe) id: number) { return this.productoService.getNumerosParte(id); }
+
+  @Post(':id/numeros-parte')
+  @Roles(RolUsuario.ADMIN)
+  addNumeroParte(@Param('id', ParseIntPipe) id: number, @Body() dto: CreateNumeroParteDto) {
+    return this.productoService.addNumeroParte(id, dto);
+  }
+
+  @Delete(':id/numeros-parte/:idNumero')
+  @Roles(RolUsuario.ADMIN)
+  deleteNumeroParte(@Param('id', ParseIntPipe) id: number, @Param('idNumero', ParseIntPipe) idNumero: number) {
+    return this.productoService.deleteNumeroParte(id, idNumero);
+  }
+
+  @Get(':id/aplicaciones')
+  getAplicaciones(@Param('id', ParseIntPipe) id: number) { return this.productoService.getAplicaciones(id); }
+
+  @Post(':id/aplicaciones')
+  @Roles(RolUsuario.ADMIN)
+  addAplicacion(@Param('id', ParseIntPipe) id: number, @Body() dto: CreateAplicacionDto) {
+    return this.productoService.addAplicacion(id, dto);
+  }
+
+  @Delete(':id/aplicaciones/:idAplicacion')
+  @Roles(RolUsuario.ADMIN)
+  deleteAplicacion(@Param('id', ParseIntPipe) id: number, @Param('idAplicacion', ParseIntPipe) idAplicacion: number) {
+    return this.productoService.deleteAplicacion(id, idAplicacion);
   }
 }

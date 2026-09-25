@@ -1,6 +1,12 @@
 const http = require('http');
 
-const loginData = JSON.stringify({ email: 'admin', password: 'F8pz6u4oi*' });
+if (!process.env.TEST_USERNAME || !process.env.TEST_PASSWORD) {
+  throw new Error('Configura TEST_USERNAME y TEST_PASSWORD para ejecutar esta prueba manual.');
+}
+const loginData = JSON.stringify({
+  username: process.env.TEST_USERNAME,
+  password: process.env.TEST_PASSWORD,
+});
 
 const loginOptions = {
   hostname: 'localhost',
@@ -18,7 +24,6 @@ const req = http.request(loginOptions, (res) => {
   res.on('data', (chunk) => { data += chunk; });
   res.on('end', () => {
     console.log('Login Status:', res.statusCode);
-    console.log('Login Response:', data);
     
     if (res.statusCode === 200 || res.statusCode === 201) {
       const token = JSON.parse(data).access_token;

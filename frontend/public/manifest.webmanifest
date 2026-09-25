@@ -1,6 +1,9 @@
 {
-  "name": "frontend",
-  "short_name": "frontend",
+  "name": "Refacciones y Tractorepuestos Tampico",
+  "short_name": "RTT ERP",
+  "description": "Ventas, inventario, compras y CRM para Refacciones y Tractorepuestos Tampico",
+  "theme_color": "#0f2742",
+  "background_color": "#f4f6f8",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",

@@ -1,9 +1,13 @@
 // backend/src/venta/venta.controller.ts
-import { Body, Controller, Get, Post, Param, Res, Query, DefaultValuePipe, ParseIntPipe, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Res, Query, DefaultValuePipe, ParseIntPipe, Req, UseGuards, ForbiddenException } from '@nestjs/common';
 import type { Response } from 'express';
 import { VentaService } from './venta.service';
 import { CreateVentaDto, ProcesarDevolucionDto } from './venta.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
+import { RolUsuario } from '../common/enums/app.enums';
+import { JwtPayload } from '../auth/auth.types';
+import { Permissions } from '../auth/permissions.decorator';
 
 @Controller('venta')
 export class VentaController {
@@ -11,13 +15,18 @@ export class VentaController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createVentaDto: CreateVentaDto, @Req() req: any) {
+  @Permissions('ventas.crear')
+  create(@Body() createVentaDto: CreateVentaDto, @Req() req: { user: JwtPayload }) {
+    if (createVentaDto.tipoComprobante === 'E' && req.user?.role !== RolUsuario.ADMIN) {
+      throw new ForbiddenException('Solo un administrador puede registrar notas de crédito');
+    }
     const idVendedor = req.user?.idUser;
     return this.ventaService.create(createVentaDto, idVendedor);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('comisiones')
+  @Roles(RolUsuario.ADMIN)
   getComisionesSemanales() {
     return this.ventaService.getComisionesSemanales();
   }
@@ -33,12 +42,12 @@ export class VentaController {
   }
 
   @Get(':id/detalle')
-  findDetalle(@Param('id') id: number) {
+  findDetalle(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.findDetalle(id);
   }
 
   @Get(':id/pdf')
-  async descargarPdf(@Param('id') id: number, @Res() res: Response) {
+  async descargarPdf(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
     const buffer = await this.ventaService.generarTicketPdf(id);
 
     res.set({
@@ -51,12 +60,25 @@ export class VentaController {
   }
 
   @Post(':id/enviar-correo')
-  enviarCorreo(@Param('id') id: number) {
+  enviarCorreo(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.enviarFacturaPorCorreo(id);
   }
 
   @Post(':id/cancelar')
-  cancelarFactura(@Param('id', ParseIntPipe) id: number) {
-    return this.ventaService.cancelarFactura(id);
+  @Roles(RolUsuario.ADMIN)
+  @Permissions('ventas.cancelar')
+  cancelarFactura(@Param('id', ParseIntPipe) id: number, @Req() req: { user: JwtPayload }) {
+    return this.ventaService.cancelarFactura(id, req.user?.idUser);
+  }
+
+  @Post(':id/devoluciones')
+  @Roles(RolUsuario.ADMIN)
+  @Permissions('ventas.cancelar')
+  procesarDevolucion(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: ProcesarDevolucionDto,
+    @Req() req: { user: JwtPayload },
+  ) {
+    return this.ventaService.procesarDevolucion(id, dto, req.user?.idUser);
   }
 }

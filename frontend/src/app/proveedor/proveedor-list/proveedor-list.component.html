@@ -47,10 +47,10 @@
         <ng-container matColumnDef="acciones">
           <th mat-header-cell *matHeaderCellDef> Acciones </th>
           <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="primary" (click)="abrirDialogo(element)" matTooltip="Editar Proveedor">
+            <button mat-icon-button color="primary" (click)="abrirDialogo(element)" matTooltip="Editar Proveedor" aria-label="Editar proveedor">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="eliminarProveedor(element.idProveedor)" matTooltip="Eliminar Proveedor">
+            <button mat-icon-button color="warn" (click)="eliminarProveedor(element.idProveedor)" matTooltip="Eliminar Proveedor" aria-label="Eliminar proveedor">
               <mat-icon>delete</mat-icon>
             </button>
           </td>

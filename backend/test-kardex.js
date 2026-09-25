@@ -1,12 +1,7 @@
 const { Client } = require('pg');
+const { databaseConfig } = require('./db-config');
 
-const client = new Client({
-  host: '127.0.0.1',
-  port: 5432,
-  user: 'postgres',
-  password: 'F8pz6u4oi**',
-  database: 'BD_local_Proyecto'
-});
+const client = new Client(databaseConfig());
 
 async function run() {
   await client.connect();

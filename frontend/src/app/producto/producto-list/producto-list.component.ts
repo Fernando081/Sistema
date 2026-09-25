@@ -1,6 +1,9 @@
 // frontend/src/app/producto/producto-list/producto-list.component.ts (MODIFICAR)
 
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService } from '../../auth/auth.service';
+import { productImageUrl } from '../../shared/api-url';
 import anime from 'animejs';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -17,12 +20,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProductoService } from '../../services/producto.service';
 import { Producto } from '../producto.interface';
 import { ProductoDialogComponent } from '../producto-dialog/producto-dialog.component';
-import { finalize, Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { finalize, Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs'; // 1. Importar MatTabsModule
 import { CategoriaListComponent } from '../../categoria/categoria-list/categoria-list.component'; // 2. Importar CategoriaListComponent
 import { ProductoKardexComponent } from '../producto-kardex/producto-kardex.component';
 import { ProductoCotizacionesDialogComponent } from './producto-cotizaciones-dialog.component';
+import { ActivatedRoute } from '@angular/router';
+import { ConfirmService } from '../../shared/confirm.service';
 
 @Component({
   selector: 'app-producto-list',
@@ -39,6 +44,10 @@ import { ProductoCotizacionesDialogComponent } from './producto-cotizaciones-dia
   styleUrls: ['./producto-list.component.css']
 })
 export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
+  readonly canEdit = inject(AuthService).getDecodedToken()?.role === 'admin';
+  readonly productImageUrl = productImageUrl;
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly route = inject(ActivatedRoute);
   
   displayedColumns: string[] = ['imagen_url', 'codigo', 'descripcion', 'categoriaNombre', 'marca', 'ubicacion', 'precioUnitario','existencia', 'acciones'];
   dataSource = new MatTableDataSource<Producto>();
@@ -46,6 +55,7 @@ export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
   totalItems = 0;
   activeFilter = '';
   searchSubject = new Subject<string>();
+  private loadSubscription?: Subscription;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -53,31 +63,37 @@ export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private productoService: ProductoService,
     public dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private confirm: ConfirmService,
   ) {}
 
   ngOnInit(): void {
-    this.cargarProductos();
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+      const term = params.get('q') || '';
+      if (term !== this.activeFilter) { this.activeFilter = term; this.cargarProductos(); }
+      else if (!this.dataSource.data.length) this.cargarProductos();
+    });
 
     this.searchSubject.pipe(
       debounceTime(400),
-      distinctUntilChanged()
+      distinctUntilChanged(), takeUntilDestroyed(this.destroyRef)
     ).subscribe(term => {
       this.activeFilter = term;
       if (this.paginator) {
-        this.paginator.firstPage();
+        this.paginator.pageIndex = 0;
       }
       this.cargarProductos();
     });
   }
 
   ngOnDestroy(): void {
+    this.loadSubscription?.unsubscribe();
     this.searchSubject.complete();
   }
 
   ngAfterViewInit(): void {
     if (this.sort) {
-      this.sort.sortChange.subscribe(() => {
+      this.sort.sortChange.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         if (this.paginator) {
           this.paginator.pageIndex = 0;
         }
@@ -85,20 +101,21 @@ export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
     if (this.paginator) {
-      this.paginator.page.subscribe(() => {
+      this.paginator.page.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         this.cargarProductos();
       });
     }
   }
 
   cargarProductos(): void {
+    this.loadSubscription?.unsubscribe();
     this.isLoading = true;
     const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
     const limit = this.paginator ? this.paginator.pageSize : 10;
     const sort = this.sort ? this.sort.active : '';
     const order = this.sort ? this.sort.direction : '';
     
-    this.productoService.getProductos(page, limit, sort, order, this.activeFilter)
+    this.loadSubscription = this.productoService.getProductos(page, limit, sort, order, this.activeFilter)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (response) => {
@@ -133,6 +150,8 @@ export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
 
             // --- ¡ESTA ES LA LÍNEA QUE FALTABA! ---
             existencia: Number(prod['Existencia'] || 0),
+            reservada: Number(prod['Reservada'] || 0),
+            disponible: Number(prod['Disponible'] ?? prod['Existencia'] ?? 0),
             imagenes: prod['imagenes'] || [],
           }));
           
@@ -169,6 +188,12 @@ export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.searchSubject.next(filterValue.trim().toLowerCase());
   }
 
+  onImageError(event: Event) {
+    const image = event.currentTarget as HTMLImageElement;
+    image.hidden = true;
+    (image.nextElementSibling as HTMLElement | null)?.removeAttribute('hidden');
+  }
+
   abrirDialogo(producto?: Producto): void {
     // ... (esta función no cambia)
     const dialogRef = this.dialog.open(ProductoDialogComponent, {
@@ -184,8 +209,8 @@ export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   eliminarProducto(idProducto: number): void {
-    // ... (esta función no cambia)
-    if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+    this.confirm.ask({ title: 'Eliminar producto', message: 'Se eliminará la ficha si el producto no tiene movimientos que deban conservarse.', confirmLabel: 'Eliminar producto' }).subscribe(confirmed => {
+      if (!confirmed) return;
       this.productoService.deleteProducto(idProducto).subscribe({
         next: () => {
           this.mostrarNotificacion('Producto eliminado con éxito');
@@ -195,7 +220,7 @@ export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.mostrarNotificacion('Error al eliminar producto: ' + (err.error?.message || err.message));
         }
       });
-    }
+    });
   }
 
   mostrarNotificacion(mensaje: string) {

@@ -5,10 +5,8 @@ import { ConfigService } from '@nestjs/config';
  *
  * Returns `false` when SSL is disabled, or an SSL options object when enabled.
  *
- * NOTE: By default, `rejectUnauthorized` is `false` to support environments
- * with self-signed certificates. This disables TLS certificate validation and
- * is NOT recommended for production. To enforce certificate validation, set
- * `DB_SSL_REJECT_UNAUTHORIZED=true`.
+ * Verifica certificados por defecto. Una excepción para certificados locales
+ * autofirmados debe ser explícita y no se permite en producción.
  */
 export function parseSsl(
   configService: ConfigService,
@@ -30,8 +28,10 @@ export function parseSsl(
   )
     .trim()
     .toLowerCase();
-  const rejectUnauthorized =
-    rawRejectUnauthorized === '' ? false : truthyValues.has(rawRejectUnauthorized);
+  const rejectUnauthorized = rawRejectUnauthorized === '' || truthyValues.has(rawRejectUnauthorized);
+  if (!rejectUnauthorized && configService.get<string>('NODE_ENV') === 'production') {
+    throw new Error('No se permite deshabilitar la verificación TLS de PostgreSQL en producción');
+  }
 
   return { rejectUnauthorized };
 }

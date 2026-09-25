@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import { UPLOAD_DIRECTORY } from './upload/upload-path';
 
 // Módulos de Negocio
 import { ClienteModule } from './cliente/cliente.module';
@@ -31,7 +31,18 @@ import { ReportesModule } from './reportes/reportes.module';
 import { FinanzasModule } from './finanzas/finanzas.module';
 import { UploadModule } from './upload/upload.module';
 import { AuditoriaModule } from './auditoria/auditoria.module';
+import { CrmModule } from './crm/crm.module';
+import { GarantiaModule } from './garantia/garantia.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { RolesGuard } from './auth/roles.guard';
+import { PermissionsGuard } from './auth/permissions.guard';
+import { HealthController } from './health.controller';
+import { CajaModule } from './caja/caja.module';
+import { PedidoModule } from './pedido/pedido.module';
+import { AbastecimientoModule } from './abastecimiento/abastecimiento.module';
+import { ComercialModule } from './comercial/comercial.module';
+import { AlmacenModule } from './almacen/almacen.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -59,13 +70,18 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
           };
         }
 
+        const password = configService.get<string>('DB_PASSWORD');
+        const database = configService.get<string>('DB_NAME');
+        if (!password || !database) {
+          throw new Error('Configura DATABASE_URL o DB_PASSWORD y DB_NAME.');
+        }
         return {
           type: 'postgres' as const,
           host: configService.get<string>('DB_HOST', '127.0.0.1'),
-          port: parseInt(configService.get<string>('DB_PORT', '6543'), 10),
+          port: parseInt(configService.get<string>('DB_PORT', '5432'), 10),
           username: configService.get<string>('DB_USER', 'postgres'),
-          password: configService.get<string>('DB_PASSWORD', 'postgres'),
-          database: configService.get<string>('DB_NAME', 'postgres'),
+          password,
+          database,
           autoLoadEntities: true,
           synchronize: false,
           ssl: parseSsl(configService),
@@ -73,8 +89,9 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
       },
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
+      rootPath: UPLOAD_DIRECTORY,
       serveRoot: '/uploads',
+      serveStaticOptions: { index: false, dotfiles: 'deny', fallthrough: false },
     }),
     ClienteModule,
     ProveedorModule,
@@ -92,11 +109,21 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     FinanzasModule,
     UploadModule,
     AuditoriaModule,
+    CrmModule,
+    GarantiaModule,
+    CajaModule,
+    PedidoModule,
+    AbastecimientoModule,
+    ComercialModule,
+    AlmacenModule,
+    NotificationModule,
   ],
-  controllers: [],
+  controllers: [HealthController],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },
-    { provide: APP_GUARD, useClass: JwtAuthGuard }
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_GUARD, useClass: PermissionsGuard },
   ],
 })
 export class AppModule {}

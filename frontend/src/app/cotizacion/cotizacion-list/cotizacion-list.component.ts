@@ -1,5 +1,7 @@
 // frontend/src/app/cotizacion/cotizacion-list/cotizacion-list.component.ts
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { downloadDocument } from '../../shared/document-download';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -12,10 +14,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { forkJoin, Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { forkJoin, Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { CotizacionService } from '../../services/cotizacion.service';
 import { CatalogosService } from '../../services/catalogos.service';
 import { ConvertirDialogComponent } from './convertir-dialog.component';
+import { Router, RouterLink } from '@angular/router';
+import { PedidoService } from '../../services/pedido.service';
 
 @Component({
   selector: 'app-cotizacion-list',
@@ -24,7 +28,7 @@ import { ConvertirDialogComponent } from './convertir-dialog.component';
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatSnackBarModule, MatTooltipModule,
-    MatDialogModule
+    MatDialogModule, RouterLink
   ],
   templateUrl: './cotizacion-list.component.html',
 })
@@ -35,6 +39,8 @@ export class CotizacionListComponent implements OnInit, AfterViewInit, OnDestroy
   totalItems = 0;
   activeFilter = '';
   searchSubject = new Subject<string>();
+  private readonly destroyRef = inject(DestroyRef);
+  private request?: Subscription;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -43,19 +49,32 @@ export class CotizacionListComponent implements OnInit, AfterViewInit, OnDestroy
     private cotizacionService: CotizacionService,
     private catalogosService: CatalogosService,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private pedidoService: PedidoService,
+    private router: Router,
   ) {}
+
+  crearPedido(row: any) {
+    this.pedidoService.createFromQuote(row.id_cotizacion, { requestId: crypto.randomUUID() }).subscribe({
+      next: ({ idPedido }) => {
+        this.snackBar.open(`Pedido PED-${idPedido} creado desde la cotización.`, 'Abrir', { duration: 6000 })
+          .onAction().subscribe(() => this.router.navigate(['/pedidos']));
+        this.cargarCotizaciones();
+      },
+      error: (err) => this.snackBar.open('No se pudo crear el pedido: ' + (err.error?.message || err.message), 'Cerrar', { duration: 5000 }),
+    });
+  }
 
   ngOnInit(): void {
     this.cargarCotizaciones();
 
     this.searchSubject.pipe(
       debounceTime(400),
-      distinctUntilChanged()
+      distinctUntilChanged(), takeUntilDestroyed(this.destroyRef)
     ).subscribe(term => {
       this.activeFilter = term;
       if (this.paginator) {
-        this.paginator.firstPage();
+        this.paginator.pageIndex = 0;
       }
       this.cargarCotizaciones();
     });
@@ -63,22 +82,24 @@ export class CotizacionListComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnDestroy(): void {
     this.searchSubject.complete();
+    this.request?.unsubscribe();
   }
 
   ngAfterViewInit(): void {
     // Escuchar el paginador para recargar
     if(this.paginator) {
-      this.paginator.page.subscribe(() => {
+      this.paginator.page.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         this.cargarCotizaciones();
       });
     }
   }
 
   cargarCotizaciones() {
+    this.request?.unsubscribe();
     const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
     const limit = this.paginator ? this.paginator.pageSize : 10;
     
-    this.cotizacionService.getAll(page, limit, this.activeFilter).subscribe({
+    this.request = this.cotizacionService.getAll(page, limit, this.activeFilter).subscribe({
       next: (response) => {
         const data = response.data || response;
         this.totalItems = response.total || 0;
@@ -95,8 +116,7 @@ export class CotizacionListComponent implements OnInit, AfterViewInit, OnDestroy
 
   descargarPdf(id: number) {
     this.cotizacionService.descargarPdf(id).subscribe(blob => {
-      const url = window.URL.createObjectURL(blob);
-      window.open(url);
+      downloadDocument(blob, `Cotizacion_${id}.pdf`);
     });
   }
 

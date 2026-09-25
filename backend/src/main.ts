@@ -1,38 +1,16 @@
 // backend/src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { PostgresExceptionFilter } from './common/filters/postgres-exception.filter';
-import helmet from 'helmet';
+import { configureApp } from './configure-app';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.use(helmet());
+  configureApp(app);
 
-  app.enableCors({
-    origin: ['http://localhost:4200', 'https://tudominio.com'], // Restrict origin
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-  });
-
-  // Habilitar validación global para DTOs
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true, // Ignorar campos que no estén en el DTO
-      forbidNonWhitelisted: true, // Lanzar error si se reciben campos extra
-      transform: true, // Transformar payloads a tipos de DTO
-    }),
-  );
-
-  // Prefijo global para la API (ej. /api/v1/clientes)
-  app.setGlobalPrefix('api/v1');
-
-  app.useGlobalFilters(new PostgresExceptionFilter());
-
-  await app.listen(3000);
-  console.log(`Backend escuchando en http://localhost:3000`);
-  console.log(`Forcing backend restart to refresh DB cache.`);
+  const port = Number(process.env.PORT || 3000);
+  if (!Number.isSafeInteger(port) || port < 1 || port > 65535) throw new Error('PORT inválido');
+  await app.listen(port);
+  console.log(`Backend escuchando en http://localhost:${port}`);
 }
-bootstrap();
-console.log('Force Restart 3');
+void bootstrap();

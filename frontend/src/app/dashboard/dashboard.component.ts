@@ -5,11 +5,10 @@ import { CommonModule, CurrencyPipe, PercentPipe, DecimalPipe } from '@angular/c
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { NgxEchartsModule } from 'ngx-echarts';
-import { EChartsOption } from 'echarts';
+import type { EChartsCoreOption as EChartsOption } from 'echarts/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import {
   DashboardService,
   CategoriaVenta,
@@ -18,17 +17,22 @@ import {
   HistoricoDato,
 } from '../services/dashboard.service';
 import { ThemeService } from '../services/theme.service';
+import { ErpEchartsDirective } from '../shared/echarts.provider';
+import { CrmService } from '../services/crm.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatIconModule, MatTableModule, NgxEchartsModule],
+  imports: [CommonModule, MatCardModule, MatIconModule, MatTableModule, ErpEchartsDirective, RouterLink],
   providers: [CurrencyPipe, PercentPipe, DecimalPipe],
   templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.css',
 })
 export class DashboardComponent {
   private dashboardService = inject(DashboardService);
   private themeService = inject(ThemeService);
+  private crmService = inject(CrmService);
 
   // Animated Signals
   ventasHoyAnimado = signal(0);
@@ -53,6 +57,7 @@ export class DashboardComponent {
   costoAterrizadoAnimado = signal(0);
 
   theme = this.themeService.isDarkMode;
+  readonly loadError = signal(false);
 
   dashboardData = toSignal(
     forkJoin({
@@ -61,6 +66,7 @@ export class DashboardComponent {
       inventario: this.dashboardService.getInventario().pipe(map((res) => res[0])),
       clientes: this.dashboardService.getClientes().pipe(map((res) => res[0])),
       operaciones: this.dashboardService.getOperaciones().pipe(map((res) => res[0])),
+      crm: this.crmService.getResumen().pipe(catchError(() => of(null))),
     }).pipe(
       map((data) => {
         return {
@@ -85,6 +91,7 @@ export class DashboardComponent {
           chartTopOriginal: this.buildTopOriginalChart(data.metrics?.topProductos || []),
         };
       }),
+      catchError(() => { this.loadError.set(true); return of(undefined); }),
     ),
   );
 
@@ -121,6 +128,7 @@ export class DashboardComponent {
   }
 
   private animateValue(targetValue: number, sig: WritableSignal<number>) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { sig.set(targetValue); return; }
     const obj = { val: 0 };
     anime({
       targets: obj,
@@ -202,7 +210,7 @@ export class DashboardComponent {
     // Top 10 AND Bottom 10 as per requirement
     const top10 = data.slice(0, 5);
     const bottom10 = data.slice(-5).reverse();
-    const combined = [...top10, ...bottom10];
+    const combined = data.length <= 10 ? data : [...top10, ...bottom10];
 
     return {
       tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
@@ -215,7 +223,7 @@ export class DashboardComponent {
           type: 'bar',
           data: combined.map((d) => d.ventas).reverse(),
           itemStyle: {
-            color: (params) => {
+            color: (params: { dataIndex: number }) => {
               // Color top 5 differently from bottom 5
               return params.dataIndex >= 5 ? '#ff4d4f' : '#118dff';
             },

@@ -5,18 +5,19 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Proveedor } from './proveedor.entity';
 import { CreateProveedorDto, UpdateProveedorDto } from './proveedor.dto';
+import { queryRows } from '../common/database/typed-query';
 
 @Injectable()
 export class ProveedorService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
   async findAll(): Promise<Proveedor[]> {
-    return this.dataSource.query('SELECT * FROM fn_get_proveedores()');
+    return queryRows<Proveedor>(this.dataSource, 'SELECT * FROM fn_get_proveedores()');
   }
 
   async findOne(idProveedor: number): Promise<Proveedor> {
-    const result = await this.dataSource.query(
-      'SELECT * FROM fn_get_proveedor_by_id($1)',
+    const result = await queryRows<Proveedor>(this.dataSource,
+      'SELECT * FROM fn_get_proveedor_by_id($1) WHERE "IdProveedor" IS NOT NULL',
       [idProveedor],
     );
     if (!result || result.length === 0) {
@@ -28,7 +29,7 @@ export class ProveedorService {
   }
 
   async create(createProveedorDto: CreateProveedorDto): Promise<Proveedor> {
-    const result = await this.dataSource.query(
+    const result = await queryRows<Proveedor>(this.dataSource,
       'SELECT * FROM fn_create_proveedor($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)',
       [
         createProveedorDto.rfc,
@@ -56,43 +57,30 @@ export class ProveedorService {
     idProveedor: number,
     updateProveedorDto: UpdateProveedorDto,
   ): Promise<Proveedor> {
-    const proveedorActual = await this.findOne(idProveedor);
-    if (!proveedorActual) {
-      throw new NotFoundException(
-        `Proveedor con ID ${idProveedor} no encontrado.`,
-      );
-    }
-
-    const datosAActualizar = { ...proveedorActual, ...updateProveedorDto };
-
-    const result = await this.dataSource.query(
+    return this.dataSource.transaction(async (manager) => {
+      const rows = await queryRows<Record<string, unknown>>(manager, 'SELECT * FROM proveedor WHERE "IdProveedor"=$1 FOR UPDATE', [idProveedor]);
+      if (!rows.length) throw new NotFoundException(`Proveedor con ID ${idProveedor} no encontrado.`);
+      const fields = [
+        ['rfc', 'RFC'], ['razonSocial', 'RazonSocial'], ['pais', 'Pais'],
+        ['idEstado', 'IdEstado'], ['idMunicipio', 'IdMunicipio'], ['ciudad', 'Ciudad'],
+        ['colonia', 'Colonia'], ['calle', 'Calle'], ['codigoPostal', 'CodigoPostal'],
+        ['numeroExterior', 'NumeroExterior'], ['numeroInterior', 'NumeroInterior'],
+        ['referencia', 'Referencia'], ['idMetodoDePago', 'IdMetodoDePago'],
+        ['idUsoCFDI', 'IdUsoCFDI'], ['idFormaPago', 'IdFormaPago'], ['idRegimenFiscal', 'IdRegimenFiscal'],
+      ] as const;
+      const values = fields.map(([field, column]) =>
+        updateProveedorDto[field] !== undefined ? updateProveedorDto[field] : rows[0][column]);
+      const result = await queryRows<Proveedor>(manager,
       'SELECT * FROM fn_update_proveedor($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)',
-      [
-        idProveedor,
-        datosAActualizar.rfc,
-        datosAActualizar.razonSocial,
-        datosAActualizar.pais,
-        datosAActualizar.idEstado,
-        datosAActualizar.idMunicipio,
-        datosAActualizar.ciudad,
-        datosAActualizar.colonia,
-        datosAActualizar.calle,
-        datosAActualizar.codigoPostal,
-        datosAActualizar.numeroExterior,
-        datosAActualizar.numeroInterior,
-        datosAActualizar.referencia,
-        datosAActualizar.idMetodoDePago,
-        datosAActualizar.idUsoCFDI,
-        datosAActualizar.idFormaPago,
-        datosAActualizar.idRegimenFiscal,
-      ],
-    );
-    return result[0];
+        [idProveedor, ...values],
+      );
+      return result[0];
+    });
   }
 
   async remove(idProveedor: number): Promise<void> {
-    const result = await this.dataSource.query(
-      'SELECT * FROM fn_delete_proveedor($1)',
+    const result = await queryRows<Proveedor>(this.dataSource,
+      'SELECT * FROM fn_delete_proveedor($1) WHERE "IdProveedor" IS NOT NULL',
       [idProveedor],
     );
     if (!result || result.length === 0) {

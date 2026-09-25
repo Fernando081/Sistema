@@ -108,6 +108,8 @@ export class ClienteDialogComponent implements OnInit {
 
     // 3. Escuchar cambios en el Estado (Efecto Cascada)
     this.form.get('idEstado')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(idEstado => {
+      municipioControl?.setValue(null);
+      this.municipios = [];
       if (idEstado) {
         // Si seleccionó estado: Desbloquear y cargar
         municipioControl?.enable();
@@ -121,7 +123,7 @@ export class ClienteDialogComponent implements OnInit {
     });
 
     if (this.isEditMode && this.data) {
-      this.form.patchValue(this.data);
+      this.form.patchValue(this.data, { emitEvent: false });
     }
   }
 
@@ -132,7 +134,7 @@ export class ClienteDialogComponent implements OnInit {
     if (estadoSeleccionado) {
       this.catalogosService.getMunicipiosPorEstado(estadoSeleccionado.clave)
         .subscribe(municipios => {
-          this.municipios = municipios;
+          if (this.form.get('idEstado')?.value === idEstado) this.municipios = municipios;
         });
     }
   }
@@ -143,6 +145,8 @@ export class ClienteDialogComponent implements OnInit {
       return;
     }
     const formData = this.form.getRawValue();
+    formData.rfc = formData.rfc.trim().toUpperCase();
+    formData.razonSocial = formData.razonSocial.trim();
     let request;
 
     if (this.isEditMode) {

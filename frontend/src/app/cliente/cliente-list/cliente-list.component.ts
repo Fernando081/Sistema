@@ -1,6 +1,6 @@
 // frontend/src/app/cliente/cliente-list/cliente-list.component.ts
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import anime from 'animejs';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -19,6 +19,9 @@ import { Cliente } from '../cliente.interface';
 import { ClienteDialogComponent } from '../cliente-dialog/cliente-dialog.component';
 import { finalize } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmService } from '../../shared/confirm.service';
+import { ClienteUnidadesDialogComponent } from '../cliente-unidades-dialog/cliente-unidades-dialog.component';
 
 @Component({
   selector: 'app-cliente-list',
@@ -33,6 +36,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrls: ['./cliente-list.component.css']
 })
 export class ClienteListComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private routeFilter = '';
   
   // ¡CAMBIO! Volvemos a usar camelCase (minúsculas)
   displayedColumns: string[] = ['idCliente', 'rfc', 'razonSocial', 'codigoPostal', 'saldoAFavor', 'acciones'];
@@ -45,10 +51,12 @@ export class ClienteListComponent implements OnInit {
   constructor(
     private clienteService: ClienteService,
     public dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private confirm: ConfirmService,
   ) {}
 
   ngOnInit(): void {
+    this.routeFilter = (this.route.snapshot.queryParamMap.get('q') || '').trim().toLowerCase();
     this.cargarClientes();
   }
 
@@ -59,6 +67,10 @@ export class ClienteListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.dataSource.data = data;
+          if (this.routeFilter) {
+            this.dataSource.filterPredicate = (item, filter) => item.razonSocial.toLowerCase().includes(filter) || item.rfc.toLowerCase().includes(filter);
+            this.dataSource.filter = this.routeFilter;
+          }
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           setTimeout(() => this.animarEntradaTabla(), 0);
@@ -96,8 +108,22 @@ export class ClienteListComponent implements OnInit {
     });
   }
 
+  administrarUnidades(cliente: Cliente): void {
+    this.dialog.open(ClienteUnidadesDialogComponent, {
+      width: '920px',
+      maxWidth: '96vw',
+      data: { idCliente: cliente.idCliente, razonSocial: cliente.razonSocial },
+      disableClose: true,
+    });
+  }
+
+  verCliente360(cliente: Cliente): void {
+    void this.router.navigate(['/cliente', cliente.idCliente]);
+  }
+
   eliminarCliente(idCliente: number): void {
-    if (confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
+    this.confirm.ask({ title: 'Eliminar cliente', message: 'Se eliminará la ficha del cliente si no tiene operaciones que deban conservarse.', confirmLabel: 'Eliminar cliente' }).subscribe(confirmed => {
+      if (!confirmed) return;
       this.clienteService.deleteCliente(idCliente).subscribe({
         next: () => {
           this.mostrarNotificacion('Cliente eliminado con éxito');
@@ -107,7 +133,7 @@ export class ClienteListComponent implements OnInit {
           this.mostrarNotificacion('Error al eliminar cliente: ' + (err.error?.message || err.message));
         }
       });
-    }
+    });
   }
 
   mostrarNotificacion(mensaje: string) {

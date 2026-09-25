@@ -1,5 +1,8 @@
 // frontend/src/app/venta/factura-detalle/factura-detalle.component.ts
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
+import { AuthService } from '../../auth/auth.service';
+import { downloadDocument } from '../../shared/document-download';
+import { DevolucionDialogComponent } from './devolucion-dialog.component';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { ChangeDetectorRef } from '@angular/core';
@@ -10,6 +13,7 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { VentaService } from '../../services/venta.service';
 import { FacturaResumen, DetalleFacturaDb } from '../venta.interface';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog.component';
+import { GarantiaDialogComponent } from '../../garantia/garantia-dialog.component';
 @Component({
   selector: 'app-factura-detalle',
   standalone: true,
@@ -17,8 +21,10 @@ import { ConfirmDialogComponent } from '../../shared/confirm-dialog.component';
   templateUrl: './factura-detalle.component.html',
 })
 export class FacturaDetalleComponent implements OnInit {
+  readonly isAdmin = inject(AuthService).getDecodedToken()?.role === 'admin';
+  isCanceling = false;
   detalles: DetalleFacturaDb[] = [];
-  displayedColumns: string[] = ['cant', 'unidad', 'desc', 'precio', 'importe'];
+  displayedColumns: string[] = ['cant', 'unidad', 'desc', 'precio', 'importe', 'garantia'];
   isLoading = true;
 
   constructor(
@@ -37,7 +43,7 @@ export class FacturaDetalleComponent implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => console.error(err),
+      error: () => { this.isLoading = false; this.cdr.detectChanges(); },
     });
   }
 
@@ -47,12 +53,12 @@ export class FacturaDetalleComponent implements OnInit {
 
   imprimirTicket() {
     this.ventaService.descargarPdf(this.data.id_factura).subscribe((blob) => {
-      const url = window.URL.createObjectURL(blob);
-      window.open(url); // Abre en nueva pestaña
+      downloadDocument(blob, `Factura_${this.data.serie}${this.data.folio}.pdf`);
     });
   }
 
   cancelarFactura() {
+    if (!this.isAdmin || this.isCanceling) return;
     const confirmRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: { message: '¿Está seguro de que desea cancelar esta factura? Esta acción devolverá el stock al inventario y eliminará los pagos asociados.' }
@@ -60,6 +66,7 @@ export class FacturaDetalleComponent implements OnInit {
 
     confirmRef.afterClosed().subscribe(result => {
       if (result) {
+        this.isCanceling = true;
         this.ventaService.cancelarFactura(this.data.id_factura).subscribe({
           next: (res: any) => {
             const msg = res.data?.message || res.message || 'Factura cancelada con éxito';
@@ -67,6 +74,7 @@ export class FacturaDetalleComponent implements OnInit {
             this.cerrar();
           },
           error: (err: any) => {
+            this.isCanceling = false;
             console.error(err);
             const errorMsg = err.error?.message || err.message || 'Error al cancelar la factura';
             this.snackBar.open(errorMsg, 'Cerrar', { duration: 5000 });
@@ -74,6 +82,26 @@ export class FacturaDetalleComponent implements OnInit {
         });
       }
     });
+  }
+
+  registrarGarantia(item: DetalleFacturaDb) {
+    this.dialog.open(GarantiaDialogComponent, {
+      width: '520px',
+      data: {
+        idFactura: this.data.id_factura,
+        idConcepto: item.id_concepto,
+        producto: `${item.codigo_producto} - ${item.descripcion_producto}`,
+        cantidadDisponible: Number(item.cantidad) - Number(item.cantidad_devuelta || 0),
+      },
+    }).afterClosed().subscribe((saved) => {
+      if (saved) this.snackBar.open('Garantía registrada', 'Cerrar', { duration: 3000 });
+    });
+  }
+
+  devolver(item: DetalleFacturaDb): void {
+    if (!this.isAdmin) return;
+    this.dialog.open(DevolucionDialogComponent, { width: '520px', data: { idFactura: this.data.id_factura, item } })
+      .afterClosed().subscribe(saved => { if (saved) this.ngOnInit(); });
   }
 
 }

@@ -1,0 +1,32 @@
+<header class="dialog-head">
+  <div><h2 mat-dialog-title>Unidades de {{ data.razonSocial }}</h2><p>Registra el VIN del camión, el ESN del motor o ambos.</p></div>
+  <button mat-icon-button type="button" aria-label="Cerrar" (click)="cerrar()"><mat-icon>close</mat-icon></button>
+</header>
+<mat-dialog-content>
+  @if (error()) {<div class="erp-error-state unit-error" role="alert"><mat-icon>error_outline</mat-icon><strong>{{error()}}</strong></div>}
+  @if (cargando()) {<div class="loading" role="status"><mat-spinner diameter="36"></mat-spinner><span>Cargando unidades…</span></div>}
+  @else {
+    <section class="unit-list" aria-label="Unidades registradas">
+      @for (unidad of unidades(); track unidad.idUnidad) {
+        <article class="unit-card">
+          <div class="unit-main"><mat-icon>local_shipping</mat-icon><div><strong>{{unidad.numeroEconomico || unidad.marca || 'Unidad sin número económico'}}</strong><span>{{unidad.marca}} {{unidad.modelo}} {{unidad.anio || ''}}</span></div></div>
+          <dl>@if(unidad.vin){<div><dt>VIN</dt><dd>{{unidad.vin}}</dd></div>}@if(unidad.esn){<div><dt>ESN</dt><dd>{{unidad.esn}}</dd></div>}@if(unidad.motor){<div><dt>Motor</dt><dd>{{unidad.motor}}</dd></div>}</dl>
+          <div class="unit-actions"><button mat-button type="button" (click)="editar(unidad)"><mat-icon>edit</mat-icon>Editar</button><button mat-button type="button" (click)="eliminar(unidad)"><mat-icon>delete</mat-icon>Eliminar</button></div>
+        </article>
+      } @empty {<div class="erp-empty-state compact"><mat-icon>local_shipping</mat-icon><strong>Este cliente todavía no tiene unidades</strong><span>Captura abajo su primer VIN o ESN.</span></div>}
+    </section>
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="unit-form">
+      <div class="form-head"><div><h3>{{editando() ? 'Editar unidad' : 'Agregar unidad o motor'}}</h3><p>Solo uno de los dos identificadores es obligatorio.</p></div>@if(editando()){<button mat-button type="button" (click)="editar()">Cancelar edición</button>}</div>
+      <mat-form-field><mat-label>VIN del camión</mat-label><input matInput formControlName="vin" maxlength="17" class="uppercase" autocomplete="off"><mat-hint>17 caracteres; no usa I, O ni Q</mat-hint><mat-error>Revisa el formato del VIN</mat-error></mat-form-field>
+      <mat-form-field><mat-label>ESN del motor</mat-label><input matInput formControlName="esn" maxlength="50" class="uppercase" autocomplete="off"><mat-hint>Número de serie del motor</mat-hint></mat-form-field>
+      <mat-form-field><mat-label>Número económico</mat-label><input matInput formControlName="numeroEconomico" maxlength="50"></mat-form-field>
+      <mat-form-field><mat-label>Motor</mat-label><input matInput formControlName="motor" maxlength="120"></mat-form-field>
+      <mat-form-field><mat-label>Marca</mat-label><input matInput formControlName="marca" maxlength="80"></mat-form-field>
+      <mat-form-field><mat-label>Modelo</mat-label><input matInput formControlName="modelo" maxlength="100"></mat-form-field>
+      <mat-form-field><mat-label>Año</mat-label><input matInput type="number" min="1900" max="2200" formControlName="anio"></mat-form-field>
+      <mat-form-field><mat-label>Notas de configuración</mat-label><textarea matInput rows="2" formControlName="notas" maxlength="1000"></textarea></mat-form-field>
+      <div class="form-actions"><button mat-flat-button type="submit" [disabled]="guardando()">@if(guardando()){<mat-spinner diameter="18"></mat-spinner>}@else{<mat-icon>save</mat-icon>}{{guardando() ? 'Guardando…' : 'Guardar unidad'}}</button></div>
+    </form>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end"><button mat-button type="button" (click)="cerrar()">Cerrar</button></mat-dialog-actions>

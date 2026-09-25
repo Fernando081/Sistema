@@ -29,6 +29,9 @@ export class Gasto {
   @Column({ type: 'int', name: 'id_compra', nullable: true })
   idCompra: number;
 
+  @Column({ type: 'boolean', default: false })
+  anulado: boolean;
+
   @Column({
     type: 'timestamp with time zone',
     name: 'created_at',

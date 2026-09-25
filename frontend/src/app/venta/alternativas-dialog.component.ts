@@ -20,7 +20,7 @@ export interface AlternativasDialogData {
     </h2>
     <mat-dialog-content class="!pb-6">
       <p class="mb-4 text-sm dark:text-gray-300">
-        El producto <strong>"{{ data.productoOriginal.descripcion }}"</strong> está agotado. Con base en nuestros cruces de sistema, te sugerimos las siguientes opciones en existencia con compatibilidad garantizada:
+        El producto <strong>"{{ data.productoOriginal.descripcion }}"</strong> está agotado. Estas opciones tienen un cruce registrado; verifica la aplicación, el motor y las restricciones antes de sustituir la pieza.
       </p>
 
       <div class="overflow-x-auto w-full border dark:border-slate-700 rounded-lg shadow-sm">

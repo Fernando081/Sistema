@@ -71,7 +71,7 @@ import { FacturaResumen } from './venta.interface';
             <ng-container matColumnDef="acciones">
               <th mat-header-cell *matHeaderCellDef> </th>
               <td mat-cell *matCellDef="let element">
-                <button mat-button color="primary" (click)="seleccionar(element.uuid)">Seleccionar</button>
+                <button mat-button color="primary" (click)="seleccionar(element)">Seleccionar</button>
               </td>
             </ng-container>
 
@@ -130,7 +130,7 @@ export class BuscadorFacturasDialogComponent implements OnInit {
     );
   }
 
-  seleccionar(uuid: string) {
-    this.dialogRef.close(uuid);
+  seleccionar(factura: FacturaResumen) {
+    this.dialogRef.close(factura);
   }
 }

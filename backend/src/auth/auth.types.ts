@@ -1,9 +1,14 @@
+import { RolUsuario } from '../common/enums/app.enums';
+
 export interface JwtPayload {
   sub: string;
-  role: string;
+  role: RolUsuario;
   idUser?: number;
   iat: number;
   exp: number;
+  version: number;
+  iss: 'sistema-erp';
+  aud: 'sistema-web';
 }
 
 export interface LoginResponse {

@@ -7,7 +7,7 @@ export class ClaveUnidadService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
   async buscar(termino: string): Promise<any[]> {
     if (!termino || termino.length < 2) return [];
-    return this.dataSource.query('SELECT * FROM fn_buscar_claveunidad($1)', [
+    return this.dataSource.query('SELECT * FROM fn_buscar_claveunidad($1) LIMIT 50', [
       termino,
     ]);
   }

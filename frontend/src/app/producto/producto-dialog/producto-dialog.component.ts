@@ -21,11 +21,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgxEchartsModule } from 'ngx-echarts';
-import { EChartsOption } from 'echarts';
+import type { EChartsCoreOption as EChartsOption } from 'echarts/core';
 
 import { ProductoService } from '../../services/producto.service';
-import { Producto, CreateProductoDto, UpdateProductoDto } from '../producto.interface';
+import { Producto, CreateProductoDto, UpdateProductoDto, KardexItem } from '../producto.interface';
 import { CategoriaService } from '../../services/categoria.service';
 import { Categoria } from '../../categoria/categoria.interface';
 import {
@@ -37,8 +36,10 @@ import {
 } from '../../services/catalogos.service';
 
 import { Observable, of } from 'rxjs';
-import { debounceTime, switchMap, startWith, map, finalize } from 'rxjs/operators';
+import { debounceTime, switchMap, startWith, map, finalize, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { ErpEchartsDirective } from '../../shared/echarts.provider';
+import { ConfirmService } from '../../shared/confirm.service';
 
 @Component({
   selector: 'app-producto-dialog',
@@ -57,7 +58,7 @@ import { environment } from '../../../environments/environment';
     MatTabsModule,
     MatListModule,
     MatIconModule,
-    NgxEchartsModule,
+    ErpEchartsDirective,
     MatSnackBarModule,
   ],
   templateUrl: './producto-dialog.component.html',
@@ -81,6 +82,12 @@ export class ProductoDialogComponent implements OnInit {
   // --- VARIABLES PARA PESTAÑAS AVANZADAS ---
   historialPrecios: any[] = [];
   equivalentes = signal<any[]>([]);
+  numerosParte = signal<any[]>([]);
+  aplicaciones = signal<any[]>([]);
+  kardex = signal<KardexItem[]>([]);
+  cotizacionesProveedor = signal<any[]>([]);
+  numeroParteForm: FormGroup;
+  aplicacionForm: FormGroup;
 
   // Para el buscador de Equivalentes
   buscadorEquivalenteControl = new FormControl('');
@@ -98,6 +105,7 @@ export class ProductoDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<ProductoDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Producto,
     private snackBar: MatSnackBar,
+    private confirm: ConfirmService,
   ) {
     this.isEditMode = !!data;
 
@@ -117,6 +125,13 @@ export class ProductoDialogComponent implements OnInit {
       aplicaRetencionIsr: [false],
       aplicaRetencionIva: [false],
     });
+    this.numeroParteForm = this.fb.group({
+      tipo: ['OEM', Validators.required], fabricante: [''], numero: ['', Validators.required],
+    });
+    this.aplicacionForm = this.fb.group({
+      fabricanteEquipo: [''], modelo: [''], motor: [''], anioDesde: [null],
+      anioHasta: [null], restricciones: [''],
+    });
   }
 
   ngOnInit(): void {
@@ -131,7 +146,7 @@ export class ProductoDialogComponent implements OnInit {
       debounceTime(300),
       switchMap((value) => {
         const nombre = typeof value === 'string' ? value : value?.descripcion;
-        return nombre ? this.catalogosService.buscarClaveProdServ(nombre) : of([]);
+        return typeof value === 'string' && nombre ? this.catalogosService.buscarClaveProdServ(nombre).pipe(catchError(() => of([]))) : of([]);
       }),
     );
 
@@ -140,7 +155,7 @@ export class ProductoDialogComponent implements OnInit {
       debounceTime(300),
       switchMap((value) => {
         const nombre = typeof value === 'string' ? value : value?.descripcion;
-        return nombre ? this.catalogosService.buscarClaveUnidad(nombre) : of([]);
+        return typeof value === 'string' && nombre ? this.catalogosService.buscarClaveUnidad(nombre).pipe(catchError(() => of([]))) : of([]);
       }),
     );
 
@@ -173,33 +188,11 @@ export class ProductoDialogComponent implements OnInit {
       // Cargar pestañas avanzadas
       this.cargarHistorialPrecios();
       this.cargarEquivalentes();
+      this.cargarNumerosParte();
+      this.cargarAplicaciones();
+      this.cargarOperacionProducto();
 
-      // Cargar TODOS los productos para poder buscar equivalentes
-      this.productoService
-        .getProductos(1, 1000)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(
-          (response: any) => {
-            console.log('Raw data:', response);
-
-            // --- CORRECCIÓN: MAPEO MANUAL DE MAYÚSCULAS A MINÚSCULAS ---
-            this.listaTodosProductos = response.data.map((p: any) => ({
-              idProducto: p.IdProducto,
-              codigo: p.Codigo,
-              descripcion: p.Descripcion,
-              precioUnitario: p.PrecioUnitario,
-              existencia: p.Existencia,
-              // Solo necesitamos estos campos para el buscador visual
-            })) as Producto[];
-
-            this.configurarBuscadorEquivalentes();
-
-            console.log('Productos mapeados (listos para buscar):', this.listaTodosProductos);
-          },
-          (error) => {
-            console.error('Error al cargar lista de productos:', error);
-          },
-        );
+      this.configurarBuscadorEquivalentes();
     }
   }
 
@@ -208,14 +201,14 @@ export class ProductoDialogComponent implements OnInit {
   configurarBuscadorEquivalentes() {
     this.productosCandidatos$ = this.buscadorEquivalenteControl.valueChanges.pipe(
       startWith(''),
-      map((valor) => {
-        // CORRECCIÓN:
-        // Usamos 'as unknown as Producto' para calmar a TypeScript
-        // O añadimos '|| ''' para manejar el caso de que sea null/undefined
-        const termino =
-          typeof valor === 'string' ? valor : (valor as unknown as Producto)?.descripcion || '';
-
-        return termino ? this._filtrarProductos(termino) : [];
+      debounceTime(250),
+      switchMap((valor) => {
+        const termino = typeof valor === 'string' ? valor.trim() : '';
+        if (!termino) return of([]);
+        return this.productoService.buscarProductos(termino).pipe(
+          map((productos) => productos.filter((p) => p.idProducto !== this.data.idProducto)),
+          catchError(() => of([])),
+        );
       }),
     );
   }
@@ -254,10 +247,9 @@ export class ProductoDialogComponent implements OnInit {
   }
 
   desvincularEquivalente(idEq: number) {
-    if (!confirm('¿Desvincular este producto?')) return;
-
-    this.productoService.eliminarEquivalente(this.data.idProducto, idEq).subscribe(() => {
-      this.cargarEquivalentes();
+    this.confirm.ask({ title: 'Desvincular equivalente', message: 'Este producto dejará de aparecer como equivalente sugerido.', confirmLabel: 'Desvincular' }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.productoService.eliminarEquivalente(this.data.idProducto, idEq).subscribe(() => this.cargarEquivalentes());
     });
   }
 
@@ -265,6 +257,37 @@ export class ProductoDialogComponent implements OnInit {
     this.productoService.getEquivalentes(this.data.idProducto).subscribe((res) => {
       this.equivalentes.set(res);
     });
+  }
+
+  cargarNumerosParte() {
+    this.productoService.getNumerosParte(this.data.idProducto).subscribe((rows) => this.numerosParte.set(rows));
+  }
+  agregarNumeroParte() {
+    if (this.numeroParteForm.invalid) return;
+    this.productoService.addNumeroParte(this.data.idProducto, this.numeroParteForm.getRawValue()).subscribe(() => {
+      this.numeroParteForm.reset({ tipo: 'OEM', fabricante: '', numero: '' });
+      this.cargarNumerosParte();
+    });
+  }
+  eliminarNumeroParte(idNumero: number) {
+    this.productoService.deleteNumeroParte(this.data.idProducto, idNumero).subscribe(() => this.cargarNumerosParte());
+  }
+  cargarAplicaciones() {
+    this.productoService.getAplicaciones(this.data.idProducto).subscribe((rows) => this.aplicaciones.set(rows));
+  }
+  agregarAplicacion() {
+    this.productoService.addAplicacion(this.data.idProducto, this.aplicacionForm.getRawValue()).subscribe(() => {
+      this.aplicacionForm.reset();
+      this.cargarAplicaciones();
+    });
+  }
+  eliminarAplicacion(idAplicacion: number) {
+    this.productoService.deleteAplicacion(this.data.idProducto, idAplicacion).subscribe(() => this.cargarAplicaciones());
+  }
+
+  cargarOperacionProducto() {
+    this.productoService.getKardex(this.data.idProducto).subscribe(rows => this.kardex.set(rows.slice(0, 25)));
+    this.productoService.getCotizacionesProveedor(this.data.idProducto).subscribe(rows => this.cotizacionesProveedor.set(rows));
   }
 
   // --- LÓGICA HISTORIAL ---
@@ -315,6 +338,12 @@ export class ProductoDialogComponent implements OnInit {
     const files: FileList = event.target.files;
     if (files && files.length > 0) {
       Array.from(files).forEach((file) => {
+        if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type) || file.size > 5 * 1024 * 1024) {
+          this.mostrarNotificacion('Selecciona una imagen JPG, PNG, WebP o GIF de máximo 5 MB.'); return;
+        }
+        if (this.selectedFiles.length >= 5 || this.previewUrls().filter(preview => !preview.file).length + this.selectedFiles.length >= 10) {
+          this.mostrarNotificacion('Puedes subir 5 imágenes a la vez y conservar hasta 10 por producto.'); return;
+        }
         this.selectedFiles.push(file);
         
         const reader = new FileReader();
@@ -342,6 +371,11 @@ export class ProductoDialogComponent implements OnInit {
     if (this.isSaving() || this.form.invalid) {
       this.form.markAllAsTouched();
       return;
+    }
+    const prodServ = this.form.get('claveProdServControl')?.value;
+    const unidad = this.form.get('claveUnidadControl')?.value;
+    if ((typeof prodServ === 'string' && prodServ.trim()) || (typeof unidad === 'string' && unidad.trim())) {
+      this.mostrarNotificacion('Selecciona las claves SAT desde los resultados del buscador.'); return;
     }
     
     this.isSaving.set(true);

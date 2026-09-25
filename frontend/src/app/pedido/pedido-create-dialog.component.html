@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Nuevo pedido de venta</h2>
+<mat-dialog-content>
+  <p class="intro">Crea el pedido y después confírmalo para apartar existencias. Lo faltante se convertirá en backorder.</p>
+  @if(error()){<div class="erp-error-state order-error" role="alert"><mat-icon>error_outline</mat-icon><strong>{{error()}}</strong></div>}
+  <form [formGroup]="form" class="order-form">
+    <mat-form-field><mat-label>Cliente</mat-label><mat-select formControlName="idCliente">@for(client of clientes();track client.idCliente){<mat-option [value]="client.idCliente">{{client.razonSocial}} · {{client.rfc}}</mat-option>}</mat-select><mat-error>Selecciona un cliente</mat-error></mat-form-field>
+    <mat-form-field><mat-label>Unidad / motor</mat-label><mat-select formControlName="idUnidad"><mat-option [value]="null">Sin unidad específica</mat-option>@for(unit of unidades();track unit.idUnidad){<mat-option [value]="unit.idUnidad">{{unit.numeroEconomico || unit.vin || unit.esn}}</mat-option>}</mat-select></mat-form-field>
+    <mat-form-field class="full"><mat-label>Notas del pedido</mat-label><textarea matInput rows="2" formControlName="notas"></textarea></mat-form-field>
+  </form>
+  <div class="product-search"><mat-form-field><mat-label>Agregar producto</mat-label><input matInput [formControl]="productoControl" [matAutocomplete]="products" autocomplete="off"><mat-icon matSuffix>search</mat-icon><mat-autocomplete #products="matAutocomplete" [displayWith]="displayProduct" (optionSelected)="add($event.option.value)">@for(product of productos$|async;track product.idProducto){<mat-option [value]="product"><strong>{{product.codigo}}</strong> · {{product.descripcion}} · {{product.existencia}} en existencia</mat-option>}</mat-autocomplete></mat-form-field></div>
+  <div class="line-list">
+    @for(line of lineas();track line.producto.idProducto;let i=$index){<article><div class="line-product"><strong>{{line.producto.codigo}} · {{line.producto.descripcion}}</strong><span>@if(line.disponibilidad){Disponible {{line.disponibilidad.disponible}} · Reservado {{line.disponibilidad.reservada}}}@else{Consultando disponibilidad…}</span></div><label>Cantidad<input type="number" min="0.000001" step="1" [(ngModel)]="line.cantidad"></label><label>Precio<input type="number" min="0" step="0.01" [(ngModel)]="line.valorUnitario"></label><strong>{{line.cantidad*line.valorUnitario|currency:'MXN'}}</strong><button mat-icon-button type="button" (click)="remove(i)" aria-label="Quitar producto"><mat-icon>delete</mat-icon></button></article>}@empty{<div class="erp-empty-state compact"><mat-icon>shopping_cart</mat-icon><strong>Agrega las refacciones solicitadas</strong></div>}
+  </div>
+  <div class="order-total"><span>Subtotal estimado</span><strong>{{subtotal()|currency:'MXN'}}</strong></div>
+</mat-dialog-content>
+<mat-dialog-actions align="end"><button mat-button mat-dialog-close>Cancelar</button><button mat-flat-button (click)="save()" [disabled]="guardando()">{{guardando()?'Guardando…':'Crear pedido'}}</button></mat-dialog-actions>

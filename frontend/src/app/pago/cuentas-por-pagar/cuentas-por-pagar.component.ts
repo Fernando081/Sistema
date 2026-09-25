@@ -1,5 +1,6 @@
 // frontend/src/app/pago/cuentas-por-pagar/cuentas-por-pagar.component.ts
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -19,7 +20,7 @@ import { ProveedorService } from '../../services/proveedor.service';
 import { PagoProveedorService, PagoProveedorDto } from '../../services/pago-proveedor.service';
 import { Proveedor } from '../../proveedor/proveedor.interface'; // Asegúrate de tener esta interfaz
 import { Observable, of } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, finalize } from 'rxjs/operators';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
@@ -33,6 +34,8 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './cuentas-por-pagar.component.html',
 })
 export class CuentasPorPagarComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+  isSaving = false;
   // Buscador
   filtroControl = new FormControl<string>('');
 
@@ -56,7 +59,7 @@ export class CuentasPorPagarComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarDeudas();
-    this.filtroControl.valueChanges.subscribe(val => {
+    this.filtroControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(val => {
       this.aplicarFiltro(val || '');
     });
   }
@@ -81,12 +84,16 @@ export class CuentasPorPagarComponent implements OnInit {
   }
 
   seleccionarCompra(compra: any) {
+    if (this.isSaving) return;
     this.compraSeleccionada = compra;
     this.montoPagar = Number(compra.saldo_pendiente); // Sugerir liquidar
   }
 
   registrarPago() {
-    if (!this.compraSeleccionada || this.montoPagar <= 0) return;
+    if (this.isSaving || !this.compraSeleccionada || !Number.isFinite(Number(this.montoPagar)) || this.montoPagar <= 0) return;
+    if (this.montoPagar > Number(this.compraSeleccionada.saldo_pendiente)) {
+      this.snackBar.open('El pago no puede superar el saldo pendiente.', 'Cerrar'); return;
+    }
 
     const dto: PagoProveedorDto = {
       idCompra: this.compraSeleccionada.id_compra,
@@ -95,11 +102,13 @@ export class CuentasPorPagarComponent implements OnInit {
       referencia: this.referencia || ''
     };
 
-    this.pagoService.registrar(dto).subscribe({
+    this.isSaving = true;
+    this.pagoService.registrar(dto).pipe(finalize(() => this.isSaving = false)).subscribe({
       next: () => {
         this.snackBar.open('Pago a proveedor registrado exitosamente', 'Cerrar', { duration: 3000 });
         this.compraSeleccionada = null;
         this.montoPagar = 0;
+        this.referencia = '';
         this.cargarDeudas(); // Refrescar lista
       },
       error: (e) => {

@@ -49,7 +49,7 @@ export interface ConceptoForm {
     <h2 mat-dialog-title class="font-bold flex items-center gap-2 text-blue-600 dark:text-white">
       <mat-icon>handshake</mat-icon> Conversión de Cotización C-{{ data.folio }}
     </h2>
-    <mat-dialog-content class="!pb-6 !pt-4 min-w-[1000px]">
+    <mat-dialog-content class="!pb-6 !pt-4">
       
       @if (isLoading()) {
         <div class="p-8 text-center text-gray-500">Cargando partidas...</div>
@@ -214,7 +214,7 @@ export class ConvertirDialogComponent implements OnInit {
     if (rechazados.some(c => !c.motivoRechazo || c.motivoRechazo.trim() === '')) return false;
 
     // Todos los aceptados deben tener precioFinal valido (>=0)
-    if (aceptados.some(c => c.precioFinal === null || c.precioFinal === undefined || c.precioFinal < 0)) return false;
+    if (aceptados.some(c => !Number.isFinite(c.precioFinal) || c.precioFinal < 0)) return false;
 
     return true;
   }

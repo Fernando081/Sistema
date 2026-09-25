@@ -2,7 +2,7 @@
 
 <div class="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50">
   <h1 mat-dialog-title class="!m-0">{{ isEditMode ? 'Editar Categoría' : 'Nueva Categoría' }}</h1>
-  <button mat-icon-button type="button" (click)="cerrar()">
+  <button mat-icon-button type="button" (click)="cerrar()" aria-label="Cerrar formulario de categoría">
     <mat-icon>close</mat-icon>
   </button>
 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatosTicketFactura } from './ticket.types';
-
-const PdfPrinter = require('pdfmake');
+import PdfPrinter from 'pdfmake';
+import { TDocumentDefinitions } from 'pdfmake/interfaces';
 
 function numeroALetras(amount: number, moneda: string): string {
   const unidades = [
@@ -153,12 +153,14 @@ export class TicketService {
       },
     };
 
-    const docDefinition: any = {
+    const docDefinition = {
       pageSize: 'LETTER',
       // MARGEN INFERIOR GRANDE (380): Reserva espacio para el footer
       pageMargins: [20, 20, 20, 380],
 
       content: [
+        { text: 'BORRADOR DE PRUEBA — SIN TIMBRAR Y SIN VALIDEZ FISCAL',
+          bold: true, color: '#b91c1c', alignment: 'center', fontSize: 9, margin: [0, 0, 0, 8] },
         // ==========================================
         // 1. ENCABEZADO
         // ==========================================
@@ -416,7 +418,7 @@ export class TicketService {
                 { text: 'IMPORTE', style: 'tableHeader', alignment: 'right' },
               ],
               // Filas dinámicas
-              ...datos.conceptos.map((p: any, i: number) => [
+              ...datos.conceptos.map((p, i) => [
                 { text: i + 1, fontSize: 7, alignment: 'center' },
                 { text: p.cantidad, fontSize: 7, alignment: 'center' },
                 { text: p.clave_unidad, fontSize: 7, alignment: 'center' },
@@ -438,8 +440,8 @@ export class TicketService {
             ],
           },
           layout: {
-            hLineWidth: (i: number, node: any) =>
-              i === 0 || i === 1 || i === node.table.body.length ? 1.5 : 0.5,
+            hLineWidth: (i: number) =>
+              i === 0 || i === 1 || i === datos.conceptos.length + 1 ? 1.5 : 0.5,
             vLineWidth: () => 0,
             hLineColor: () => 'black',
           },
@@ -450,7 +452,7 @@ export class TicketService {
       // ==========================================
       // 4. FOOTER (ORDEN: TOTALES -> BANCO -> PAGARÉ)
       // ==========================================
-      footer: (currentPage, pageCount) => {
+      footer: (currentPage: number, pageCount: number) => {
         if (currentPage === pageCount) {
           return {
             // AJUSTE POSICIÓN: MarginTop 20 empuja el contenido hacia abajo dentro del área reservada
@@ -529,7 +531,7 @@ export class TicketService {
                           { text: '0.00', fontSize: 8, alignment: 'right' },
                         ],
                         [
-                          { text: 'IVA 16%', fontSize: 8 },
+                          { text: 'IVA trasladado', fontSize: 8 },
                           {
                             text: Number(datos.iva).toFixed(2),
                             fontSize: 8,
@@ -695,7 +697,7 @@ export class TicketService {
               },
 
               {
-                text: 'ESTE DOCUMENTO ES UNA REPRESENTACIÓN IMPRESA DE UN CFDI 4.0',
+                text: 'DOCUMENTO DE PRUEBA SIN TIMBRAR Y SIN VALIDEZ FISCAL',
                 fontSize: 6,
                 bold: true,
                 alignment: 'center',
@@ -729,13 +731,13 @@ export class TicketService {
     };
 
     const printer = new PdfPrinter(fonts);
-    const doc = printer.createPdfKitDocument(docDefinition);
+    const doc = printer.createPdfKitDocument(docDefinition as unknown as TDocumentDefinitions);
 
     return new Promise((resolve, reject) => {
-      const chunks: any[] = [];
-      doc.on('data', (chunk: any) => chunks.push(chunk));
+      const chunks: Buffer[] = [];
+      doc.on('data', (chunk: Buffer) => chunks.push(chunk));
       doc.on('end', () => resolve(Buffer.concat(chunks)));
-      doc.on('error', (err: any) => reject(err));
+      doc.on('error', (err: Error) => reject(err));
       doc.end();
     });
   }

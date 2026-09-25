@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { AuthService } from './auth.service';
 
-export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
+export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -13,12 +13,10 @@ export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
       if (decoded && expectedRoles.includes(decoded.role || '')) {
         return true;
       }
-      router.navigate(['/venta']);
-      return false;
+      return router.createUrlTree(['/venta']);
     }
     return true;
   }
 
-  router.navigate(['/login']);
-  return false;
+  return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
 };

@@ -10,7 +10,7 @@ export class ReportesService {
 
   async getUtilidadProductos(): Promise<UtilidadProductoResponse[]> {
     const rawResult: UtilidadProductoRaw[] = await this.dataSource.query(
-      'SELECT * FROM fn_get_utilidad_productos()'
+      'SELECT * FROM fn_get_margen_productos()'
     );
 
     return rawResult.map((row) => ({
@@ -19,9 +19,10 @@ export class ReportesService {
       descripcion: row.descripcion,
       cantidadVendida: parseFloat(row.cantidad_vendida) || 0,
       ingresosTotales: parseFloat(row.ingresos_totales) || 0,
-      costoTotal: parseFloat(row.costo_total) || 0,
-      utilidadNeta: parseFloat(row.utilidad_neta) || 0,
-      margenPorcentaje: parseFloat(row.margen_porcentaje) || 0,
+      costoTotal: row.costo_total === null ? null : Number(row.costo_total),
+      utilidadBruta: row.utilidad_bruta === null ? null : Number(row.utilidad_bruta),
+      margenPorcentaje: row.margen_porcentaje === null ? null : Number(row.margen_porcentaje),
+      costoConocido: row.costo_conocido,
     }));
   }
 }

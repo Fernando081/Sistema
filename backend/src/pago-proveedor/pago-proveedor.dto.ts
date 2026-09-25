@@ -5,14 +5,16 @@ import {
   IsOptional,
   IsNotEmpty,
   Min,
+  IsInt,
 } from 'class-validator';
 
 export class RegistrarPagoProveedorDto {
-  @IsNumber()
+  @IsInt()
+  @Min(1)
   @IsNotEmpty()
   idCompra: number;
 
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0.01)
   monto: number;
 

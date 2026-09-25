@@ -1,0 +1,36 @@
+<div class="toolbar"><div><h1>Caja y cierre de turno</h1><p class="muted">Control de efectivo de la caja general, entradas, salidas y diferencias de conteo.</p></div><button mat-stroked-button (click)="cargar()" [disabled]="loading() || saving()">Actualizar</button></div>
+@if (loading()) {<p role="status">Actualizando caja…</p>}
+@if (resumen(); as r) {
+  <div class="grid">
+    <mat-card><span class="muted">Saldo registrado en efectivo</span><p class="amount">{{r.saldo.caja_chica | currency:'MXN'}}</p></mat-card>
+    <mat-card><span class="muted">Entradas del turno</span><p class="amount positive">{{r.totales.entradas | currency:'MXN'}}</p></mat-card>
+    <mat-card><span class="muted">Salidas del turno</span><p class="amount negative">{{r.totales.salidas | currency:'MXN'}}</p></mat-card>
+    <mat-card><span class="muted">Efectivo esperado al contar</span><p class="amount">{{(r.turno?.esperado_actual ?? 0) | currency:'MXN'}}</p></mat-card>
+  </div>
+  <mat-card>
+    <h2>{{r.turno ? 'Cerrar turno #' + r.turno.id_turno : 'Abrir caja'}}</h2>
+    @if(r.turno){<p>Abierto por {{r.turno.responsable}} el {{r.turno.apertura | date:'dd/MM/yyyy HH:mm'}} con {{r.turno.contado_apertura | currency:'MXN'}} contados.</p>
+      @if(diferenciaApertura(r) !== 0){<p class="warning">El conteo inicial difiere del saldo registrado en {{diferenciaApertura(r) | currency:'MXN'}}. Esta diferencia queda documentada para conciliación.</p>}
+    } @else {<p>Cuenta el efectivo físico antes de empezar. Solo puede existir un turno abierto.</p>}
+    <form #conteoForm="ngForm" (ngSubmit)="guardar()">
+      <mat-form-field><mat-label>Efectivo contado (MXN)</mat-label><input matInput name="contado" type="number" min="0" max="999999999" step="0.01" required [(ngModel)]="contado"></mat-form-field>
+      <mat-form-field class="notes"><mat-label>Observaciones del conteo</mat-label><textarea matInput name="notas" maxlength="1000" [(ngModel)]="notas" rows="2"></textarea></mat-form-field>
+      <button mat-flat-button type="submit" [disabled]="conteoForm.invalid || saving() || loading()">{{saving() ? 'Guardando…' : r.turno ? 'Cerrar turno y guardar conteo' : 'Abrir caja'}}</button>
+    </form>
+    <p class="muted">El cierre conserva el esperado, el contado y la diferencia. Las diferencias requieren conciliación; el conteo no modifica el saldo contable.</p>
+  </mat-card>
+  <h2>Historial de turnos</h2>
+  <div class="table-wrap"><table><thead><tr><th>Turno</th><th>Apertura</th><th>Responsable</th><th>Estado</th><th>Esperado</th><th>Contado</th><th>Diferencia</th><th></th></tr></thead><tbody>
+    @for(t of r.historial;track t.id_turno){<tr><td>#{{t.id_turno}}</td><td>{{t.apertura | date:'dd/MM/yyyy HH:mm'}}</td><td>{{t.responsable}}</td><td>{{t.estado}}</td><td>{{t.esperado_cierre == null ? '—' : (t.esperado_cierre | currency:'MXN')}}</td><td>{{t.contado_cierre == null ? '—' : (t.contado_cierre | currency:'MXN')}}</td><td>{{t.diferencia == null ? '—' : (t.diferencia | currency:'MXN')}}</td><td><button mat-button (click)="ver(t)">Movimientos</button></td></tr>}
+    @empty{<tr><td colspan="8">Todavía no hay turnos registrados.</td></tr>}
+  </tbody></table></div>
+  @if(selected();as turno){
+    <h2>Movimientos del turno #{{turno.id_turno}}</h2>
+    @if(turno.notas_cierre){<p>Observaciones del cierre: {{turno.notas_cierre}}</p>}
+    <div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Origen</th><th>Efectivo</th><th>Banco</th><th>Saldo efectivo</th><th>Usuario</th></tr></thead><tbody>
+      @for(m of movimientos();track m.id_movimiento){<tr><td>{{m.fecha | date:'dd/MM/yyyy HH:mm:ss'}}</td><td>{{m.origen}}</td><td>{{m.efectivo | currency:'MXN'}}</td><td>{{m.banco | currency:'MXN'}}</td><td>{{m.saldo_efectivo | currency:'MXN'}}</td><td>{{m.usuario || 'Sistema'}}</td></tr>}
+      @empty{<tr><td colspan="6">No hay movimientos registrados para este turno.</td></tr>}
+    </tbody></table></div>
+    <mat-paginator aria-label="Página de movimientos de caja" [length]="total()" [pageSize]="50" [pageIndex]="pageIndex" (page)="paginar($event)" />
+  }
+}

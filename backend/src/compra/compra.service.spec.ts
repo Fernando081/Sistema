@@ -8,7 +8,10 @@ describe('CompraService', () => {
       commitTransaction: jest.fn(),
       rollbackTransaction: jest.fn(),
       release: jest.fn(),
-      query: jest.fn().mockResolvedValue([{ id_compra: 99 }]),
+      query: jest.fn().mockImplementation((sql: string) => {
+        if (sql.includes('FROM producto')) return Promise.resolve([{ IdProducto: 5 }]);
+        return Promise.resolve([{ id_compra: 99 }]);
+      }),
     };
 
     const dataSourceMock = {
@@ -22,7 +25,14 @@ describe('CompraService', () => {
       esCredito: false,
       total: 100,
       observaciones: '',
-      conceptos: [],
+      conceptos: [{
+        idProducto: 5,
+        codigo: 'ABC',
+        descripcion: 'Filtro',
+        cantidad: 2,
+        costoUnitario: 50,
+        importe: 100,
+      }],
     });
 
     expect(result.idCompra).toBe(99);

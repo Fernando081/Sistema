@@ -10,8 +10,10 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
+import { Roles } from '../auth/roles.decorator';
+import { RolUsuario } from '../common/enums/app.enums';
 import { ClienteService } from './cliente.service';
-import { CreateClienteDto, UpdateClienteDto } from './cliente.dto'; // Importamos los DTOs
+import { CreateClienteContactoDto, CreateClienteDto, UpdateClienteDto } from './cliente.dto'; // Importamos los DTOs
 
 @Controller('cliente') // Mantenemos el singular, como querías
 export class ClienteController {
@@ -33,6 +35,21 @@ export class ClienteController {
     return this.clienteService.findOne(id);
   }
 
+  @Get(':id/360')
+  find360(@Param('id', ParseIntPipe) id: number) {
+    return this.clienteService.find360(id);
+  }
+
+  @Post(':id/contactos')
+  addContacto(@Param('id', ParseIntPipe) id: number, @Body() dto: CreateClienteContactoDto) {
+    return this.clienteService.addContacto(id, dto);
+  }
+
+  @Delete(':id/contactos/:idContacto')
+  deleteContacto(@Param('id', ParseIntPipe) id: number, @Param('idContacto', ParseIntPipe) idContacto: number) {
+    return this.clienteService.deleteContacto(id, idContacto);
+  }
+
   // ¡CAMBIO! El parámetro ahora es 'id' (numérico)
   @Put(':id')
   update(
@@ -44,6 +61,7 @@ export class ClienteController {
 
   // ¡CAMBIO! El parámetro ahora es 'id' (numérico)
   @Delete(':id')
+  @Roles(RolUsuario.ADMIN)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.clienteService.remove(id);
   }

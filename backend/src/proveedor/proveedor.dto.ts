@@ -8,17 +8,27 @@ import {
   IsInt,
   MinLength,
   IsPostalCode,
+  Min,
 } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
+import { Transform, TransformFnParams } from 'class-transformer';
 
 // DTO para Crear un Proveedor (Validación)
 export class CreateProveedorDto {
+  @Transform((params: TransformFnParams) => {
+    const value = params.value as unknown;
+    return typeof value === 'string' ? value.trim().toUpperCase() : value;
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(12)
   @MaxLength(13)
   rfc: string;
 
+  @Transform((params: TransformFnParams) => {
+    const value = params.value as unknown;
+    return typeof value === 'string' ? value.trim() : value;
+  })
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
@@ -30,10 +40,12 @@ export class CreateProveedorDto {
   pais: string;
 
   @IsInt()
+  @Min(1)
   @IsOptional()
   idEstado: number;
 
   @IsInt()
+  @Min(1)
   @IsOptional()
   idMunicipio: number;
 
@@ -74,21 +86,25 @@ export class CreateProveedorDto {
   referencia: string;
 
   @IsInt()
+  @Min(1)
   @IsOptional()
   idMetodoDePago: number;
 
   @IsInt()
+  @Min(1)
   @IsOptional()
   idUsoCFDI: number;
 
   @IsInt()
+  @Min(1)
   @IsOptional()
   idFormaPago: number;
 
   @IsInt()
+  @Min(1)
   @IsNotEmpty()
   idRegimenFiscal: number;
 }
 
 // DTO para Actualizar (la mayoría de campos son opcionales)
-export class UpdateProveedorDto extends PartialType(CreateProveedorDto) {}
+export class UpdateProveedorDto extends PartialType(CreateProveedorDto, { skipNullProperties: false }) {}

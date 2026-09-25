@@ -10,5 +10,6 @@ import { AuthModule } from '../auth/auth.module';
   imports: [AuthModule],
   providers: [VentaService, TicketService],
   controllers: [VentaController, FacturaController],
+  exports: [VentaService],
 })
 export class VentaModule {}

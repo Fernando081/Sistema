@@ -10,6 +10,79 @@ export interface Gasto {
   idCompra?: number;
 }
 
+export interface CuentaContable {
+  idCuenta: number;
+  codigo: string;
+  nombre: string;
+  tipo: 'Activo' | 'Pasivo' | 'Capital' | 'Ingreso' | 'Gasto';
+  naturaleza: 'D' | 'A';
+  aceptaMovimientos: boolean;
+  activa: boolean;
+}
+
+export interface PolizaPartida {
+  idDetalle?: number;
+  idCuenta: number;
+  idCentroCosto?: number;
+  codigo?: string;
+  cuenta?: string;
+  concepto?: string;
+  referencia?: string;
+  debe: number;
+  haber: number;
+}
+
+export interface PolizaContable {
+  idPoliza: number;
+  folio: number;
+  fecha: string;
+  tipo: 'Diario' | 'Ingreso' | 'Egreso';
+  concepto: string;
+  estado: 'Borrador' | 'Contabilizada' | 'Cancelada';
+  origenTipo?: string;
+  origenId?: number;
+  automatica: boolean;
+  usuario?: string;
+  debe: number;
+  haber: number;
+  partidas: PolizaPartida[];
+}
+
+export interface BalanzaCuenta extends CuentaContable {
+  saldoInicial: number;
+  debe: number;
+  haber: number;
+  saldoFinal: number;
+}
+
+export interface EstadoResultados {
+  fechaInicio: string;
+  fechaFin: string;
+  ingresos: number;
+  gastos: number;
+  utilidadNeta: number;
+  detalle: Array<{ tipo: string; codigo: string; nombre: string; saldo: number }>;
+}
+
+export interface BalanceGeneral {
+  fecha: string;
+  activos: number;
+  pasivos: number;
+  capitalBase: number;
+  resultadoAcumulado: number;
+  capital: number;
+  diferencia: number;
+  detalle: Array<{ tipo: string; codigo: string; nombre: string; saldo: number }>;
+}
+
+export interface CuentaTesoreria { idCuenta: number; nombre: string; banco: string; moneda: string; ultimosCuatro?: string; saldoInicial: number; saldo: number; activa: boolean; pendientes: number; }
+export interface MovimientoTesoreria { idMovimiento: number; idCuenta: number; cuenta: string; banco: string; fecha: string; descripcion: string; referencia?: string; monto: number; estado: 'Pendiente' | 'Conciliado'; idCajaMovimiento?: number; conciliadoAt?: string; }
+export interface CandidatoConciliacion { idCajaMovimiento: number; fecha: string; monto: number; saldoBanco: number; origen: string; usuario?: string; diferencia: number; }
+export interface PeriodoContable { idPeriodo: number; anio: number; mes: number; fechaInicio: string; fechaFin: string; estado: 'Abierto'|'Cerrado'; cerradoAt?: string; cerradoPor?: string; polizas: number; }
+export interface CentroCosto { idCentroCosto: number; codigo: string; nombre: string; activo: boolean; }
+export interface PresupuestoContable { idPresupuesto: number; anio: number; mes: number; idCuenta: number; codigo: string; cuenta: string; idCentroCosto?: number; centro?: string; monto: number; real: number; variacion: number; notas?: string; }
+export interface FlujoEfectivo { fechaInicio: string; fechaFin: string; saldoInicial: number; ingresos: number; egresos: number; flujoNeto: number; saldoFinal: number; detalle: Array<{origen:string;ingresos:number;egresos:number;neto:number}>; }
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,5 +100,66 @@ export class FinanzasService {
 
   getSaldos() {
     return this.http.get<any[]>(`${this.apiUrl}/saldos`);
+  }
+
+  getCortePdf() {
+    return this.http.get(`${this.apiUrl}/corte-pdf`, { responseType: 'blob' });
+  }
+
+  getCuentasContables() {
+    return this.http.get<CuentaContable[]>(`${this.apiUrl}/contabilidad/cuentas`);
+  }
+
+  getPolizas(fechaInicio: string, fechaFin: string, page = 1, limit = 50) {
+    return this.http.get<{ data: PolizaContable[]; total: number; page: number; totalPages: number }>(
+      `${this.apiUrl}/contabilidad/polizas`, { params: { fechaInicio, fechaFin, page, limit } },
+    );
+  }
+
+  crearPoliza(payload: { fecha: string; tipo: string; concepto: string; partidas: PolizaPartida[] }) {
+    return this.http.post<{ message: string; idPoliza: number }>(`${this.apiUrl}/contabilidad/polizas`, payload);
+  }
+
+  contabilizarPoliza(idPoliza: number) {
+    return this.http.post(`${this.apiUrl}/contabilidad/polizas/${idPoliza}/contabilizar`, {});
+  }
+
+  getBalanza(fechaInicio: string, fechaFin: string) {
+    return this.http.get<BalanzaCuenta[]>(`${this.apiUrl}/contabilidad/balanza`, { params: { fechaInicio, fechaFin } });
+  }
+
+  getEstadoResultados(fechaInicio: string, fechaFin: string) {
+    return this.http.get<EstadoResultados>(`${this.apiUrl}/contabilidad/estado-resultados`, { params: { fechaInicio, fechaFin } });
+  }
+
+  getBalanceGeneral(fecha: string) {
+    return this.http.get<BalanceGeneral>(`${this.apiUrl}/contabilidad/balance-general`, { params: { fecha } });
+  }
+
+  getCuentasTesoreria() { return this.http.get<CuentaTesoreria[]>(`${this.apiUrl}/tesoreria/cuentas`); }
+  crearCuentaTesoreria(payload: { nombre: string; banco: string; moneda: string; ultimosCuatro?: string; saldoInicial: number }) {
+    return this.http.post(`${this.apiUrl}/tesoreria/cuentas`, payload);
+  }
+  getMovimientosTesoreria() { return this.http.get<MovimientoTesoreria[]>(`${this.apiUrl}/tesoreria/movimientos`); }
+  crearMovimientoTesoreria(payload: { idCuenta: number; fecha: string; descripcion: string; referencia?: string; monto: number }) {
+    return this.http.post(`${this.apiUrl}/tesoreria/movimientos`, payload);
+  }
+  getCandidatosConciliacion(idMovimiento: number) {
+    return this.http.get<CandidatoConciliacion[]>(`${this.apiUrl}/tesoreria/movimientos/${idMovimiento}/candidatos`);
+  }
+  conciliarMovimiento(idMovimiento: number, idCajaMovimiento: number) {
+    return this.http.post(`${this.apiUrl}/tesoreria/movimientos/${idMovimiento}/conciliar`, { idCajaMovimiento });
+  }
+  getPeriodos() { return this.http.get<PeriodoContable[]>(`${this.apiUrl}/contabilidad/periodos`); }
+  crearPeriodo(anio:number,mes:number) { return this.http.post(`${this.apiUrl}/contabilidad/periodos`,{anio,mes}); }
+  cerrarPeriodo(idPeriodo:number) { return this.http.post(`${this.apiUrl}/contabilidad/periodos/${idPeriodo}/cerrar`,{}); }
+  getCentrosCosto() { return this.http.get<CentroCosto[]>(`${this.apiUrl}/contabilidad/centros-costo`); }
+  getPresupuestos(anio:number,mes:number) { return this.http.get<PresupuestoContable[]>(`${this.apiUrl}/contabilidad/presupuestos`,{params:{anio,mes}}); }
+  guardarPresupuesto(payload:{anio:number;mes:number;idCuenta:number;idCentroCosto?:number;monto:number;notas?:string}) {
+    return this.http.post(`${this.apiUrl}/contabilidad/presupuestos`,payload);
+  }
+  getFlujoEfectivo(fechaInicio:string,fechaFin:string) { return this.http.get<FlujoEfectivo>(`${this.apiUrl}/contabilidad/flujo-efectivo`,{params:{fechaInicio,fechaFin}}); }
+  exportarContabilidad(reporte:'balanza'|'resultados'|'balance'|'flujo',fechaInicio:string,fechaFin:string) {
+    return this.http.get(`${this.apiUrl}/contabilidad/exportar`,{params:{reporte,fechaInicio,fechaFin,page:1,limit:100},responseType:'blob'});
   }
 }

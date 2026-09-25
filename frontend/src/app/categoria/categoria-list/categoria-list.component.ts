@@ -18,6 +18,7 @@ import { Categoria } from '../categoria.interface';
 import { CategoriaDialogComponent } from '../categoria-dialog/categoria-dialog.component';
 import { finalize } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ConfirmService } from '../../shared/confirm.service';
 
 @Component({
   selector: 'app-categoria-list', // Este es el selector que usaremos
@@ -43,7 +44,8 @@ export class CategoriaListComponent implements OnInit {
   constructor(
     private categoriaService: CategoriaService,
     public dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private confirm: ConfirmService,
   ) {}
 
   ngOnInit(): void {
@@ -89,7 +91,8 @@ export class CategoriaListComponent implements OnInit {
   }
 
   eliminarCategoria(idCategoria: number): void {
-    if (confirm('¿Estás seguro de que deseas eliminar esta categoría?')) {
+    this.confirm.ask({ title: 'Eliminar categoría', message: 'La categoría se eliminará si no tiene información relacionada.', confirmLabel: 'Eliminar categoría' }).subscribe(confirmed => {
+      if (!confirmed) return;
       this.categoriaService.deleteCategoria(idCategoria).subscribe({
         next: () => {
           this.mostrarNotificacion('Categoría eliminada con éxito');
@@ -99,7 +102,7 @@ export class CategoriaListComponent implements OnInit {
           this.mostrarNotificacion('Error al eliminar categoría: ' + (err.error?.message || err.message));
         }
       });
-    }
+    });
   }
 
   mostrarNotificacion(mensaje: string) {

@@ -1,5 +1,7 @@
 // frontend/src/app/compra/compra.component.ts
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { roundMoney } from '../shared/document-download';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -20,6 +22,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'; // <--- IMPORTAR
+import { MatSelectModule } from '@angular/material/select';
 
 // Servicios e Interfaces
 import { CompraService } from '../services/compra.service';
@@ -30,7 +33,7 @@ import { Producto } from '../producto/producto.interface';
 import { DetalleCompra, CreateCompra } from './compra.interface';
 
 import { Observable, of } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, map, startWith, finalize, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-compra',
@@ -48,6 +51,7 @@ import { map, startWith, finalize } from 'rxjs/operators';
     MatAutocompleteModule,
     MatSnackBarModule,
     MatSlideToggleModule, // <--- AGREGAR
+    MatSelectModule,
   ],
   templateUrl: './compra.component.html',
 })
@@ -58,14 +62,17 @@ export class CompraComponent implements OnInit {
 
   // Totales derivados reactivamente via computed() — sin recalcularTotales manual
   subtotalGeneral = computed(() =>
-    this.carrito().reduce((acc, item) => acc + (item.cantidad * item.costoUnitario), 0)
+    roundMoney(this.carrito().reduce((acc, item) => acc + roundMoney(item.cantidad * item.costoUnitario), 0))
   );
   totalGeneral = this.subtotalGeneral; // Alias (las compras no tienen IVA separado por ahora)
 
   isSaving = signal(false);
+  private pendingRequestId: string | null = null;
+  private readonly destroyRef = inject(DestroyRef);
 
   // Variable para crédito
   esCredito: boolean = false;
+  formaPago = 'Efectivo';
 
   // --- FORMULARIOS ---
   proveedorControl = new FormControl<string | Proveedor>('');
@@ -91,6 +98,9 @@ export class CompraComponent implements OnInit {
   ngOnInit(): void {
     this.cargarCatalogos();
     this.configurarAutocompletes();
+    this.proveedorControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
+      if (typeof value === 'string' || !value) this.proveedorSeleccionado = null;
+    });
   }
 
   cargarCatalogos() {
@@ -100,16 +110,9 @@ export class CompraComponent implements OnInit {
         rfc: p['RFC'],
         razonSocial: p['RazonSocial'],
       })) as unknown as Proveedor[];
+      this.proveedorControl.updateValueAndValidity({ emitEvent: true });
     });
 
-    this.productoService.getProductos(1, 1000).subscribe((response: any) => {
-      this.listaProductos = response.data.map((p: any) => ({
-        idProducto: p['IdProducto'],
-        codigo: p['Codigo'],
-        descripcion: p['Descripcion'],
-        existencia: Number(p['Existencia']),
-      })) as unknown as Producto[];
-    });
   }
 
   configurarAutocompletes() {
@@ -123,10 +126,13 @@ export class CompraComponent implements OnInit {
 
     this.productosFiltrados$ = this.productoControl.valueChanges.pipe(
       startWith(''),
-      map((value) => {
-        const termino = typeof value === 'string' ? value : (value as Producto)?.descripcion || '';
-        return termino ? this._filtrarProductos(termino) : this.listaProductos.slice();
-      }),
+      debounceTime(250),
+      map((value) => typeof value === 'string' ? value.trim() : ''),
+      distinctUntilChanged(),
+      switchMap((termino) => this.productoService.buscarProductos(termino).pipe(
+        tap((productos) => this.listaProductos = productos),
+        catchError(() => of([])),
+      )),
     );
   }
 
@@ -139,6 +145,7 @@ export class CompraComponent implements OnInit {
 
     if (existente) {
       existente.cantidad++;
+      existente.importe = roundMoney(existente.cantidad * existente.costoUnitario);
       this.carrito.update((items) => [...items]); // Trigger signal refresh
     } else {
       const nuevo: DetalleCompra = {
@@ -156,10 +163,10 @@ export class CompraComponent implements OnInit {
   }
 
   alCambiarValor(item: DetalleCompra) {
-    if (item.cantidad < 1) item.cantidad = 1;
-    if (item.costoUnitario < 0) item.costoUnitario = 0;
+    if (!Number.isFinite(item.cantidad) || item.cantidad < 0.0001) item.cantidad = 1;
+    if (!Number.isFinite(item.costoUnitario) || item.costoUnitario < 0) item.costoUnitario = 0;
     // importe se calcula por el computed, pero también lo actualizamos para el payload
-    item.importe = item.cantidad * item.costoUnitario;
+    item.importe = roundMoney(item.cantidad * item.costoUnitario);
     this.carrito.update((items) => [...items]);
   }
 
@@ -177,16 +184,18 @@ export class CompraComponent implements OnInit {
       this.mostrarNotificacion('El carrito está vacío');
       return;
     }
-    const sinCosto = this.carrito().some((i) => i.costoUnitario <= 0);
+    const sinCosto = this.carrito().some((i) => !Number.isFinite(i.costoUnitario) || i.costoUnitario <= 0 || !Number.isFinite(i.cantidad) || i.cantidad <= 0);
     if (sinCosto) {
       this.mostrarNotificacion('⚠️ Hay productos con Costo $0.00.');
       return;
     }
 
     const compraPayload: CreateCompra = {
+      requestId: this.pendingRequestId || (this.pendingRequestId = crypto.randomUUID()),
       idProveedor: this.proveedorSeleccionado.idProveedor,
       folioFactura: this.folioFacturaControl.value || '',
       esCredito: this.esCredito, // <--- ENVIAMOS EL VALOR DEL TOGGLE
+      formaPago: this.esCredito ? undefined : this.formaPago,
       observaciones: this.observacionesControl.value || '',
       total: Number(this.totalGeneral()),
       conceptos: this.carrito().map((item) => ({
@@ -195,7 +204,7 @@ export class CompraComponent implements OnInit {
         codigo: item.codigo || '',
         cantidad: Number(item.cantidad),
         costoUnitario: Number(item.costoUnitario),
-        importe: Number(item.importe),
+        importe: roundMoney(item.cantidad * item.costoUnitario),
       })),
     };
 
@@ -206,8 +215,8 @@ export class CompraComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.mostrarNotificacion('✅ Compra registrada correctamente.');
+          this.pendingRequestId = null;
           this.limpiarTodo();
-          this.ngOnInit();
         },
         error: (err) => {
           console.error(err);
@@ -224,6 +233,8 @@ export class CompraComponent implements OnInit {
     this.folioFacturaControl.setValue('');
     this.observacionesControl.setValue('');
     this.esCredito = false; // Resetear toggle
+    this.formaPago = 'Efectivo';
+    this.pendingRequestId = null;
   }
 
   mostrarNotificacion(msg: string) {

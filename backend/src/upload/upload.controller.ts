@@ -1,39 +1,45 @@
 import { Controller, Post, UseInterceptors, UploadedFiles, BadRequestException } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
+import { randomUUID } from 'node:crypto';
+import { mkdir, writeFile, unlink } from 'node:fs/promises';
+import { join } from 'node:path';
+import { Throttle } from '@nestjs/throttler';
+import { imageExtension } from './image-validation';
+import { UPLOAD_DIRECTORY } from './upload-path';
 
 @Controller('upload')
 export class UploadController {
-  
   @Post()
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @UseInterceptors(FilesInterceptor('images', 5, {
-    storage: diskStorage({
-      destination: './uploads',
-      filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const ext = extname(file.originalname);
-        cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-      }
-    }),
-    fileFilter: (req, file, cb) => {
-      // Validate image types
-      if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
-        return cb(new BadRequestException('Solo se permiten archivos de imagen'), false);
+    storage: memoryStorage(),
+    fileFilter: (_req, file, cb) => {
+      if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.mimetype)) {
+        return cb(new BadRequestException('Solo se permiten imágenes JPEG, PNG, GIF o WebP'), false);
       }
       cb(null, true);
     },
-    limits: {
-      fileSize: 5 * 1024 * 1024 // 5MB max
-    }
+    limits: { fileSize: 5 * 1024 * 1024, files: 5, fields: 0, parts: 5 },
   }))
-  uploadFiles(@UploadedFiles() files: Express.Multer.File[]) {
-    if (!files || files.length === 0) {
-      throw new BadRequestException('Archivos no proveídos');
+  async uploadFiles(@UploadedFiles() files: Express.Multer.File[]) {
+    if (!files?.length) throw new BadRequestException('Archivos no proveídos');
+    const extensions = files.map((file) => imageExtension(file.buffer, file.mimetype));
+    if (extensions.some((extension) => !extension)) {
+      throw new BadRequestException('Uno o más archivos no contienen una imagen válida');
     }
-    return {
-      message: 'Archivos subidos correctamente',
-      urls: files.map(file => `/uploads/${file.filename}`)
-    };
+    await mkdir(UPLOAD_DIRECTORY, { recursive: true });
+    const filenames: string[] = [];
+    try {
+      for (let index = 0; index < files.length; index++) {
+        const filename = `images-${randomUUID()}${extensions[index]}`;
+        await writeFile(join(UPLOAD_DIRECTORY, filename), files[index].buffer, { flag: 'wx' });
+        filenames.push(filename);
+      }
+    } catch (error) {
+      await Promise.allSettled(filenames.map((filename) => unlink(join(UPLOAD_DIRECTORY, filename))));
+      throw error;
+    }
+    return { message: 'Archivos subidos correctamente', urls: filenames.map((filename) => `/uploads/${filename}`) };
   }
 }

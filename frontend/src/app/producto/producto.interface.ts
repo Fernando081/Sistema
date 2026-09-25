@@ -35,6 +35,8 @@ export interface Producto {
   aplicaRetencionIsr: boolean;
   aplicaRetencionIva: boolean;
   existencia: number;
+  reservada?: number;
+  disponible?: number;
 
   equivalentesIds?: number[]; // Viene de la BD
   esEquivalente?: boolean;    // Lo usaremos en el frontend para colorear

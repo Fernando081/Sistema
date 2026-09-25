@@ -1,0 +1,104 @@
+<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-white focus:p-3">Saltar al contenido principal</a>
+<mat-sidenav-container class="h-screen w-screen bg-transparent">
+  <mat-sidenav #sidenav [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="!(isHandset$ | async)" class="wrap-sidenav">
+    <a class="brand" [routerLink]="user?.role === 'admin' ? '/dashboard' : '/venta'" aria-label="Ir al inicio">
+      <div class="brand-logo" aria-hidden="true">RTT</div>
+      <div class="brand-copy"><h2>Refacciones y Tractorepuestos</h2><span>Tampico</span></div>
+    </a>
+
+    <nav class="app-navigation" aria-label="Navegación principal">
+      @if (user?.role === 'admin') {
+        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-nav" class="wrap-nav-item primary-nav"><mat-icon matListItemIcon>space_dashboard</mat-icon><span matListItemTitle>Centro de operación</span></a>
+      }
+      <details class="nav-group" [attr.open]="groupOpen(['/venta','/pedidos','/facturas','/cotizacion','/comisiones','/comercial']) ? '' : null">
+        <summary><span><mat-icon>point_of_sale</mat-icon>Ventas</span><mat-icon class="chevron">expand_more</mat-icon></summary>
+        <div class="nav-group-links">
+          <a mat-list-item routerLink="/venta" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Nueva venta</span></a>
+          <a mat-list-item routerLink="/pedidos" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Pedidos y backorders</span></a>
+          @if (user?.role === 'admin') {<a mat-list-item routerLink="/comercial" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Precios y crédito</span></a>}
+          <a mat-list-item routerLink="/cotizacion/nueva" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Nueva cotización</span></a>
+          <a mat-list-item routerLink="/cotizacion/historial" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Cotizaciones</span></a>
+          <a mat-list-item routerLink="/facturas" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Facturas</span></a>
+          @if (user?.role === 'admin') {
+            <a mat-list-item routerLink="/facturas/global" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Factura global</span></a>
+            <a mat-list-item routerLink="/comisiones" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Comisiones</span></a>
+          }
+        </div>
+      </details>
+      <details class="nav-group" [attr.open]="groupOpen(['/producto','/compra','/operaciones','/abastecimiento','/almacen']) ? '' : null">
+        <summary><span><mat-icon>inventory_2</mat-icon>Inventario y compras</span><mat-icon class="chevron">expand_more</mat-icon></summary>
+        <div class="nav-group-links">
+          <a mat-list-item routerLink="/producto" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Productos</span></a>
+          <a mat-list-item routerLink="/almacen" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Almacén y ubicaciones</span></a>
+          <a mat-list-item routerLink="/operaciones/smart-restock" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Reabastecimiento</span></a>
+          <a mat-list-item routerLink="/abastecimiento" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Solicitudes y órdenes</span></a>
+          <a mat-list-item routerLink="/compra" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Nueva compra</span></a>
+          <a mat-list-item routerLink="/compra/historial" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Historial de compras</span></a>
+        </div>
+      </details>
+      <details class="nav-group" [attr.open]="groupOpen(['/crm','/cliente','/garantias','/proveedor']) ? '' : null">
+        <summary><span><mat-icon>groups</mat-icon>Clientes y CRM</span><mat-icon class="chevron">expand_more</mat-icon></summary>
+        <div class="nav-group-links">
+          <a mat-list-item routerLink="/crm" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>CRM y agenda</span></a>
+          <a mat-list-item routerLink="/cliente" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Clientes</span></a>
+          <a mat-list-item routerLink="/garantias" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Garantías</span></a>
+          <a mat-list-item routerLink="/proveedor" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Proveedores</span></a>
+        </div>
+      </details>
+      <details class="nav-group" [attr.open]="groupOpen(['/caja','/gastos','/contabilidad','/cobranza','/cuentas-por-pagar','/reportes']) ? '' : null">
+        <summary><span><mat-icon>account_balance_wallet</mat-icon>Finanzas y análisis</span><mat-icon class="chevron">expand_more</mat-icon></summary>
+        <div class="nav-group-links">
+          @if (user?.role === 'admin') {
+            <a mat-list-item routerLink="/caja" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Caja</span></a>
+            <a mat-list-item routerLink="/gastos" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Saldos y gastos</span></a>
+            <a mat-list-item routerLink="/contabilidad" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Contabilidad</span></a>
+            <a mat-list-item routerLink="/reportes/utilidad" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Utilidad</span></a>
+          }
+          <a mat-list-item routerLink="/cobranza" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Cobranza y REP</span></a>
+          <a mat-list-item routerLink="/cuentas-por-pagar" routerLinkActive="active-nav" class="wrap-nav-item"><span matListItemTitle>Cuentas por pagar</span></a>
+        </div>
+      </details>
+    </nav>
+    <div class="account-nav">
+      <a mat-list-item routerLink="/perfil" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>manage_accounts</mat-icon><span matListItemTitle>Mi cuenta</span></a>
+      @if (user?.role === 'admin') {<a mat-list-item routerLink="/usuarios" routerLinkActive="active-nav" class="wrap-nav-item"><mat-icon matListItemIcon>admin_panel_settings</mat-icon><span matListItemTitle>Usuarios</span></a>}
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="wrap-content-shell">
+    <mat-toolbar class="wrap-toolbar">
+      <button mat-icon-button (click)="sidenav.toggle()" aria-label="Abrir menú"><mat-icon>menu</mat-icon></button>
+      <form class="global-search" (ngSubmit)="submitSearch()" role="search">
+        <mat-icon aria-hidden="true">search</mat-icon>
+        <input #globalSearchInput type="search" [formControl]="searchControl" (focus)="searchOpen.set(searchControl.value.trim().length >= 2)" (blur)="closeSearchSoon()" placeholder="Buscar número de parte, aplicación, cliente, VIN o ESN" aria-label="Búsqueda global">
+        <span class="search-shortcut" aria-hidden="true">Ctrl K</span>
+        @if (searchOpen()) {
+          <div class="search-results" role="listbox" aria-label="Resultados de búsqueda">
+            @if (searching()) {<p class="search-status">Buscando…</p>}
+            @if (searchResults(); as result) {
+              @if (result.productos.length) {<h4>Productos</h4>@for (item of result.productos; track item.id) {<button type="button" (mousedown)="$event.preventDefault()" (click)="selectResult('producto', item)"><mat-icon>inventory_2</mat-icon><span><strong>{{ item.codigo }} · {{ item.titulo }}</strong><small>{{ item.subtitulo }} · Existencia {{ item.existencia }}</small></span></button>}}
+              @if (result.clientes.length) {<h4>Clientes</h4>@for (item of result.clientes; track item.id) {<button type="button" (mousedown)="$event.preventDefault()" (click)="selectResult('cliente', item)"><mat-icon>person</mat-icon><span><strong>{{ item.titulo }}</strong><small>{{ item.codigo }}</small></span></button>}}
+              @if (result.unidades.length) {<h4>Unidades</h4>@for (item of result.unidades; track item.id) {<button type="button" (mousedown)="$event.preventDefault()" (click)="selectResult('unidad', item)"><mat-icon>local_shipping</mat-icon><span><strong>{{ item.titulo }}</strong><small>{{ item.codigo }} · {{ item.cliente }}</small></span></button>}}
+              @if (!searching() && !result.productos.length && !result.clientes.length && !result.unidades.length) {<div class="erp-empty-state compact"><mat-icon>search_off</mat-icon><strong>Sin coincidencias</strong><span>Prueba con otro número, nombre o aplicación.</span></div>}
+            }
+          </div>
+        }
+      </form>
+      <a mat-flat-button routerLink="/venta" class="quick-sale"><mat-icon>add</mat-icon>Nueva venta</a>
+      <div class="notification-center">
+        <button mat-icon-button type="button" (click)="toggleNotifications()" aria-label="Abrir notificaciones"><mat-icon>notifications</mat-icon>@if(unreadNotifications()){<span class="notification-count">{{unreadNotifications()>99?'99+':unreadNotifications()}}</span>}</button>
+        @if(notificationsOpen()){
+          <section class="notification-panel" aria-label="Notificaciones"><header><strong>Notificaciones</strong>@if(unreadNotifications()){<button type="button" (click)="readAllNotifications()">Marcar leídas</button>}</header>
+            @for(item of notifications();track item.idNotification){<button type="button" class="notification-item" [class.unread]="!item.readAt" [class.critical]="item.severity==='critical'" (click)="openNotification(item)"><mat-icon>{{item.severity==='critical'?'error':'notifications_active'}}</mat-icon><span><strong>{{item.title}}</strong><small>{{item.message}}</small></span></button>}
+            @empty{<div class="notification-empty"><mat-icon>notifications_none</mat-icon><span>Sin alertas pendientes</span></div>}
+          </section>}
+      </div>
+      <button mat-icon-button (click)="themeService.toggleTheme()" aria-label="Cambiar tema"><mat-icon>{{ themeService.isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon></button>
+      <button mat-button class="user-menu" (click)="logout()" aria-label="Cerrar sesión"><span>{{ user?.sub || 'Usuario' }}</span><mat-icon>logout</mat-icon></button>
+    </mat-toolbar>
+    <main class="app-content" id="main-content" tabindex="-1">
+      <header class="page-head"><div><p>Refacciones y Tractorepuestos · Tampico</p><h1>{{ currentPage().title }}</h1><span>{{ currentPage().description }}</span></div></header>
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -12,9 +12,12 @@ export class AuthUser {
   @Column({ name: 'password_hash' })
   passwordHash!: string;
 
-  @Column({ name: 'role', default: RolUsuario.ADMIN })
-  role!: string;
+  @Column({ name: 'role', default: RolUsuario.USER })
+  role!: RolUsuario;
 
   @Column({ name: 'is_active', default: true })
   isActive!: boolean;
+
+  @Column({ name: 'token_version', default: 0 })
+  tokenVersion!: number;
 }

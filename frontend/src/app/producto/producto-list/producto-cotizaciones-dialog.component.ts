@@ -114,7 +114,7 @@ export class ProductoCotizacionesDialogComponent implements OnInit {
   }
 
   guardarCotizacion() {
-    if (!this.nuevaCotizacion.idProveedor || this.nuevaCotizacion.precioCotizado === null) return;
+    if (this.isSaving() || !this.nuevaCotizacion.idProveedor || this.nuevaCotizacion.precioCotizado === null || Number(this.nuevaCotizacion.precioCotizado) < 0 || this.nuevaCotizacion.diasEntrega < 0) return;
     
     this.isSaving.set(true);
 

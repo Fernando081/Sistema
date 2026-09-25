@@ -1,8 +1,10 @@
 // backend/src/pago/pago.controller.ts
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res, ParseIntPipe } from '@nestjs/common';
 import type { Response } from 'express';
 import { PagoService } from './pago.service';
 import { RegistrarPagoDto, RegistrarRepDto } from './pago.dto';
+import { Roles } from '../auth/roles.decorator';
+import { RolUsuario } from '../common/enums/app.enums';
 
 @Controller('pago')
 export class PagoController {
@@ -14,7 +16,7 @@ export class PagoController {
   }
 
   @Get('factura/:id')
-  getPagos(@Param('id') id: number) {
+  getPagos(@Param('id', ParseIntPipe) id: number) {
     return this.pagoService.getPagosPorFactura(id);
   }
 
@@ -24,12 +26,12 @@ export class PagoController {
   }
 
   @Get('pendientes/:idCliente')
-  getPendientes(@Param('idCliente') id: number) {
+  getPendientes(@Param('idCliente', ParseIntPipe) id: number) {
     return this.pagoService.getPendientesPorCliente(id);
   }
 
   @Get('pendientes-ppd/:idCliente')
-  getPpdPendientes(@Param('idCliente') id: number) {
+  getPpdPendientes(@Param('idCliente', ParseIntPipe) id: number) {
     return this.pagoService.getPpdPendientesPorCliente(id);
   }
 
@@ -44,8 +46,9 @@ export class PagoController {
   }
 
   @Post('rep/:id/cancelar')
-  cancelarRep(@Param('id') id: string) {
-    return this.pagoService.cancelarRep(parseInt(id, 10));
+  @Roles(RolUsuario.ADMIN)
+  cancelarRep(@Param('id', ParseIntPipe) id: number) {
+    return this.pagoService.cancelarRep(id);
   }
 
   @Get(':id/pdf')
@@ -59,6 +62,7 @@ export class PagoController {
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': `inline; filename=REP_${idPago}.pdf`,
+      'X-Fiscal-Mode': process.env.FISCAL_MODE || 'mock',
     });
 
     res.end(buffer);
@@ -75,6 +79,7 @@ export class PagoController {
     res.set({
       'Content-Type': 'application/xml',
       'Content-Disposition': `attachment; filename=REP_${idPago}.xml`,
+      'X-Fiscal-Mode': process.env.FISCAL_MODE || 'mock',
     });
 
     res.send(xmlStr);

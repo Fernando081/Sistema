@@ -48,6 +48,10 @@ export class VentaService {
     return this.http.post(`${API_URL}/${idFactura}/cancelar`, {});
   }
 
+  devolver(idFactura: number, dto: { metodoReembolso: 'Efectivo' | 'Saldo a Favor'; articulos: { idProducto: number; cantidad: number }[] }): Observable<unknown> {
+    return this.http.post(`${API_URL}/${idFactura}/devoluciones`, dto);
+  }
+
 
   getFacturasRelacionables(idCliente: number): Observable<FacturaResumen[]> {
     return this.http.get<FacturaResumen[]>(`${environment.apiBaseUrl}/factura/cliente/${idCliente}/relacionables`);

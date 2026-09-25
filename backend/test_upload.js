@@ -3,7 +3,13 @@ const fs = require('fs');
 const path = require('path');
 
 // Simulate login to get token
-const loginData = JSON.stringify({ email: 'admin', password: 'F8pz6u4oi*' });
+if (!process.env.TEST_USERNAME || !process.env.TEST_PASSWORD) {
+  throw new Error('Configura TEST_USERNAME y TEST_PASSWORD para ejecutar esta prueba manual.');
+}
+const loginData = JSON.stringify({
+  username: process.env.TEST_USERNAME,
+  password: process.env.TEST_PASSWORD,
+});
 
 const loginOptions = {
   hostname: 'localhost',
@@ -26,7 +32,7 @@ const req = http.request(loginOptions, (res) => {
       // Now upload a dummy file
       const boundary = '----WebKitFormBoundary7MA4YWxkTrZu0gW';
       let postData = `--${boundary}\r\n`;
-      postData += 'Content-Disposition: form-data; name="image"; filename="test.jpg"\r\n';
+      postData += 'Content-Disposition: form-data; name="images"; filename="test.jpg"\r\n';
       postData += 'Content-Type: image/jpeg\r\n\r\n';
       postData += 'dummy data for image\r\n';
       postData += `--${boundary}--\r\n`;

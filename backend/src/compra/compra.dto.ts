@@ -1,26 +1,31 @@
 // backend/src/compra/compra.dto.ts
 import {
   IsArray,
-  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
   IsBoolean,
+  ArrayMinSize,
+  Min,
+  IsUUID,
+  IsIn,
+  IsInt,
+  ArrayMaxSize,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class DetalleCompraDto {
-  @IsNumber() idProducto: number;
+  @IsInt() @Min(1) idProducto: number;
 
   @IsString()
   @IsOptional()
   codigo: string;
 
   @IsString() descripcion: string;
-  @IsNumber() cantidad: number;
-  @IsNumber() costoUnitario: number;
-  @IsNumber() importe: number;
+  @IsNumber({ maxDecimalPlaces: 6 }) @Min(0.000001) cantidad: number;
+  @IsNumber({ maxDecimalPlaces: 6 }) @Min(0.000001) costoUnitario: number;
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0.01) importe: number;
 
   @IsOptional()
   @IsArray()
@@ -29,7 +34,12 @@ export class DetalleCompraDto {
 }
 
 export class CreateCompraDto {
-  @IsNumber() idProveedor: number;
+  @IsOptional() @IsIn(['Efectivo', 'Transferencia']) formaPago?: string;
+  @IsUUID()
+  @IsOptional()
+  requestId?: string;
+
+  @IsInt() @Min(1) idProveedor: number;
 
   @IsString()
   @IsOptional()
@@ -39,13 +49,15 @@ export class CreateCompraDto {
   @IsBoolean()
   esCredito: boolean;
 
-  @IsNumber() total: number;
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0.01) total: number;
 
   @IsString()
   @IsOptional()
   observaciones: string;
 
   @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(500)
   @ValidateNested({ each: true })
   @Type(() => DetalleCompraDto)
   conceptos: DetalleCompraDto[];

@@ -9,21 +9,19 @@ export class PostgresExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const error = exception as any;
+    const error = exception.driverError as { code?: string; message?: string };
     const code = error.code;
-    const detail = error.detail || '';
-
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Error interno en la base de datos';
 
     switch (code) {
       case '23505': // unique_violation
         status = HttpStatus.CONFLICT;
-        message = `El registro ya existe. (Detalles: ${detail})`;
+        message = 'El registro ya existe.';
         break;
       case '23503': // foreign_key_violation
         status = HttpStatus.BAD_REQUEST;
-        message = `Violación de llave foránea, el registro referenciado no existe o está en uso. (Detalles: ${detail})`;
+        message = 'El registro relacionado no existe o todavía está en uso.';
         break;
       case '22P02': // invalid_text_representation
         status = HttpStatus.BAD_REQUEST;
@@ -31,11 +29,25 @@ export class PostgresExceptionFilter implements ExceptionFilter {
         break;
       case '23502': // not_null_violation
         status = HttpStatus.BAD_REQUEST;
-        message = `No se puede insertar un valor nulo en una columna obligatoria. (Columna: ${error.column})`;
+        message = 'Falta un campo obligatorio.';
+        break;
+      case '23514': // check_violation
+        status = HttpStatus.BAD_REQUEST;
+        message = 'El valor recibido no cumple una regla de negocio.';
+        break;
+      case 'P0001': // RAISE EXCEPTION de reglas de negocio
+        status = HttpStatus.BAD_REQUEST;
+        message = error.message?.split('\n')[0]?.slice(0, 300) || 'La operación no cumple las reglas de negocio.';
+        break;
+      case '40001':
+      case '40P01':
+      case '55P03':
+        status = HttpStatus.CONFLICT;
+        message = 'Otro usuario modificó los datos. Actualiza e intenta nuevamente.';
         break;
       default:
         // Mensaje genérico para otros errores de BD no mapeados explícitamente
-        message = `Error de base de datos no manejado. (Código: ${code})`;
+        message = 'No fue posible completar la operación en la base de datos.';
         break;
     }
 
@@ -43,6 +55,7 @@ export class PostgresExceptionFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
+      requestId: response.locals.requestId as string | undefined,
       message,
     });
   }

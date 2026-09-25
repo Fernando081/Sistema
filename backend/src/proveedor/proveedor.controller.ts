@@ -10,6 +10,8 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
+import { Roles } from '../auth/roles.decorator';
+import { RolUsuario } from '../common/enums/app.enums';
 import { ProveedorService } from './proveedor.service';
 import { CreateProveedorDto, UpdateProveedorDto } from './proveedor.dto';
 
@@ -41,6 +43,7 @@ export class ProveedorController {
   }
 
   @Delete(':id')
+  @Roles(RolUsuario.ADMIN)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.proveedorService.remove(id);
   }

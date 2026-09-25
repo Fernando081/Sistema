@@ -45,7 +45,7 @@
             <ng-container matColumnDef="pagar">
               <th mat-header-cell *matHeaderCellDef> </th>
               <td mat-cell *matCellDef="let row">
-                <button mat-mini-fab color="warn" (click)="seleccionarCompra(row)" matTooltip="Registrar Pago">
+                <button mat-mini-fab color="warn" (click)="seleccionarCompra(row)" [disabled]="isSaving" aria-label="Registrar pago">
                   <mat-icon>attach_money</mat-icon>
                 </button>
               </td>
@@ -80,7 +80,7 @@
 
         <mat-form-field class="w-full">
           <mat-label>Monto a Pagar</mat-label>
-          <input matInput type="number" [(ngModel)]="montoPagar">
+          <input matInput type="number" [(ngModel)]="montoPagar" min="0.01" step="0.01" [max]="compraSeleccionada.saldo_pendiente" [disabled]="isSaving">
           <span matPrefix>$&nbsp;</span>
         </mat-form-field>
 
@@ -100,10 +100,10 @@
         </mat-form-field>
 
         <div class="flex gap-2 mt-2">
-          <button mat-flat-button color="warn" class="py-6 flex-1 text-lg" (click)="registrarPago()">
+          <button mat-flat-button color="warn" class="py-6 flex-1 text-lg" (click)="registrarPago()" [disabled]="isSaving || montoPagar <= 0 || montoPagar > compraSeleccionada.saldo_pendiente">
             <mat-icon>publish</mat-icon> Pagar
           </button>
-          <button mat-stroked-button (click)="compraSeleccionada = null">Cancelar</button>
+          <button mat-stroked-button (click)="compraSeleccionada = null" [disabled]="isSaving">Cancelar</button>
         </div>
 
       </mat-card-content>

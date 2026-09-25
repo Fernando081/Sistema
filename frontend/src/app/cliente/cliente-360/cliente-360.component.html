@@ -1,0 +1,53 @@
+<header class="page-header">
+  <div>
+    <a mat-button routerLink="/cliente"><mat-icon>arrow_back</mat-icon>Clientes</a>
+    <h1>{{data()?.cliente?.razonSocial || 'Cliente 360'}}</h1>
+    @if(data()){<p>{{data()!.cliente.rfc}} · {{data()!.cliente.email || 'Sin correo registrado'}}</p>}
+  </div>
+  <a mat-flat-button [routerLink]="['/pedidos']"><mat-icon>add_shopping_cart</mat-icon>Nuevo pedido</a>
+</header>
+
+@if(loading()){<div class="loading"><mat-spinner diameter="44"></mat-spinner><span>Cargando historial del cliente…</span></div>}
+@else if(data();as d){
+  <section class="metrics">
+    <mat-card><span>Ventas acumuladas</span><strong>{{d.resumen.ventasAcumuladas|currency:'MXN'}}</strong></mat-card>
+    <mat-card><span>Saldo pendiente</span><strong>{{d.resumen.saldoPendiente|currency:'MXN'}}</strong></mat-card>
+    <mat-card><span>Pedidos abiertos</span><strong>{{d.resumen.pedidosAbiertos}}</strong></mat-card>
+    <mat-card><span>Unidades VIN/ESN</span><strong>{{d.resumen.unidades}}</strong></mat-card>
+    <mat-card><span>Garantías abiertas</span><strong>{{d.resumen.garantiasAbiertas}}</strong></mat-card>
+  </section>
+
+  <mat-tab-group animationDuration="150ms">
+    <mat-tab label="Resumen">
+      <section class="summary-grid">
+        <mat-card><mat-card-header><mat-card-title>Datos fiscales</mat-card-title></mat-card-header><mat-card-content>
+          <dl><div><dt>RFC</dt><dd>{{d.cliente.rfc}}</dd></div><div><dt>Código postal</dt><dd>{{d.cliente.codigoPostal}}</dd></div><div><dt>Ciudad</dt><dd>{{d.cliente.ciudad || '—'}}</dd></div><div><dt>Dirección</dt><dd>{{d.cliente.calle}} {{d.cliente.numeroExterior}}</dd></div></dl>
+        </mat-card-content></mat-card>
+        <mat-card><mat-card-header><mat-card-title>Actividad comercial</mat-card-title></mat-card-header><mat-card-content>
+          <dl><div><dt>Cotizaciones</dt><dd>{{d.cotizaciones.length}}</dd></div><div><dt>Pedidos</dt><dd>{{d.pedidos.length}}</dd></div><div><dt>Facturas</dt><dd>{{d.facturas.length}}</dd></div><div><dt>Oportunidades</dt><dd>{{d.oportunidades.length}}</dd></div></dl>
+        </mat-card-content></mat-card>
+      </section>
+    </mat-tab>
+
+    <mat-tab [label]="'Contactos ('+d.contactos.length+')'"><section class="tab-content">
+      <div class="tab-actions"><button mat-flat-button (click)="showContactForm.set(!showContactForm())"><mat-icon>person_add</mat-icon>Agregar contacto</button></div>
+      @if(showContactForm()){<form class="contact-form" [formGroup]="form" (ngSubmit)="saveContact()">
+        <mat-form-field><mat-label>Nombre</mat-label><input matInput formControlName="nombre"></mat-form-field>
+        <mat-form-field><mat-label>Cargo o área</mat-label><input matInput formControlName="cargo"></mat-form-field>
+        <mat-form-field><mat-label>Teléfono</mat-label><input matInput formControlName="telefono"></mat-form-field>
+        <mat-form-field><mat-label>Correo</mat-label><input matInput type="email" formControlName="email"></mat-form-field>
+        <mat-form-field><mat-label>Canal preferido</mat-label><mat-select formControlName="canalPreferido">@for(c of ['Telefono','WhatsApp','Email','Otro'];track c){<mat-option [value]="c">{{c}}</mat-option>}</mat-select></mat-form-field>
+        <mat-checkbox formControlName="esPrincipal">Contacto principal</mat-checkbox>
+        <mat-form-field class="notes"><mat-label>Notas</mat-label><textarea matInput formControlName="notas"></textarea></mat-form-field>
+        <div class="form-actions"><button mat-button type="button" (click)="showContactForm.set(false)">Cancelar</button><button mat-flat-button type="submit" [disabled]="saving()">Guardar contacto</button></div>
+      </form>}
+      <div class="card-list">@for(c of d.contactos;track c.idContacto){<article><div><strong>{{c.nombre}}</strong><span>{{c.cargo || c.canalPreferido}}</span><small>{{c.telefono || 'Sin teléfono'}} · {{c.email || 'Sin correo'}}</small></div><button mat-icon-button (click)="deleteContact(c.idContacto)" aria-label="Eliminar contacto"><mat-icon>delete</mat-icon></button></article>}@empty{<div class="erp-empty-state"><mat-icon>contacts</mat-icon><strong>Sin contactos</strong><span>Agrega compradores, encargados de mantenimiento o responsables de pago.</span></div>}</div>
+    </section></mat-tab>
+
+    <mat-tab [label]="'Unidades ('+d.unidades.length+')'"><section class="tab-content card-list">@for(u of d.unidades;track u.idUnidad){<article><div><strong>{{u.numeroEconomico || u.vin || u.esn}}</strong><span>{{u.marca}} {{u.modelo}} {{u.anio}}</span><small>VIN: {{u.vin || '—'}} · ESN: {{u.esn || '—'}} · Motor: {{u.motor || '—'}}</small></div></article>}@empty{<div class="erp-empty-state"><mat-icon>local_shipping</mat-icon><strong>Sin unidades</strong><span>Agrega el VIN o ESN desde la lista de clientes.</span></div>}</section></mat-tab>
+    <mat-tab [label]="'Pedidos ('+d.pedidos.length+')'"><section class="tab-content card-list">@for(p of d.pedidos;track p.idPedido){<article><div><strong>PED-{{p.folio}} · {{p.estado}}</strong><span>{{p.total|currency:'MXN'}}</span><small>{{p.createdAt|date:'mediumDate'}}</small></div><a mat-stroked-button routerLink="/pedidos">Abrir</a></article>}@empty{<div class="erp-empty-state"><mat-icon>receipt_long</mat-icon><strong>Sin pedidos</strong></div>}</section></mat-tab>
+    <mat-tab [label]="'Facturas ('+d.facturas.length+')'"><section class="tab-content card-list">@for(f of d.facturas;track f.idFactura){<article><div><strong>{{f.serie}}-{{f.folio}} · {{f.estatus}}</strong><span>{{f.total|currency:'MXN'}} · Saldo {{f.saldoPendiente|currency:'MXN'}}</span><small>{{f.fechaEmision|date:'mediumDate'}}</small></div><a mat-stroked-button routerLink="/facturas">Abrir</a></article>}@empty{<div class="erp-empty-state"><mat-icon>request_quote</mat-icon><strong>Sin facturas</strong></div>}</section></mat-tab>
+    <mat-tab [label]="'Garantías ('+d.garantias.length+')'"><section class="tab-content card-list">@for(g of d.garantias;track g.idGarantia){<article><div><strong>{{g.producto}} · {{g.estado}}</strong><span>{{g.motivo}}</span><small>Factura {{g.factura}} · {{g.createdAt|date:'mediumDate'}}</small></div><a mat-stroked-button routerLink="/garantias">Abrir</a></article>}@empty{<div class="erp-empty-state"><mat-icon>verified_user</mat-icon><strong>Sin garantías</strong></div>}</section></mat-tab>
+    <mat-tab [label]="'CRM ('+d.oportunidades.length+')'"><section class="tab-content card-list">@for(o of d.oportunidades;track o.idOportunidad){<article><div><strong>{{o.empresa}} · {{o.etapa}}</strong><span>{{o.montoEstimado|currency:'MXN'}}</span><small>{{o.siguienteAccion || 'Sin siguiente acción'}}</small></div><a mat-stroked-button routerLink="/crm">Abrir CRM</a></article>}@empty{<div class="erp-empty-state"><mat-icon>handshake</mat-icon><strong>Sin oportunidades</strong></div>}</section></mat-tab>
+  </mat-tab-group>
+}

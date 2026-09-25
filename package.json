@@ -1,20 +1,46 @@
 {
   "name": "sistema",
   "private": true,
+  "packageManager": "npm@11.11.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "workspaces": [
     "backend",
     "frontend"
   ],
   "scripts": {
     "build": "npm --workspace backend run build && npm --workspace frontend run build",
-    "start:dev": "nest start --watch",
+    "start:dev": "npm --workspace backend run start:dev",
+    "test": "npm --workspace backend test -- --runInBand && npm --workspace backend run test:e2e -- --runInBand",
+    "db:status": "node backend/run-migrations.js --status",
+    "db:check": "node backend/run-migrations.js --check",
+    "db:migrate": "node backend/run-migrations.js",
+    "db:backup": "node backend/backup.js",
+    "db:verify": "node backend/verify-isolated-database.js",
     "start:backend": "npm --workspace backend run start",
-    "start:frontend": "npm --workspace frontend run start"
+    "start:frontend": "npm --workspace frontend run start",
+    "check:runtime": "node scripts/verify-runtime.js",
+    "lint": "npm --workspace backend run lint -- --max-warnings=0",
+    "test:frontend": "npm --workspace frontend test -- --watch=false --browsers=ChromeHeadless",
+    "test:e2e-ui": "npm --workspace frontend run test:e2e",
+    "test:e2e-ui:node24": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/node24.ps1 --workspace frontend run test:e2e",
+    "audit:prod": "npm audit --omit=dev --audit-level=high",
+    "verify": "npm run check:runtime && npm run build && npm run lint && npm run test && npm run test:frontend && npm run test:e2e-ui && npm run audit:prod",
+    "verify:release": "npm run verify && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-latest-backup.ps1",
+    "verify:node24": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/node24.ps1 run verify",
+    "start:backend:node24": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/node24.ps1 run start:backend",
+    "start:frontend:node24": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/node24.ps1 run start:frontend"
   },
   "dependencies": {
-    "animejs": "^3.2.2"
+    "animejs": "^3.2.2",
+    "multer": "2.4.0"
   },
   "devDependencies": {
+    "@angular/service-worker": "21.2.23",
     "@types/animejs": "^3.1.13"
+  },
+  "overrides": {
+    "multer": "$multer"
   }
 }

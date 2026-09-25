@@ -1,5 +1,7 @@
 // frontend/src/app/rep/rep-create/rep-create.component.ts
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { downloadDocument, localDate, roundMoney } from '../../shared/document-download';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -15,8 +17,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ClienteService } from '../../services/cliente.service';
 import { PagoService, RegistrarRepDto, RepFacturaDto } from '../../services/pago.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { ConfirmService } from '../../shared/confirm.service';
 
 @Component({
   selector: 'app-rep-create',
@@ -29,6 +32,8 @@ import { map, startWith } from 'rxjs/operators';
   templateUrl: './rep-create.component.html'
 })
 export class RepCreateComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+  private pendingRequest?: Subscription;
   // Cliente Control AutoComplete
   clienteControl = new FormControl('');
   clientesOriginales: any[] = [];
@@ -53,10 +58,11 @@ export class RepCreateComponent implements OnInit {
     private clienteService: ClienteService,
     private pagoService: PagoService,
     private snackBar: MatSnackBar,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private confirm: ConfirmService,
   ) {
     this.repForm = this.fb.group({
-      fechaPago: [new Date().toISOString().split('T')[0], Validators.required],
+      fechaPago: [localDate(), Validators.required],
       formaPago: ['Transferencia', Validators.required],
       moneda: ['MXN', Validators.required],
       cuentaBeneficiario: [''],
@@ -67,6 +73,15 @@ export class RepCreateComponent implements OnInit {
   ngOnInit(): void {
     this.cargarClientes();
     this.cargarHistorial();
+    this.clienteControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
+      if (typeof value === 'string' || !value) {
+        this.pendingRequest?.unsubscribe();
+        this.clienteSeleccionado = null;
+        this.facturasPendientes = [];
+        this.totalRep = 0;
+      }
+    });
+    this.destroyRef.onDestroy(() => this.pendingRequest?.unsubscribe());
   }
 
   cargarHistorial() {
@@ -113,10 +128,11 @@ export class RepCreateComponent implements OnInit {
   }
 
   cargarFacturasPpd(idCliente: number) {
+    this.pendingRequest?.unsubscribe();
     this.facturasPendientes = [];
     this.totalRep = 0;
     
-    this.pagoService.getPpdPendientes(idCliente).subscribe({
+    this.pendingRequest = this.pagoService.getPpdPendientes(idCliente).subscribe({
       next: (res: any) => {
         const facturas = res.data || res;
         this.facturasPendientes = facturas.map((f: any) => ({
@@ -133,7 +149,7 @@ export class RepCreateComponent implements OnInit {
     const abono = Number(f.montoSaldado) || 0;
     const maximo = Number(f.saldo_pendiente) || 0;
 
-    if (abono < 0) {
+    if (!Number.isFinite(abono) || abono < 0) {
       f.montoSaldado = 0;
     } else if (abono > maximo) {
       f.montoSaldado = maximo;
@@ -145,11 +161,12 @@ export class RepCreateComponent implements OnInit {
   recalcularTotal() {
     this.totalRep = this.facturasPendientes.reduce((sum, f) => {
       const abono = Number(f.montoSaldado) || 0;
-      return sum + abono;
+      return roundMoney(sum + roundMoney(abono));
     }, 0);
   }
 
   generarRep() {
+    if (this.isSaving) return;
     if (!this.clienteSeleccionado) return;
     if (this.totalRep <= 0 || !this.repForm.valid) return;
 
@@ -188,8 +205,7 @@ export class RepCreateComponent implements OnInit {
           if (res && res.idRep) {
             this.pagoService.descargarRepPdf(res.idRep).subscribe({
               next: (blob: Blob) => {
-                const url = window.URL.createObjectURL(blob);
-                window.open(url);
+                downloadDocument(blob, `REP_${res.idRep}.pdf`);
               },
               error: (err) => console.error('Error al descargar el PDF del REP:', err)
             });
@@ -202,7 +218,7 @@ export class RepCreateComponent implements OnInit {
         this.facturasPendientes = [];
         this.totalRep = 0;
         this.repForm.reset({
-          fechaPago: new Date().toISOString().split('T')[0],
+          fechaPago: localDate(),
           formaPago: 'Transferencia',
           moneda: 'MXN'
         });
@@ -220,8 +236,7 @@ export class RepCreateComponent implements OnInit {
   descargarPdf(idRep: number) {
     this.pagoService.descargarRepPdf(idRep).subscribe({
       next: (blob: Blob) => {
-        const url = window.URL.createObjectURL(blob);
-        window.open(url);
+        downloadDocument(blob, `REP_${idRep}.pdf`);
       },
       error: (err) => this.snackBar.open('Error al descargar el PDF', 'Ok', {duration: 3000})
     });
@@ -230,26 +245,17 @@ export class RepCreateComponent implements OnInit {
   descargarXml(idRep: number) {
     this.pagoService.descargarRepXml(idRep).subscribe({
       next: (blob: Blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `REP_${idRep}_pretimbrado.xml`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
+        downloadDocument(blob, `REP_${idRep}_pretimbrado.xml`);
       },
       error: (err) => this.snackBar.open('Error al descargar el XML', 'Ok', {duration: 3000})
     });
   }
 
   cancelarRep(idRep: number) {
-    if (!confirm(`¿Estás seguro de que deseas CANCELAR el REP-${idRep}? El dinero pagado regresará a las facturas correspondientes como saldo pendiente.`)) {
-      return;
-    }
-    
-    this.pagoService.cancelarRep(idRep).subscribe({
-      next: () => {
+    this.confirm.ask({ title: 'Cancelar complemento de pago', message: `El REP-${idRep} será cancelado y el importe regresará a las facturas como saldo pendiente.`, confirmLabel: 'Cancelar REP' }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.pagoService.cancelarRep(idRep).subscribe({
+        next: () => {
         this.snackBar.open('REP Cancelado Exitosamente', 'Cerrar', {duration: 4000});
         this.cargarHistorial();
         // Recargar facturas si un cliente está seleccionado
@@ -257,7 +263,8 @@ export class RepCreateComponent implements OnInit {
            this.cargarFacturasPpd(this.clienteSeleccionado.idCliente);
         }
       },
-      error: (err) => this.snackBar.open('Error al cancelar REP', 'Cerrar', {duration: 3000})
+        error: () => this.snackBar.open('Error al cancelar REP', 'Cerrar', {duration: 3000}),
+      });
     });
   }
 }

@@ -11,6 +11,8 @@ export interface AuditLog {
   old_record: any;
   new_record: any;
   db_user: string;
+  app_user_id?: number | null;
+  app_username?: string | null;
   timestamp: string;
 }
 

@@ -1,7 +1,7 @@
 // frontend/src/app/services/producto.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Producto, CreateProductoDto, UpdateProductoDto, KardexItem, SmartRestockItem, PrediccionDemandaItem } from '../producto/producto.interface';
 
@@ -24,9 +24,45 @@ export class ProductoService {
     if (term) url += `&term=${encodeURIComponent(term)}`;
     return this.http.get<any>(url);
   }
+
+  buscarProductos(term: string, limit = 25): Observable<Producto[]> {
+    return this.getProductos(1, limit, '', '', term).pipe(
+      map((response) => (response.data || response).map((p: any) => this.mapProducto(p))),
+    );
+  }
+
+  private mapProducto(p: any): Producto {
+    return {
+      idProducto: p['IdProducto'],
+      codigo: p['Codigo'],
+      descripcion: p['Descripcion'],
+      precioUnitario: Number(p['PrecioUnitario']),
+      marca: p['Marca'],
+      ubicacion: p['Ubicacion'],
+      idUnidad: p['IdUnidad'],
+      idObjetoImpuesto: p['IdObjetoImpuesto'],
+      idCategoria: p['IdCategoria'],
+      idClaveProdOServ: p['IdClaveProdOServ'],
+      idClaveUnidad: p['IdClaveUnidad'],
+      categoriaNombre: p['CategoriaNombre'],
+      claveProdServ: p['ClaveProdServ'],
+      descripcionProdServ: p['DescripcionProdServ'],
+      claveUnidadSat: p['ClaveUnidadSat'],
+      descripcionUnidadSat: p['DescripcionUnidadSat'],
+      objetoImpuestoSat: p['ObjetoImpuesto'],
+      tasaIva: Number(p['TasaIVA']),
+      aplicaRetencionIsr: Boolean(p['AplicaRetencionISR']),
+      aplicaRetencionIva: Boolean(p['AplicaRetencionIVA']),
+      existencia: Number(p['Existencia']),
+      reservada: Number(p['Reservada'] || 0),
+      disponible: Number(p['Disponible'] ?? p['Existencia']),
+      equivalentesIds: p['EquivalentesJSON'] || [],
+      imagenes: p['imagenes'] || [],
+    } as Producto;
+  }
   
-  getProductoById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  getProductoById(id: number): Observable<Producto> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(map(producto => this.mapProducto(producto)));
   }
 
   createProducto(producto: CreateProductoDto): Observable<Producto> {
@@ -61,6 +97,25 @@ export class ProductoService {
 
   eliminarEquivalente(id: number, idEq: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}/equivalentes/${idEq}`);
+  }
+
+  getNumerosParte(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}/numeros-parte`);
+  }
+  addNumeroParte(id: number, dto: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/numeros-parte`, dto);
+  }
+  deleteNumeroParte(id: number, idNumero: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}/numeros-parte/${idNumero}`);
+  }
+  getAplicaciones(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}/aplicaciones`);
+  }
+  addAplicacion(id: number, dto: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/aplicaciones`, dto);
+  }
+  deleteAplicacion(id: number, idAplicacion: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}/aplicaciones/${idAplicacion}`);
   }
 
   getSmartRestock(): Observable<SmartRestockItem[]> {

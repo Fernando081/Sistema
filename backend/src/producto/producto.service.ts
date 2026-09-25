@@ -1,18 +1,54 @@
 // backend/src/producto/producto.service.ts
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Producto } from './producto.entity';
-import { CreateProductoDto, UpdateProductoDto, SmartRestockItem, PrediccionDemandaItem } from './producto.dto';
+import { CreateAplicacionDto, CreateNumeroParteDto, CreateProductoDto, UpdateProductoDto, SmartRestockItem, PrediccionDemandaItem, CreateCotizacionProvDto } from './producto.dto';
 import { APP_CONSTANTS } from '../common/constants/app.constants';
+import { queryRows } from '../common/database/typed-query';
+
+export interface ProductoDbRow {
+  IdProducto: number;
+  Codigo: string | null;
+  IdUnidad: number | null;
+  IdObjetoImpuesto: number | null;
+  Descripcion: string;
+  PrecioUnitario: number | string;
+  IdCategoria: number | null;
+  Ubicacion: string | null;
+  IdClaveProdOServ: number | null;
+  IdClaveUnidad: number | null;
+  Marca: string | null;
+  ObjetoImpuesto: string;
+  TasaIVA: number | string;
+  AplicaRetencionISR: boolean;
+  AplicaRetencionIVA: boolean;
+  Existencia: number | string;
+  imagenes?: string[];
+  [key: string]: unknown;
+}
+
+export interface ProductoPage {
+  data: ProductoDbRow[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+interface CountRow { count: string | number; }
+interface CotizacionProveedorIdRow { id_cotizacion_prov: number; }
+export interface NumeroParteIdRow { idNumero: number; }
+export interface AplicacionIdRow { idAplicacion: number; }
 
 @Injectable()
 export class ProductoService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
-  async findAll(page: number = 1, limit: number = 10, sort?: string, order?: string, term: string = ''): Promise<any> {
-    const offset = (page - 1) * limit;
+  async findAll(page: number = 1, limit: number = 10, sort?: string, order?: string, term: string = ''): Promise<ProductoPage> {
+    const safePage = Math.max(1, page);
+    const safeLimit = Math.min(Math.max(1, limit), 100);
+    const offset = (safePage - 1) * safeLimit;
 
     const sortMap: Record<string, string> = {
       codigo: '"Codigo"',
@@ -24,34 +60,60 @@ export class ProductoService {
       existencia: '"Existencia"',
     };
 
-    let orderClause = '';
+    let orderClause = ' ORDER BY "IdProducto" DESC';
     if (sort && sortMap[sort]) {
       const direction = order?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
-      orderClause = ` ORDER BY ${sortMap[sort]} ${direction}`;
+      orderClause = ` ORDER BY ${sortMap[sort]} ${direction}, "IdProducto" DESC`;
     }
 
+    const filterSql = `
+      FROM fn_get_productos(NULL, NULL, '') fp
+      WHERE $1 = ''
+         OR COALESCE(fp."Codigo", '') ILIKE '%' || $1 || '%'
+         OR COALESCE(fp."Descripcion", '') ILIKE '%' || $1 || '%'
+         OR COALESCE(fp."Marca", '') ILIKE '%' || $1 || '%'
+         OR EXISTS (
+           SELECT 1 FROM producto_numero_parte np
+            WHERE np.id_producto = fp."IdProducto"
+              AND np.numero_normalizado LIKE '%' || lower(regexp_replace($1, '[^[:alnum:]]', '', 'g')) || '%'
+         )
+         OR EXISTS (
+           SELECT 1 FROM producto_aplicacion pa
+            WHERE pa.id_producto = fp."IdProducto"
+              AND concat_ws(' ', pa.fabricante_equipo, pa.modelo, pa.motor, pa.restricciones) ILIKE '%' || $1 || '%'
+         )`;
     const [totalResult, dataResult] = await Promise.all([
-      this.dataSource.query('SELECT COUNT(*) as count FROM fn_get_productos(NULL, NULL, $1)', [term]),
-      this.dataSource.query(
-        `SELECT * FROM fn_get_productos($1, $2, $3)${orderClause}`,
-        [limit, offset, term]
+      queryRows<CountRow>(this.dataSource, `SELECT COUNT(*) as count ${filterSql}`, [term.trim()]),
+      queryRows<ProductoDbRow>(this.dataSource,
+        `SELECT fp.*,
+          COALESCE((SELECT sum(r.cantidad-r.cantidad_liberada) FROM reserva_inventario r
+            WHERE r.id_producto=fp."IdProducto" AND r.estado IN ('Activa','Surtida')),0) AS "Reservada",
+          GREATEST(fp."Existencia"-COALESCE((SELECT sum(r.cantidad-r.cantidad_liberada) FROM reserva_inventario r
+            WHERE r.id_producto=fp."IdProducto" AND r.estado IN ('Activa','Surtida')),0),0) AS "Disponible"
+          ${filterSql}${orderClause} LIMIT $2 OFFSET $3`,
+        [term.trim(), safeLimit, offset],
       ),
     ]);
 
-    const total = parseInt(totalResult[0].count, 10);
-    const totalPages = Math.ceil(total / limit);
+    const total = Number(totalResult[0].count);
+    const totalPages = Math.ceil(total / safeLimit);
 
     return {
       data: dataResult,
       total,
-      page,
+      page: safePage,
       totalPages,
     };
   }
 
-  async findOne(idProducto: number): Promise<any> {
-    const result = await this.dataSource.query(
-      'SELECT * FROM fn_get_producto_by_id($1)',
+  async findOne(idProducto: number): Promise<ProductoDbRow> {
+    const result = await queryRows<ProductoDbRow>(this.dataSource,
+      `SELECT fp.*,
+        COALESCE((SELECT sum(r.cantidad-r.cantidad_liberada) FROM reserva_inventario r
+          WHERE r.id_producto=fp."IdProducto" AND r.estado IN ('Activa','Surtida')),0) AS "Reservada",
+        GREATEST(fp."Existencia"-COALESCE((SELECT sum(r.cantidad-r.cantidad_liberada) FROM reserva_inventario r
+          WHERE r.id_producto=fp."IdProducto" AND r.estado IN ('Activa','Surtida')),0),0) AS "Disponible"
+        FROM fn_get_producto_by_id($1) fp`,
       [idProducto],
     );
     if (!result || result.length === 0) {
@@ -64,7 +126,7 @@ export class ProductoService {
 
   // --- CORREGIDO PARA LOS NUEVOS PARÁMETROS ---
   async create(createProductoDto: CreateProductoDto): Promise<Producto> {
-    const result = await this.dataSource.query(
+    const result = await queryRows<Producto>(this.dataSource,
       // Ahora enviamos 15 parámetros
       'SELECT * FROM fn_create_producto($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
       [
@@ -121,7 +183,7 @@ export class ProductoService {
 
     const datos = { ...productoActualMapeado, ...updateProductoDto };
 
-    const result = await this.dataSource.query(
+    const result = await queryRows<Producto>(this.dataSource,
       // Ahora enviamos 16 parámetros (ID + 15 datos)
       'SELECT * FROM fn_update_producto($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)',
       [
@@ -148,7 +210,7 @@ export class ProductoService {
   }
 
   async remove(idProducto: number): Promise<void> {
-    const result = await this.dataSource.query(
+    const result = await queryRows<Record<string, unknown>>(this.dataSource,
       'SELECT * FROM fn_delete_producto($1)',
       [idProducto],
     );
@@ -161,7 +223,7 @@ export class ProductoService {
 
   async getKardex(idProducto: number) {
     // Consultamos la tabla unificada que creamos
-    const resultado = await this.dataSource.query(
+    const resultado = await queryRows<Record<string, unknown>>(this.dataSource,
       `
     SELECT 
       id_kardex,
@@ -183,14 +245,14 @@ export class ProductoService {
   }
 
   async getSmartRestock(): Promise<SmartRestockItem[]> {
-    return this.dataSource.query('SELECT * FROM vw_smart_restock');
+    return queryRows<SmartRestockItem>(this.dataSource, 'SELECT * FROM vw_smart_restock');
   }
 
   async getHistorialPrecios(idProducto: number) {
     // ANTES: Llamaba a la función borrada fn_get_historial_precios
     // AHORA: Consultamos directamente la tabla 'kardex' unificada
 
-    const historial = await this.dataSource.query(
+    const historial = await queryRows<Record<string, unknown>>(this.dataSource,
       `
     SELECT 
       fecha, 
@@ -209,12 +271,13 @@ export class ProductoService {
 
   // --- EQUIVALENTES ---
   async getEquivalentes(idProducto: number) {
-    return this.dataSource.query('SELECT * FROM fn_get_equivalentes($1)', [
+    return queryRows<Record<string, unknown>>(this.dataSource, 'SELECT * FROM fn_get_equivalentes($1)', [
       idProducto,
     ]);
   }
 
   async agregarEquivalente(idProducto: number, idEquivalente: number) {
+    if (idProducto === idEquivalente) throw new BadRequestException('Un producto no puede ser equivalente de sí mismo');
     await this.dataSource.query('SELECT fn_agregar_equivalente($1, $2)', [
       idProducto,
       idEquivalente,
@@ -232,7 +295,7 @@ export class ProductoService {
 
   // --- PREDICCIÓN DE DEMANDA (AI Smart Restock) ---
   async getPrediccionDemanda(): Promise<PrediccionDemandaItem[]> {
-    return this.dataSource.query(
+    return queryRows<PrediccionDemandaItem>(this.dataSource,
       'SELECT * FROM vw_prediccion_demanda WHERE cantidad_sugerida_compra > 0 ORDER BY cantidad_sugerida_compra DESC',
     );
   }
@@ -244,7 +307,7 @@ export class ProductoService {
 
   // --- COTIZACIONES PROVEEDORES ---
   async getCotizacionesProveedor(idProducto: number) {
-    return this.dataSource.query(`
+    return queryRows<Record<string, unknown>>(this.dataSource, `
       SELECT 
         c.id_cotizacion_prov,
         c.id_producto,
@@ -261,8 +324,8 @@ export class ProductoService {
     `, [idProducto]);
   }
 
-  async addCotizacionProveedor(idProducto: number, dto: any) {
-    const result = await this.dataSource.query(`
+  async addCotizacionProveedor(idProducto: number, dto: CreateCotizacionProvDto) {
+    const result = await queryRows<CotizacionProveedorIdRow>(this.dataSource, `
       INSERT INTO producto_cotizacion_prov (
         id_producto, id_proveedor, marca_ofrecida, precio_cotizado, dias_entrega
       ) VALUES ($1, $2, $3, $4, $5)
@@ -283,7 +346,7 @@ export class ProductoService {
 
   // --- CRUCES / ALTERNATIVAS (BIDIRECCIONAL) ---
   async getAlternativas(idProducto: number) {
-    return this.dataSource.query(`
+    return queryRows<Record<string, unknown>>(this.dataSource, `
       SELECT 
         p."IdProducto" as id_producto,
         p."Codigo" as codigo,
@@ -319,7 +382,66 @@ export class ProductoService {
     const updated = await this.findOne(idProducto);
     return {
       message: 'Ajuste de inventario realizado con éxito',
-      existencia: Number(updated.Existencia || updated['Existencia'] || 0)
+      existencia: Number(updated.Existencia || 0)
     };
+  }
+
+  getNumerosParte(idProducto: number) {
+    return queryRows<Record<string, unknown>>(this.dataSource, `
+      SELECT id_numero AS "idNumero", tipo, fabricante, numero,
+             numero_normalizado AS "numeroNormalizado"
+        FROM producto_numero_parte WHERE id_producto=$1 ORDER BY tipo, fabricante, numero
+    `, [idProducto]);
+  }
+
+  async addNumeroParte(idProducto: number, dto: CreateNumeroParteDto) {
+    if (!/[\p{L}\p{N}]/u.test(dto.numero)) throw new BadRequestException('El número de parte debe contener letras o números');
+    const result = await queryRows<NumeroParteIdRow>(this.dataSource, `
+      INSERT INTO producto_numero_parte(id_producto,tipo,fabricante,numero)
+      VALUES ($1,$2,$3,$4) RETURNING id_numero AS "idNumero"
+    `, [idProducto, dto.tipo, dto.fabricante || null, dto.numero.trim()]);
+    return result[0];
+  }
+
+  async deleteNumeroParte(idProducto: number, idNumero: number) {
+    const result = await queryRows<Record<string, unknown>>(this.dataSource,
+      'DELETE FROM producto_numero_parte WHERE id_producto=$1 AND id_numero=$2 RETURNING id_numero',
+      [idProducto, idNumero],
+    );
+    if (!result.length) throw new NotFoundException('Número de parte no encontrado');
+    return { message: 'Número de parte eliminado' };
+  }
+
+  getAplicaciones(idProducto: number) {
+    return queryRows<Record<string, unknown>>(this.dataSource, `
+      SELECT id_aplicacion AS "idAplicacion", fabricante_equipo AS "fabricanteEquipo",
+             modelo, motor, anio_desde AS "anioDesde", anio_hasta AS "anioHasta", restricciones
+        FROM producto_aplicacion WHERE id_producto=$1 ORDER BY fabricante_equipo, modelo, motor
+    `, [idProducto]);
+  }
+
+  async addAplicacion(idProducto: number, dto: CreateAplicacionDto) {
+    if (![dto.fabricanteEquipo, dto.modelo, dto.motor].some((v) => v?.trim())) {
+      throw new BadRequestException('Indica al menos fabricante, modelo o motor');
+    }
+    if (dto.anioDesde && dto.anioHasta && dto.anioDesde > dto.anioHasta) {
+      throw new BadRequestException('El año inicial no puede ser posterior al final');
+    }
+    const result = await queryRows<AplicacionIdRow>(this.dataSource, `
+      INSERT INTO producto_aplicacion(
+        id_producto,fabricante_equipo,modelo,motor,anio_desde,anio_hasta,restricciones
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id_aplicacion AS "idAplicacion"
+    `, [idProducto, dto.fabricanteEquipo || null, dto.modelo || null, dto.motor || null,
+      dto.anioDesde || null, dto.anioHasta || null, dto.restricciones || null]);
+    return result[0];
+  }
+
+  async deleteAplicacion(idProducto: number, idAplicacion: number) {
+    const result = await queryRows<Record<string, unknown>>(this.dataSource,
+      'DELETE FROM producto_aplicacion WHERE id_producto=$1 AND id_aplicacion=$2 RETURNING id_aplicacion',
+      [idProducto, idAplicacion],
+    );
+    if (!result.length) throw new NotFoundException('Aplicación no encontrada');
+    return { message: 'Aplicación eliminada' };
   }
 }

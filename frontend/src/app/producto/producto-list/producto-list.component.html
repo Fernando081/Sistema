@@ -11,7 +11,7 @@
     <mat-card class="mat-elevation-z0 !border-t-0 rounded-t-none">
       <mat-card-header class="producto-card-header">
         <mat-card-title class="!text-2xl !font-semibold">Gestión de Productos</mat-card-title>
-        <button mat-flat-button color="primary" (click)="abrirDialogo()">
+        <button *ngIf="canEdit" mat-flat-button color="primary" (click)="abrirDialogo()">
           <mat-icon>add</mat-icon>
           Nuevo Producto
         </button>
@@ -36,8 +36,8 @@
             <ng-container matColumnDef="imagen_url">
               <th mat-header-cell *matHeaderCellDef> Imagen </th>
               <td mat-cell *matCellDef="let element"> 
-                <img *ngIf="element.imagenes && element.imagenes.length > 0" [src]="element.imagenes[0]" class="w-10 h-10 object-cover rounded-md border" />
-                <mat-icon *ngIf="!element.imagenes || element.imagenes.length === 0" class="text-gray-300">image</mat-icon>
+                <img *ngIf="element.imagenes && element.imagenes.length > 0" [src]="productImageUrl(element.imagenes[0])" [alt]="'Imagen de ' + element.descripcion" loading="lazy" (error)="onImageError($event)" class="w-10 h-10 object-cover rounded-md border border-[var(--wrap-border)]" />
+                <mat-icon [hidden]="element.imagenes && element.imagenes.length > 0" class="text-gray-400" aria-hidden="true">image</mat-icon>
               </td>
             </ng-container>
 
@@ -66,26 +66,27 @@
               <td mat-cell *matCellDef="let element" class="font-bold font-mono text-right pr-6"> {{element.precioUnitario | currency:'MXN':'symbol':'1.2-2'}} </td>
             </ng-container>
           <ng-container matColumnDef="existencia">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Existencia </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Inventario </th>
               <td mat-cell *matCellDef="let element" 
-                  [class.text-red-600]="element.existencia <= 0"
-                  [class.font-bold]="element.existencia <= 0"> 
-                {{ element.existencia }} 
+                  [class.text-red-600]="(element.disponible ?? element.existencia) <= 0"
+                  [class.font-bold]="(element.disponible ?? element.existencia) <= 0">
+                <strong>{{ element.disponible ?? element.existencia }} disponible</strong>
+                <small class="block text-xs opacity-70">{{element.existencia}} físico · {{element.reservada || 0}} apartado</small>
               </td>
             </ng-container>
             <ng-container matColumnDef="acciones">
               <th mat-header-cell *matHeaderCellDef> Acciones </th>
               <td mat-cell *matCellDef="let element">
-                <button mat-icon-button class="text-green-600" (click)="verCotizacionesProveedor(element)" matTooltip="Ver Cotizaciones de Proveedores">
+                <button mat-icon-button class="text-green-600" (click)="verCotizacionesProveedor(element)" matTooltip="Ver Cotizaciones de Proveedores" aria-label="Ver cotizaciones de proveedores">
                   <mat-icon>price_check</mat-icon>
                 </button>
-                <button mat-icon-button color="accent" (click)="verKardex(element)" matTooltip="Ver Historial (Kardex)">
+                <button mat-icon-button color="accent" (click)="verKardex(element)" matTooltip="Ver Historial (Kardex)" aria-label="Ver Kardex del producto">
                   <mat-icon>history</mat-icon>
                 </button>
-                <button mat-icon-button color="primary" (click)="abrirDialogo(element)" matTooltip="Editar Producto">
+                <button *ngIf="canEdit" mat-icon-button color="primary" (click)="abrirDialogo(element)" matTooltip="Editar Producto" aria-label="Editar producto">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button color="warn" (click)="eliminarProducto(element.idProducto)" matTooltip="Eliminar Producto">
+                <button *ngIf="canEdit" mat-icon-button color="warn" (click)="eliminarProducto(element.idProducto)" matTooltip="Eliminar Producto" aria-label="Eliminar producto">
                   <mat-icon>delete</mat-icon>
                 </button>
               </td>

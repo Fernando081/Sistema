@@ -105,6 +105,8 @@ export class ProveedorDialogComponent implements OnInit {
 
     // 3. Detectar cambios en el Estado (Efecto Cascada)
     this.form.get('idEstado')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(idEstado => {
+      municipioControl?.setValue(null);
+      this.municipios = [];
       if (idEstado) {
         municipioControl?.enable(); // Desbloquear
         this.cargarMunicipios(idEstado);
@@ -116,7 +118,7 @@ export class ProveedorDialogComponent implements OnInit {
     });
 
     if (this.isEditMode && this.data) {
-      this.form.patchValue(this.data);
+      this.form.patchValue(this.data, { emitEvent: false });
     }
   }
 
@@ -126,7 +128,7 @@ export class ProveedorDialogComponent implements OnInit {
     if (estadoSeleccionado) {
       this.catalogosService.getMunicipiosPorEstado(estadoSeleccionado.clave)
         .subscribe(municipios => {
-          this.municipios = municipios;
+          if (this.form.get('idEstado')?.value === idEstado) this.municipios = municipios;
         });
     }
   }
@@ -138,6 +140,8 @@ export class ProveedorDialogComponent implements OnInit {
     }
 
     const formData = this.form.getRawValue(); // getRawValue() incluye campos deshabilitados si los hubiera
+    formData.rfc = formData.rfc.trim().toUpperCase();
+    formData.razonSocial = formData.razonSocial.trim();
     let request;
 
     if (this.isEditMode) {

@@ -1,5 +1,7 @@
 // frontend/src/app/cotizacion/nueva-cotizacion/nueva-cotizacion.component.ts
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { downloadDocument, roundMoney } from '../../shared/document-download';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -23,7 +25,7 @@ import { Producto } from '../../producto/producto.interface';
 import { Cliente } from '../../cliente/cliente.interface';
 
 import { Observable, of } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nueva-cotizacion',
@@ -54,13 +56,13 @@ export class NuevaCotizacionComponent implements OnInit {
   retIsrGeneral = 0;
   totalGeneral = 0;
   isSaving = signal(false);
+  private readonly destroyRef = inject(DestroyRef);
 
   // Controles
   clienteControl = new FormControl<string | Cliente>('');
   productoControl = new FormControl<string | Producto>('');
 
   listaClientes: Cliente[] = [];
-  listaProductos: Producto[] = [];
   clientesFiltrados$: Observable<Cliente[]> = of([]);
   productosFiltrados$: Observable<Producto[]> = of([]);
 
@@ -76,27 +78,18 @@ export class NuevaCotizacionComponent implements OnInit {
   ngOnInit(): void {
     this.cargarCatalogos();
     this.configurarAutocompletes();
+    this.clienteControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
+      if (typeof value === 'string' || !value) { this.clienteSeleccionado = null; this.recalcularCarrito(); }
+    });
   }
 
   cargarCatalogos() {
     // Cargar Clientes (Service now handles mapping)
     this.clienteService.getClientes().subscribe((data) => {
       this.listaClientes = data;
+      this.clienteControl.updateValueAndValidity({ emitEvent: true });
     });
 
-    // Cargar Productos
-    this.productoService.getProductos(1, 1000).subscribe((response: any) => {
-      this.listaProductos = response.data.map((p: any) => ({
-        idProducto: p['IdProducto'],
-        codigo: p['Codigo'],
-        descripcion: p['Descripcion'],
-        precioUnitario: p['PrecioUnitario'],
-        descripcionUnidadSat: p['DescripcionUnidadSat'],
-        objetoImpuestoSat: p['ObjetoImpuesto'],
-        tasaIva: p['TasaIVA'],
-        aplicaRetencionIsr: p['AplicaRetencionISR'],
-      })) as unknown as Producto[];
-    });
   }
 
   configurarAutocompletes() {
@@ -110,9 +103,11 @@ export class NuevaCotizacionComponent implements OnInit {
 
     this.productosFiltrados$ = this.productoControl.valueChanges.pipe(
       startWith(''),
-      map((val) => {
-        const term = typeof val === 'string' ? val : (val as Producto)?.descripcion || '';
-        return term ? this._filterProd(term) : this.listaProductos.slice();
+      debounceTime(250),
+      distinctUntilChanged(),
+      switchMap((val) => {
+        if (typeof val !== 'string') return of(val ? [val] : []);
+        return this.productoService.buscarProductos(val.trim(), 25).pipe(catchError(() => of([])));
       }),
     );
   }
@@ -150,11 +145,11 @@ export class NuevaCotizacionComponent implements OnInit {
   }
 
   recalcularRenglon(item: ConceptoCotizacion) {
-    item.importe = item.cantidad * item.valorUnitario;
+    item.importe = roundMoney(item.cantidad * item.valorUnitario);
 
     // IVA
     if (item.objetoImpuesto === '02') {
-      item.importeIva = item.importe * (item.tasaIva || 0);
+      item.importeIva = roundMoney(item.importe * (item.tasaIva || 0));
     } else {
       item.importeIva = 0;
     }
@@ -162,15 +157,15 @@ export class NuevaCotizacionComponent implements OnInit {
     // Retención ISR
     const rfc = this.clienteSeleccionado?.rfc || '';
     if (item.aplicaRetencionIsr && rfc.length === 12) {
-      item.importeRetIsr = item.importe * 0.0125;
+      item.importeRetIsr = roundMoney(item.importe * 0.0125);
     } else {
       item.importeRetIsr = 0;
     }
   }
 
   alCambiarValor(item: ConceptoCotizacion) {
-    if (item.cantidad < 1) item.cantidad = 1;
-    if (item.valorUnitario < 0) item.valorUnitario = 0;
+    if (!Number.isFinite(item.cantidad) || item.cantidad < 0.0001) item.cantidad = 1;
+    if (!Number.isFinite(item.valorUnitario) || item.valorUnitario < 0) item.valorUnitario = 0;
     this.recalcularRenglon(item);
     this.recalcularTotales();
   }
@@ -186,7 +181,7 @@ export class NuevaCotizacionComponent implements OnInit {
     this.subtotalGeneral = this.carrito.reduce((acc, i) => acc + i.importe, 0);
     this.ivaGeneral = this.carrito.reduce((acc, i) => acc + i.importeIva, 0);
     this.retIsrGeneral = this.carrito.reduce((acc, i) => acc + i.importeRetIsr, 0);
-    this.totalGeneral = this.subtotalGeneral + this.ivaGeneral - this.retIsrGeneral;
+    this.totalGeneral = roundMoney(this.subtotalGeneral + this.ivaGeneral - this.retIsrGeneral);
   }
 
   eliminar(index: number) {
@@ -240,8 +235,7 @@ export class NuevaCotizacionComponent implements OnInit {
 
   abrirPdf(id: number) {
     this.cotizacionService.descargarPdf(id).subscribe((blob) => {
-      const url = window.URL.createObjectURL(blob);
-      window.open(url);
+      downloadDocument(blob, `Cotizacion_${id}.pdf`);
     });
   }
 
@@ -262,9 +256,5 @@ export class NuevaCotizacionComponent implements OnInit {
   _filterCli(t: string) {
     const v = t.toLowerCase();
     return this.listaClientes.filter((c) => (c.razonSocial || '').toLowerCase().includes(v));
-  }
-  _filterProd(t: string) {
-    const v = t.toLowerCase();
-    return this.listaProductos.filter((p) => (p.descripcion || '').toLowerCase().includes(v));
   }
 }

@@ -9,9 +9,11 @@ export interface DetalleCompra {
 }
 
 export interface CreateCompra {
+  requestId?: string;
   idProveedor: number;
   folioFactura?: string;
   esCredito: boolean; // <--- Nuevo campo
+  formaPago?: string;
   total: number;
   observaciones?: string;
   conceptos: DetalleCompra[];

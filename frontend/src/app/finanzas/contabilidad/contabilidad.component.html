@@ -1,0 +1,106 @@
+<section class="accounting-header">
+  <div>
+    <span class="eyebrow">LIBRO MAYOR</span>
+    <h1>Contabilidad y estados financieros</h1>
+    <p>Pólizas automáticas trazables, balanza y resultados del periodo.</p>
+  </div>
+  <div class="header-actions">
+    <form [formGroup]="filtros" class="filters" (ngSubmit)="load()">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Desde</mat-label><input matInput type="date" formControlName="fechaInicio"></mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Hasta</mat-label><input matInput type="date" formControlName="fechaFin"></mat-form-field>
+      <button mat-stroked-button type="submit"><mat-icon>refresh</mat-icon>Actualizar</button>
+    </form>
+    <button mat-flat-button (click)="editorOpen.set(!editorOpen())"><mat-icon>post_add</mat-icon>Nueva póliza</button>
+  </div>
+</section>
+
+@if (loading()) { <div class="loading"><mat-icon>sync</mat-icon> Actualizando información contable…</div> }
+
+<section class="kpis">
+  <mat-card><span>Ingresos del periodo</span><strong>{{ resultados()?.ingresos || 0 | currency:'MXN' }}</strong><small>Ventas y otros ingresos contabilizados</small></mat-card>
+  <mat-card><span>Costos y gastos</span><strong>{{ resultados()?.gastos || 0 | currency:'MXN' }}</strong><small>Costo de ventas y operación</small></mat-card>
+  <mat-card [class.negative]="(resultados()?.utilidadNeta || 0) < 0"><span>Utilidad neta</span><strong>{{ resultados()?.utilidadNeta || 0 | currency:'MXN' }}</strong><small>Resultado contable del periodo</small></mat-card>
+  <mat-card><span>Pólizas</span><strong>{{ totalPolizas() }}</strong><small>{{ polizas().length }} visibles en esta consulta</small></mat-card>
+</section>
+
+@if (editorOpen()) {
+  <mat-card class="journal-editor">
+    <div class="card-title"><div><span class="eyebrow">CAPTURA MANUAL</span><h2>Nueva póliza</h2></div><button mat-icon-button aria-label="Cerrar" (click)="resetEditor()"><mat-icon>close</mat-icon></button></div>
+    <form [formGroup]="polizaForm" (ngSubmit)="saveDraft()">
+      <div class="journal-meta">
+        <mat-form-field><mat-label>Fecha</mat-label><input matInput type="date" formControlName="fecha"></mat-form-field>
+        <mat-form-field><mat-label>Tipo</mat-label><mat-select formControlName="tipo"><mat-option value="Diario">Diario</mat-option><mat-option value="Ingreso">Ingreso</mat-option><mat-option value="Egreso">Egreso</mat-option></mat-select></mat-form-field>
+        <mat-form-field><mat-label>Concepto general</mat-label><input matInput formControlName="concepto"></mat-form-field>
+      </div>
+      <div formArrayName="partidas" class="journal-lines">
+        @for (row of partidas.controls; track $index; let i = $index) {
+          <div class="journal-line" [formGroupName]="i">
+            <mat-form-field><mat-label>Cuenta</mat-label><mat-select formControlName="idCuenta">@for (c of cuentas(); track c.idCuenta) {<mat-option [value]="c.idCuenta">{{ c.codigo }} · {{ c.nombre }}</mat-option>}</mat-select></mat-form-field>
+            <mat-form-field><mat-label>Centro de costo</mat-label><mat-select formControlName="idCentroCosto"><mat-option [value]="0">Operación general</mat-option>@for (c of centrosCosto(); track c.idCentroCosto) {<mat-option [value]="c.idCentroCosto">{{ c.codigo }} · {{ c.nombre }}</mat-option>}</mat-select></mat-form-field>
+            <mat-form-field><mat-label>Concepto</mat-label><input matInput formControlName="concepto"></mat-form-field>
+            <mat-form-field><mat-label>Referencia</mat-label><input matInput formControlName="referencia"></mat-form-field>
+            <mat-form-field><mat-label>Debe</mat-label><input matInput type="number" min="0" step="0.01" formControlName="debe"></mat-form-field>
+            <mat-form-field><mat-label>Haber</mat-label><input matInput type="number" min="0" step="0.01" formControlName="haber"></mat-form-field>
+            <button mat-icon-button type="button" aria-label="Eliminar partida" [disabled]="partidas.length <= 2" (click)="removeLine(i)"><mat-icon>delete_outline</mat-icon></button>
+          </div>
+        }
+      </div>
+      <div class="editor-footer">
+        <button mat-button type="button" (click)="addLine()"><mat-icon>add</mat-icon>Agregar partida</button>
+        <div class="journal-totals" [class.unbalanced]="!cuadrada()"><span>Debe <b>{{ totalDebe() | currency:'MXN' }}</b></span><span>Haber <b>{{ totalHaber() | currency:'MXN' }}</b></span><small>{{ cuadrada() ? 'Póliza cuadrada' : 'Hay una diferencia por corregir' }}</small></div>
+        <button mat-flat-button type="submit" [disabled]="loading() || !cuadrada()">Guardar borrador</button>
+      </div>
+    </form>
+  </mat-card>
+}
+
+<mat-tab-group animationDuration="180ms">
+  <mat-tab label="Pólizas">
+    <section class="tab-content journal-list">
+      @for (p of polizas(); track p.idPoliza) {
+        <details class="journal-card">
+          <summary>
+            <div class="journal-identity"><span class="folio">{{ p.tipo | uppercase }} · {{ p.folio }}</span><strong>{{ p.concepto }}</strong><small>{{ p.fecha | date:'mediumDate' }} · {{ p.automatica ? 'Automática' : (p.usuario || 'Manual') }}</small></div>
+            <div class="journal-status"><span class="status" [class]="p.estado.toLowerCase()">{{ p.estado }}</span><b>{{ p.debe | currency:'MXN' }}</b><mat-icon>expand_more</mat-icon></div>
+          </summary>
+          <div class="entries">
+            @for (d of p.partidas || []; track d.idDetalle) {
+              <div><span><b>{{ d.codigo }}</b> {{ d.cuenta }}<small>{{ d.concepto }}</small></span><span>{{ d.debe ? (d.debe | currency:'MXN') : '—' }}</span><span>{{ d.haber ? (d.haber | currency:'MXN') : '—' }}</span></div>
+            }
+            @if (p.estado === 'Borrador') { <button mat-flat-button (click)="post(p)"><mat-icon>lock</mat-icon>Contabilizar</button> }
+          </div>
+        </details>
+      } @empty { <div class="erp-empty-state"><mat-icon>receipt_long</mat-icon><strong>No hay pólizas en el periodo</strong><span>Ajusta las fechas o registra una operación.</span></div> }
+    </section>
+  </mat-tab>
+  <mat-tab label="Balanza de comprobación">
+    <section class="tab-content table-wrap"><table><thead><tr><th>Cuenta</th><th>Saldo inicial</th><th>Debe</th><th>Haber</th><th>Saldo final</th></tr></thead><tbody>@for (c of balanza(); track c.idCuenta) {<tr><td><b>{{ c.codigo }}</b> {{ c.nombre }}</td><td>{{ c.saldoInicial | currency:'MXN' }}</td><td>{{ c.debe | currency:'MXN' }}</td><td>{{ c.haber | currency:'MXN' }}</td><td>{{ c.saldoFinal | currency:'MXN' }}</td></tr>}</tbody></table></section>
+  </mat-tab>
+  <mat-tab label="Estado de resultados">
+    <section class="tab-content statements"><article><h2>Ingresos</h2>@for (item of resultados()?.detalle || []; track item.codigo) {@if(item.tipo === 'Ingreso'){<div><span>{{item.codigo}} · {{item.nombre}}</span><b>{{item.saldo | currency:'MXN'}}</b></div>}}<footer><span>Total ingresos</span><b>{{resultados()?.ingresos || 0 | currency:'MXN'}}</b></footer></article><article><h2>Costos y gastos</h2>@for (item of resultados()?.detalle || []; track item.codigo) {@if(item.tipo === 'Gasto'){<div><span>{{item.codigo}} · {{item.nombre}}</span><b>{{item.saldo | currency:'MXN'}}</b></div>}}<footer><span>Total costos y gastos</span><b>{{resultados()?.gastos || 0 | currency:'MXN'}}</b></footer></article><article class="net"><span>Utilidad neta</span><strong>{{resultados()?.utilidadNeta || 0 | currency:'MXN'}}</strong></article></section>
+  </mat-tab>
+  <mat-tab label="Balance general">
+    <section class="tab-content statements balance">@for(type of ['Activo','Pasivo','Capital']; track type){<article><h2>{{type}}</h2>@for(item of accountType(type); track item.codigo){<div><span>{{item.codigo}} · {{item.nombre}}</span><b>{{item.saldo | currency:'MXN'}}</b></div>}<footer><span>Total {{type | lowercase}}</span><b>{{type==='Activo' ? (balance()?.activos || 0 | currency:'MXN') : type==='Pasivo' ? (balance()?.pasivos || 0 | currency:'MXN') : (balance()?.capital || 0 | currency:'MXN')}}</b></footer></article>}<p class="balance-check" [class.warning]="(balance()?.diferencia || 0) !== 0"><mat-icon>{{(balance()?.diferencia || 0) === 0 ? 'verified' : 'warning'}}</mat-icon>{{(balance()?.diferencia || 0) === 0 ? 'La ecuación contable está cuadrada.' : 'Diferencia contable: ' + (balance()?.diferencia | currency:'MXN')}}</p></section>
+  </mat-tab>
+  <mat-tab label="Tesorería y conciliación">
+    <section class="tab-content treasury">
+      <div class="treasury-toolbar"><div><h2>Cuentas bancarias</h2><p>Importa cargos como montos negativos y depósitos como positivos.</p></div><button mat-stroked-button (click)="bankEditorOpen.set(!bankEditorOpen())"><mat-icon>account_balance</mat-icon>Nueva cuenta</button></div>
+      @if(bankEditorOpen()){<mat-card class="bank-editor"><form [formGroup]="cuentaForm" (ngSubmit)="saveBankAccount()"><mat-form-field><mat-label>Nombre interno</mat-label><input matInput formControlName="nombre" placeholder="Cuenta operativa"></mat-form-field><mat-form-field><mat-label>Banco</mat-label><input matInput formControlName="banco"></mat-form-field><mat-form-field><mat-label>Últimos 4 dígitos</mat-label><input matInput maxlength="4" inputmode="numeric" formControlName="ultimosCuatro"></mat-form-field><mat-form-field><mat-label>Saldo inicial</mat-label><input matInput type="number" step=".01" formControlName="saldoInicial"></mat-form-field><button mat-flat-button>Guardar cuenta</button></form></mat-card>}
+      <div class="bank-cards">@for(c of cuentasTesoreria();track c.idCuenta){<mat-card><span>{{c.banco}} {{c.ultimosCuatro ? '•••• '+c.ultimosCuatro : ''}}</span><strong>{{c.saldo | currency:c.moneda}}</strong><small>{{c.nombre}} · {{c.pendientes}} pendientes</small></mat-card>}@empty{<div class="erp-empty-state"><mat-icon>account_balance</mat-icon><strong>Agrega tu primera cuenta bancaria</strong></div>}</div>
+      @if(cuentasTesoreria().length){<mat-card class="bank-movement"><h2>Importar movimiento del estado de cuenta</h2><form [formGroup]="movimientoForm" (ngSubmit)="saveBankMovement()"><mat-form-field><mat-label>Cuenta</mat-label><mat-select formControlName="idCuenta">@for(c of cuentasTesoreria();track c.idCuenta){<mat-option [value]="c.idCuenta">{{c.nombre}} · {{c.banco}}</mat-option>}</mat-select></mat-form-field><mat-form-field><mat-label>Fecha</mat-label><input matInput type="date" formControlName="fecha"></mat-form-field><mat-form-field><mat-label>Descripción</mat-label><input matInput formControlName="descripcion"></mat-form-field><mat-form-field><mat-label>Referencia</mat-label><input matInput formControlName="referencia"></mat-form-field><mat-form-field><mat-label>Monto</mat-label><input matInput type="number" step=".01" formControlName="monto"></mat-form-field><button mat-flat-button>Importar</button></form></mat-card>}
+      <div class="bank-movements">@for(m of movimientosTesoreria();track m.idMovimiento){<article><div><span class="folio">{{m.cuenta}} · {{m.fecha | date:'mediumDate'}}</span><strong>{{m.descripcion}}</strong><small>{{m.referencia || 'Sin referencia'}}</small></div><b [class.outflow]="m.monto < 0">{{m.monto | currency:'MXN'}}</b><span class="status" [class.borrador]="m.estado==='Pendiente'">{{m.estado}}</span>@if(m.estado==='Pendiente'){<button mat-stroked-button (click)="findMatches(m)">Buscar coincidencia</button>}</article>}</div>
+      @if(movimientoSeleccionado()){<mat-card class="matches"><div class="card-title"><div><span class="eyebrow">CONCILIACIÓN</span><h2>Coincidencias para {{movimientoSeleccionado()?.descripcion}}</h2></div><button mat-icon-button (click)="movimientoSeleccionado.set(null)"><mat-icon>close</mat-icon></button></div>@for(c of candidatos();track c.idCajaMovimiento){<div class="match"><span><b>{{c.origen}}</b><small>{{c.fecha | date:'medium'}} · {{c.usuario || 'Sistema'}}</small></span><strong>{{c.monto | currency:'MXN'}}</strong><button mat-flat-button [disabled]="c.diferencia !== 0" (click)="reconcile(c)">Conciliar</button></div>}@empty{<div class="erp-empty-state"><mat-icon>manage_search</mat-icon><strong>No hay coincidencias cercanas</strong><span>Revisa la fecha y el signo del monto importado.</span></div>}</mat-card>}
+    </section>
+  </mat-tab>
+  <mat-tab label="Control financiero">
+    <section class="tab-content financial-control">
+      <div class="flow-kpis"><mat-card><span>Saldo inicial</span><strong>{{flujo()?.saldoInicial || 0 | currency:'MXN'}}</strong></mat-card><mat-card><span>Entradas</span><strong>{{flujo()?.ingresos || 0 | currency:'MXN'}}</strong></mat-card><mat-card><span>Salidas</span><strong>{{flujo()?.egresos || 0 | currency:'MXN'}}</strong></mat-card><mat-card><span>Saldo final</span><strong>{{flujo()?.saldoFinal || 0 | currency:'MXN'}}</strong></mat-card></div>
+      <mat-card class="exports"><div><h2>Exportar para revisión</h2><p>Archivos CSV compatibles con Excel y protegidos contra fórmulas en celdas.</p></div><div><button mat-stroked-button (click)="exportReport('balanza')">Balanza</button><button mat-stroked-button (click)="exportReport('resultados')">Resultados</button><button mat-stroked-button (click)="exportReport('balance')">Balance</button><button mat-stroked-button (click)="exportReport('flujo')">Flujo</button></div></mat-card>
+      <div class="control-grid">
+        <mat-card class="control-card"><h2>Periodos contables</h2><form [formGroup]="periodoForm" (ngSubmit)="createPeriod()"><mat-form-field><mat-label>Año</mat-label><input matInput type="number" formControlName="anio"></mat-form-field><mat-form-field><mat-label>Mes</mat-label><input matInput type="number" min="1" max="12" formControlName="mes"></mat-form-field><button mat-flat-button>Crear periodo</button></form><div class="period-list">@for(p of periodos();track p.idPeriodo){<article><span><b>{{p.mes | number:'2.0-0'}}/{{p.anio}}</b><small>{{p.polizas}} pólizas · {{p.estado}}</small></span>@if(p.estado==='Abierto'){<button mat-stroked-button (click)="closePeriod(p)">Cerrar</button>}@else{<mat-icon>lock</mat-icon>}</article>}@empty{<div class="erp-empty-state"><mat-icon>calendar_month</mat-icon><strong>Sin periodos administrados</strong><span>Mientras no exista un periodo cerrado, las fechas permanecen abiertas.</span></div>}</div></mat-card>
+        <mat-card class="control-card"><h2>Presupuesto mensual</h2><form [formGroup]="presupuestoForm" (ngSubmit)="saveBudget()"><mat-form-field><mat-label>Año</mat-label><input matInput type="number" formControlName="anio"></mat-form-field><mat-form-field><mat-label>Mes</mat-label><input matInput type="number" min="1" max="12" formControlName="mes"></mat-form-field><mat-form-field><mat-label>Cuenta</mat-label><mat-select formControlName="idCuenta">@for(c of cuentas();track c.idCuenta){<mat-option [value]="c.idCuenta">{{c.codigo}} · {{c.nombre}}</mat-option>}</mat-select></mat-form-field><mat-form-field><mat-label>Centro de costo</mat-label><mat-select formControlName="idCentroCosto"><mat-option [value]="0">Todos</mat-option>@for(c of centrosCosto();track c.idCentroCosto){<mat-option [value]="c.idCentroCosto">{{c.nombre}}</mat-option>}</mat-select></mat-form-field><mat-form-field><mat-label>Monto</mat-label><input matInput type="number" min="0" step=".01" formControlName="monto"></mat-form-field><mat-form-field><mat-label>Notas</mat-label><input matInput formControlName="notas"></mat-form-field><button mat-flat-button>Guardar presupuesto</button></form><div class="budget-list">@for(b of presupuestos();track b.idPresupuesto){<article><span><b>{{b.codigo}} · {{b.cuenta}}</b><small>{{b.centro || 'General'}} · Real {{b.real | currency:'MXN'}}</small></span><span><strong>{{b.monto | currency:'MXN'}}</strong><small [class.negative-variance]="b.variacion < 0">Disponible {{b.variacion | currency:'MXN'}}</small></span></article>}@empty{<div class="erp-empty-state"><mat-icon>savings</mat-icon><strong>Sin presupuesto para el mes consultado</strong></div>}</div></mat-card>
+      </div>
+      <mat-card class="flow-detail"><h2>Flujo por origen</h2>@for(item of flujo()?.detalle || [];track item.origen){<div><span>{{item.origen}}</span><span>Entradas {{item.ingresos | currency:'MXN'}}</span><span>Salidas {{item.egresos | currency:'MXN'}}</span><b>{{item.neto | currency:'MXN'}}</b></div>}@empty{<div class="erp-empty-state"><mat-icon>waterfall_chart</mat-icon><strong>Sin movimientos de efectivo en el periodo</strong></div>}</mat-card>
+    </section>
+  </mat-tab>
+</mat-tab-group>

@@ -1,5 +1,5 @@
 // backend/src/pago-proveedor/pago-proveedor.controller.ts
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ParseIntPipe } from '@nestjs/common';
 import { PagoProveedorService } from './pago-proveedor.service';
 import { RegistrarPagoProveedorDto } from './pago-proveedor.dto';
 
@@ -13,7 +13,7 @@ export class PagoProveedorController {
   }
 
   @Get('compra/:id')
-  getPagos(@Param('id') id: number) {
+  getPagos(@Param('id', ParseIntPipe) id: number) {
     return this.pagoService.getPagosPorCompra(id);
   }
 
@@ -23,7 +23,7 @@ export class PagoProveedorController {
   }
 
   @Get('deuda/:idProveedor')
-  getDeuda(@Param('idProveedor') id: number) {
+  getDeuda(@Param('idProveedor', ParseIntPipe) id: number) {
     return this.pagoService.getDeudaPorProveedor(id);
   }
 }

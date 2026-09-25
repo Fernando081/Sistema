@@ -1,0 +1,77 @@
+<h2 mat-dialog-title>{{ item() ? 'Oportunidad: ' + item()!.empresa : 'Nueva oportunidad' }}</h2>
+<mat-dialog-content>
+  @if (error()) {<div role="alert" class="p-3 mb-3 rounded bg-red-50 text-red-800">{{ error() }} @if (item()) {<button mat-button [disabled]="busy()" (click)="recargar()">Recargar</button>}</div>}
+  @if (busy()) {<p role="status">Procesando…</p>}
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
+    <mat-form-field><mat-label>Empresa o prospecto</mat-label><input matInput formControlName="empresa" maxlength="180"><mat-error>Escribe el nombre de la cuenta</mat-error></mat-form-field>
+    <mat-form-field><mat-label>Contacto</mat-label><input matInput formControlName="contacto" maxlength="150"></mat-form-field>
+    <mat-form-field><mat-label>Teléfono</mat-label><input matInput type="tel" formControlName="telefono" maxlength="30"></mat-form-field>
+    <mat-form-field><mat-label>Correo</mat-label><input matInput type="email" formControlName="email" maxlength="150"><mat-error>Escribe un correo válido</mat-error></mat-form-field>
+    <mat-form-field><mat-label>Tipo de cuenta</mat-label><mat-select formControlName="tipoCliente">@for (tipo of tipos; track tipo) {<mat-option [value]="tipo">{{ tipo }}</mat-option>}</mat-select></mat-form-field>
+    <mat-form-field><mat-label>Etapa</mat-label><mat-select formControlName="etapa">@for (etapa of etapas; track etapa) {<mat-option [value]="etapa">{{ etapa }}</mat-option>}</mat-select></mat-form-field>
+    <mat-form-field><mat-label>Monto estimado (MXN)</mat-label><input matInput type="number" min="0" step="0.01" formControlName="montoEstimado"><mat-error>Usa un importe positivo o cero, con hasta dos decimales</mat-error></mat-form-field>
+    @if (form.value.etapa === 'Perdida') {<mat-form-field><mat-label>Motivo de pérdida</mat-label><input matInput formControlName="motivoPerdida" maxlength="100" required></mat-form-field>}
+    @if (form.value.etapa !== 'Ganada' && form.value.etapa !== 'Perdida') {
+      <mat-form-field><mat-label>Siguiente acción</mat-label><input matInput formControlName="siguienteAccion" maxlength="255"></mat-form-field>
+      <mat-form-field><mat-label>Fecha de seguimiento (hora local)</mat-label><input matInput type="datetime-local" formControlName="fechaSiguienteAccion"></mat-form-field>
+    }
+    <div class="md:col-span-2"><button mat-flat-button type="submit" [disabled]="busy() || loadFailed()">Guardar oportunidad</button><p class="text-sm text-gray-500 mt-2">Al marcar Ganada o Perdida se cierra la acción pendiente. El cambio de etapa queda en el historial.</p></div>
+  </form>
+  @if (item(); as current) {
+    <hr class="my-6">
+    <section aria-labelledby="unidades-title">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <div><h3 id="unidades-title" class="text-lg font-semibold">Unidades y motores del cliente</h3><p class="text-sm text-gray-500">Guarda el VIN del camión, el ESN del motor o ambos para localizar aplicaciones correctas.</p></div>
+        <button mat-stroked-button type="button" (click)="editarUnidad()"><mat-icon>add</mat-icon>Nueva unidad</button>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
+        @for (unidad of unidades(); track unidad.idUnidad) {
+          <mat-card class="erp-static-card">
+            <mat-card-content class="p-4">
+              <div class="flex justify-between gap-3">
+                <div>
+                  <strong>{{ unidad.numeroEconomico || unidad.marca || 'Unidad sin número económico' }}</strong>
+                  <p class="text-sm text-gray-500">{{ unidad.marca }} {{ unidad.modelo }} {{ unidad.anio || '' }}</p>
+                </div>
+                <div class="flex">
+                  <button mat-icon-button type="button" aria-label="Editar unidad" (click)="editarUnidad(unidad)"><mat-icon>edit</mat-icon></button>
+                  <button mat-icon-button type="button" aria-label="Eliminar unidad" (click)="eliminarUnidad(unidad)"><mat-icon>delete</mat-icon></button>
+                </div>
+              </div>
+              @if (unidad.vin) {<p class="font-mono text-sm mt-2"><span class="text-gray-500">VIN</span> {{ unidad.vin }}</p>}
+              @if (unidad.esn) {<p class="font-mono text-sm"><span class="text-gray-500">ESN</span> {{ unidad.esn }}</p>}
+              @if (unidad.motor) {<p class="text-sm mt-1">Motor: {{ unidad.motor }}</p>}
+            </mat-card-content>
+          </mat-card>
+        } @empty {<div class="lg:col-span-2 erp-empty-state"><mat-icon>local_shipping</mat-icon><strong>No hay unidades registradas</strong><span>Agrega el VIN o ESN para conservar la configuración del cliente.</span></div>}
+      </div>
+      <form [formGroup]="unidadForm" (ngSubmit)="guardarUnidad()" class="grid grid-cols-1 md:grid-cols-2 gap-3 p-4 rounded-xl border border-[var(--wrap-border)] bg-[var(--wrap-bg)]">
+        <div class="md:col-span-2 flex items-center justify-between"><strong>{{ unidadEditando() ? 'Editar unidad' : 'Registrar unidad' }}</strong>@if (unidadEditando()) {<button mat-button type="button" (click)="editarUnidad()">Cancelar edición</button>}</div>
+        <mat-form-field><mat-label>VIN del camión</mat-label><input matInput formControlName="vin" maxlength="17" autocomplete="off" class="uppercase"><mat-hint>17 caracteres; no utiliza I, O ni Q</mat-hint><mat-error>Revisa el formato del VIN</mat-error></mat-form-field>
+        <mat-form-field><mat-label>ESN del motor</mat-label><input matInput formControlName="esn" maxlength="50" autocomplete="off" class="uppercase"><mat-hint>Número de serie del motor</mat-hint></mat-form-field>
+        <mat-form-field><mat-label>Número económico</mat-label><input matInput formControlName="numeroEconomico" maxlength="50"></mat-form-field>
+        <mat-form-field><mat-label>Motor</mat-label><input matInput formControlName="motor" maxlength="120" placeholder="Ej. Cummins ISX15"></mat-form-field>
+        <mat-form-field><mat-label>Marca</mat-label><input matInput formControlName="marca" maxlength="80"></mat-form-field>
+        <mat-form-field><mat-label>Modelo</mat-label><input matInput formControlName="modelo" maxlength="100"></mat-form-field>
+        <mat-form-field><mat-label>Año</mat-label><input matInput type="number" min="1900" max="2200" formControlName="anio"></mat-form-field>
+        <mat-form-field><mat-label>Notas de configuración</mat-label><textarea matInput rows="2" formControlName="notas" maxlength="1000"></textarea></mat-form-field>
+        <div class="md:col-span-2"><button mat-flat-button type="submit" [disabled]="unidadesBusy()"><mat-icon>save</mat-icon>{{ unidadesBusy() ? 'Guardando…' : 'Guardar unidad' }}</button></div>
+      </form>
+    </section>
+    <hr class="my-6"><h3 class="text-lg font-semibold">Registrar seguimiento</h3>
+    @if (current.siguienteAccion) {<p class="my-2">Pendiente: <strong>{{ current.siguienteAccion }}</strong> {{ current.fechaSiguienteAccion | date:'short' }}</p>}
+    @if (form.dirty) {<p class="text-amber-700">Guarda los cambios de la oportunidad antes de registrar una actividad.</p>}
+    <form [formGroup]="seguimiento" (ngSubmit)="agregarSeguimiento()" class="grid grid-cols-1 gap-3 mt-3">
+      <mat-form-field><mat-label>Tipo de contacto</mat-label><mat-select formControlName="tipo">@for (tipo of actividades; track tipo) {<mat-option [value]="tipo">{{ tipo }}</mat-option>}</mat-select></mat-form-field>
+      <mat-form-field><mat-label>Acuerdos y resultado</mat-label><textarea matInput rows="3" formControlName="detalle" maxlength="2000"></textarea><mat-error>Describe el resultado del contacto</mat-error></mat-form-field>
+      @if (current.siguienteAccion) {<mat-checkbox formControlName="completarAccion">Marcar la acción pendiente como completada</mat-checkbox>}
+      <div><button mat-stroked-button type="submit" [disabled]="busy() || form.dirty || loadFailed()">Registrar actividad</button></div>
+    </form>
+    <h3 class="text-lg font-semibold mt-6 mb-3">Historial de la cuenta</h3>
+    @for (s of historial(); track s.idSeguimiento) {
+      <article class="border-l-2 border-blue-400 pl-4 py-2 mb-3"><strong>{{ s.tipo }}</strong> · {{ s.createdAt | date:'short' }} · {{ s.username || 'Sistema' }}<p class="whitespace-pre-wrap mt-1">{{ s.detalle }}</p></article>
+    } @empty {<p class="text-gray-500">Aún no hay seguimientos registrados.</p>}
+    @if (historial().length < historyTotal()) {<button mat-button [disabled]="historyBusy()" (click)="cargarHistorial()">Cargar actividades anteriores</button>}
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end"><button mat-button [disabled]="busy()" (click)="cerrar()">Cerrar</button></mat-dialog-actions>

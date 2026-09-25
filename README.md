@@ -15,7 +15,7 @@ El sistema está funcional en arquitectura cliente-servidor:
 ## 2) Stack técnico
 
 - **Backend:** NestJS 11, TypeORM 0.3, PostgreSQL, class-validator, pdfmake, nodemailer.
-- **Frontend:** Angular 20, Angular Material, RxJS.
+- **Frontend:** Angular 21, Angular Material, RxJS.
 - **Persistencia:** PostgreSQL.
 - **Auth:** JWT HS256 con guard global en backend.
 
@@ -29,7 +29,7 @@ El sistema está funcional en arquitectura cliente-servidor:
 
 ## 4) Requisitos
 
-- Node.js 20+
+- Node.js 24 LTS (indicado en `.nvmrc` y `.node-version`)
 - npm 10+
 - PostgreSQL 14+
 
@@ -41,12 +41,14 @@ El sistema está funcional en arquitectura cliente-servidor:
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=sistema
+DB_PASSWORD=tu-password-local
+DB_NAME=tu-base-local
 
-JWT_SECRET=cambiar-en-produccion
+JWT_SECRET=secreto-aleatorio-de-al-menos-32-bytes
 AUTH_USERNAME=admin
-AUTH_PASSWORD=admin123
+AUTH_PASSWORD=replace-with-a-temporary-bootstrap-password
+ALLOW_ENV_AUTH=false
+FISCAL_MODE=mock
 
 EMAIL_USER=correo@gmail.com
 EMAIL_PASS=app-password
@@ -63,6 +65,15 @@ Variables por entorno en:
 Se recomienda proxy en desarrollo (`frontend/proxy.conf.json`) para consumir `/api/v1`.
 
 ## 6) Instalación y ejecución
+
+El proyecto exige Node 24. En Windows, el lanzador incluido permite usar la instalación LTS del usuario aunque exista otra versión global en `C:\Program Files\nodejs`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/node24.ps1 install
+powershell -ExecutionPolicy Bypass -File scripts/node24.ps1 run verify
+npm run start:backend:node24
+npm run start:frontend:node24
+```
 
 ### Backend
 
@@ -93,7 +104,7 @@ UI por defecto: `http://localhost:4200`
 - Decorador `@Public()` para excepciones puntuales.
 - `AuthService` con:
   - Validación contra tabla `auth_user`.
-  - Fallback a credenciales de entorno si la tabla no está disponible.
+  - Fallback de entorno desactivado por defecto y habilitable sólo con `ALLOW_ENV_AUTH=true`.
   - Validaciones adicionales de seguridad para producción.
 - Frontend con:
   - `authGuard` para rutas privadas.
@@ -102,7 +113,7 @@ UI por defecto: `http://localhost:4200`
 
 ### Nota operativa
 
-Existe endpoint `POST /api/v1/auth/register` como `@Public()` para alta inicial de usuarios. En producción se recomienda restringirlo o deshabilitarlo tras el bootstrap inicial.
+`POST /api/v1/auth/register` requiere token con rol `admin`; los usuarios nuevos reciben rol `user` si no se especifica otro.
 
 ## 8) Funcionalidad de negocio cubierta
 
@@ -113,6 +124,31 @@ Existe endpoint `POST /api/v1/auth/register` como `@Public()` para alta inicial 
 - Compras e historial.
 - Cotizaciones (alta + historial).
 - Cobranza y cuentas por pagar.
+- CRM de oportunidades, seguimientos y ventas perdidas.
+- Números OEM/alternos, aplicaciones por equipo/motor y búsqueda remota.
+- Garantías ligadas al renglón original de venta.
+- Agenda CRM con historial, control de concurrencia, filtros, indicadores y ventas perdidas.
+- Administración de usuarios, cambio de contraseña y revocación inmediata de sesiones.
+- Apertura/cierre de caja, efectivo esperado/contado, diferencias y movimientos auditables.
+- Notas de crédito y devoluciones limitadas a la venta original, con reversos financieros.
+
+## Verificación y migraciones
+
+```bash
+npm run build
+npm test
+npm run db:status
+npm run db:backup
+npm run db:check
+npm run verify
+npm run verify:release
+```
+
+`npm run verify` exige Node 24 LTS y ejecuta build de backend/frontend, ESLint sin advertencias, pruebas unitarias y HTTP, pruebas frontend, recorridos Playwright de escritorio/móvil, accesibilidad WCAG A/AA y auditoría de dependencias de producción.
+
+`npm run verify:release` añade la restauración del respaldo más reciente en una base PostgreSQL temporal y recorre los ciclos transaccionales críticos. Consulta [Calidad y liberación](docs/CALIDAD_Y_RELEASE.md).
+
+Los PDF/XML fiscales siguen marcados como documentos de prueba mientras `FISCAL_MODE=mock`. Integrar un PAC en sandbox, certificados y validación SAT pertenece a la siguiente etapa.
 
 ## 9) Cambios y mejoras ya incorporados
 
@@ -141,10 +177,10 @@ npm test
 
 ## 11) Recomendaciones pendientes
 
-1. Cerrar o proteger `auth/register` para ambientes productivos.
-2. Consolidar estrategia de moneda/decimales también en backend para cálculos fiscales.
-3. Ampliar cobertura de pruebas E2E para flujos completos (venta, compra, pagos).
-4. Añadir observabilidad (logging estructurado + trazabilidad por request).
+1. Conectar el modo fiscal a un PAC sandbox y reemplazar los documentos simulados.
+2. Separar orden de compra, recepción parcial y factura de proveedor cuando se defina el flujo operativo final.
+3. Ampliar cobertura E2E sobre una base aislada para venta, compra, pagos y concurrencia.
+4. Añadir logging estructurado y un identificador de trazabilidad por petición.
 
 
 ## 12) Registro de cambios y mejoras (histórico)
@@ -155,7 +191,7 @@ npm test
 - Implementación de `AuthModule`, `AuthService`, `JwtAuthGuard` global y decorador `@Public()`.
 - Login JWT operativo en `POST /api/v1/auth/login`.
 - Integración frontend de `authGuard`, `authInterceptor` y `errorInterceptor`.
-- Evolución de auth a usuarios persistidos (`auth_user`) con fallback por entorno para desarrollo.
+- Evolución de auth a usuarios persistidos (`auth_user`) con fallback de entorno explícito y optativo.
 
 ### Ventas y facturación
 - Refactor para delegar generación de PDF a `TicketService`.
@@ -170,3 +206,5 @@ npm test
 
 ### Calidad
 - Pruebas unitarias base agregadas/reforzadas en `AuthService`, `CompraService`, `PagoService` y `PagoProveedorService`.
+- Bundle inicial reducido a 449.42 kB, dentro del presupuesto Angular de 500 kB.
+- ESLint en cero advertencias y TypeScript con `noImplicitAny` y `strictBindCallApply`.

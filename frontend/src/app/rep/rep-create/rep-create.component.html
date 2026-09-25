@@ -135,7 +135,7 @@
 
         <div class="mt-6 flex justify-end">
           <button mat-flat-button color="primary" class="h-12 px-8 text-lg rounded-full" [disabled]="totalRep <= 0 || !repForm.valid || isSaving" (click)="generarRep()">
-            <mat-icon>receipt_long</mat-icon> Timbrar REP CFDI 4.0
+            <mat-icon>receipt_long</mat-icon> Registrar REP de prueba
           </button>
         </div>
       </mat-card-content>
@@ -183,14 +183,14 @@
           <ng-container matColumnDef="acciones">
             <th mat-header-cell *matHeaderCellDef> Acciones </th>
             <td mat-cell *matCellDef="let r">
-              <button mat-icon-button color="primary" matTooltip="Descargar PDF" (click)="descargarPdf(r.id_rep)">
+              <button mat-icon-button color="primary" matTooltip="Descargar PDF" (click)="descargarPdf(r.id_rep)" aria-label="Descargar REP en PDF">
                 <mat-icon>picture_as_pdf</mat-icon>
               </button>
-              <button mat-icon-button color="accent" matTooltip="Descargar XML Pre-timbrado" (click)="descargarXml(r.id_rep)">
+              <button mat-icon-button color="accent" matTooltip="Descargar XML Pre-timbrado" (click)="descargarXml(r.id_rep)" aria-label="Descargar REP en XML">
                 <mat-icon>data_object</mat-icon>
               </button>
               @if (r.estado === 'Activo') {
-                <button mat-icon-button color="warn" matTooltip="Cancelar REP y Restaurar Deuda" (click)="cancelarRep(r.id_rep)">
+                <button mat-icon-button color="warn" matTooltip="Cancelar REP y Restaurar Deuda" (click)="cancelarRep(r.id_rep)" aria-label="Cancelar REP y restaurar saldo">
                   <mat-icon>cancel</mat-icon>
                 </button>
               }

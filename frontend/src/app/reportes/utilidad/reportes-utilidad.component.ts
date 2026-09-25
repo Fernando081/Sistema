@@ -1,31 +1,36 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { catchError, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { NgxEchartsModule } from 'ngx-echarts';
-import { EChartsOption } from 'echarts';
+import type { EChartsCoreOption as EChartsOption } from 'echarts/core';
 import { ReportesService, ProductoUtilidad } from '../../services/reportes.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ErpEchartsDirective } from '../../shared/echarts.provider';
 
 @Component({
   selector: 'app-reportes-utilidad',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatIconModule, MatTableModule, NgxEchartsModule],
+  imports: [CommonModule, MatCardModule, MatIconModule, MatTableModule, ErpEchartsDirective],
   templateUrl: './reportes-utilidad.component.html',
 })
 export class ReportesUtilidadComponent {
   private reportesService = inject(ReportesService);
+  readonly loadError = signal(false);
 
   // Reactive state using Signals
-  productos = toSignal(this.reportesService.getReporteUtilidad(), {
+  productos = toSignal(this.reportesService.getReporteUtilidad().pipe(catchError(() => { this.loadError.set(true); return of([]); })), {
     initialValue: [] as ProductoUtilidad[],
   });
 
   // Computed chart data
   graficaTop = computed<EChartsOption>(() => {
     const data = this.productos();
-    const top5 = [...data].sort((a, b) => b.utilidadNeta - a.utilidadNeta).slice(0, 5);
+    const top5 = [...data]
+      .filter((item) => item.costoConocido && item.utilidadBruta !== null)
+      .sort((a, b) => (b.utilidadBruta || 0) - (a.utilidadBruta || 0))
+      .slice(0, 5);
 
     return {
       tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
@@ -33,9 +38,9 @@ export class ReportesUtilidadComponent {
       yAxis: { type: 'value' },
       series: [
         {
-          name: 'Utilidad Neta',
+          name: 'Margen bruto',
           type: 'bar',
-          data: top5.map((item) => item.utilidadNeta),
+          data: top5.map((item) => item.utilidadBruta),
           itemStyle: { color: '#1976D2' },
         },
       ],
