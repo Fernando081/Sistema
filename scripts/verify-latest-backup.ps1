@@ -14,7 +14,11 @@ if (-not $dump) {
   throw 'No se encontró database.dump dentro de .backups. Ejecuta npm run db:backup.'
 }
 
-$relative = [System.IO.Path]::GetRelativePath($projectRoot, $dump.FullName)
-Write-Host "Verificando el respaldo aislado más reciente: $relative"
+$rootPrefix = $projectRoot.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+if (-not $dump.FullName.StartsWith($rootPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+  throw 'El respaldo resuelto quedó fuera del proyecto.'
+}
+$relative = $dump.FullName.Substring($rootPrefix.Length)
+Write-Host "Verificando el respaldo aislado mas reciente: $relative"
 & node (Join-Path $projectRoot 'backend\verify-isolated-database.js') "--backup=$relative"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

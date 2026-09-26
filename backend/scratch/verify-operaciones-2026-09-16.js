@@ -13,6 +13,9 @@ const { CotizacionService } = require('../dist/cotizacion/cotizacion.service');
 const { PedidoService } = require('../dist/pedido/pedido.service');
 const { AbastecimientoService } = require('../dist/abastecimiento/abastecimiento.service');
 const { GarantiaService } = require('../dist/garantia/garantia.service');
+const { FiscalService } = require('../dist/fiscal/fiscal.service');
+const { FiscalXmlBuilder } = require('../dist/fiscal/fiscal-xml.builder');
+const { MockFiscalProvider } = require('../dist/fiscal/providers/mock-fiscal.provider');
 
 async function verifyOperations(ds) {
   if (process.env.TEST_DATABASE_ISOLATED !== 'true') throw new Error('Se requiere TEST_DATABASE_ISOLATED=true; nunca ejecutar sobre la base de trabajo');
@@ -92,6 +95,38 @@ async function verifyOperations(ds) {
   assert.equal(pending.estatus,'Pendiente');
   await assert.rejects(()=>pago.registrarPago({idFactura:unpaid.idFactura,monto:20.01,formaPago:'Efectivo'}),/supera/);
 
+  // Ciclo fiscal mock: el timbrado persiste XML/UUID y la cancelación fiscal
+  // ocurre antes del reverso operativo. No se realiza ninguna llamada externa.
+  const fiscalConfig = { get: key => ({
+    FISCAL_MODE: 'mock', FISCAL_ISSUER_RFC: 'EKU9003173C9',
+    FISCAL_ISSUER_NAME: 'EMISOR DE PRUEBA', FISCAL_ISSUER_TAX_REGIME: '601',
+    FISCAL_ISSUER_POSTAL_CODE: '26015',
+  })[key] };
+  const fiscalBuilder = new FiscalXmlBuilder(ds, fiscalConfig);
+  const fiscal = new FiscalService(ds, fiscalConfig, fiscalBuilder, new MockFiscalProvider());
+  const ventaFiscal = new VentaService(ds, {}, fiscal);
+  const pagoFiscal = new PagoService(ds, fiscal);
+  const fiscalInvoice = await venta.create(sale(1,10),user.id);
+  const stampedInvoice = await fiscal.stamp('FACTURA',fiscalInvoice.idFactura,user.id);
+  assert.equal(stampedInvoice.estado,'Timbrado');
+  assert.match(stampedInvoice.uuid,/^[0-9a-f-]{36}$/i);
+  assert.match(await fiscal.xml('FACTURA',fiscalInvoice.idFactura),/SIN VALIDEZ FISCAL/);
+  const cancelledInvoice = await ventaFiscal.cancelarFactura(fiscalInvoice.idFactura,user.id,{motivo:'03'});
+  assert.equal(cancelledInvoice.cancelled,true);
+  assert.equal((await fiscal.getDocument('FACTURA',fiscalInvoice.idFactura)).estado,'Cancelado');
+  assert.equal((await ds.query('SELECT estatus FROM factura WHERE id_factura=$1',[fiscalInvoice.idFactura]))[0].estatus,'Cancelada');
+
+  const fiscalCreditInvoice = await venta.create(sale(1,10,true),user.id);
+  await fiscal.stamp('FACTURA',fiscalCreditInvoice.idFactura,user.id);
+  const fiscalRep = await pago.registrarRepComplejo({idCliente:client.id,fechaPago:new Date().toISOString(),
+    formaPago:'Efectivo',moneda:'MXN',montoTotal:10,facturas:[{idFactura:fiscalCreditInvoice.idFactura,montoSaldado:10}]});
+  const stampedRep = await fiscal.stamp('REP',fiscalRep.idRep,user.id);
+  assert.equal(stampedRep.estado,'Timbrado');
+  const cancelledRep = await pagoFiscal.cancelarRep(fiscalRep.idRep,{motivo:'03'},user.id);
+  assert.equal(cancelledRep.cancelled,true);
+  assert.equal((await fiscal.getDocument('REP',fiscalRep.idRep)).estado,'Cancelado');
+  assert.equal(Number((await ds.query('SELECT saldo_pendiente FROM factura WHERE id_factura=$1',[fiscalCreditInvoice.idFactura]))[0].saldo_pendiente),10);
+
   const source=sale(1,10);
   const cot=await quote.create({idCliente:client.id,nombreReceptor:client.nombre,rfcReceptor:client.rfc,
     subtotal:10,totalImpuestos:0,totalRetenciones:0,total:10,conceptos:[source.conceptos[0],{...source.conceptos[0]}]}
@@ -153,7 +188,7 @@ async function verifyOperations(ds) {
   const [reservedLine] = await ds.query('SELECT cantidad_reservada FROM pedido_venta_detalle WHERE id_pedido=$1',[pendingOrder.idPedido]);
   assert.equal(Number(reservedLine.cantidad_reservada),4);
 
-  console.log('Operaciones aisladas aprobadas: idempotencia, caja, devoluciones, NC/REP, cotizaciones, pedido completo con VIN/ESN y garantía, backorder, orden y recepción.');
+  console.log('Operaciones aisladas aprobadas: idempotencia, caja, devoluciones, NC/REP, timbrado y cancelación fiscal mock, cotizaciones, pedido completo con VIN/ESN y garantía, backorder, orden y recepción.');
 }
 
 module.exports={verifyOperations};

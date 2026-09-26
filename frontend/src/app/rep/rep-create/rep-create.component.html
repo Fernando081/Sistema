@@ -6,6 +6,14 @@
       <mat-card-subtitle>Abona a múltiples facturas PPD en un solo recibo</mat-card-subtitle>
     </mat-card-header>
 
+    @if (fiscalConfiguration; as fiscal) {
+      <div class="mx-4 mt-3 p-3 rounded border dark:border-gray-700" aria-live="polite">
+        <strong>Ambiente fiscal: {{ fiscal.environment === 'mock' ? 'Simulación' : (fiscal.environment === 'sandbox' ? 'PAC sandbox' : 'Producción') }}</strong>
+        <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">{{ fiscal.provider }}</span>
+        @if (!fiscal.ready) { <p class="m-0 mt-1 text-sm text-red-700 dark:text-red-300">Configuración pendiente: {{ fiscal.missing.join(', ') }}</p> }
+      </div>
+    }
+
     <mat-card-content class="mt-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Selector de Cliente -->
@@ -135,7 +143,7 @@
 
         <div class="mt-6 flex justify-end">
           <button mat-flat-button color="primary" class="h-12 px-8 text-lg rounded-full" [disabled]="totalRep <= 0 || !repForm.valid || isSaving" (click)="generarRep()">
-            <mat-icon>receipt_long</mat-icon> Registrar REP de prueba
+            <mat-icon>receipt_long</mat-icon> Registrar borrador REP
           </button>
         </div>
       </mat-card-content>
@@ -175,6 +183,20 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="fiscal">
+            <th mat-header-cell *matHeaderCellDef> Fiscal </th>
+            <td mat-cell *matCellDef="let r">
+              <span class="px-3 py-1 rounded-full text-xs font-bold"
+                [ngClass]="{
+                  'bg-green-100 text-green-800': r.estado_fiscal === 'Timbrado',
+                  'bg-red-100 text-red-800': r.estado_fiscal === 'Cancelado' || r.estado_fiscal === 'Error',
+                  'bg-amber-100 text-amber-900': r.estado_fiscal === 'Procesando' || r.estado_fiscal === 'Cancelacion solicitada',
+                  'bg-blue-100 text-blue-800': r.estado_fiscal === 'Borrador'
+                }">{{ r.estado_fiscal || 'Borrador' }}</span>
+              @if (r.error_fiscal) { <div class="text-xs text-red-700 dark:text-red-300 mt-1">{{ r.error_fiscal }}</div> }
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="total">
             <th mat-header-cell *matHeaderCellDef> Monto Total </th>
             <td mat-cell *matCellDef="let r" class="font-bold text-blue-600"> {{ r.monto_total | currency }} {{ r.moneda }} </td>
@@ -186,11 +208,21 @@
               <button mat-icon-button color="primary" matTooltip="Descargar PDF" (click)="descargarPdf(r.id_rep)" aria-label="Descargar REP en PDF">
                 <mat-icon>picture_as_pdf</mat-icon>
               </button>
-              <button mat-icon-button color="accent" matTooltip="Descargar XML Pre-timbrado" (click)="descargarXml(r.id_rep)" aria-label="Descargar REP en XML">
+              <button mat-icon-button color="accent" [matTooltip]="r.tiene_xml_fiscal ? 'Descargar XML timbrado' : 'Descargar borrador XML'" (click)="descargarXml(r)" aria-label="Descargar REP en XML">
                 <mat-icon>data_object</mat-icon>
               </button>
+              @if (['Borrador','Error'].includes(r.estado_fiscal) && r.estado === 'Activo') {
+                <button mat-icon-button color="primary" matTooltip="Timbrar REP" (click)="timbrarRep(r.id_rep)" [disabled]="fiscalOperationId === r.id_rep" aria-label="Timbrar REP">
+                  <mat-icon>verified</mat-icon>
+                </button>
+              }
+              @if (r.tiene_acuse) {
+                <button mat-icon-button matTooltip="Descargar acuse SAT" (click)="descargarAcuse(r)" aria-label="Descargar acuse de cancelación">
+                  <mat-icon>download_done</mat-icon>
+                </button>
+              }
               @if (r.estado === 'Activo') {
-                <button mat-icon-button color="warn" matTooltip="Cancelar REP y Restaurar Deuda" (click)="cancelarRep(r.id_rep)" aria-label="Cancelar REP y restaurar saldo">
+                <button mat-icon-button color="warn" matTooltip="Cancelar REP" (click)="cancelarRep(r.id_rep)" [disabled]="fiscalOperationId === r.id_rep" aria-label="Cancelar REP">
                   <mat-icon>cancel</mat-icon>
                 </button>
               }

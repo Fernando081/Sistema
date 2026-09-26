@@ -19,7 +19,9 @@ import { ClienteService } from '../../services/cliente.service';
 import { PagoService, RegistrarRepDto, RepFacturaDto } from '../../services/pago.service';
 import { Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { ConfirmService } from '../../shared/confirm.service';
+import { FiscalConfiguration, FiscalService } from '../../services/fiscal.service';
+import { FiscalCancelDialogComponent } from '../../shared/fiscal-cancel-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-rep-create',
@@ -27,7 +29,8 @@ import { ConfirmService } from '../../shared/confirm.service';
   imports: [
     CommonModule, ReactiveFormsModule, FormsModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule,
-    MatIconModule, MatTableModule, MatAutocompleteModule, MatSelectModule, MatSnackBarModule, MatTooltipModule
+    MatIconModule, MatTableModule, MatAutocompleteModule, MatSelectModule, MatSnackBarModule, MatTooltipModule,
+    MatDialogModule,
   ],
   templateUrl: './rep-create.component.html'
 })
@@ -51,7 +54,9 @@ export class RepCreateComponent implements OnInit {
 
   // Historial Data
   historialReps: any[] = [];
-  displayedColumnsHistorico: string[] = ['id_rep', 'fecha_pago', 'cliente', 'estado', 'total', 'acciones'];
+  displayedColumnsHistorico: string[] = ['id_rep', 'fecha_pago', 'cliente', 'estado', 'fiscal', 'total', 'acciones'];
+  fiscalConfiguration?: FiscalConfiguration;
+  fiscalOperationId?: number;
 
   constructor(
     private fb: FormBuilder,
@@ -59,7 +64,8 @@ export class RepCreateComponent implements OnInit {
     private pagoService: PagoService,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef,
-    private confirm: ConfirmService,
+    private fiscalService: FiscalService,
+    private dialog: MatDialog,
   ) {
     this.repForm = this.fb.group({
       fechaPago: [localDate(), Validators.required],
@@ -73,6 +79,9 @@ export class RepCreateComponent implements OnInit {
   ngOnInit(): void {
     this.cargarClientes();
     this.cargarHistorial();
+    this.fiscalService.configuration().subscribe({
+      next: config => { this.fiscalConfiguration = config; this.cdr.detectChanges(); },
+    });
     this.clienteControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
       if (typeof value === 'string' || !value) {
         this.pendingRequest?.unsubscribe();
@@ -242,29 +251,61 @@ export class RepCreateComponent implements OnInit {
     });
   }
 
-  descargarXml(idRep: number) {
-    this.pagoService.descargarRepXml(idRep).subscribe({
+  descargarXml(rep: any) {
+    const request = rep.tiene_xml_fiscal
+      ? this.fiscalService.xml('reps', rep.id_rep)
+      : this.pagoService.descargarRepXml(rep.id_rep);
+    request.subscribe({
       next: (blob: Blob) => {
-        downloadDocument(blob, `REP_${idRep}_pretimbrado.xml`);
+        downloadDocument(blob, rep.tiene_xml_fiscal ? `REP_${rep.id_rep}.xml` : `REP_${rep.id_rep}_borrador.xml`);
       },
       error: (err) => this.snackBar.open('Error al descargar el XML', 'Ok', {duration: 3000})
     });
   }
 
   cancelarRep(idRep: number) {
-    this.confirm.ask({ title: 'Cancelar complemento de pago', message: `El REP-${idRep} será cancelado y el importe regresará a las facturas como saldo pendiente.`, confirmLabel: 'Cancelar REP' }).subscribe(confirmed => {
-      if (!confirmed) return;
-      this.pagoService.cancelarRep(idRep).subscribe({
-        next: () => {
-        this.snackBar.open('REP Cancelado Exitosamente', 'Cerrar', {duration: 4000});
+    this.dialog.open(FiscalCancelDialogComponent, { width: '560px', data: { label: `REP-${idRep}` } }).afterClosed().subscribe(fiscal => {
+      if (!fiscal) return;
+      this.fiscalOperationId = idRep;
+      this.pagoService.cancelarRep(idRep, fiscal).subscribe({
+        next: (response: any) => {
+        this.fiscalOperationId = undefined;
+        this.snackBar.open(response.message || 'Solicitud procesada', 'Cerrar', {duration: 6000});
         this.cargarHistorial();
         // Recargar facturas si un cliente está seleccionado
         if (this.clienteSeleccionado) {
            this.cargarFacturasPpd(this.clienteSeleccionado.idCliente);
         }
       },
-        error: () => this.snackBar.open('Error al cancelar REP', 'Cerrar', {duration: 3000}),
+        error: (error: any) => {
+          this.fiscalOperationId = undefined;
+          this.snackBar.open(error.error?.message || 'Error al cancelar REP', 'Cerrar', {duration: 5000});
+        },
       });
+    });
+  }
+
+  timbrarRep(idRep: number) {
+    if (this.fiscalOperationId) return;
+    this.fiscalOperationId = idRep;
+    this.fiscalService.stamp('reps', idRep).subscribe({
+      next: document => {
+        this.fiscalOperationId = undefined;
+        this.snackBar.open(document.estado === 'Timbrado' ? 'REP timbrado correctamente' : `Estado fiscal: ${document.estado}`, 'Cerrar', { duration: 5000 });
+        this.cargarHistorial();
+      },
+      error: error => {
+        this.fiscalOperationId = undefined;
+        this.snackBar.open(error.error?.message || 'No fue posible timbrar el REP', 'Cerrar', { duration: 7000 });
+        this.cargarHistorial();
+      },
+    });
+  }
+
+  descargarAcuse(rep: any) {
+    this.fiscalService.acknowledgement('reps', rep.id_rep).subscribe({
+      next: blob => downloadDocument(blob, `ACUSE_REP_${rep.id_rep}.xml`),
+      error: error => this.snackBar.open(error.error?.message || 'Acuse no disponible', 'Cerrar', { duration: 4000 }),
     });
   }
 }

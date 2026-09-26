@@ -29,3 +29,4 @@ CREATE INDEX IF NOT EXISTS idx_crm_unidad_cliente
   ON crm_unidad_cliente (id_cliente, updated_at DESC);
 CREATE INDEX IF NOT EXISTS idx_crm_unidad_oportunidad
   ON crm_unidad_cliente (id_oportunidad, updated_at DESC);
+

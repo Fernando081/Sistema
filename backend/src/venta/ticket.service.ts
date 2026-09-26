@@ -121,13 +121,22 @@ export class TicketService {
       .toISOString()
       .replace('T', ' ')
       .substring(0, 19);
-    const fechaCertStr = fechaEmisionStr;
-
-    // 3. Datos Fiscales (Simulados)
-    const uuid = '3D2A8C2E-1975-4CDF-8E8B-BDA47F916F81';
-    const certEmisor = '00001000000515786200';
-    const certSAT = '00001000000706199269';
-    const qrData = `https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?id=${uuid}&re=OECR8905308K8&rr=${datos.cliente.rfc}&tt=${datos.total}&fe=SelloSimulado`;
+    const fiscal = datos.fiscal;
+    const isFiscal = fiscal?.state === 'Timbrado' && fiscal.environment === 'production';
+    const uuid = fiscal?.uuid || 'PENDIENTE DE TIMBRADO';
+    const certEmisor = fiscal?.cfdiCertificate || 'N/A';
+    const certSAT = fiscal?.satCertificate || 'N/A';
+    const fechaCertStr = fiscal?.stampedAt
+      ? new Date(fiscal.stampedAt).toISOString().replace('T', ' ').substring(0, 19)
+      : 'Pendiente';
+    const qrData = fiscal?.uuid && fiscal.cfdiSeal
+      ? `https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?id=${encodeURIComponent(fiscal.uuid)}&re=${encodeURIComponent(fiscal.issuerRfc)}&rr=${encodeURIComponent(datos.cliente.rfc)}&tt=${Number(datos.total).toFixed(6)}&fe=${encodeURIComponent(fiscal.cfdiSeal.slice(-8))}`
+      : '';
+    const fiscalBanner = isFiscal
+      ? null
+      : fiscal?.environment === 'sandbox'
+        ? 'DOCUMENTO DE PAC SANDBOX — SIN VALIDEZ FISCAL'
+        : 'BORRADOR DE PRUEBA — SIN TIMBRAR Y SIN VALIDEZ FISCAL';
 
     // 4. Dirección del Cliente ROBUSTA
     const cl = datos.cliente;
@@ -159,8 +168,8 @@ export class TicketService {
       pageMargins: [20, 20, 20, 380],
 
       content: [
-        { text: 'BORRADOR DE PRUEBA — SIN TIMBRAR Y SIN VALIDEZ FISCAL',
-          bold: true, color: '#b91c1c', alignment: 'center', fontSize: 9, margin: [0, 0, 0, 8] },
+        ...(fiscalBanner ? [{ text: fiscalBanner,
+          bold: true, color: '#b91c1c', alignment: 'center', fontSize: 9, margin: [0, 0, 0, 8] }] : []),
         // ==========================================
         // 1. ENCABEZADO
         // ==========================================
@@ -172,28 +181,24 @@ export class TicketService {
               alignment: 'center',
               stack: [
                 {
-                  text: 'RODRIGO DANIEL ORTEGA CORREA',
+                  text: fiscal?.issuerName || 'EMISOR NO CONFIGURADO',
                   fontSize: 11,
                   bold: true,
                 },
                 {
-                  text: 'REFACCIONES Y TRACTOREPUESTOS',
+                  text: 'REFACCIONES Y TRACTOREPUESTOS TAMPICO',
                   fontSize: 10,
                   bold: true,
                   italics: true,
                   margin: [0, 2],
                 },
-                { text: 'RFC: OECR8905308K8', fontSize: 8, bold: true },
+                { text: `RFC: ${fiscal?.issuerRfc || 'N/A'}`, fontSize: 8, bold: true },
                 {
-                  text: 'RÉGIMEN FISCAL: 626 - SIMPLIFICADO DE CONFIANZA',
+                  text: `RÉGIMEN FISCAL: ${fiscal?.issuerTaxRegime || 'N/A'}`,
                   fontSize: 7,
                   bold: true,
                 },
-                {
-                  text: 'SOR JUANA INES DE LA CRUZ 201-A, COL. NUEVO PROGRESO',
-                  fontSize: 7,
-                },
-                { text: 'TAMPICO, TAMAULIPAS. CP 89318', fontSize: 7 },
+                { text: `LUGAR DE EXPEDICIÓN: CP ${fiscal?.issuerPostalCode || 'N/A'}`, fontSize: 7 },
               ],
             },
             {
@@ -486,24 +491,24 @@ export class TicketService {
                       // QR y Sellos
                       {
                         columns: [
-                          { qr: qrData, fit: 70, width: 80 },
+                          qrData ? { qr: qrData, fit: 70, width: 80 } : { text: 'QR disponible al timbrar', width: 80, fontSize: 6, color: '#666' },
                           {
                             width: '*',
                             fontSize: 5,
                             stack: [
                               { text: 'SELLO DIGITAL DEL CFDI:', bold: true },
                               {
-                                text: 'kJS8s7d89s7d98s7d98s7d98s7d9s8d7s9d87s9d87s9d87s9d87s9d87s9d87s9d87s9d87s9d87s9d87sd7s9d87s9...',
+                                text: fiscal?.cfdiSeal || 'Pendiente de timbrado',
                                 margin: [0, 0, 0, 2],
                               },
                               { text: 'TIMBRE FISCAL SAT:', bold: true },
                               {
-                                text: '||1.1|3D2A8C2E-1975-4CDF-8E8B-BDA47F916F81|2025-12-11T12:09:24|SED1102088J7|kJS8s7d89s7d98s7d...||',
+                                text: fiscal?.satSeal || 'Pendiente de timbrado',
                                 margin: [0, 0, 0, 2],
                               },
                               { text: 'CADENA ORIGINAL:', bold: true },
                               {
-                                text: '||1.1|3D2A8C2E-1975-4CDF-8E8B-BDA47F916F81|2025-12-11T12:09:24|SED1102088J7|kJS8s7d89s7d98s7d...||',
+                                text: fiscal?.satOriginalString || 'Pendiente de timbrado',
                               },
                             ],
                           },
@@ -648,7 +653,7 @@ export class TicketService {
                                 bold: true,
                               },
                               {
-                                text: ` en moneda nacional a la orden de RODRIGO DANIEL ORTEGA CORREA la cantidad de `,
+                                text: ` en moneda nacional a la orden de ${fiscal?.issuerName || 'EL EMISOR'} la cantidad de `,
                                 fontSize: 6,
                               },
                               {

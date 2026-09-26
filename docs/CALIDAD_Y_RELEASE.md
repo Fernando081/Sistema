@@ -25,6 +25,7 @@ powershell -ExecutionPolicy Bypass -File scripts/node24.ps1 run verify:release
 - concurrencia de apertura y cierre de caja;
 - idempotencia de ventas y compras;
 - devoluciones exactas, notas de crédito y REP;
+- timbrado y cancelación fiscal mock de facturas y REP, incluido el reverso local sólo después de la confirmación fiscal;
 - cotizaciones sin conversión duplicada;
 - pedido con VIN/ESN, reserva, surtido, entrega, factura y garantía;
 - backorder, solicitud, orden de compra, recepción y apartado automático.
@@ -45,4 +46,5 @@ Una versión se puede etiquetar cuando:
 - `npm run verify:release` restaura y elimina correctamente la base temporal;
 - no existen migraciones pendientes;
 - el bundle inicial permanece dentro del presupuesto configurado;
-- los documentos fiscales siguen marcados como prueba mientras `FISCAL_MODE=mock`.
+- los documentos fiscales se marcan como prueba mientras `FISCAL_MODE=mock`;
+- para una liberación fiscal, el emisor, CSD y credenciales deben validarse además contra el PAC sandbox según [la guía fiscal](FISCAL_PAC_SANDBOX.md).

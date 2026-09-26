@@ -148,7 +148,7 @@ npm run verify:release
 
 `npm run verify:release` añade la restauración del respaldo más reciente en una base PostgreSQL temporal y recorre los ciclos transaccionales críticos. Consulta [Calidad y liberación](docs/CALIDAD_Y_RELEASE.md).
 
-Los PDF/XML fiscales siguen marcados como documentos de prueba mientras `FISCAL_MODE=mock`. Integrar un PAC en sandbox, certificados y validación SAT pertenece a la siguiente etapa.
+El ciclo fiscal admite `mock`, PAC `sandbox` y producción protegida por doble activación. Mientras `FISCAL_MODE=mock`, los PDF/XML se marcan sin validez fiscal y no realizan llamadas externas. Consulta [Integración fiscal y PAC sandbox](docs/FISCAL_PAC_SANDBOX.md) para configurar el emisor, credenciales y CSD de pruebas.
 
 ## 9) Cambios y mejoras ya incorporados
 
@@ -177,10 +177,9 @@ npm test
 
 ## 11) Recomendaciones pendientes
 
-1. Conectar el modo fiscal a un PAC sandbox y reemplazar los documentos simulados.
+1. Ejecutar la certificación operativa contra el PAC sandbox con el CSD de pruebas del emisor.
 2. Separar orden de compra, recepción parcial y factura de proveedor cuando se defina el flujo operativo final.
-3. Ampliar cobertura E2E sobre una base aislada para venta, compra, pagos y concurrencia.
-4. Añadir logging estructurado y un identificador de trazabilidad por petición.
+3. Añadir logging estructurado y un identificador de trazabilidad por petición.
 
 
 ## 12) Registro de cambios y mejoras (histórico)

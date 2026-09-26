@@ -72,6 +72,21 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="fiscal">
+            <th mat-header-cell *matHeaderCellDef> Fiscal </th>
+            <td mat-cell *matCellDef="let row">
+              <span class="badge"
+                [ngClass]="{
+                  'badge-success': row.estado_fiscal === 'Timbrado',
+                  'badge-danger': row.estado_fiscal === 'Cancelado' || row.estado_fiscal === 'Error',
+                  'badge-warning': row.estado_fiscal === 'Procesando' || row.estado_fiscal === 'Cancelacion solicitada',
+                  'badge-info': !['Timbrado','Cancelado','Error','Procesando','Cancelacion solicitada'].includes(row.estado_fiscal)
+                }">
+                {{ row.estado_fiscal || 'Borrador' }}
+              </span>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="acciones">
             <th mat-header-cell *matHeaderCellDef> </th>
             

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Venta, FacturaResumen } from '../venta/venta.interface';
+import { FiscalCancellation } from './fiscal.service';
 
 // La URL base se configura a través de environment.apiBaseUrl
 const API_URL = `${environment.apiBaseUrl}/venta`;
@@ -44,8 +45,8 @@ export class VentaService {
   }
 
 
-  cancelarFactura(idFactura: number): Observable<any> {
-    return this.http.post(`${API_URL}/${idFactura}/cancelar`, {});
+  cancelarFactura(idFactura: number, fiscal: FiscalCancellation = {}): Observable<any> {
+    return this.http.post(`${API_URL}/${idFactura}/cancelar`, fiscal);
   }
 
   devolver(idFactura: number, dto: { metodoReembolso: 'Efectivo' | 'Saldo a Favor'; articulos: { idProducto: number; cantidad: number }[] }): Observable<unknown> {

@@ -68,6 +68,7 @@ export interface FacturaResumen {
   saldo_pendiente?: number;
   id_cliente?: number;
   uuid?: string;
+  estado_fiscal?: string;
 }
 
 export interface DetalleFacturaDb {

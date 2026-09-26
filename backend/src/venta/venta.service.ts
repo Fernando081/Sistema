@@ -9,6 +9,8 @@ import { createHash } from 'node:crypto';
 import { queryRows } from '../common/database/typed-query';
 import { TicketQueryResult } from './ticket.types';
 import { consumeCommercialAuthorizations, validateCommercialPolicy } from '../comercial/commercial-policy';
+import { FiscalService } from '../fiscal/fiscal.service';
+import { CancelFiscalDocumentDto } from '../fiscal/fiscal.dto';
 
 interface IdempotencyRow { response: Record<string, unknown>; payload_hash: string; }
 interface FacturaRow { id_factura: number; id_cliente: number; tipo_comprobante: string; estatus: string; serie: string; id_factura_global: number | null; saldo_pendiente: number | string; moneda: string; }
@@ -18,6 +20,12 @@ interface FolioRow { next_folio: number | string; }
 interface FacturaIdRow { id_factura: number; }
 interface GastoIdRow { id_gasto: number; }
 interface CountRow { count: string | number; }
+interface FiscalStatusRow { id_factura: number; estado_fiscal: string; }
+interface PdfFiscalRow {
+  ambiente: string; estado: string; uuid: string | null; fecha_timbrado: Date | string | null;
+  no_certificado_cfdi: string | null; no_certificado_sat: string | null;
+  sello_cfdi: string | null; sello_sat: string | null; cadena_original_sat: string | null;
+}
 interface EmailFacturaRow { destinatario: string; asunto: string; cuerpo_mensaje: string; nombre_archivo: string; }
 interface DevolucionIdRow { id_devolucion: number | string; }
 export interface TicketResumenRow { idFactura: number; subtotal: number | string; totalImpuestosTrasladados: number | string; totalImpuestosRetenidos: number | string; total: number | string; [key: string]: unknown; }
@@ -29,6 +37,7 @@ export class VentaService {
   constructor(
     @InjectDataSource() private readonly dataSource: DataSource,
     private readonly ticketService: TicketService,
+    private readonly fiscalService?: FiscalService,
   ) {}
 
   async generarTicketPdf(idFactura: number): Promise<Buffer> {
@@ -36,7 +45,23 @@ export class VentaService {
       'SELECT fn_get_datos_ticket($1) as datos',
       [idFactura],
     );
-
+    if (!resultado.length) throw new BadRequestException('Factura no encontrada');
+    const fiscal = await queryRows<PdfFiscalRow>(this.dataSource, `
+      SELECT ambiente,estado,uuid,fecha_timbrado,no_certificado_cfdi,no_certificado_sat,
+        sello_cfdi,sello_sat,cadena_original_sat FROM fiscal_documento WHERE id_factura=$1`, [idFactura]);
+    const document = fiscal[0];
+    resultado[0].datos.fiscal = {
+      environment: document?.ambiente || 'mock', state: document?.estado || 'Borrador',
+      uuid: document?.uuid || undefined, stampedAt: document?.fecha_timbrado ? String(document.fecha_timbrado) : undefined,
+      issuerRfc: process.env.FISCAL_ISSUER_RFC || 'RFC NO CONFIGURADO',
+      issuerName: process.env.FISCAL_ISSUER_NAME || 'EMISOR NO CONFIGURADO',
+      issuerTaxRegime: process.env.FISCAL_ISSUER_TAX_REGIME || 'N/A',
+      issuerPostalCode: process.env.FISCAL_ISSUER_POSTAL_CODE || 'N/A',
+      cfdiCertificate: document?.no_certificado_cfdi || undefined,
+      satCertificate: document?.no_certificado_sat || undefined,
+      cfdiSeal: document?.sello_cfdi || undefined, satSeal: document?.sello_sat || undefined,
+      satOriginalString: document?.cadena_original_sat || undefined,
+    };
     return this.ticketService.crearPdfFactura(resultado[0].datos);
   }
 
@@ -412,9 +437,20 @@ export class VentaService {
 
     const total = Number(totalResult[0].count);
     const totalPages = Math.ceil(total / safeLimit);
+    const invoiceIds = dataResult.map(row => Number(row['id_factura'])).filter(Number.isSafeInteger);
+    const fiscalRows = invoiceIds.length
+      ? await queryRows<FiscalStatusRow>(this.dataSource,
+          `SELECT id_factura,estado AS estado_fiscal FROM fiscal_documento WHERE id_factura=ANY($1::int[])`,
+          [invoiceIds])
+      : [];
+    const fiscalByInvoice = new Map(fiscalRows.map(row => [Number(row.id_factura), row.estado_fiscal]));
+    const data = dataResult.map(row => ({
+      ...row,
+      estado_fiscal: fiscalByInvoice.get(Number(row['id_factura'])) || 'Borrador',
+    }));
 
     return {
-      data: dataResult,
+      data,
       total,
       page: safePage,
       totalPages,
@@ -453,7 +489,16 @@ export class VentaService {
     return { message: `Correo enviado a ${datosEnvio.destinatario}` };
   }
 
-  async cancelarFactura(idFactura: number, idUsuario?: number) {
+  async cancelarFactura(idFactura: number, idUsuario?: number, fiscalDto: CancelFiscalDocumentDto = {}) {
+    const fiscalResult = this.fiscalService
+      ? await this.fiscalService.cancel('FACTURA', idFactura, fiscalDto, idUsuario)
+      : { fiscal: false, cancelled: true, state: 'Sin timbrar' };
+    if (!fiscalResult.cancelled) {
+      return {
+        message: 'La solicitud fue recibida por el PAC. La operación se revertirá cuando SAT confirme la cancelación.',
+        ...fiscalResult,
+      };
+    }
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -465,7 +510,7 @@ export class VentaService {
         WHERE f.id_factura=(SELECT id_factura_origen FROM factura WHERE id_factura=$1) FOR UPDATE`, [idFactura]);
       await queryRunner.query('CALL sp_cancelar_factura($1, $2)', [idFactura, idUsuario ?? null]);
       await queryRunner.commitTransaction();
-      return { message: 'Factura cancelada y stock restaurado en Kardex con éxito' };
+      return { message: 'Factura cancelada y stock restaurado en Kardex con éxito', ...fiscalResult };
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

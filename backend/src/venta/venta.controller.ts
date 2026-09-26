@@ -8,6 +8,7 @@ import { Roles } from '../auth/roles.decorator';
 import { RolUsuario } from '../common/enums/app.enums';
 import { JwtPayload } from '../auth/auth.types';
 import { Permissions } from '../auth/permissions.decorator';
+import { CancelFiscalDocumentDto } from '../fiscal/fiscal.dto';
 
 @Controller('venta')
 export class VentaController {
@@ -67,8 +68,9 @@ export class VentaController {
   @Post(':id/cancelar')
   @Roles(RolUsuario.ADMIN)
   @Permissions('ventas.cancelar')
-  cancelarFactura(@Param('id', ParseIntPipe) id: number, @Req() req: { user: JwtPayload }) {
-    return this.ventaService.cancelarFactura(id, req.user?.idUser);
+  cancelarFactura(@Param('id', ParseIntPipe) id: number, @Req() req: { user: JwtPayload },
+    @Body() dto: CancelFiscalDocumentDto) {
+    return this.ventaService.cancelarFactura(id, req.user?.idUser, dto);
   }
 
   @Post(':id/devoluciones')

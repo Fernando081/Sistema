@@ -40,7 +40,7 @@ import { ConfirmService } from '../../shared/confirm.service';
 })
 export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
   
-  displayedColumns: string[] = ['folio', 'fecha', 'receptor', 'rfc', 'total', 'estatus', 'acciones'];
+  displayedColumns: string[] = ['folio', 'fecha', 'receptor', 'rfc', 'total', 'estatus', 'fiscal', 'acciones'];
   dataSource = new MatTableDataSource<FacturaResumen>();
   totalItems = 0;
   activeFilter = '';

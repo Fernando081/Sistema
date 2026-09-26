@@ -6,6 +6,8 @@ import { RegistrarPagoDto, RegistrarRepDto } from './pago.dto';
 import PdfPrinter from 'pdfmake';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { queryRows } from '../common/database/typed-query';
+import { FiscalService } from '../fiscal/fiscal.service';
+import { CancelFiscalDocumentDto } from '../fiscal/fiscal.dto';
 
 interface FacturaSaldoRow { saldo_pendiente: number | string; estatus: string; }
 interface PagoIdRow { id_pago: number; }
@@ -32,11 +34,24 @@ interface RepInfoRow {
   sello_cfdi: string | null;
   lugar_emision: string | null;
 }
-interface RepFacturaRow { uuid_factura: string | null; serie: string; folio: string | number; num_parcialidad: number; saldo_anterior: number | string; monto_pagado: number | string; saldo_insoluto: number | string; }
+interface RepFacturaRow {
+  uuid_factura: string | null;
+  serie: string;
+  folio: string | number;
+  num_parcialidad: number;
+  saldo_anterior: number | string;
+  monto_pagado: number | string;
+  saldo_insoluto: number | string;
+  total_factura: number | string;
+  subtotal_factura: number | string;
+  iva_factura: number | string;
+  isr_factura: number | string;
+}
+interface RepFiscalPdfRow { ambiente: string; estado: string; fecha_timbrado: Date | string | null; }
 
 @Injectable()
 export class PagoService {
-  constructor(@InjectDataSource() private dataSource: DataSource) {}
+  constructor(@InjectDataSource() private dataSource: DataSource, private readonly fiscalService?: FiscalService) {}
 
   // Registrar un pago
   async registrarPago(dto: RegistrarPagoDto) {
@@ -160,8 +175,8 @@ export class PagoService {
           uuid, no_serie_certificado, no_certificado_emisor, 
           lugar_emision, fecha_emision
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 
-          gen_random_uuid(), '00001000000500000000', '00001000000500000001',
-          '01000', NOW()
+          NULL, NULL, NULL,
+          NULL, NOW()
         ) RETURNING id_rep`,
         [
           dto.idCliente, dto.fechaPago, dto.formaPago, dto.moneda || 'MXN', dto.montoTotal,
@@ -242,15 +257,29 @@ export class PagoService {
   // Obtener Historial de todos los REPs
   async getHistorialReps() {
     return queryRows<Record<string, unknown>>(this.dataSource,
-      `SELECT r.*, c."RazonSocial" as cliente_nombre 
+      `SELECT r.*, c."RazonSocial" as cliente_nombre,
+        COALESCE(fd.estado,'Borrador') AS estado_fiscal,
+        (fd.xml_timbrado IS NOT NULL) AS tiene_xml_fiscal,
+        (fd.acuse_cancelacion IS NOT NULL) AS tiene_acuse,
+        fd.ultimo_error AS error_fiscal
        FROM rep r
        JOIN cliente c ON r.id_cliente = c."IdCliente"
+       LEFT JOIN fiscal_documento fd ON fd.id_rep=r.id_rep
        ORDER BY r.fecha_pago DESC`
     );
   }
 
   // Cancelar un REP
-  async cancelarRep(idRep: number) {
+  async cancelarRep(idRep: number, fiscalDto: CancelFiscalDocumentDto = {}, idUsuario?: number) {
+    const fiscalResult = this.fiscalService
+      ? await this.fiscalService.cancel('REP', idRep, fiscalDto, idUsuario)
+      : { fiscal: false, cancelled: true, state: 'Sin timbrar' };
+    if (!fiscalResult.cancelled) {
+      return {
+        message: 'La cancelación del REP está pendiente de confirmación del SAT; los saldos permanecen sin cambios.',
+        ...fiscalResult,
+      };
+    }
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -297,7 +326,7 @@ export class PagoService {
       );
 
       await queryRunner.commitTransaction();
-      return { message: 'REP cancelado correctamente', idRep };
+      return { message: 'REP cancelado correctamente', idRep, ...fiscalResult };
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw err;
@@ -322,10 +351,24 @@ export class PagoService {
     }
 
     const info = repResult[0];
+    const fiscalRows = await queryRows<RepFiscalPdfRow>(this.dataSource,
+      'SELECT ambiente,estado,fecha_timbrado FROM fiscal_documento WHERE id_rep=$1', [idRep]);
+    const fiscal = fiscalRows[0];
+    const fiscalBanner = fiscal?.estado === 'Timbrado' && fiscal.ambiente === 'production'
+      ? null
+      : fiscal?.ambiente === 'sandbox'
+        ? 'DOCUMENTO DE PAC SANDBOX — SIN VALIDEZ FISCAL'
+        : 'BORRADOR DE PRUEBA — SIN TIMBRAR Y SIN VALIDEZ FISCAL';
+    const issuerName = process.env.FISCAL_ISSUER_NAME || 'EMISOR NO CONFIGURADO';
+    const issuerRfc = process.env.FISCAL_ISSUER_RFC || 'N/A';
+    const issuerRegime = process.env.FISCAL_ISSUER_TAX_REGIME || 'N/A';
 
     // 2. Obtener el desglose de facturas (Documentos Relacionados)
     const facturas = await queryRows<RepFacturaRow>(this.dataSource,
-      `SELECT rf.*, f.serie, f.folio, f.uuid as uuid_factura
+      `SELECT rf.*, f.serie, f.folio, f.uuid as uuid_factura,
+              f.total AS total_factura, f.subtotal AS subtotal_factura,
+              f.total_impuestos_trasladados AS iva_factura,
+              f.total_impuestos_retenidos AS isr_factura
        FROM rep_factura rf
        JOIN factura f ON rf.id_factura = f.id_factura
        WHERE rf.id_rep = $1 ORDER BY rf.id_rep_factura ASC`,
@@ -389,27 +432,13 @@ export class PagoService {
       ]
     ];
     
-    // Validar si es persona moral (longitud RFC = 12) para aplicar ISR
-    const esPersonaMoral = info.cliente_rfc && info.cliente_rfc.length === 12;
-
     for (const f of facturas) {
       const montoPagado = Number(f.monto_pagado) || 0;
-      
-      let base = 0;
-      let iva = 0;
-      let isr = 0;
-
-      if (esPersonaMoral) {
-        // Fórmula con Retención ISR 1.25%: Base = MontoPagado / (1 + 0.16 - 0.0125)
-        base = montoPagado / 1.1475;
-        iva = base * 0.16;
-        isr = base * 0.0125;
-      } else {
-        // Fórmula General (solo IVA 16%): Base = MontoPagado / 1.16
-        base = montoPagado / 1.16;
-        iva = base * 0.16;
-        isr = 0;
-      }
+      const totalFactura = Number(f.total_factura) || 0;
+      const proportion = totalFactura > 0 ? montoPagado / totalFactura : 0;
+      const base = (Number(f.subtotal_factura) || 0) * proportion;
+      const iva = (Number(f.iva_factura) || 0) * proportion;
+      const isr = (Number(f.isr_factura) || 0) * proportion;
 
       taxBody.push([
         { text: `${f.serie || ''}-${f.folio}`, fontSize: 7 },
@@ -424,22 +453,23 @@ export class PagoService {
       pageSize: 'LETTER' as const,
       pageMargins: [30, 30, 30, 60] as [number, number, number, number],
       footer: () => ({
-        text: 'DOCUMENTO DE PRUEBA SIN TIMBRAR Y SIN VALIDEZ FISCAL',
+        text: fiscalBanner || 'REPRESENTACIÓN IMPRESA DE UN CFDI',
         alignment: 'center', fontSize: 7, color: '#888', margin: [0, 20, 0, 0]
       }),
       content: [
-        ...[{
-              text: 'BORRADOR DE PRUEBA — SIN TIMBRAR Y SIN VALIDEZ FISCAL',
+        ...(fiscalBanner ? [{
+              text: fiscalBanner,
               color: '#b91c1c', bold: true, alignment: 'center', margin: [0, 0, 0, 10],
-            }],
+            }] : []),
         // ═══ ENCABEZADO 3 COLUMNAS ═══
         {
           columns: [
             { width: 100, stack: [{ text: '[LOGO]', fontSize: 10, color: '#AAA', alignment: 'center', margin: [0, 15, 0, 0] }] },
             { width: '*', stack: [
-              { text: 'REFACCIONES Y TRACTOREPUESTOS', fontSize: 12, bold: true, alignment: 'center', color: '#1a1a1a' },
-              { text: 'RFC: OECR8905308K8', fontSize: 8, alignment: 'center', margin: [0, 2, 0, 0] },
-              { text: 'Régimen Fiscal: 626 - Régimen Simplificado de Confianza', fontSize: 7, alignment: 'center', color: '#555' },
+              { text: issuerName, fontSize: 12, bold: true, alignment: 'center', color: '#1a1a1a' },
+              { text: 'REFACCIONES Y TRACTOREPUESTOS TAMPICO', fontSize: 9, bold: true, alignment: 'center', color: '#1a1a1a' },
+              { text: `RFC: ${issuerRfc}`, fontSize: 8, alignment: 'center', margin: [0, 2, 0, 0] },
+              { text: `Régimen Fiscal: ${issuerRegime}`, fontSize: 7, alignment: 'center', color: '#555' },
             ]},
             { width: 200, table: { widths: ['*'], body: [
               [{ text: 'Tipo de comprobante: P - CFDI de Pago', style: 'fBox' }],
@@ -447,7 +477,7 @@ export class PagoService {
               [{ text: `Folio Fiscal:\n${info.uuid || 'Pendiente de timbrado'}`, style: 'fBox', fontSize: 6 }],
               [{ text: `No. Serie CSD Emisor: ${info.no_certificado_emisor || 'N/A'}`, style: 'fBox' }],
               [{ text: `No. Serie CSD SAT: ${info.no_serie_certificado || 'N/A'}`, style: 'fBox' }],
-              [{ text: `Fecha certificación: ${fmtDateTime(info.fecha_emision)}`, style: 'fBox' }],
+              [{ text: `Fecha certificación: ${fiscal?.fecha_timbrado ? fmtDateTime(fiscal.fecha_timbrado) : 'Pendiente'}`, style: 'fBox' }],
             ]}, layout: { hLineColor: () => '#ccc', vLineColor: () => '#ccc' } },
           ],
           margin: [0, 0, 0, 10] as [number, number, number, number]
@@ -530,6 +560,7 @@ export class PagoService {
 
   // Generar XML CFDI 4.0 Complemento Carta Porte (Pre-timbrado para PAC Sandbox)
   async generarRepXml(idRep: number): Promise<string> {
+    if (this.fiscalService) return this.fiscalService.previewXml('REP', idRep);
     // 1. Obtener la cabecera del REP y Cliente
     const repResult = await queryRows<RepInfoRow>(this.dataSource,
       `SELECT r.*, c."RazonSocial" as cliente_nombre, c."RFC" as cliente_rfc, c."CodigoPostal" as cliente_cp

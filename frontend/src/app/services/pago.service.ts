@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { FiscalCancellation } from './fiscal.service';
 
 const API_URL = `${environment.apiBaseUrl}/pago`;
 
@@ -66,7 +67,7 @@ export class PagoService {
     return this.http.get<any[]>(`${API_URL}/rep`);
   }
 
-  cancelarRep(idRep: number): Observable<any> {
-    return this.http.post(`${API_URL}/rep/${idRep}/cancelar`, {});
+  cancelarRep(idRep: number, fiscal: FiscalCancellation = {}): Observable<any> {
+    return this.http.post(`${API_URL}/rep/${idRep}/cancelar`, fiscal);
   }
 }

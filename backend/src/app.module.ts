@@ -43,6 +43,7 @@ import { AbastecimientoModule } from './abastecimiento/abastecimiento.module';
 import { ComercialModule } from './comercial/comercial.module';
 import { AlmacenModule } from './almacen/almacen.module';
 import { NotificationModule } from './notification/notification.module';
+import { FiscalModule } from './fiscal/fiscal.module';
 
 @Module({
   imports: [
@@ -117,6 +118,7 @@ import { NotificationModule } from './notification/notification.module';
     ComercialModule,
     AlmacenModule,
     NotificationModule,
+    FiscalModule,
   ],
   controllers: [HealthController],
   providers: [

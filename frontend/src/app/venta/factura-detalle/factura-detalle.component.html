@@ -17,6 +17,33 @@
     </p>
   </div>
 
+  <section class="mb-4 p-3 rounded border dark:border-gray-700" aria-live="polite">
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <div>
+        <strong>Estado fiscal: {{ fiscalDocument?.estado || 'Consultando…' }}</strong>
+        @if (fiscalDocument?.uuid) {
+          <div class="text-xs text-gray-500 dark:text-gray-400 break-all">UUID {{ fiscalDocument?.uuid }}</div>
+        }
+        @if (fiscalDocument?.ultimo_error) {
+          <div class="text-xs text-red-700 dark:text-red-300">{{ fiscalDocument?.ultimo_error }}</div>
+        }
+      </div>
+      <div class="flex flex-wrap gap-2">
+        @if (isAdmin && fiscalDocument && ['Borrador','Error'].includes(fiscalDocument.estado) && data.estatus !== 'Cancelada') {
+          <button mat-stroked-button color="primary" (click)="timbrar()" [disabled]="isStamping">
+            <mat-icon>verified</mat-icon> {{ isStamping ? 'Timbrando…' : 'Timbrar CFDI' }}
+          </button>
+        }
+        @if (fiscalDocument?.hasXml) {
+          <button mat-stroked-button (click)="descargarXml()"><mat-icon>data_object</mat-icon> XML</button>
+        }
+        @if (fiscalDocument?.hasAcknowledgement) {
+          <button mat-stroked-button (click)="descargarAcuse()"><mat-icon>download_done</mat-icon> Acuse</button>
+        }
+      </div>
+    </div>
+  </section>
+
   <div class="overflow-auto max-h-60" *ngIf="!isLoading; else loading">
     <table mat-table [dataSource]="detalles" class="w-full">
       <ng-container matColumnDef="cant">
@@ -81,10 +108,10 @@
 
 <mat-dialog-actions align="end">
   <button mat-button color="warn" (click)="cancelarFactura()" [disabled]="isCanceling" *ngIf="isAdmin && data.estatus !== 'Cancelada'">
-    <mat-icon>cancel</mat-icon> Cancelar Venta
+    <mat-icon>cancel</mat-icon> Cancelar factura
   </button>
   <button mat-button (click)="cerrar()" class="dark:text-gray-300">Cerrar</button>
   <button mat-flat-button color="primary" (click)="imprimirTicket()">
-    <mat-icon>print</mat-icon> Imprimir Factura
+    <mat-icon>print</mat-icon> Representación impresa
   </button>
 </mat-dialog-actions>

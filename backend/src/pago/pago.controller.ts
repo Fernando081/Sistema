@@ -1,10 +1,13 @@
 // backend/src/pago/pago.controller.ts
-import { Body, Controller, Get, Param, Post, Res, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res, ParseIntPipe, Req } from '@nestjs/common';
 import type { Response } from 'express';
 import { PagoService } from './pago.service';
 import { RegistrarPagoDto, RegistrarRepDto } from './pago.dto';
 import { Roles } from '../auth/roles.decorator';
 import { RolUsuario } from '../common/enums/app.enums';
+import { CancelFiscalDocumentDto } from '../fiscal/fiscal.dto';
+import { Permissions } from '../auth/permissions.decorator';
+import { JwtPayload } from '../auth/auth.types';
 
 @Controller('pago')
 export class PagoController {
@@ -47,8 +50,10 @@ export class PagoController {
 
   @Post('rep/:id/cancelar')
   @Roles(RolUsuario.ADMIN)
-  cancelarRep(@Param('id', ParseIntPipe) id: number) {
-    return this.pagoService.cancelarRep(id);
+  @Permissions('fiscal.timbrar')
+  cancelarRep(@Param('id', ParseIntPipe) id: number, @Body() dto: CancelFiscalDocumentDto,
+    @Req() req: { user: JwtPayload }) {
+    return this.pagoService.cancelarRep(id, dto, req.user?.idUser);
   }
 
   @Get(':id/pdf')

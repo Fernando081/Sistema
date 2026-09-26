@@ -37,6 +37,21 @@ export interface DatosTicketFactura {
   subtotal: string | number;
   iva: string | number;
   retenciones: string | number;
+  fiscal?: {
+    environment: string;
+    state: string;
+    uuid?: string;
+    stampedAt?: string;
+    issuerRfc: string;
+    issuerName: string;
+    issuerTaxRegime: string;
+    issuerPostalCode: string;
+    cfdiCertificate?: string;
+    satCertificate?: string;
+    cfdiSeal?: string;
+    satSeal?: string;
+    satOriginalString?: string;
+  };
 }
 
 export interface TicketQueryResult {
