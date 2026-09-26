@@ -29,6 +29,7 @@ powershell -ExecutionPolicy Bypass -File scripts/node24.ps1 run verify:release
 - cotizaciones sin conversión duplicada;
 - pedido con VIN/ESN, reserva, surtido, entrega, factura y garantía;
 - backorder, solicitud, orden de compra, recepción y apartado automático.
+- conciliación de factura de proveedor contra orden y recepción, documentos protegidos, anticipos, notas de crédito y pago sin duplicar inventario.
 
 ## Datos de las pruebas UI
 

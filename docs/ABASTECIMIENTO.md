@@ -11,8 +11,11 @@
 7. Desde **Recepciones** distribuya flete, seguro, importación o maniobras por valor o cantidad. El reparto cuadra al centavo y actualiza el costo de reposición.
 8. Registre devoluciones al proveedor desde la recepción original. El sistema valida lo recibido, lo devuelto anteriormente y la existencia disponible.
 9. Compare cotizaciones por producto y califique al proveedor en precio, entrega, calidad y atención.
+10. Capture el XML/PDF de la factura, concilie sus partidas contra orden y recepciones, resuelva diferencias y programe el pago desde **Cuentas por pagar**.
 
 Cada solicitud, orden y recepción utiliza un UUID de idempotencia. Repetir una petición por doble clic o pérdida de conexión devuelve la operación existente y no duplica inventario.
+
+La recepción es el único paso que incrementa inventario. La factura crea la obligación financiera y se documenta en [Cuentas por pagar y conciliación de proveedores](CUENTAS_PROVEEDOR.md).
 
 ## Estados
 

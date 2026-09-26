@@ -40,6 +40,7 @@ import { HealthController } from './health.controller';
 import { CajaModule } from './caja/caja.module';
 import { PedidoModule } from './pedido/pedido.module';
 import { AbastecimientoModule } from './abastecimiento/abastecimiento.module';
+import { CuentasProveedorModule } from './cuentas-proveedor/cuentas-proveedor.module';
 import { ComercialModule } from './comercial/comercial.module';
 import { AlmacenModule } from './almacen/almacen.module';
 import { NotificationModule } from './notification/notification.module';
@@ -115,6 +116,7 @@ import { FiscalModule } from './fiscal/fiscal.module';
     CajaModule,
     PedidoModule,
     AbastecimientoModule,
+    CuentasProveedorModule,
     ComercialModule,
     AlmacenModule,
     NotificationModule,

@@ -16,6 +16,7 @@ const { GarantiaService } = require('../dist/garantia/garantia.service');
 const { FiscalService } = require('../dist/fiscal/fiscal.service');
 const { FiscalXmlBuilder } = require('../dist/fiscal/fiscal-xml.builder');
 const { MockFiscalProvider } = require('../dist/fiscal/providers/mock-fiscal.provider');
+const { CuentasProveedorService } = require('../dist/cuentas-proveedor/cuentas-proveedor.service');
 
 async function verifyOperations(ds) {
   if (process.env.TEST_DATABASE_ISOLATED !== 'true') throw new Error('Se requiere TEST_DATABASE_ISOLATED=true; nunca ejecutar sobre la base de trabajo');
@@ -188,7 +189,35 @@ async function verifyOperations(ds) {
   const [reservedLine] = await ds.query('SELECT cantidad_reservada FROM pedido_venta_detalle WHERE id_pedido=$1',[pendingOrder.idPedido]);
   assert.equal(Number(reservedLine.cantidad_reservada),4);
 
-  console.log('Operaciones aisladas aprobadas: idempotencia, caja, devoluciones, NC/REP, timbrado y cancelación fiscal mock, cotizaciones, pedido completo con VIN/ESN y garantía, backorder, orden y recepción.');
+  // Conciliación de tres vías: la factura no vuelve a mover inventario, se
+  // aprueba después de conciliar y se liquida con anticipo, nota y pago.
+  const supplierAccounts = new CuentasProveedorService(ds);
+  const today = new Date().toISOString().slice(0,10);
+  const due = new Date(Date.now()+30*86400000).toISOString().slice(0,10);
+  const stockBeforeSupplierInvoice = await stock();
+  const supplierInvoice = await supplierAccounts.createInvoice({requestId:randomUUID(),idProveedor:supplier.id,idOrden:purchaseOrder.idOrden,
+    serie:'E2E',folio:'FP-'+randomUUID().slice(0,8),fechaEmision:today,fechaVencimiento:due,moneda:'MXN',tipoCambio:1,
+    subtotal:48,impuestos:7.68,retenciones:0,total:55.68,partidas:[{idOrdenDetalle:purchaseLine.id_detalle,
+      descripcion:'Fixture backorder aislado',cantidad:4,costoUnitario:12,tasaIva:.16}]},user.id);
+  assert.equal(supplierInvoice.estado,'Conciliada');
+  assert.equal(await stock(),stockBeforeSupplierInvoice,'La factura de proveedor no debe duplicar la entrada de inventario');
+  await supplierAccounts.uploadPdf(supplierInvoice.idFacturaProveedor,{mimetype:'application/pdf',buffer:Buffer.from('%PDF-1.4\nfixture\n%%EOF')} );
+  assert(Buffer.isBuffer(await supplierAccounts.document(supplierInvoice.idFacturaProveedor,'pdf')));
+  await supplierAccounts.approveInvoice(supplierInvoice.idFacturaProveedor,user.id);
+  await supplierAccounts.createAdvance({requestId:randomUUID(),idProveedor:supplier.id,idFacturaProveedor:supplierInvoice.idFacturaProveedor,
+    fecha:today,monto:10,montoAplicar:10,formaPago:'Transferencia',referencia:'E2E-ANT'},user.id);
+  await supplierAccounts.createCredit({requestId:randomUUID(),idProveedor:supplier.id,idFacturaProveedor:supplierInvoice.idFacturaProveedor,
+    folio:'NC-'+randomUUID().slice(0,8),fecha:today,total:5,montoAplicar:5},user.id);
+  await supplierAccounts.pay(supplierInvoice.idFacturaProveedor,{requestId:randomUUID(),fecha:today,monto:40.68,
+    formaPago:'Transferencia',referencia:'E2E-PAGO'},user.id);
+  const [settledSupplierInvoice] = await ds.query('SELECT estado,saldo_pendiente FROM factura_proveedor WHERE id_factura_proveedor=$1',[supplierInvoice.idFacturaProveedor]);
+  assert.equal(settledSupplierInvoice.estado,'Pagada');
+  assert.equal(Number(settledSupplierInvoice.saldo_pendiente),0);
+  const [openSupplierSchedules] = await ds.query(`SELECT count(*)::int AS total FROM factura_proveedor_programacion
+    WHERE id_factura_proveedor=$1 AND estado='Pendiente'`,[supplierInvoice.idFacturaProveedor]);
+  assert.equal(openSupplierSchedules.total,0,'Una factura liquidada no debe conservar pagos programados pendientes');
+
+  console.log('Operaciones aisladas aprobadas: idempotencia, caja, devoluciones, NC/REP, fiscal mock, pedidos, backorder, orden, recepción y conciliación/pago de factura de proveedor.');
 }
 
 module.exports={verifyOperations};

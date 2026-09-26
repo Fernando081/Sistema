@@ -1,6 +1,7 @@
 node_modules
 .backups/
 .runtime/
+.run/
 *-dev.*.log
 *.stdout.log
 *.stderr.log

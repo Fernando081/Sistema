@@ -107,7 +107,7 @@ export class AbastecimientoService {
     u.username AS solicitante,count(d.id_detalle)::int AS partidas,COALESCE(sum(d.cantidad*d.costo_estimado),0) AS estimado FROM solicitud_compra s
     LEFT JOIN auth_user u ON u.id_user=s.id_solicitante JOIN solicitud_compra_detalle d ON d.id_solicitud=s.id_solicitud
     GROUP BY s.id_solicitud,u.username ORDER BY s.created_at DESC LIMIT 100`);}
-  orders(){return queryRows<Record<string,unknown>>(this.dataSource,`SELECT o.id_orden AS "idOrden",o.folio,o.estado,o.total,o.fecha_promesa AS "fechaPromesa",o.created_at AS "createdAt",
+  orders(){return queryRows<Record<string,unknown>>(this.dataSource,`SELECT o.id_orden AS "idOrden",o.id_proveedor AS "idProveedor",o.folio,o.estado,o.total,o.fecha_promesa AS "fechaPromesa",o.created_at AS "createdAt",
     p."RazonSocial" AS proveedor,count(d.id_detalle)::int AS partidas,COALESCE(sum(d.cantidad-d.cantidad_recibida),0) AS pendiente
     FROM orden_compra o JOIN proveedor p ON p."IdProveedor"=o.id_proveedor JOIN orden_compra_detalle d ON d.id_orden=o.id_orden
     GROUP BY o.id_orden,p."RazonSocial" ORDER BY o.created_at DESC LIMIT 100`);}
@@ -123,8 +123,10 @@ export class AbastecimientoService {
       FROM recepcion_compra_detalle d JOIN producto p ON p."IdProducto"=d.id_producto WHERE d.id_recepcion=$1 ORDER BY d.id_detalle`,[id])
   ]).then(([rows,partidas])=>{if(!rows.length)throw new NotFoundException('Recepción no encontrada');return {...rows[0],partidas};});}
   order(id:number){return Promise.all([
-    queryRows<Record<string,unknown>>(this.dataSource,`SELECT o.*,o.id_orden AS "idOrden",p."RazonSocial" AS proveedor FROM orden_compra o JOIN proveedor p ON p."IdProveedor"=o.id_proveedor WHERE o.id_orden=$1`,[id]),
-    queryRows<Record<string,unknown>>(this.dataSource,`SELECT d.id_detalle AS "idDetalle",d.id_producto AS "idProducto",p."Codigo" AS codigo,d.descripcion,d.cantidad,d.cantidad_recibida AS "cantidadRecibida",d.costo_unitario AS "costoUnitario" FROM orden_compra_detalle d JOIN producto p ON p."IdProducto"=d.id_producto WHERE d.id_orden=$1 ORDER BY d.id_detalle`,[id])
+    queryRows<Record<string,unknown>>(this.dataSource,`SELECT o.*,o.id_orden AS "idOrden",o.id_proveedor AS "idProveedor",p."RazonSocial" AS proveedor FROM orden_compra o JOIN proveedor p ON p."IdProveedor"=o.id_proveedor WHERE o.id_orden=$1`,[id]),
+    queryRows<Record<string,unknown>>(this.dataSource,`SELECT d.id_detalle AS "idDetalle",d.id_producto AS "idProducto",p."Codigo" AS codigo,d.descripcion,d.cantidad,d.cantidad_recibida AS "cantidadRecibida",d.costo_unitario AS "costoUnitario",
+      coalesce((SELECT sum(fd.cantidad) FROM factura_proveedor_detalle fd JOIN factura_proveedor f ON f.id_factura_proveedor=fd.id_factura_proveedor WHERE fd.id_orden_detalle=d.id_detalle AND f.estado<>'Cancelada'),0) AS "cantidadFacturada"
+      FROM orden_compra_detalle d JOIN producto p ON p."IdProducto"=d.id_producto WHERE d.id_orden=$1 ORDER BY d.id_detalle`,[id])
   ]).then(([rows,partidas])=>{if(!rows.length)throw new NotFoundException('Orden no encontrada');return {...rows[0],partidas};});}
 
   providerQuotes(idProducto:number){return queryRows<Record<string,unknown>>(this.dataSource,`SELECT q.id_cotizacion_prov AS "idCotizacion",q.id_proveedor AS "idProveedor",p."RazonSocial" AS proveedor,

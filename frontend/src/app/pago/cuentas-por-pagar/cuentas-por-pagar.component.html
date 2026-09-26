@@ -1,113 +1,41 @@
-<div class="p-6 flex flex-col xl:flex-row gap-6">
-  
-  <div class="flex-1 w-full min-w-0 flex flex-col gap-4">
-    <mat-card class="w-full">
-      <mat-card-header>
-        <mat-icon mat-card-avatar class="text-red-600">money_off</mat-icon>
-        <mat-card-title>Cuentas por Pagar</mat-card-title>
-        <mat-card-subtitle>Facturas pendientes a proveedores</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content class="mt-2">
-        <mat-form-field class="w-full">
-          <mat-label>Filtrar por Proveedor o Folio</mat-label>
-          <input type="text" matInput [formControl]="filtroControl" placeholder="Ej. Distribuidora S.A, F-1002">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
+<header class="page-head">
+  <div><h1>Cuentas por pagar</h1><p>Conciliación orden–recepción–factura, vencimientos y pagos a proveedores.</p></div>
+  <div class="actions"><button mat-stroked-button (click)="showAdvance.set(true)"><mat-icon>account_balance_wallet</mat-icon>Anticipo</button><button mat-stroked-button (click)="showCredit.set(true)"><mat-icon>receipt</mat-icon>Nota de crédito</button><button mat-flat-button (click)="showInvoice.set(true)"><mat-icon>post_add</mat-icon>Capturar factura</button></div>
+</header>
+@if(dashboard();as d){<section class="metrics">
+  <mat-card><span>Saldo total</span><strong>{{d.resumen.total|currency:'MXN'}}</strong><small>Facturas activas</small></mat-card>
+  <mat-card class="danger"><span>Vencido</span><strong>{{d.resumen.vencido|currency:'MXN'}}</strong><small>Requiere programación o pago</small></mat-card>
+  <mat-card class="warning"><span>Discrepancias</span><strong>{{d.resumen.discrepancias}}</strong><small>Precio, cantidad, impuesto o recepción</small></mat-card>
+  <mat-card><span>Por conciliar</span><strong>{{d.resumen.porConciliar}}</strong><small>Documentos recién capturados</small></mat-card>
+</section>}
+<mat-tab-group>
+  <mat-tab [label]="'Facturas ('+invoices().length+')'"><section class="invoice-list">
+    @for(f of invoices();track f.idFacturaProveedor){<article><div class="invoice-main"><span class="eyebrow">OC-{{f.folioOrden}} · {{f.estado}}</span><strong>{{f.proveedor}}</strong><span>{{f.serie ? f.serie+'-' : ''}}{{f.folio}} · vence {{f.fechaVencimiento|date:'mediumDate'}}</span><small>@if(f.tieneXml){XML · }@if(f.tienePdf){PDF · }{{f.discrepanciasPendientes}} excepciones pendientes</small></div><div class="amount"><strong>{{f.saldo|currency:f.moneda}}</strong><small>de {{f.total|currency:f.moneda}}</small></div><button mat-stroked-button (click)="openInvoice(f.idFacturaProveedor)">Revisar</button></article>}
+    @empty{<div class="erp-empty-state"><mat-icon>task_alt</mat-icon><strong>No hay facturas de proveedor</strong><span>Captura una factura vinculada a una orden recibida.</span></div>}
+  </section></mat-tab>
+  <mat-tab label="Recibido sin factura"><section class="invoice-list">@for(r of dashboard()?.recibidoSinFactura||[];track r.idRecepcionDetalle){<article><div class="invoice-main"><span class="eyebrow">Recepción #{{r.idRecepcion}} · OC-{{r.folioOrden}}</span><strong>{{r.codigo}} · {{r.producto}}</strong><span>{{r.proveedor}} · {{r.fechaRecepcion|date:'mediumDate'}}</span></div><div class="amount"><strong>{{r.pendiente|number:'1.0-6'}}</strong><small>sin facturar</small></div></article>}@empty{<div class="erp-empty-state"><mat-icon>verified</mat-icon><strong>Todo lo recibido está conciliado</strong></div>}</section></mat-tab>
+  <mat-tab label="Antigüedad"><section class="aging">@for(a of dashboard()?.antiguedad||[];track a.rango){<mat-card><span>{{a.rango}}</span><strong>{{a.saldo|currency:'MXN'}}</strong><small>{{a.facturas}} facturas</small></mat-card>}@empty{<div class="erp-empty-state"><mat-icon>event_available</mat-icon><strong>No hay saldos por vencer</strong></div>}</section></mat-tab>
+  <mat-tab label="Saldos a favor"><div class="balance-grid"><section><h2>Anticipos disponibles</h2>@for(a of dashboard()?.anticipos||[];track a.id){<article><strong>{{a.saldo|currency:'MXN'}}</strong><span>Proveedor #{{a.idProveedor}} · {{a.fecha|date}}</span><small>{{a.formaPago}} {{a.referencia||''}}</small></article>}@empty{<div class="erp-empty-state compact">Sin anticipos disponibles</div>}</section><section><h2>Notas de crédito</h2>@for(n of dashboard()?.notasCredito||[];track n.id){<article><strong>{{n.saldo|currency:'MXN'}}</strong><span>{{n.folio}} · Proveedor #{{n.idProveedor}}</span><small>{{n.fecha|date}}</small></article>}@empty{<div class="erp-empty-state compact">Sin notas disponibles</div>}</section></div></mat-tab>
+  <mat-tab [label]="'Compras anteriores ('+legacyDebts().length+')'"><section class="invoice-list">@for(c of legacyDebts();track c.id_compra){<article><div class="invoice-main"><span class="eyebrow">Registro anterior #{{c.id_compra}}</span><strong>{{c.proveedor_nombre}}</strong><span>{{c.folio_factura_proveedor||'Sin folio'}} · {{c.fecha_compra|date:'mediumDate'}}</span></div><div class="amount"><strong>{{c.saldo_pendiente|currency:'MXN'}}</strong><small>de {{c.total|currency:'MXN'}}</small></div><button mat-stroked-button (click)="openLegacy(c)">Pagar</button></article>}@empty{<div class="erp-empty-state"><mat-icon>task_alt</mat-icon><strong>Sin saldos históricos</strong></div>}</section></mat-tab>
+</mat-tab-group>
 
-        <div class="overflow-auto max-h-[600px]">
-          <table mat-table [dataSource]="deudasPendientes" class="w-full">
-            
-            <ng-container matColumnDef="folio">
-              <th mat-header-cell *matHeaderCellDef> Factura Prov. </th>
-              <td mat-cell *matCellDef="let row" class="font-mono text-xs"> {{row.folio_factura_proveedor || 'S/N'}} </td>
-            </ng-container>
+@if(showInvoice()){<div class="modal-backdrop"><mat-card class="modal wide"><div class="modal-head"><div><h2>Capturar factura de proveedor</h2><p>Selecciona la orden y conserva únicamente las partidas incluidas en el CFDI.</p></div><button mat-icon-button (click)="showInvoice.set(false)"><mat-icon>close</mat-icon></button></div><form [formGroup]="invoiceForm" (ngSubmit)="saveInvoice()">
+  <div class="form-grid"><mat-form-field><mat-label>Orden de compra</mat-label><mat-select formControlName="idOrden" (selectionChange)="selectOrder($event.value)">@for(o of orders();track o.idOrden){<mat-option [value]="o.idOrden">OC-{{o.folio}} · {{o.proveedor}} · {{o.estado}}</mat-option>}</mat-select></mat-form-field><mat-form-field><mat-label>Serie</mat-label><input matInput formControlName="serie"></mat-form-field><mat-form-field><mat-label>Folio</mat-label><input matInput formControlName="folio"></mat-form-field><mat-form-field><mat-label>UUID</mat-label><input matInput formControlName="uuid"></mat-form-field><mat-form-field><mat-label>Emisión</mat-label><input matInput type="date" formControlName="fechaEmision"></mat-form-field><mat-form-field><mat-label>Vencimiento</mat-label><input matInput type="date" formControlName="fechaVencimiento"></mat-form-field></div>
+  <div class="file-row"><label>XML CFDI<input type="file" accept=".xml,text/xml,application/xml" (change)="onXml($event)"></label><label>Representación PDF<input type="file" accept="application/pdf,.pdf" (change)="onPdf($event)"></label></div>
+  <div formArrayName="partidas" class="lines">@for(line of lines.controls;track $index){<div [formGroupName]="$index" class="line"><span>{{invoiceProduct($index)?.codigo}} · {{invoiceProduct($index)?.descripcion}}</span><mat-form-field><mat-label>Cantidad facturada</mat-label><input matInput type="number" formControlName="cantidad"></mat-form-field><mat-form-field><mat-label>Costo unitario</mat-label><input matInput type="number" formControlName="costoUnitario"></mat-form-field><mat-form-field><mat-label>IVA</mat-label><input matInput type="number" formControlName="tasaIva"></mat-form-field><button mat-icon-button type="button" aria-label="Quitar partida de la factura" (click)="removeInvoiceLine($index)"><mat-icon>delete_outline</mat-icon></button></div>}</div>
+  <div class="totals"><mat-form-field><mat-label>Retenciones</mat-label><input matInput type="number" formControlName="retenciones"></mat-form-field><dl><div><dt>Subtotal</dt><dd>{{calculated.subtotal|currency}}</dd></div><div><dt>Impuestos</dt><dd>{{calculated.impuestos|currency}}</dd></div><div><dt>Total</dt><dd>{{calculated.total|currency}}</dd></div></dl></div><mat-form-field class="full"><mat-label>Observaciones</mat-label><textarea matInput formControlName="observaciones"></textarea></mat-form-field><div class="actions"><button mat-button type="button" (click)="showInvoice.set(false)">Cancelar</button><button mat-flat-button type="submit" [disabled]="saving()||invoiceForm.invalid">{{saving()?'Guardando…':'Conciliar factura'}}</button></div>
+</form></mat-card></div>}
 
-            <ng-container matColumnDef="proveedor">
-              <th mat-header-cell *matHeaderCellDef> Proveedor </th>
-              <td mat-cell *matCellDef="let row" class="font-medium"> {{row.proveedor_nombre}} </td>
-            </ng-container>
+@if(selectedInvoice();as f){<div class="modal-backdrop"><mat-card class="modal wide"><div class="modal-head"><div><span class="eyebrow">OC-{{f.folioOrden}} · {{f.estado}}</span><h2>{{f.proveedor}} · {{f.serie ? f.serie+'-' : ''}}{{f.folio}}</h2><p>Saldo {{f.saldo_pendiente|currency:f.moneda}} de {{f.total|currency:f.moneda}}</p></div><button mat-icon-button (click)="selectedInvoice.set(null)"><mat-icon>close</mat-icon></button></div>
+  <div class="document-actions">@if(f.tieneXml){<button mat-stroked-button (click)="download(f.idFacturaProveedor,'xml')"><mat-icon>data_object</mat-icon>XML</button>}@if(f.tienePdf){<button mat-stroked-button (click)="download(f.idFacturaProveedor,'pdf')"><mat-icon>picture_as_pdf</mat-icon>PDF</button>}@if(['Conciliada','Con discrepancias'].includes(f.estado)){<button mat-flat-button (click)="approve()"><mat-icon>approval</mat-icon>Aprobar factura</button>}</div>
+  <h3>Conciliación</h3><section class="detail-lines">@for(p of f.partidas;track p.idDetalle){<article><strong>{{p.codigo}} · {{p.descripcion}}</strong><span>Factura {{p.cantidad|number:'1.0-6'}} · recepción conciliada {{p.conciliada|number:'1.0-6'}}</span><small>{{p.costoUnitario|currency}} · IVA {{p.tasaIva|percent:'1.0-2'}}</small></article>}</section>
+  @if(f.discrepancias.length){<h3>Discrepancias</h3><section class="exceptions">@for(d of f.discrepancias;track d.idDiscrepancia){<article><div><strong>{{d.tipo}} · {{d.estado}}</strong><span>Esperado {{d.esperado|number:'1.0-6'}} · factura/recepción {{d.recibido|number:'1.0-6'}}</span></div>@if(d.estado==='Pendiente'){<div class="exception-action"><input #reason placeholder="Justificación obligatoria"><button mat-stroked-button (click)="resolve(d.idDiscrepancia,'Rechazada',reason.value)">Rechazar</button><button mat-flat-button (click)="resolve(d.idDiscrepancia,'Aprobada',reason.value)">Aprobar excepción</button></div>}@else{<small>{{d.justificacion}}</small>}</article>}</section>}
+  @if(['Aprobada','Parcialmente pagada'].includes(f.estado)){<div class="payment-grid"><form [formGroup]="scheduleForm" (ngSubmit)="schedule()"><h3>Programar pago</h3><mat-form-field><mat-label>Fecha</mat-label><input matInput type="date" formControlName="fechaProgramada"></mat-form-field><mat-form-field><mat-label>Monto</mat-label><input matInput type="number" formControlName="monto"></mat-form-field><mat-form-field><mat-label>Notas</mat-label><input matInput formControlName="notas"></mat-form-field><button mat-stroked-button type="submit">Programar</button></form><form [formGroup]="paymentForm" (ngSubmit)="pay()"><h3>Registrar pago</h3><mat-form-field><mat-label>Fecha</mat-label><input matInput type="date" formControlName="fecha"></mat-form-field><mat-form-field><mat-label>Monto</mat-label><input matInput type="number" formControlName="monto"></mat-form-field><mat-form-field><mat-label>Forma</mat-label><mat-select formControlName="formaPago"><mat-option value="Transferencia">Transferencia</mat-option><mat-option value="Cheque">Cheque</mat-option><mat-option value="Efectivo">Efectivo</mat-option></mat-select></mat-form-field><mat-form-field><mat-label>Referencia</mat-label><input matInput formControlName="referencia"></mat-form-field><button mat-flat-button type="submit" [disabled]="saving()">Pagar</button></form></div>}
+  @if(f.programaciones.length){<h3>Calendario</h3><section class="schedule-list">@for(p of f.programaciones;track p.idProgramacion){<button type="button" (click)="selectProgram(p.idProgramacion,p.monto)" [disabled]="p.estado!=='Pendiente'"><span>{{p.fechaProgramada|date}} · {{p.estado}}</span><strong>{{p.monto|currency}}</strong></button>}</section>}
+</mat-card></div>}
 
-            <ng-container matColumnDef="fecha">
-              <th mat-header-cell *matHeaderCellDef> Fecha </th>
-              <td mat-cell *matCellDef="let row"> {{row.fecha_compra | date:'dd/MM/yy'}} </td>
-            </ng-container>
+@if(showAdvance()){<div class="modal-backdrop"><mat-card class="modal"><div class="modal-head"><h2>Registrar anticipo</h2><button mat-icon-button (click)="showAdvance.set(false)"><mat-icon>close</mat-icon></button></div><form [formGroup]="advanceForm" (ngSubmit)="createAdvance()"><mat-form-field><mat-label>Proveedor</mat-label><mat-select formControlName="idProveedor">@for(p of providers();track p.id){<mat-option [value]="p.id">{{p.name}}</mat-option>}</mat-select></mat-form-field><mat-form-field><mat-label>Factura para aplicar (opcional)</mat-label><mat-select formControlName="idFacturaProveedor"><mat-option [value]="0">Conservar disponible</mat-option>@for(f of eligibleInvoices(advanceForm.controls.idProveedor.value);track f.idFacturaProveedor){<mat-option [value]="f.idFacturaProveedor">{{f.proveedor}} · {{f.folio}}</mat-option>}</mat-select></mat-form-field><mat-form-field><mat-label>Fecha</mat-label><input matInput type="date" formControlName="fecha"></mat-form-field><mat-form-field><mat-label>Monto</mat-label><input matInput type="number" formControlName="monto"></mat-form-field><mat-form-field><mat-label>Monto a aplicar (0 = total)</mat-label><input matInput type="number" formControlName="montoAplicar"></mat-form-field><mat-form-field><mat-label>Forma de pago</mat-label><mat-select formControlName="formaPago"><mat-option value="Transferencia">Transferencia</mat-option><mat-option value="Cheque">Cheque</mat-option><mat-option value="Efectivo">Efectivo</mat-option></mat-select></mat-form-field><mat-form-field><mat-label>Referencia</mat-label><input matInput formControlName="referencia"></mat-form-field><div class="actions"><button mat-button type="button" (click)="showAdvance.set(false)">Cancelar</button><button mat-flat-button type="submit">Registrar</button></div></form></mat-card></div>}
 
-            <ng-container matColumnDef="total">
-              <th mat-header-cell *matHeaderCellDef> Total </th>
-              <td mat-cell *matCellDef="let row"> {{row.total | currency}} </td>
-            </ng-container>
+@if(showCredit()){<div class="modal-backdrop"><mat-card class="modal"><div class="modal-head"><h2>Nota de crédito del proveedor</h2><button mat-icon-button (click)="showCredit.set(false)"><mat-icon>close</mat-icon></button></div><form [formGroup]="creditForm" (ngSubmit)="createCredit()"><mat-form-field><mat-label>Proveedor</mat-label><mat-select formControlName="idProveedor">@for(p of providers();track p.id){<mat-option [value]="p.id">{{p.name}}</mat-option>}</mat-select></mat-form-field><mat-form-field><mat-label>Factura para aplicar</mat-label><mat-select formControlName="idFacturaProveedor"><mat-option [value]="0">Conservar disponible</mat-option>@for(f of eligibleInvoices(creditForm.controls.idProveedor.value);track f.idFacturaProveedor){<mat-option [value]="f.idFacturaProveedor">{{f.proveedor}} · {{f.folio}}</mat-option>}</mat-select></mat-form-field><mat-form-field><mat-label>Folio</mat-label><input matInput formControlName="folio"></mat-form-field><mat-form-field><mat-label>UUID</mat-label><input matInput formControlName="uuid"></mat-form-field><mat-form-field><mat-label>Fecha</mat-label><input matInput type="date" formControlName="fecha"></mat-form-field><mat-form-field><mat-label>Total</mat-label><input matInput type="number" formControlName="total"></mat-form-field><mat-form-field><mat-label>Monto a aplicar (0 = total)</mat-label><input matInput type="number" formControlName="montoAplicar"></mat-form-field><div class="actions"><button mat-button type="button" (click)="showCredit.set(false)">Cancelar</button><button mat-flat-button type="submit">Registrar</button></div></form></mat-card></div>}
 
-            <ng-container matColumnDef="saldo">
-              <th mat-header-cell *matHeaderCellDef> Debe </th>
-              <td mat-cell *matCellDef="let row" class="text-red-600 font-bold"> {{row.saldo_pendiente | currency}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="pagar">
-              <th mat-header-cell *matHeaderCellDef> </th>
-              <td mat-cell *matCellDef="let row">
-                <button mat-mini-fab color="warn" (click)="seleccionarCompra(row)" [disabled]="isSaving" aria-label="Registrar pago">
-                  <mat-icon>attach_money</mat-icon>
-                </button>
-              </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-colors"></tr>
-            <tr class="mat-row" *matNoDataRow>
-              <td class="mat-cell text-center p-4 text-gray-500" colspan="6">
-                No hay deudas pendientes registradas. 🎉
-              </td>
-            </tr>
-          </table>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <div class="w-full md:w-[450px] shrink-0 flex flex-col gap-4" *ngIf="compraSeleccionada">
-    <mat-card class="bg-red-50 border border-red-200 shadow-lg">
-      <mat-card-header>
-        <mat-card-title class="text-red-800">Registrar Salida de Dinero</mat-card-title>
-        <mat-card-subtitle>Pago a Factura: <strong>{{compraSeleccionada.folio_factura_proveedor}}</strong></mat-card-subtitle>
-      </mat-card-header>
-      
-      <mat-card-content class="flex flex-col gap-4 mt-6">
-        
-        <div class="flex justify-between items-center bg-white p-4 rounded border">
-          <span class="text-gray-600">Deuda Actual:</span>
-          <span class="text-2xl font-bold text-red-600">{{compraSeleccionada.saldo_pendiente | currency}}</span>
-        </div>
-
-        <mat-form-field class="w-full">
-          <mat-label>Monto a Pagar</mat-label>
-          <input matInput type="number" [(ngModel)]="montoPagar" min="0.01" step="0.01" [max]="compraSeleccionada.saldo_pendiente" [disabled]="isSaving">
-          <span matPrefix>$&nbsp;</span>
-        </mat-form-field>
-
-        <mat-form-field class="w-full">
-          <mat-label>Forma de Pago</mat-label>
-          <mat-select [(ngModel)]="formaPago">
-            <mat-option value="Transferencia">Transferencia Electrónica</mat-option>
-            <mat-option value="Cheque">Cheque</mat-option>
-            <mat-option value="Efectivo">Efectivo</mat-option>
-            <mat-option value="Tarjeta de Crédito">Tarjeta de Crédito</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field class="w-full">
-          <mat-label>Referencia (Folio/Cheque)</mat-label>
-          <input matInput [(ngModel)]="referencia" placeholder="Ej. SPEI-123456">
-        </mat-form-field>
-
-        <div class="flex gap-2 mt-2">
-          <button mat-flat-button color="warn" class="py-6 flex-1 text-lg" (click)="registrarPago()" [disabled]="isSaving || montoPagar <= 0 || montoPagar > compraSeleccionada.saldo_pendiente">
-            <mat-icon>publish</mat-icon> Pagar
-          </button>
-          <button mat-stroked-button (click)="compraSeleccionada = null" [disabled]="isSaving">Cancelar</button>
-        </div>
-
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-</div>
+@if(legacySelected();as c){<div class="modal-backdrop"><mat-card class="modal"><div class="modal-head"><div><h2>Pagar compra anterior</h2><p>{{c.proveedor_nombre}} · {{c.folio_factura_proveedor||'Sin folio'}}</p></div><button mat-icon-button (click)="legacySelected.set(null)"><mat-icon>close</mat-icon></button></div><form [formGroup]="legacyPaymentForm" (ngSubmit)="payLegacy()"><mat-form-field><mat-label>Monto</mat-label><input matInput type="number" formControlName="monto"></mat-form-field><mat-form-field><mat-label>Forma de pago</mat-label><mat-select formControlName="formaPago"><mat-option value="Transferencia">Transferencia</mat-option><mat-option value="Cheque">Cheque</mat-option><mat-option value="Efectivo">Efectivo</mat-option></mat-select></mat-form-field><mat-form-field><mat-label>Referencia</mat-label><input matInput formControlName="referencia"></mat-form-field><mat-form-field><mat-label>Notas</mat-label><textarea matInput formControlName="notas"></textarea></mat-form-field><div class="actions"><button mat-button type="button" (click)="legacySelected.set(null)">Cancelar</button><button mat-flat-button type="submit" [disabled]="saving()">Registrar pago</button></div></form></mat-card></div>}

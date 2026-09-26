@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 export interface SolicitudCompra {idSolicitud:number;folio:number;estado:string;motivo?:string;createdAt:string;solicitante?:string;partidas:number;estimado:number}
-export interface OrdenCompra {idOrden:number;folio:number;estado:string;total:number;fechaPromesa?:string;createdAt:string;proveedor:string;partidas:number;pendiente:number}
-export interface OrdenCompraDetalle extends Omit<OrdenCompra,'partidas'> {notas?:string;partidas:Array<{idDetalle:number;idProducto:number;codigo:string;descripcion:string;cantidad:number;cantidadRecibida:number;costoUnitario:number}>}
+export interface OrdenCompra {idOrden:number;idProveedor:number;folio:number;estado:string;total:number;fechaPromesa?:string;createdAt:string;proveedor:string;partidas:number;pendiente:number}
+export interface OrdenCompraDetalle extends Omit<OrdenCompra,'partidas'> {notas?:string;partidas:Array<{idDetalle:number;idProducto:number;codigo:string;descripcion:string;cantidad:number;cantidadRecibida:number;cantidadFacturada:number;costoUnitario:number}>}
 export interface ComparativoProveedor {idCotizacion:number;idProveedor:number;proveedor:string;marca?:string;precio:number;diasEntrega:number;fechaRegistro:string}
 export interface EvaluacionProveedor {idProveedor:number;proveedor:string;evaluaciones:number;precio?:number;entrega?:number;calidad?:number;atencion?:number;promedio?:number}
 export interface RecepcionCompra {idRecepcion:number;idOrden:number;folio:number;proveedor:string;referencia?:string;createdAt:string;partidas:number;total:number}
