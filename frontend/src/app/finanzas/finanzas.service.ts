@@ -76,8 +76,9 @@ export interface BalanceGeneral {
 }
 
 export interface CuentaTesoreria { idCuenta: number; nombre: string; banco: string; moneda: string; ultimosCuatro?: string; saldoInicial: number; saldo: number; activa: boolean; pendientes: number; }
-export interface MovimientoTesoreria { idMovimiento: number; idCuenta: number; cuenta: string; banco: string; fecha: string; descripcion: string; referencia?: string; monto: number; estado: 'Pendiente' | 'Conciliado'; idCajaMovimiento?: number; conciliadoAt?: string; }
-export interface CandidatoConciliacion { idCajaMovimiento: number; fecha: string; monto: number; saldoBanco: number; origen: string; usuario?: string; diferencia: number; }
+export interface MovimientoTesoreria { idMovimiento: number; idCuenta: number; cuenta: string; banco: string; fecha: string; descripcion: string; referencia?: string; monto: number; estado: 'Pendiente' | 'Conciliado' | 'Ignorado'; idCajaMovimiento?: number; conciliadoAt?: string; metodoConciliacion?:'Manual'|'Automatica'; puntajeConciliacion?:number; observaciones?:string; idImportacion?:number; }
+export interface CandidatoConciliacion { idCajaMovimiento: number; fecha: string; monto: number; saldoBanco: number; origen: string; usuario?: string; diferencia: number; dias:number; puntaje:number; }
+export interface ImportacionTesoreria { idImportacion:number;idCuenta:number;cuenta:string;nombreArchivo:string;totalRenglones:number;insertados:number;duplicados:number;conciliadosAuto:number;errores:number;createdAt:string;usuario?:string }
 export interface PeriodoContable { idPeriodo: number; anio: number; mes: number; fechaInicio: string; fechaFin: string; estado: 'Abierto'|'Cerrado'; cerradoAt?: string; cerradoPor?: string; polizas: number; }
 export interface CentroCosto { idCentroCosto: number; codigo: string; nombre: string; activo: boolean; }
 export interface PresupuestoContable { idPresupuesto: number; anio: number; mes: number; idCuenta: number; codigo: string; cuenta: string; idCentroCosto?: number; centro?: string; monto: number; real: number; variacion: number; notas?: string; }
@@ -150,6 +151,13 @@ export class FinanzasService {
   conciliarMovimiento(idMovimiento: number, idCajaMovimiento: number) {
     return this.http.post(`${this.apiUrl}/tesoreria/movimientos/${idMovimiento}/conciliar`, { idCajaMovimiento });
   }
+  importarEstadoCuenta(idCuenta:number,file:File,autoConciliar=true) {
+    const data=new FormData();data.append('idCuenta',String(idCuenta));data.append('requestId',crypto.randomUUID());data.append('autoConciliar',String(autoConciliar));data.append('archivo',file);
+    return this.http.post<{idImportacion:number;insertados:number;duplicados:number;conciliadosAuto:number;errores:Array<{line:number;message:string}>;repeated?:boolean}>(`${this.apiUrl}/tesoreria/importaciones`,data);
+  }
+  getImportacionesTesoreria(){return this.http.get<ImportacionTesoreria[]>(`${this.apiUrl}/tesoreria/importaciones`)}
+  desconciliarMovimiento(idMovimiento:number,motivo:string){return this.http.post(`${this.apiUrl}/tesoreria/movimientos/${idMovimiento}/desconciliar`,{motivo})}
+  ignorarMovimiento(idMovimiento:number,motivo:string){return this.http.post(`${this.apiUrl}/tesoreria/movimientos/${idMovimiento}/ignorar`,{motivo})}
   getPeriodos() { return this.http.get<PeriodoContable[]>(`${this.apiUrl}/contabilidad/periodos`); }
   crearPeriodo(anio:number,mes:number) { return this.http.post(`${this.apiUrl}/contabilidad/periodos`,{anio,mes}); }
   cerrarPeriodo(idPeriodo:number) { return this.http.post(`${this.apiUrl}/contabilidad/periodos/${idPeriodo}/cerrar`,{}); }

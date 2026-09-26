@@ -17,6 +17,7 @@ const { FiscalService } = require('../dist/fiscal/fiscal.service');
 const { FiscalXmlBuilder } = require('../dist/fiscal/fiscal-xml.builder');
 const { MockFiscalProvider } = require('../dist/fiscal/providers/mock-fiscal.provider');
 const { CuentasProveedorService } = require('../dist/cuentas-proveedor/cuentas-proveedor.service');
+const { FinanzasService } = require('../dist/finanzas/finanzas.service');
 
 async function verifyOperations(ds) {
   if (process.env.TEST_DATABASE_ISOLATED !== 'true') throw new Error('Se requiere TEST_DATABASE_ISOLATED=true; nunca ejecutar sobre la base de trabajo');
@@ -217,7 +218,27 @@ async function verifyOperations(ds) {
     WHERE id_factura_proveedor=$1 AND estado='Pendiente'`,[supplierInvoice.idFacturaProveedor]);
   assert.equal(openSupplierSchedules.total,0,'Una factura liquidada no debe conservar pagos programados pendientes');
 
-  console.log('Operaciones aisladas aprobadas: idempotencia, caja, devoluciones, NC/REP, fiscal mock, pedidos, backorder, orden, recepción y conciliación/pago de factura de proveedor.');
+  // Estado de cuenta: importa por lote, evita reimportaciones, concilia sólo
+  // una coincidencia exacta y permite corregir o ignorar la revisión.
+  const treasury=new FinanzasService(ds,{},{});
+  const bankAccount=await treasury.crearCuentaTesoreria({nombre:'Cuenta aislada',banco:'Banco prueba',moneda:'MXN',ultimosCuatro:'9876',saldoInicial:0});
+  await ds.query('UPDATE saldos SET cuenta_banco=cuenta_banco+$1::numeric,updated_at=clock_timestamp()',[91357.24]);
+  const csv=Buffer.from(`Fecha,Descripcion,Referencia,Monto\n${today},Depósito aislado,RASTREO-E2E,91357.24\n${today},Comisión informativa,COM-E2E,-19.50\nfecha-mal,Renglón inválido,ERR,20`);
+  const bankImport=await treasury.importarEstadoCuenta({idCuenta:bankAccount.idCuenta,requestId:randomUUID(),autoConciliar:true},
+    {mimetype:'text/csv',originalname:'estado-e2e.csv',buffer:csv},user.id);
+  assert.equal(bankImport.insertados,2);assert.equal(bankImport.conciliadosAuto,1);assert.equal(bankImport.errores.length,1);
+  const repeatedBankImport=await treasury.importarEstadoCuenta({idCuenta:bankAccount.idCuenta,requestId:randomUUID(),autoConciliar:true},
+    {mimetype:'text/csv',originalname:'estado-e2e.csv',buffer:csv},user.id);
+  assert.equal(repeatedBankImport.repeated,true,'Reimportar el mismo archivo no debe duplicar movimientos');
+  const bankMovements=await treasury.getMovimientosTesoreria(bankAccount.idCuenta);
+  const reconciled=bankMovements.find(row=>row.estado==='Conciliado');const pendingBank=bankMovements.find(row=>row.estado==='Pendiente');
+  assert(reconciled&&pendingBank);await treasury.desconciliarMovimiento(Number(reconciled.idMovimiento),'Prueba de reversión');
+  const candidates=await treasury.getCandidatosConciliacion(Number(reconciled.idMovimiento));
+  const exactCandidates=candidates.filter(row=>Number(row.diferencia)===0);assert.equal(exactCandidates.length,1);
+  await treasury.conciliarMovimiento(Number(reconciled.idMovimiento),{idCajaMovimiento:Number(exactCandidates[0].idCajaMovimiento)},user.id);
+  await treasury.ignorarMovimiento(Number(pendingBank.idMovimiento),'Comisión sin registro contable en fixture');
+
+  console.log('Operaciones aisladas aprobadas: idempotencia, caja, devoluciones, NC/REP, fiscal mock, pedidos, backorder, abastecimiento, cuenta por pagar e importación/conciliación bancaria.');
 }
 
 module.exports={verifyOperations};

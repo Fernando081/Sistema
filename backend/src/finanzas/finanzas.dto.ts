@@ -13,6 +13,8 @@ import {
   MaxLength,
   Min,
   IsDateString,
+  IsBoolean,
+  IsUUID,
   ValidateNested,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
@@ -154,6 +156,16 @@ export class CreateMovimientoTesoreriaDto {
 
 export class ConciliarMovimientoDto {
   @Type(() => Number) @IsInt() @Min(1) idCajaMovimiento: number;
+}
+
+export class ImportBankStatementDto {
+  @Type(() => Number) @IsInt() @Min(1) idCuenta: number;
+  @IsUUID() requestId: string;
+  @Transform(({value})=>value===true||value==='true') @IsBoolean() autoConciliar = true;
+}
+
+export class ReviewBankMovementDto {
+  @Transform(trim) @IsString() @IsNotEmpty() @MaxLength(500) motivo: string;
 }
 
 export class CreatePeriodoDto {

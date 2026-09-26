@@ -8,7 +8,7 @@ El módulo `/contabilidad` mantiene un libro mayor de doble partida y ofrece:
 - pólizas automáticas para facturas, notas de crédito, cobros, compras, pagos a proveedor y gastos;
 - pólizas manuales en borrador con validación de cargos y abonos antes de contabilizar;
 - balanza de comprobación, estado de resultados y balance general;
-- cuentas bancarias propias, captura de movimientos del estado de cuenta y conciliación contra la bitácora de caja/bancos;
+- cuentas bancarias propias, importación masiva de estados de cuenta y conciliación contra la bitácora de caja/bancos;
 - periodos contables con cierre mensual y bloqueo de movimientos posteriores;
 - centros de costo y presupuestos mensuales comparados contra el resultado real;
 - flujo de efectivo por origen y exportación CSV de los reportes financieros.
@@ -21,12 +21,24 @@ El módulo `/contabilidad` mantiene un libro mayor de doble partida y ofrece:
 - La pantalla de tesorería solo guarda los últimos cuatro dígitos de una cuenta; no necesita conservar el número bancario completo.
 - En el estado de cuenta, los depósitos se capturan positivos y los retiros negativos.
 - La conciliación exige igualdad exacta a centavos y cada movimiento de caja solo puede conciliarse una vez.
+- La conciliación automática sólo ocurre cuando existe una única coincidencia de monto exacto dentro de tres días. Los casos ambiguos permanecen pendientes para revisión manual.
+- Cada archivo se identifica por su huella SHA-256 y cada renglón por una huella estable. Reimportar el archivo o una versión que repita movimientos no duplica el estado de cuenta.
+- Una conciliación puede revertirse sin borrar el movimiento. Los renglones revisados que no representan un movimiento contable pueden marcarse como ignorados con trazabilidad en auditoría.
 - El cierre de un periodo exige que no existan pólizas en borrador ni pólizas descuadradas. Una vez cerrado, el periodo bloquea altas, cambios y eliminaciones de pólizas y sus movimientos.
 - El gasto o ingreso real de cada presupuesto considera únicamente pólizas contabilizadas dentro del año y mes seleccionados.
 - Los archivos CSV neutralizan valores que una hoja de cálculo podría interpretar como fórmulas.
 
 ## Puesta en marcha
 
-Las migraciones `060_contabilidad_libro_mayor.sql`, `061_tesoreria_conciliacion.sql` y `062_control_financiero.sql` crean el libro mayor, la conciliación bancaria y el control por periodos, centros de costo y presupuestos. La reconstrucción de documentos existentes no inventa una póliza de apertura: si el negocio necesita saldos anteriores al sistema, se deben registrar en una póliza manual de apertura con respaldo del contador.
+Las migraciones `060_contabilidad_libro_mayor.sql`, `061_tesoreria_conciliacion.sql`, `062_control_financiero.sql` y `072_conciliacion_bancaria_automatica.sql` crean el libro mayor, la conciliación bancaria, la importación por lotes y el control por periodos, centros de costo y presupuestos. La reconstrucción de documentos existentes no inventa una póliza de apertura: si el negocio necesita saldos anteriores al sistema, se deben registrar en una póliza manual de apertura con respaldo del contador.
+
+## Formato del estado de cuenta
+
+El importador acepta CSV separado por coma, punto y coma o tabulador, con fechas `AAAA-MM-DD` o `DD/MM/AAAA`. Reconoce encabezados comunes en español e inglés:
+
+- `Fecha`, `Descripción`, `Referencia` y `Monto`; o
+- `Fecha`, `Descripción`, `Referencia`, `Cargo` y `Abono`.
+
+Los cargos deben ser negativos cuando se usa la columna `Monto`. En el formato separado, el sistema calcula `Abono - Cargo`. Admite números `1,234.56` y `1.234,56`. Las filas inválidas se reportan sin impedir que se importen las filas correctas.
 
 Los reportes son información operativa. Antes de utilizarlos como libros fiscales definitivos, el contador debe revisar el catálogo, los saldos de apertura y el tratamiento particular de impuestos del negocio.

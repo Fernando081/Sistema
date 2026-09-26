@@ -125,6 +125,7 @@ UI por defecto: `http://localhost:4200`
 - Cotizaciones (alta + historial).
 - Cobranza y cuentas por pagar.
 - Ciclo profesional de proveedores: orden, recepción parcial, conciliación de factura XML/PDF, discrepancias, programación, pagos, anticipos y notas de crédito.
+- Tesorería con importación CSV, prevención de duplicados, conciliación bancaria automática y revisión reversible.
 - CRM de oportunidades, seguimientos y ventas perdidas.
 - Números OEM/alternos, aplicaciones por equipo/motor y búsqueda remota.
 - Garantías ligadas al renglón original de venta.
@@ -180,7 +181,7 @@ npm test
 
 1. Ejecutar la certificación operativa contra el PAC sandbox con el CSD de pruebas del emisor.
 2. Añadir logging estructurado y un identificador de trazabilidad por petición.
-3. Incorporar conciliación bancaria automatizada mediante archivos o API del banco cuando se defina el proveedor financiero.
+3. Conectar la conciliación bancaria directamente a la API del banco cuando se defina la institución y se obtengan credenciales de sandbox.
 
 
 ## 12) Registro de cambios y mejoras (histórico)

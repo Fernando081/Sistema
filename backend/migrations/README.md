@@ -33,6 +33,7 @@ psql -U your_username -d your_database -f 001_create_auth_user_table.sql
 - `046_caja_turnos_y_movimientos.sql` - Apertura/cierre de caja y bitácora inmutable de movimientos
 - `060_contabilidad_libro_mayor.sql` - Catálogo de cuentas, pólizas automáticas/manuales y libro mayor
 - `061_tesoreria_conciliacion.sql` - Cuentas bancarias propias y conciliación con movimientos del sistema
+- `072_conciliacion_bancaria_automatica.sql` - Importación CSV idempotente, coincidencia automática y revisión bancaria
 - `062_control_financiero.sql` - Periodos, cierre mensual, centros de costo y presupuestos
 - `063_permisos_granulares.sql` - Permisos por operación, rol y excepciones por usuario
 - `064_centro_notificaciones.sql` - Alertas internas deduplicadas y estado de lectura

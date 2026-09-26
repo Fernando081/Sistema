@@ -1,6 +1,8 @@
-import { BadRequestException, Controller, Get, Post, Body, Res, Req, Query, Param, ParseIntPipe } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Post, Body, Res, Req, Query, Param, ParseIntPipe, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 import { FinanzasService } from './finanzas.service';
-import { BalanceQueryDto, ConciliarMovimientoDto, ContabilidadQueryDto, CorteFinancieroQueryDto, CreateCuentaTesoreriaDto, CreateGastoDto, CreateMovimientoTesoreriaDto, CreatePeriodoDto, CreatePolizaDto, ExportarContabilidadDto, PresupuestoQueryDto, UpsertPresupuestoDto } from './finanzas.dto';
+import { BalanceQueryDto, ConciliarMovimientoDto, ContabilidadQueryDto, CorteFinancieroQueryDto, CreateCuentaTesoreriaDto, CreateGastoDto, CreateMovimientoTesoreriaDto, CreatePeriodoDto, CreatePolizaDto, ExportarContabilidadDto, ImportBankStatementDto, PresupuestoQueryDto, ReviewBankMovementDto, UpsertPresupuestoDto } from './finanzas.dto';
 import type { Response } from 'express';
 import { Roles } from '../auth/roles.decorator';
 import { RolUsuario } from '../common/enums/app.enums';
@@ -86,6 +88,21 @@ export class FinanzasController {
     return this.finanzasService.crearMovimientoTesoreria(dto);
   }
 
+  @Post('tesoreria/importaciones')
+  @Permissions('tesoreria.conciliar')
+  @UseInterceptors(FileInterceptor('archivo',{storage:memoryStorage(),limits:{files:1,fileSize:5*1024*1024}}))
+  importarEstadoCuenta(@Body() dto: ImportBankStatementDto,@UploadedFile() file: Express.Multer.File|undefined,
+    @Req() req:{user:JwtPayload}) {
+    return this.finanzasService.importarEstadoCuenta(dto,file,req.user?.idUser);
+  }
+
+  @Get('tesoreria/importaciones')
+  getImportaciones(@Query('idCuenta') idCuenta?:string) {
+    const parsed=idCuenta?Number(idCuenta):undefined;
+    if(parsed!==undefined&&(!Number.isSafeInteger(parsed)||parsed<1))throw new BadRequestException('Cuenta inválida');
+    return this.finanzasService.getImportaciones(parsed);
+  }
+
   @Get('tesoreria/movimientos/:id/candidatos')
   getCandidatosConciliacion(@Param('id', ParseIntPipe) id: number) {
     return this.finanzasService.getCandidatosConciliacion(id);
@@ -96,6 +113,18 @@ export class FinanzasController {
   conciliarMovimiento(@Param('id', ParseIntPipe) id: number, @Body() dto: ConciliarMovimientoDto,
     @Req() req: { user: JwtPayload }) {
     return this.finanzasService.conciliarMovimiento(id,dto,req.user?.idUser);
+  }
+
+  @Post('tesoreria/movimientos/:id/desconciliar')
+  @Permissions('tesoreria.conciliar')
+  desconciliarMovimiento(@Param('id',ParseIntPipe) id:number,@Body() dto:ReviewBankMovementDto) {
+    return this.finanzasService.desconciliarMovimiento(id,dto.motivo);
+  }
+
+  @Post('tesoreria/movimientos/:id/ignorar')
+  @Permissions('tesoreria.conciliar')
+  ignorarMovimiento(@Param('id',ParseIntPipe) id:number,@Body() dto:ReviewBankMovementDto) {
+    return this.finanzasService.ignorarMovimiento(id,dto.motivo);
   }
 
   @Get('contabilidad/periodos')

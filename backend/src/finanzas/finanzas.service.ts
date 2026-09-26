@@ -1,12 +1,14 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
+import { createHash } from 'node:crypto';
 import { Gasto } from './entities/gasto.entity';
 import { Saldo } from './entities/saldo.entity';
-import { ConciliarMovimientoDto, ContabilidadQueryDto, CreateCuentaTesoreriaDto, CreateGastoDto, CreateMovimientoTesoreriaDto, CreatePeriodoDto, CreatePolizaDto, ExportarContabilidadDto, PresupuestoQueryDto, UpsertPresupuestoDto } from './finanzas.dto';
+import { ConciliarMovimientoDto, ContabilidadQueryDto, CreateCuentaTesoreriaDto, CreateGastoDto, CreateMovimientoTesoreriaDto, CreatePeriodoDto, CreatePolizaDto, ExportarContabilidadDto, ImportBankStatementDto, PresupuestoQueryDto, UpsertPresupuestoDto } from './finanzas.dto';
 import PdfPrinter from 'pdfmake';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { queryRows } from '../common/database/typed-query';
+import { parseBankStatementCsv } from './bank-statement.parser';
 
 interface GastoResumenRow { categoria: string; total_gastado: string | number; }
 interface PagoProveedorResumenRow { forma_pago: string; total_pagado: string | number; }
@@ -210,7 +212,8 @@ export class FinanzasService {
 
   async getMovimientosTesoreria(idCuenta?: number) {
     return queryRows<Record<string, unknown>>(this.dataSource, `SELECT m.id_movimiento AS "idMovimiento",m.id_cuenta AS "idCuenta",
-      c.nombre AS cuenta,c.banco,m.fecha,m.descripcion,m.referencia,m.monto,m.estado,
+      c.nombre AS cuenta,c.banco,m.fecha,m.descripcion,m.referencia,m.monto,m.estado,m.metodo_conciliacion AS "metodoConciliacion",
+      m.puntaje_conciliacion AS "puntajeConciliacion",m.observaciones,m.id_importacion AS "idImportacion",
       m.id_caja_movimiento AS "idCajaMovimiento",m.conciliado_at AS "conciliadoAt",u.username AS "conciliadoPor"
       FROM tesoreria_movimiento m JOIN tesoreria_cuenta c ON c.id_cuenta=m.id_cuenta
       LEFT JOIN auth_user u ON u.id_user=m.conciliado_por
@@ -226,13 +229,70 @@ export class FinanzasService {
     return { message:'Movimiento bancario importado',idMovimiento:rows[0].idMovimiento };
   }
 
+  async importarEstadoCuenta(dto:ImportBankStatementDto,file?:Express.Multer.File,idUsuario?:number) {
+    if(!file)throw new BadRequestException('Selecciona un archivo CSV');
+    if(!['text/csv','text/plain','application/csv','application/vnd.ms-excel','application/octet-stream'].includes(file.mimetype)) {
+      throw new BadRequestException('El estado de cuenta debe ser un archivo CSV');
+    }
+    const parsed=parseBankStatementCsv(file.buffer);
+    if(!parsed.rows.length)throw new BadRequestException('El archivo no contiene movimientos válidos');
+    const sha256=createHash('sha256').update(file.buffer).digest('hex');
+    return this.dataSource.transaction(async manager=>{
+      await manager.query(`SELECT pg_advisory_xact_lock(hashtext('bank-import:'||$1))`,[dto.requestId]);
+      const previous=await queryRows<{idImportacion:number;insertados:number;duplicados:number;conciliadosAuto:number}>(manager,
+        `SELECT id_importacion AS "idImportacion",insertados,duplicados,conciliados_auto AS "conciliadosAuto"
+         FROM tesoreria_importacion WHERE request_id=$1 OR (id_cuenta=$2 AND sha256=$3) ORDER BY id_importacion LIMIT 1`,[dto.requestId,dto.idCuenta,sha256]);
+      if(previous.length)return{...previous[0],repeated:true,errores:parsed.errors};
+      const account=await queryRows<{id:number}>(manager,'SELECT id_cuenta AS id FROM tesoreria_cuenta WHERE id_cuenta=$1 AND activa FOR SHARE',[dto.idCuenta]);
+      if(!account.length)throw new NotFoundException('Cuenta de tesorería no encontrada o inactiva');
+      const imports=await queryRows<{id:number}>(manager,`INSERT INTO tesoreria_importacion(request_id,id_cuenta,nombre_archivo,sha256,total_renglones,errores,id_user)
+        VALUES($1,$2,$3,$4,$5,$6::jsonb,$7) RETURNING id_importacion AS id`,
+      [dto.requestId,dto.idCuenta,file.originalname.slice(0,255),sha256,parsed.rows.length+parsed.errors.length,JSON.stringify(parsed.errors.slice(0,100)),idUsuario||null]);
+      let inserted=0,duplicates=0,matched=0;
+      const occurrences=new Map<string,number>();
+      for(const row of parsed.rows){
+        const signature=`${row.date}|${row.amount.toFixed(2)}|${(row.reference||'').toUpperCase()}|${row.description.toUpperCase()}`;
+        const occurrence=(occurrences.get(signature)||0)+1;occurrences.set(signature,occurrence);
+        const fingerprint=createHash('sha256').update(`${dto.idCuenta}|${signature}|${occurrence}`).digest('hex');
+        const created=await queryRows<{id:number}>(manager,`INSERT INTO tesoreria_movimiento(id_cuenta,fecha,descripcion,referencia,monto,id_importacion,fingerprint)
+          VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING RETURNING id_movimiento AS id`,
+        [dto.idCuenta,row.date,row.description,row.reference||null,row.amount,imports[0].id,fingerprint]);
+        if(!created.length){duplicates++;continue} inserted++;
+        if(dto.autoConciliar){
+          const candidates=await queryRows<{id:number}>(manager,`SELECT cm.id_movimiento AS id FROM caja_movimiento cm
+            WHERE cm.banco=$2::numeric AND cm.fecha::date BETWEEN $1::date-3 AND $1::date+3
+              AND NOT EXISTS(SELECT 1 FROM tesoreria_movimiento tm WHERE tm.id_caja_movimiento=cm.id_movimiento)
+            ORDER BY abs(cm.fecha::date-$1::date),cm.id_movimiento FOR UPDATE OF cm`,[row.date,row.amount]);
+          if(candidates.length===1){
+            await manager.query(`UPDATE tesoreria_movimiento SET estado='Conciliado',id_caja_movimiento=$2,conciliado_por=$3,
+              conciliado_at=clock_timestamp(),metodo_conciliacion='Automatica',puntaje_conciliacion=100,updated_at=clock_timestamp()
+              WHERE id_movimiento=$1`,[created[0].id,candidates[0].id,idUsuario||null]);
+            matched++;
+          }
+        }
+      }
+      await manager.query(`UPDATE tesoreria_importacion SET insertados=$2,duplicados=$3,conciliados_auto=$4 WHERE id_importacion=$1`,
+        [imports[0].id,inserted,duplicates,matched]);
+      return{idImportacion:imports[0].id,insertados:inserted,duplicados:duplicates,conciliadosAuto:matched,errores:parsed.errors};
+    });
+  }
+
+  getImportaciones(idCuenta?:number) {
+    return queryRows<Record<string,unknown>>(this.dataSource,`SELECT i.id_importacion AS "idImportacion",i.id_cuenta AS "idCuenta",c.nombre AS cuenta,
+      i.nombre_archivo AS "nombreArchivo",i.total_renglones AS "totalRenglones",i.insertados,i.duplicados,
+      i.conciliados_auto AS "conciliadosAuto",jsonb_array_length(i.errores) AS errores,i.created_at AS "createdAt",u.username AS usuario
+      FROM tesoreria_importacion i JOIN tesoreria_cuenta c ON c.id_cuenta=i.id_cuenta LEFT JOIN auth_user u ON u.id_user=i.id_user
+      WHERE($1::int IS NULL OR i.id_cuenta=$1) ORDER BY i.created_at DESC LIMIT 100`,[idCuenta||null]);
+  }
+
   async getCandidatosConciliacion(idMovimiento: number) {
     const movement = await queryRows<{ fecha: string; monto: string | number }>(this.dataSource,
       `SELECT fecha,monto FROM tesoreria_movimiento WHERE id_movimiento=$1 AND estado='Pendiente'`, [idMovimiento]);
     if (!movement.length) throw new NotFoundException('Movimiento pendiente no encontrado');
     return queryRows<Record<string, unknown>>(this.dataSource, `SELECT cm.id_movimiento AS "idCajaMovimiento",cm.fecha,cm.banco AS monto,
       cm.saldo_banco AS "saldoBanco",cm.origen,u.username AS usuario,
-      abs(cm.banco-$2::numeric) AS diferencia
+      abs(cm.banco-$2::numeric) AS diferencia,abs(cm.fecha::date-$1::date) AS dias,
+      greatest(0,100-abs(cm.fecha::date-$1::date)*5-least(abs(cm.banco-$2::numeric),100)) AS puntaje
       FROM caja_movimiento cm LEFT JOIN auth_user u ON u.id_user=cm.id_usuario
       WHERE cm.banco<>0 AND NOT EXISTS(SELECT 1 FROM tesoreria_movimiento tm WHERE tm.id_caja_movimiento=cm.id_movimiento)
         AND cm.fecha::date BETWEEN $1::date-7 AND $1::date+7
@@ -253,11 +313,27 @@ export class FinanzasService {
         throw new BadRequestException('Los montos deben coincidir para conciliar');
       }
       await manager.query(`UPDATE tesoreria_movimiento SET estado='Conciliado',id_caja_movimiento=$2,
-        conciliado_por=$3,conciliado_at=clock_timestamp() WHERE id_movimiento=$1`,
+        conciliado_por=$3,conciliado_at=clock_timestamp(),metodo_conciliacion='Manual',puntaje_conciliacion=100,
+        observaciones=NULL,updated_at=clock_timestamp() WHERE id_movimiento=$1`,
         [idMovimiento,dto.idCajaMovimiento,idUsuario || null]);
       return { message:'Movimiento conciliado' };
     });
     return result;
+  }
+
+  async desconciliarMovimiento(idMovimiento:number,motivo:string) {
+    const rows=await queryRows<{id:number}>(this.dataSource,`UPDATE tesoreria_movimiento SET estado='Pendiente',id_caja_movimiento=NULL,
+      conciliado_por=NULL,conciliado_at=NULL,metodo_conciliacion=NULL,puntaje_conciliacion=NULL,observaciones=$2,updated_at=clock_timestamp()
+      WHERE id_movimiento=$1 AND estado='Conciliado' RETURNING id_movimiento AS id`,[idMovimiento,`Desconciliado: ${motivo}`]);
+    if(!rows.length)throw new ConflictException('El movimiento no está conciliado');
+    return{message:'Conciliación revertida'};
+  }
+
+  async ignorarMovimiento(idMovimiento:number,motivo:string) {
+    const rows=await queryRows<{id:number}>(this.dataSource,`UPDATE tesoreria_movimiento SET estado='Ignorado',observaciones=$2,
+      updated_at=clock_timestamp() WHERE id_movimiento=$1 AND estado='Pendiente' RETURNING id_movimiento AS id`,[idMovimiento,motivo]);
+    if(!rows.length)throw new ConflictException('El movimiento no está pendiente');
+    return{message:'Movimiento marcado como ignorado'};
   }
 
   async getPeriodos() {
