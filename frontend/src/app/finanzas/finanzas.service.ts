@@ -76,9 +76,11 @@ export interface BalanceGeneral {
 }
 
 export interface CuentaTesoreria { idCuenta: number; nombre: string; banco: string; moneda: string; ultimosCuatro?: string; saldoInicial: number; saldo: number; activa: boolean; pendientes: number; }
-export interface MovimientoTesoreria { idMovimiento: number; idCuenta: number; cuenta: string; banco: string; fecha: string; descripcion: string; referencia?: string; monto: number; estado: 'Pendiente' | 'Conciliado' | 'Ignorado'; idCajaMovimiento?: number; conciliadoAt?: string; metodoConciliacion?:'Manual'|'Automatica'; puntajeConciliacion?:number; observaciones?:string; idImportacion?:number; }
+export interface MovimientoTesoreria { idMovimiento: number; idCuenta: number; cuenta: string; banco: string; fecha: string; descripcion: string; referencia?: string; monto: number; estado: 'Pendiente' | 'Conciliado' | 'Ignorado'; idConciliacion?: number; conciliadoAt?: string; metodoConciliacion?:'Manual'|'Automatica'; puntajeConciliacion?:number; observaciones?:string; idImportacion?:number; }
 export interface CandidatoConciliacion { idCajaMovimiento: number; fecha: string; monto: number; saldoBanco: number; origen: string; usuario?: string; diferencia: number; dias:number; puntaje:number; }
 export interface ImportacionTesoreria { idImportacion:number;idCuenta:number;cuenta:string;nombreArchivo:string;totalRenglones:number;insertados:number;duplicados:number;conciliadosAuto:number;errores:number;createdAt:string;usuario?:string }
+export interface ConciliacionTesoreria { idConciliacion:number;idCuenta?:number;cuenta?:string;tipo:'Exacta'|'Ajuste'|'Transferencia';estado:'Activa'|'Revertida';totalBanco:number;totalSistema:number;ajuste:number;tipoAjuste?:string;motivo?:string;createdAt:string;usuario?:string;movimientosBanco:number;movimientosSistema:number }
+export interface CierreTesoreria { idCierre:number;idCuenta:number;cuenta:string;banco:string;anio:number;mes:number;saldoEstadoCuenta:number;saldoCalculado:number;movimientos:number;conciliados:number;ignorados:number;createdAt:string;usuario:string }
 export interface PeriodoContable { idPeriodo: number; anio: number; mes: number; fechaInicio: string; fechaFin: string; estado: 'Abierto'|'Cerrado'; cerradoAt?: string; cerradoPor?: string; polizas: number; }
 export interface CentroCosto { idCentroCosto: number; codigo: string; nombre: string; activo: boolean; }
 export interface PresupuestoContable { idPresupuesto: number; anio: number; mes: number; idCuenta: number; codigo: string; cuenta: string; idCentroCosto?: number; centro?: string; monto: number; real: number; variacion: number; notas?: string; }
@@ -156,6 +158,16 @@ export class FinanzasService {
     return this.http.post<{idImportacion:number;insertados:number;duplicados:number;conciliadosAuto:number;errores:Array<{line:number;message:string}>;repeated?:boolean}>(`${this.apiUrl}/tesoreria/importaciones`,data);
   }
   getImportacionesTesoreria(){return this.http.get<ImportacionTesoreria[]>(`${this.apiUrl}/tesoreria/importaciones`)}
+  getConciliacionesTesoreria(){return this.http.get<ConciliacionTesoreria[]>(`${this.apiUrl}/tesoreria/conciliaciones`)}
+  crearConciliacionTesoreria(payload:{movimientosBanco:number[];movimientosSistema:number[];tipoAjuste?:string;motivo?:string}){
+    return this.http.post(`${this.apiUrl}/tesoreria/conciliaciones`,{requestId:crypto.randomUUID(),...payload})
+  }
+  getTransferenciasCandidatas(idMovimiento:number){return this.http.get<MovimientoTesoreria[]>(`${this.apiUrl}/tesoreria/movimientos/${idMovimiento}/transferencias-candidatas`)}
+  crearTransferenciaTesoreria(idMovimientoSalida:number,idMovimientoEntrada:number,referencia?:string){
+    return this.http.post(`${this.apiUrl}/tesoreria/transferencias`,{requestId:crypto.randomUUID(),idMovimientoSalida,idMovimientoEntrada,referencia})
+  }
+  getCierresTesoreria(){return this.http.get<CierreTesoreria[]>(`${this.apiUrl}/tesoreria/cierres`)}
+  cerrarTesoreria(payload:{idCuenta:number;anio:number;mes:number;saldoEstadoCuenta:number}){return this.http.post(`${this.apiUrl}/tesoreria/cierres`,payload)}
   desconciliarMovimiento(idMovimiento:number,motivo:string){return this.http.post(`${this.apiUrl}/tesoreria/movimientos/${idMovimiento}/desconciliar`,{motivo})}
   ignorarMovimiento(idMovimiento:number,motivo:string){return this.http.post(`${this.apiUrl}/tesoreria/movimientos/${idMovimiento}/ignorar`,{motivo})}
   getPeriodos() { return this.http.get<PeriodoContable[]>(`${this.apiUrl}/contabilidad/periodos`); }

@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { forkJoin } from 'rxjs';
-import { BalanceGeneral, BalanzaCuenta, CandidatoConciliacion, CentroCosto, CuentaContable, CuentaTesoreria, EstadoResultados, FinanzasService, FlujoEfectivo, ImportacionTesoreria, MovimientoTesoreria, PeriodoContable, PolizaContable, PresupuestoContable } from '../finanzas.service';
+import { BalanceGeneral, BalanzaCuenta, CandidatoConciliacion, CentroCosto, CierreTesoreria, ConciliacionTesoreria, CuentaContable, CuentaTesoreria, EstadoResultados, FinanzasService, FlujoEfectivo, ImportacionTesoreria, MovimientoTesoreria, PeriodoContable, PolizaContable, PresupuestoContable } from '../finanzas.service';
 import { NotificationService } from '../../shared/notification.service';
 import { ConfirmService } from '../../shared/confirm.service';
 import { downloadDocument } from '../../shared/document-download';
@@ -43,7 +43,12 @@ export class ContabilidadComponent {
   readonly movimientosTesoreria = signal<MovimientoTesoreria[]>([]);
   readonly candidatos = signal<CandidatoConciliacion[]>([]);
   readonly movimientoSeleccionado = signal<MovimientoTesoreria | null>(null);
+  readonly movimientosBancoSeleccionados = signal<number[]>([]);
+  readonly movimientosSistemaSeleccionados = signal<number[]>([]);
+  readonly transferenciasCandidatas = signal<MovimientoTesoreria[]>([]);
   readonly importacionesTesoreria = signal<ImportacionTesoreria[]>([]);
+  readonly conciliacionesTesoreria = signal<ConciliacionTesoreria[]>([]);
+  readonly cierresTesoreria = signal<CierreTesoreria[]>([]);
   readonly importandoBanco = signal(false);
   readonly ultimoResultadoImportacion = signal<{insertados:number;duplicados:number;conciliadosAuto:number;errores:number}|null>(null);
   readonly bankEditorOpen = signal(false);
@@ -65,6 +70,8 @@ export class ContabilidadComponent {
   readonly cuentaForm = this.fb.nonNullable.group({ nombre:['',Validators.required],banco:['',Validators.required],moneda:['MXN',Validators.required],ultimosCuatro:['',Validators.pattern(/^\d{4}$/)],saldoInicial:[0] });
   readonly movimientoForm = this.fb.nonNullable.group({ idCuenta:[0,Validators.min(1)],fecha:[this.hoy,Validators.required],descripcion:['',Validators.required],referencia:'',monto:[0] });
   readonly importacionForm = this.fb.nonNullable.group({idCuenta:[0,Validators.min(1)],autoConciliar:true});
+  readonly ajusteForm = this.fb.nonNullable.group({tipoAjuste:'',motivo:''});
+  readonly cierreTesoreriaForm = this.fb.nonNullable.group({idCuenta:[0,Validators.min(1)],anio:[new Date().getFullYear()],mes:[new Date().getMonth()+1],saldoEstadoCuenta:[0]});
   bankFile?:File;
   readonly periodoForm = this.fb.nonNullable.group({anio:[new Date().getFullYear(),[Validators.min(2000),Validators.max(2200)]],mes:[new Date().getMonth()+1,[Validators.min(1),Validators.max(12)]]});
   readonly presupuestoForm = this.fb.nonNullable.group({anio:[new Date().getFullYear()],mes:[new Date().getMonth()+1],idCuenta:[0,Validators.min(1)],idCentroCosto:[0],monto:[0,Validators.min(0)],notas:''});
@@ -78,6 +85,13 @@ export class ContabilidadComponent {
     return this.money(this.partidas.controls.reduce((sum, row) => sum + Number(row.controls.haber.value || 0), 0));
   });
   readonly cuadrada = computed(() => this.totalDebe() > 0 && this.totalDebe() === this.totalHaber());
+  readonly movimientosBancoDisponibles = computed(()=>{
+    const selected=this.movimientoSeleccionado();
+    return selected ? this.movimientosTesoreria().filter(row=>row.estado==='Pendiente'&&row.idCuenta===selected.idCuenta) : [];
+  });
+  readonly totalBancoSeleccionado = computed(()=>this.money(this.movimientosTesoreria().filter(row=>this.movimientosBancoSeleccionados().includes(row.idMovimiento)).reduce((sum,row)=>sum+Number(row.monto),0)));
+  readonly totalSistemaSeleccionado = computed(()=>this.money(this.candidatos().filter(row=>this.movimientosSistemaSeleccionados().includes(row.idCajaMovimiento)).reduce((sum,row)=>sum+Number(row.monto),0)));
+  readonly diferenciaConciliacion = computed(()=>this.money(this.totalBancoSeleccionado()-this.totalSistemaSeleccionado()));
 
   constructor() {
     this.polizaForm.valueChanges.subscribe(() => this.formVersion.update(value => value + 1));
@@ -102,6 +116,7 @@ export class ContabilidadComponent {
       balanza: this.api.getBalanza(fechaInicio, fechaFin), resultados: this.api.getEstadoResultados(fechaInicio, fechaFin),
       balance: this.api.getBalanceGeneral(fechaFin),
       cuentasTesoreria: this.api.getCuentasTesoreria(), movimientosTesoreria: this.api.getMovimientosTesoreria(),importacionesTesoreria:this.api.getImportacionesTesoreria(),
+      conciliacionesTesoreria:this.api.getConciliacionesTesoreria(),cierresTesoreria:this.api.getCierresTesoreria(),
       periodos:this.api.getPeriodos(),centrosCosto:this.api.getCentrosCosto(),
       presupuestos:this.api.getPresupuestos(Number(fechaFin.slice(0,4)),Number(fechaFin.slice(5,7))),
       flujo:this.api.getFlujoEfectivo(fechaInicio,fechaFin),
@@ -111,7 +126,8 @@ export class ContabilidadComponent {
         this.polizas.set(data.polizas.data); this.totalPolizas.set(data.polizas.total);
         this.balanza.set(data.balanza); this.resultados.set(data.resultados); this.balance.set(data.balance);
         this.cuentasTesoreria.set(data.cuentasTesoreria); this.movimientosTesoreria.set(data.movimientosTesoreria);this.importacionesTesoreria.set(data.importacionesTesoreria);
-        if(data.cuentasTesoreria.length){const id=data.cuentasTesoreria[0].idCuenta;if(!this.movimientoForm.controls.idCuenta.value)this.movimientoForm.controls.idCuenta.setValue(id);if(!this.importacionForm.controls.idCuenta.value)this.importacionForm.controls.idCuenta.setValue(id)}
+        this.conciliacionesTesoreria.set(data.conciliacionesTesoreria);this.cierresTesoreria.set(data.cierresTesoreria);
+        if(data.cuentasTesoreria.length){const id=data.cuentasTesoreria[0].idCuenta;if(!this.movimientoForm.controls.idCuenta.value)this.movimientoForm.controls.idCuenta.setValue(id);if(!this.importacionForm.controls.idCuenta.value)this.importacionForm.controls.idCuenta.setValue(id);if(!this.cierreTesoreriaForm.controls.idCuenta.value)this.cierreTesoreriaForm.controls.idCuenta.setValue(id)}
         this.periodos.set(data.periodos);this.centrosCosto.set(data.centrosCosto.filter(c=>c.activo));
         this.presupuestos.set(data.presupuestos);this.flujo.set(data.flujo);
         this.loading.set(false);
@@ -159,18 +175,43 @@ export class ContabilidadComponent {
   }
 
   findMatches(movement: MovimientoTesoreria) {
-    this.movimientoSeleccionado.set(movement); this.candidatos.set([]);
-    this.api.getCandidatosConciliacion(movement.idMovimiento).subscribe({next:rows=>this.candidatos.set(rows),error:()=>this.notice.show('No se pudieron buscar coincidencias.')});
+    this.movimientoSeleccionado.set(movement);this.movimientosBancoSeleccionados.set([movement.idMovimiento]);
+    this.movimientosSistemaSeleccionados.set([]);this.candidatos.set([]);this.transferenciasCandidatas.set([]);
+    forkJoin({matches:this.api.getCandidatosConciliacion(movement.idMovimiento),transfers:this.api.getTransferenciasCandidatas(movement.idMovimiento)}).subscribe({next:result=>{
+      this.candidatos.set(result.matches);this.transferenciasCandidatas.set(result.transfers);
+      const exact=result.matches.find(row=>Number(row.diferencia)===0);if(exact)this.movimientosSistemaSeleccionados.set([exact.idCajaMovimiento]);
+    },error:()=>this.notice.show('No se pudieron buscar coincidencias.')});
   }
 
-  reconcile(candidate: CandidatoConciliacion) {
-    const movement=this.movimientoSeleccionado(); if(!movement)return;
-    this.api.conciliarMovimiento(movement.idMovimiento,candidate.idCajaMovimiento).subscribe({next:()=>{this.notice.show('Movimiento conciliado.',3500,'info');this.movimientoSeleccionado.set(null);this.candidatos.set([]);this.load()},error:()=>this.notice.show('Los movimientos ya no están disponibles o sus montos no coinciden.')});
+  toggleBankMovement(id:number){this.movimientosBancoSeleccionados.update(rows=>rows.includes(id)?rows.filter(value=>value!==id):[...rows,id])}
+  toggleSystemMovement(id:number){this.movimientosSistemaSeleccionados.update(rows=>rows.includes(id)?rows.filter(value=>value!==id):[...rows,id])}
+
+  reconcileSelection() {
+    if(!this.movimientosBancoSeleccionados().length||!this.movimientosSistemaSeleccionados().length)return this.notice.show('Selecciona movimientos del banco y del sistema.');
+    const difference=this.diferenciaConciliacion();const adjustment=this.ajusteForm.getRawValue();
+    if(difference!==0&&(!adjustment.tipoAjuste||!adjustment.motivo.trim()))return this.notice.show('Clasifica y explica la diferencia antes de conciliar.');
+    this.api.crearConciliacionTesoreria({movimientosBanco:this.movimientosBancoSeleccionados(),movimientosSistema:this.movimientosSistemaSeleccionados(),
+      tipoAjuste:difference!==0?adjustment.tipoAjuste:undefined,motivo:difference!==0?adjustment.motivo.trim():undefined}).subscribe({next:()=>{
+      this.notice.show(difference===0?'Conciliación registrada.':'Conciliación y ajuste contable registrados.',4500,'info');this.closeMatching();this.load();
+    },error:e=>this.notice.show(e.error?.message||'No se pudo registrar la conciliación.')});
   }
+
+  reconcileTransfer(candidate:MovimientoTesoreria){const source=this.movimientoSeleccionado();if(!source)return;
+    const output=Number(source.monto)<0?source:candidate;const input=Number(source.monto)>0?source:candidate;
+    this.api.crearTransferenciaTesoreria(output.idMovimiento,input.idMovimiento,source.referencia||candidate.referencia||undefined).subscribe({next:()=>{
+      this.notice.show('Traspaso entre cuentas conciliado.',4000,'info');this.closeMatching();this.load();
+    },error:e=>this.notice.show(e.error?.message||'No se pudo conciliar el traspaso.')})}
+
+  closeMatching(){this.movimientoSeleccionado.set(null);this.candidatos.set([]);this.transferenciasCandidatas.set([]);this.movimientosBancoSeleccionados.set([]);this.movimientosSistemaSeleccionados.set([]);this.ajusteForm.reset({tipoAjuste:'',motivo:''})}
 
   undoReconciliation(movement:MovimientoTesoreria){this.confirm.ask({title:'Revertir conciliación',message:'El movimiento volverá a pendientes y la coincidencia del sistema quedará disponible.',confirmLabel:'Revertir',tone:'danger'}).subscribe(ok=>{if(!ok)return;this.api.desconciliarMovimiento(movement.idMovimiento,'Corrección solicitada desde tesorería').subscribe({next:()=>{this.notice.show('Conciliación revertida.');this.load()},error:()=>this.notice.show('No se pudo revertir la conciliación.')})})}
 
   ignoreBankMovement(movement:MovimientoTesoreria){this.confirm.ask({title:'Ignorar movimiento',message:'Úsalo sólo para renglones informativos del banco que no corresponden a un movimiento contable.',confirmLabel:'Marcar como ignorado'}).subscribe(ok=>{if(!ok)return;this.api.ignorarMovimiento(movement.idMovimiento,'Movimiento informativo revisado por tesorería').subscribe({next:()=>{this.notice.show('Movimiento revisado e ignorado.');this.load()},error:()=>this.notice.show('No se pudo actualizar el movimiento.')})})}
+
+  closeTreasuryMonth(){if(this.cierreTesoreriaForm.invalid)return this.notice.show('Completa los datos del cierre.');const raw=this.cierreTesoreriaForm.getRawValue();
+    this.confirm.ask({title:'Cerrar mes de tesorería',message:'El saldo debe coincidir con el estado de cuenta. Después del cierre no se podrán alterar movimientos de ese mes ni de meses anteriores.',confirmLabel:'Verificar y cerrar',tone:'danger'}).subscribe(ok=>{
+      if(!ok)return;this.api.cerrarTesoreria(raw).subscribe({next:()=>{this.notice.show('Mes de tesorería cerrado y protegido.',4500,'info');this.load()},error:e=>this.notice.show(e.error?.message||'No se pudo cerrar el mes.')})
+    })}
 
   createPeriod() {
     if(this.periodoForm.invalid)return;

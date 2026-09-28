@@ -2,7 +2,7 @@ import { BadRequestException, Controller, Get, Post, Body, Res, Req, Query, Para
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { FinanzasService } from './finanzas.service';
-import { BalanceQueryDto, ConciliarMovimientoDto, ContabilidadQueryDto, CorteFinancieroQueryDto, CreateCuentaTesoreriaDto, CreateGastoDto, CreateMovimientoTesoreriaDto, CreatePeriodoDto, CreatePolizaDto, ExportarContabilidadDto, ImportBankStatementDto, PresupuestoQueryDto, ReviewBankMovementDto, UpsertPresupuestoDto } from './finanzas.dto';
+import { BalanceQueryDto, CloseTreasuryPeriodDto, ConciliarMovimientoDto, ContabilidadQueryDto, CorteFinancieroQueryDto, CreateBankReconciliationDto, CreateCuentaTesoreriaDto, CreateGastoDto, CreateMovimientoTesoreriaDto, CreatePeriodoDto, CreatePolizaDto, CreateTreasuryTransferDto, ExportarContabilidadDto, ImportBankStatementDto, PresupuestoQueryDto, ReviewBankMovementDto, UpsertPresupuestoDto } from './finanzas.dto';
 import type { Response } from 'express';
 import { Roles } from '../auth/roles.decorator';
 import { RolUsuario } from '../common/enums/app.enums';
@@ -115,16 +115,43 @@ export class FinanzasController {
     return this.finanzasService.conciliarMovimiento(id,dto,req.user?.idUser);
   }
 
+  @Post('tesoreria/conciliaciones')
+  @Permissions('tesoreria.conciliar')
+  crearConciliacion(@Body() dto:CreateBankReconciliationDto,@Req() req:{user:JwtPayload}) {
+    return this.finanzasService.crearConciliacion(dto,req.user?.idUser);
+  }
+
+  @Get('tesoreria/conciliaciones')
+  getConciliaciones(){return this.finanzasService.getConciliaciones();}
+
+  @Get('tesoreria/movimientos/:id/transferencias-candidatas')
+  transferenciasCandidatas(@Param('id',ParseIntPipe) id:number){return this.finanzasService.getTransferCandidates(id);}
+
+  @Post('tesoreria/transferencias')
+  @Permissions('tesoreria.conciliar')
+  crearTransferencia(@Body() dto:CreateTreasuryTransferDto,@Req() req:{user:JwtPayload}) {
+    return this.finanzasService.crearTransferencia(dto,req.user?.idUser);
+  }
+
   @Post('tesoreria/movimientos/:id/desconciliar')
   @Permissions('tesoreria.conciliar')
-  desconciliarMovimiento(@Param('id',ParseIntPipe) id:number,@Body() dto:ReviewBankMovementDto) {
-    return this.finanzasService.desconciliarMovimiento(id,dto.motivo);
+  desconciliarMovimiento(@Param('id',ParseIntPipe) id:number,@Body() dto:ReviewBankMovementDto,@Req() req:{user:JwtPayload}) {
+    return this.finanzasService.desconciliarMovimiento(id,dto.motivo,req.user?.idUser);
   }
 
   @Post('tesoreria/movimientos/:id/ignorar')
   @Permissions('tesoreria.conciliar')
   ignorarMovimiento(@Param('id',ParseIntPipe) id:number,@Body() dto:ReviewBankMovementDto) {
     return this.finanzasService.ignorarMovimiento(id,dto.motivo);
+  }
+
+  @Get('tesoreria/cierres')
+  getCierres(){return this.finanzasService.getCierres();}
+
+  @Post('tesoreria/cierres')
+  @Permissions('tesoreria.conciliar')
+  cerrarTesoreria(@Body() dto:CloseTreasuryPeriodDto,@Req() req:{user:JwtPayload}) {
+    return this.finanzasService.cerrarTesoreria(dto,req.user?.idUser);
   }
 
   @Get('contabilidad/periodos')

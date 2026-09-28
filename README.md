@@ -180,8 +180,9 @@ npm test
 ## 11) Recomendaciones pendientes
 
 1. Ejecutar la certificación operativa contra el PAC sandbox con el CSD de pruebas del emisor.
-2. Añadir logging estructurado y un identificador de trazabilidad por petición.
-3. Conectar la conciliación bancaria directamente a la API del banco cuando se defina la institución y se obtengan credenciales de sandbox.
+2. Validar con el contador los saldos de apertura y el catálogo contable antes de la salida a producción.
+
+La conciliación bancaria funciona de forma local mediante CSV o captura manual. Por decisión operativa y de seguridad, el proyecto no contempla conexiones ni APIs bancarias.
 
 
 ## 12) Registro de cambios y mejoras (histórico)

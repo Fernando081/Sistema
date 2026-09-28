@@ -168,6 +168,28 @@ export class ReviewBankMovementDto {
   @Transform(trim) @IsString() @IsNotEmpty() @MaxLength(500) motivo: string;
 }
 
+export class CreateBankReconciliationDto {
+  @IsUUID() requestId: string;
+  @IsArray() @ArrayMinSize(1) @ArrayMaxSize(100) @IsInt({each:true}) @Min(1,{each:true}) movimientosBanco: number[];
+  @IsArray() @ArrayMinSize(1) @ArrayMaxSize(100) @IsInt({each:true}) @Min(1,{each:true}) movimientosSistema: number[];
+  @IsIn(['Comision','Redondeo','TipoCambio','Otro']) @IsOptional() tipoAjuste?: string;
+  @Transform(trim) @IsString() @IsNotEmpty() @MaxLength(500) @IsOptional() motivo?: string;
+}
+
+export class CreateTreasuryTransferDto {
+  @IsUUID() requestId: string;
+  @Type(()=>Number) @IsInt() @Min(1) idMovimientoSalida: number;
+  @Type(()=>Number) @IsInt() @Min(1) idMovimientoEntrada: number;
+  @Transform(trim) @IsString() @MaxLength(120) @IsOptional() referencia?: string;
+}
+
+export class CloseTreasuryPeriodDto {
+  @Type(()=>Number) @IsInt() @Min(1) idCuenta: number;
+  @Type(()=>Number) @IsInt() @Min(2000) @Max(2200) anio: number;
+  @Type(()=>Number) @IsInt() @Min(1) @Max(12) mes: number;
+  @Type(()=>Number) @IsNumber({maxDecimalPlaces:2}) saldoEstadoCuenta: number;
+}
+
 export class CreatePeriodoDto {
   @Type(() => Number) @IsInt() @Min(2000) @Max(2200) anio: number;
   @Type(() => Number) @IsInt() @Min(1) @Max(12) mes: number;

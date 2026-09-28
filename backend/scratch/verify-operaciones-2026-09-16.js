@@ -236,9 +236,40 @@ async function verifyOperations(ds) {
   const candidates=await treasury.getCandidatosConciliacion(Number(reconciled.idMovimiento));
   const exactCandidates=candidates.filter(row=>Number(row.diferencia)===0);assert.equal(exactCandidates.length,1);
   await treasury.conciliarMovimiento(Number(reconciled.idMovimiento),{idCajaMovimiento:Number(exactCandidates[0].idCajaMovimiento)},user.id);
-  await treasury.ignorarMovimiento(Number(pendingBank.idMovimiento),'Comisión sin registro contable en fixture');
 
-  console.log('Operaciones aisladas aprobadas: idempotencia, caja, devoluciones, NC/REP, fiscal mock, pedidos, backorder, abastecimiento, cuenta por pagar e importación/conciliación bancaria.');
+  // La comisión se concilia contra un egreso del sistema y genera el ajuste
+  // restante con movimiento y póliza contable auditables.
+  await ds.query("SELECT set_config('app.movement_origin','Egreso parcial comisión E2E',false)");
+  await ds.query('UPDATE saldos SET cuenta_banco=cuenta_banco-15,updated_at=clock_timestamp()');
+  const [partialSystem]=await ds.query("SELECT id_movimiento AS id FROM caja_movimiento WHERE origen='Egreso parcial comisión E2E' ORDER BY id_movimiento DESC LIMIT 1");
+  const adjusted=await treasury.crearConciliacion({requestId:randomUUID(),movimientosBanco:[Number(pendingBank.idMovimiento)],
+    movimientosSistema:[Number(partialSystem.id)],tipoAjuste:'Comision',motivo:'Comisión bancaria documentada E2E'},user.id);
+  assert.equal(Number(adjusted.ajuste),-4.5);
+  const [adjustmentPolicy]=await ds.query("SELECT estado FROM poliza_contable WHERE origen_tipo='AjusteBancario' AND origen_id=$1",[adjusted.idConciliacion]);
+  assert.equal(adjustmentPolicy.estado,'Contabilizada');
+  await treasury.desconciliarMovimiento(Number(pendingBank.idMovimiento),'Prueba de reverso agrupado',user.id);
+  const [reversedGroup]=await ds.query('SELECT estado FROM tesoreria_conciliacion WHERE id_conciliacion=$1',[adjusted.idConciliacion]);
+  assert.equal(reversedGroup.estado,'Revertida');
+  await treasury.ignorarMovimiento(Number(pendingBank.idMovimiento),'Comisión ya validada en prueba de reverso');
+
+  // Traspaso entre cuentas propias: dos renglones opuestos, sin crear ingreso o gasto.
+  const secondAccount=await treasury.crearCuentaTesoreria({nombre:'Cuenta destino aislada',banco:'Banco prueba 2',moneda:'MXN',ultimosCuatro:'1234',saldoInicial:0});
+  const transferOut=await treasury.crearMovimientoTesoreria({idCuenta:bankAccount.idCuenta,fecha:today,descripcion:'Traspaso salida',monto:-250});
+  const transferIn=await treasury.crearMovimientoTesoreria({idCuenta:secondAccount.idCuenta,fecha:today,descripcion:'Traspaso entrada',monto:250});
+  const transfer=await treasury.crearTransferencia({requestId:randomUUID(),idMovimientoSalida:transferOut.idMovimiento,
+    idMovimientoEntrada:transferIn.idMovimiento,referencia:'TRASPASO-E2E'},user.id);
+  assert(transfer.idTransferencia);
+
+  // Cierre mensual: exige saldo exacto, no pendientes y bloquea cambios retroactivos.
+  const past=new Date();past.setUTCMonth(past.getUTCMonth()-1,1);const pastYear=past.getUTCFullYear();const pastMonth=past.getUTCMonth()+1;
+  const pastDate=`${pastYear}-${String(pastMonth).padStart(2,'0')}-15`;
+  const closeAccount=await treasury.crearCuentaTesoreria({nombre:'Cuenta cierre aislada',banco:'Banco cierre',moneda:'MXN',saldoInicial:100});
+  const closeMovement=await treasury.crearMovimientoTesoreria({idCuenta:closeAccount.idCuenta,fecha:pastDate,descripcion:'Movimiento revisado',monto:50});
+  await treasury.ignorarMovimiento(closeMovement.idMovimiento,'Renglón informativo de cierre E2E');
+  await treasury.cerrarTesoreria({idCuenta:closeAccount.idCuenta,anio:pastYear,mes:pastMonth,saldoEstadoCuenta:150},user.id);
+  await assert.rejects(()=>treasury.crearMovimientoTesoreria({idCuenta:closeAccount.idCuenta,fecha:pastDate,descripcion:'Retroactivo',monto:1}),/cerrada/);
+
+  console.log('Operaciones aisladas aprobadas: idempotencia, caja, devoluciones, NC/REP, fiscal mock, pedidos, backorder, abastecimiento, cuenta por pagar y tesorería local avanzada.');
 }
 
 module.exports={verifyOperations};

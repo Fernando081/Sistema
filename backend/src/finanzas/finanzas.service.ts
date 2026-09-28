@@ -1,10 +1,10 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
-import { createHash } from 'node:crypto';
+import { DataSource, EntityManager, Repository } from 'typeorm';
+import { createHash, randomUUID } from 'node:crypto';
 import { Gasto } from './entities/gasto.entity';
 import { Saldo } from './entities/saldo.entity';
-import { ConciliarMovimientoDto, ContabilidadQueryDto, CreateCuentaTesoreriaDto, CreateGastoDto, CreateMovimientoTesoreriaDto, CreatePeriodoDto, CreatePolizaDto, ExportarContabilidadDto, ImportBankStatementDto, PresupuestoQueryDto, UpsertPresupuestoDto } from './finanzas.dto';
+import { CloseTreasuryPeriodDto, ConciliarMovimientoDto, ContabilidadQueryDto, CreateBankReconciliationDto, CreateCuentaTesoreriaDto, CreateGastoDto, CreateMovimientoTesoreriaDto, CreatePeriodoDto, CreatePolizaDto, CreateTreasuryTransferDto, ExportarContabilidadDto, ImportBankStatementDto, PresupuestoQueryDto, UpsertPresupuestoDto } from './finanzas.dto';
 import PdfPrinter from 'pdfmake';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { queryRows } from '../common/database/typed-query';
@@ -214,7 +214,7 @@ export class FinanzasService {
     return queryRows<Record<string, unknown>>(this.dataSource, `SELECT m.id_movimiento AS "idMovimiento",m.id_cuenta AS "idCuenta",
       c.nombre AS cuenta,c.banco,m.fecha,m.descripcion,m.referencia,m.monto,m.estado,m.metodo_conciliacion AS "metodoConciliacion",
       m.puntaje_conciliacion AS "puntajeConciliacion",m.observaciones,m.id_importacion AS "idImportacion",
-      m.id_caja_movimiento AS "idCajaMovimiento",m.conciliado_at AS "conciliadoAt",u.username AS "conciliadoPor"
+      m.id_conciliacion AS "idConciliacion",m.conciliado_at AS "conciliadoAt",u.username AS "conciliadoPor"
       FROM tesoreria_movimiento m JOIN tesoreria_cuenta c ON c.id_cuenta=m.id_cuenta
       LEFT JOIN auth_user u ON u.id_user=m.conciliado_por
       WHERE ($1::int IS NULL OR m.id_cuenta=$1) ORDER BY m.fecha DESC,m.id_movimiento DESC LIMIT 500`, [idCuenta || null]);
@@ -261,12 +261,10 @@ export class FinanzasService {
         if(dto.autoConciliar){
           const candidates=await queryRows<{id:number}>(manager,`SELECT cm.id_movimiento AS id FROM caja_movimiento cm
             WHERE cm.banco=$2::numeric AND cm.fecha::date BETWEEN $1::date-3 AND $1::date+3
-              AND NOT EXISTS(SELECT 1 FROM tesoreria_movimiento tm WHERE tm.id_caja_movimiento=cm.id_movimiento)
+              AND NOT EXISTS(SELECT 1 FROM tesoreria_conciliacion_sistema cs WHERE cs.id_caja_movimiento=cm.id_movimiento AND cs.activo)
             ORDER BY abs(cm.fecha::date-$1::date),cm.id_movimiento FOR UPDATE OF cm`,[row.date,row.amount]);
           if(candidates.length===1){
-            await manager.query(`UPDATE tesoreria_movimiento SET estado='Conciliado',id_caja_movimiento=$2,conciliado_por=$3,
-              conciliado_at=clock_timestamp(),metodo_conciliacion='Automatica',puntaje_conciliacion=100,updated_at=clock_timestamp()
-              WHERE id_movimiento=$1`,[created[0].id,candidates[0].id,idUsuario||null]);
+            await this.crearConciliacionExacta(manager,created[0].id,candidates[0].id,idUsuario,'Automatica');
             matched++;
           }
         }
@@ -294,39 +292,135 @@ export class FinanzasService {
       abs(cm.banco-$2::numeric) AS diferencia,abs(cm.fecha::date-$1::date) AS dias,
       greatest(0,100-abs(cm.fecha::date-$1::date)*5-least(abs(cm.banco-$2::numeric),100)) AS puntaje
       FROM caja_movimiento cm LEFT JOIN auth_user u ON u.id_user=cm.id_usuario
-      WHERE cm.banco<>0 AND NOT EXISTS(SELECT 1 FROM tesoreria_movimiento tm WHERE tm.id_caja_movimiento=cm.id_movimiento)
+      WHERE cm.banco<>0 AND NOT EXISTS(SELECT 1 FROM tesoreria_conciliacion_sistema cs WHERE cs.id_caja_movimiento=cm.id_movimiento AND cs.activo)
         AND cm.fecha::date BETWEEN $1::date-7 AND $1::date+7
       ORDER BY abs(cm.banco-$2::numeric),abs(cm.fecha::date-$1::date),cm.id_movimiento LIMIT 20`,
       [movement[0].fecha,movement[0].monto]);
   }
 
   async conciliarMovimiento(idMovimiento: number, dto: ConciliarMovimientoDto, idUsuario?: number) {
-    const result = await this.dataSource.transaction(async manager => {
-      const movement = await queryRows<{ monto: string | number }>(manager,
-        `SELECT monto FROM tesoreria_movimiento WHERE id_movimiento=$1 AND estado='Pendiente' FOR UPDATE`, [idMovimiento]);
-      if (!movement.length) throw new NotFoundException('Movimiento pendiente no encontrado');
-      const system = await queryRows<{ banco: string | number }>(manager,
-        `SELECT banco FROM caja_movimiento WHERE id_movimiento=$1 AND banco<>0
-          AND NOT EXISTS(SELECT 1 FROM tesoreria_movimiento WHERE id_caja_movimiento=$1) FOR SHARE`, [dto.idCajaMovimiento]);
-      if (!system.length) throw new NotFoundException('Movimiento del sistema no disponible');
-      if (this.money(Number(movement[0].monto)) !== this.money(Number(system[0].banco))) {
-        throw new BadRequestException('Los montos deben coincidir para conciliar');
-      }
-      await manager.query(`UPDATE tesoreria_movimiento SET estado='Conciliado',id_caja_movimiento=$2,
-        conciliado_por=$3,conciliado_at=clock_timestamp(),metodo_conciliacion='Manual',puntaje_conciliacion=100,
-        observaciones=NULL,updated_at=clock_timestamp() WHERE id_movimiento=$1`,
-        [idMovimiento,dto.idCajaMovimiento,idUsuario || null]);
-      return { message:'Movimiento conciliado' };
-    });
-    return result;
+    return this.crearConciliacion({requestId:randomUUID(),movimientosBanco:[idMovimiento],
+      movimientosSistema:[dto.idCajaMovimiento]},idUsuario);
   }
 
-  async desconciliarMovimiento(idMovimiento:number,motivo:string) {
-    const rows=await queryRows<{id:number}>(this.dataSource,`UPDATE tesoreria_movimiento SET estado='Pendiente',id_caja_movimiento=NULL,
-      conciliado_por=NULL,conciliado_at=NULL,metodo_conciliacion=NULL,puntaje_conciliacion=NULL,observaciones=$2,updated_at=clock_timestamp()
-      WHERE id_movimiento=$1 AND estado='Conciliado' RETURNING id_movimiento AS id`,[idMovimiento,`Desconciliado: ${motivo}`]);
-    if(!rows.length)throw new ConflictException('El movimiento no está conciliado');
-    return{message:'Conciliación revertida'};
+  async crearConciliacion(dto:CreateBankReconciliationDto,idUsuario?:number) {
+    if(new Set(dto.movimientosBanco).size!==dto.movimientosBanco.length || new Set(dto.movimientosSistema).size!==dto.movimientosSistema.length) {
+      throw new BadRequestException('No repitas movimientos dentro de una conciliación');
+    }
+    return this.dataSource.transaction(async manager=>{
+      await manager.query(`SELECT pg_advisory_xact_lock(hashtext('treasury-reconciliation:'||$1))`,[dto.requestId]);
+      const previous=await queryRows<{idConciliacion:number}>(manager,
+        `SELECT id_conciliacion AS "idConciliacion" FROM tesoreria_conciliacion WHERE request_id=$1`,[dto.requestId]);
+      if(previous.length)return{message:'Conciliación ya registrada',...previous[0],repeated:true};
+      const bank=await queryRows<{id:number;idCuenta:number;monto:string|number}>(manager,
+        `SELECT id_movimiento AS id,id_cuenta AS "idCuenta",monto FROM tesoreria_movimiento
+         WHERE id_movimiento=ANY($1::bigint[]) AND estado='Pendiente' ORDER BY id_movimiento FOR UPDATE`,[dto.movimientosBanco]);
+      if(bank.length!==dto.movimientosBanco.length)throw new ConflictException('Uno o más movimientos bancarios ya no están pendientes');
+      const accountIds=new Set(bank.map(row=>Number(row.idCuenta)));
+      if(accountIds.size!==1)throw new BadRequestException('Una conciliación sólo puede contener movimientos de la misma cuenta');
+      const system=await queryRows<{id:number;banco:string|number}>(manager,
+        `SELECT cm.id_movimiento AS id,cm.banco FROM caja_movimiento cm
+         WHERE cm.id_movimiento=ANY($1::bigint[]) AND cm.banco<>0
+           AND NOT EXISTS(SELECT 1 FROM tesoreria_conciliacion_sistema cs WHERE cs.id_caja_movimiento=cm.id_movimiento AND cs.activo)
+         ORDER BY cm.id_movimiento FOR UPDATE OF cm`,[dto.movimientosSistema]);
+      if(system.length!==dto.movimientosSistema.length)throw new ConflictException('Uno o más movimientos del sistema ya no están disponibles');
+      const totalBanco=this.money(bank.reduce((sum,row)=>sum+Number(row.monto),0));
+      const totalSistema=this.money(system.reduce((sum,row)=>sum+Number(row.banco),0));
+      const ajuste=this.money(totalBanco-totalSistema);
+      if(ajuste!==0 && (!dto.tipoAjuste || !dto.motivo)) {
+        throw new BadRequestException('Documenta el tipo y motivo de la diferencia antes de conciliar');
+      }
+      if(ajuste===0 && (dto.tipoAjuste || dto.motivo))throw new BadRequestException('No agregues un ajuste cuando los totales coinciden');
+      const created=await queryRows<{idConciliacion:number}>(manager,`INSERT INTO tesoreria_conciliacion
+        (request_id,id_cuenta,tipo,total_banco,total_sistema,ajuste,tipo_ajuste,motivo,id_usuario)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id_conciliacion AS "idConciliacion"`,
+        [dto.requestId,[...accountIds][0],ajuste===0?'Exacta':'Ajuste',totalBanco,totalSistema,ajuste,dto.tipoAjuste||null,dto.motivo||null,idUsuario||null]);
+      const id=created[0].idConciliacion;
+      await manager.query(`UPDATE tesoreria_movimiento SET estado='Conciliado',id_conciliacion=$2,
+        conciliado_por=$3,conciliado_at=clock_timestamp(),metodo_conciliacion='Manual',puntaje_conciliacion=$4,
+        observaciones=NULL,updated_at=clock_timestamp() WHERE id_movimiento=ANY($1::bigint[])`,
+        [dto.movimientosBanco,id,idUsuario||null,ajuste===0?100:90]);
+      for(const row of system)await manager.query(`INSERT INTO tesoreria_conciliacion_sistema(id_conciliacion,id_caja_movimiento,monto)
+        VALUES($1,$2,$3)`,[id,row.id,row.banco]);
+      if(ajuste!==0)await this.registrarAjusteConciliacion(manager,id,ajuste,dto.tipoAjuste!,dto.motivo!,idUsuario);
+      return{message:ajuste===0?'Conciliación registrada':'Conciliación con ajuste registrada',idConciliacion:id,totalBanco,totalSistema,ajuste};
+    });
+  }
+
+  getConciliaciones() {
+    return queryRows<Record<string,unknown>>(this.dataSource,`SELECT c.id_conciliacion AS "idConciliacion",c.id_cuenta AS "idCuenta",
+      tc.nombre AS cuenta,c.tipo,c.estado,c.total_banco AS "totalBanco",c.total_sistema AS "totalSistema",c.ajuste,
+      c.tipo_ajuste AS "tipoAjuste",c.motivo,c.created_at AS "createdAt",u.username AS usuario,
+      count(DISTINCT tm.id_movimiento)::int AS "movimientosBanco",
+      count(DISTINCT cs.id_caja_movimiento)::int AS "movimientosSistema"
+      FROM tesoreria_conciliacion c LEFT JOIN tesoreria_cuenta tc ON tc.id_cuenta=c.id_cuenta
+      LEFT JOIN tesoreria_movimiento tm ON tm.id_conciliacion=c.id_conciliacion
+      LEFT JOIN tesoreria_conciliacion_sistema cs ON cs.id_conciliacion=c.id_conciliacion
+      LEFT JOIN auth_user u ON u.id_user=c.id_usuario GROUP BY c.id_conciliacion,tc.nombre,u.username
+      ORDER BY c.created_at DESC LIMIT 100`);
+  }
+
+  async getTransferCandidates(idMovimiento:number) {
+    const source=await queryRows<{fecha:string;monto:string|number;idCuenta:number}>(this.dataSource,
+      `SELECT fecha,monto,id_cuenta AS "idCuenta" FROM tesoreria_movimiento WHERE id_movimiento=$1 AND estado='Pendiente'`,[idMovimiento]);
+    if(!source.length)throw new NotFoundException('Movimiento pendiente no encontrado');
+    return queryRows<Record<string,unknown>>(this.dataSource,`SELECT m.id_movimiento AS "idMovimiento",m.id_cuenta AS "idCuenta",
+      c.nombre AS cuenta,c.banco,m.fecha,m.descripcion,m.referencia,m.monto
+      FROM tesoreria_movimiento m JOIN tesoreria_cuenta c ON c.id_cuenta=m.id_cuenta
+      WHERE m.estado='Pendiente' AND m.id_cuenta<>$2 AND m.monto=-$3::numeric
+        AND m.fecha BETWEEN $1::date-7 AND $1::date+7
+      ORDER BY abs(m.fecha-$1::date),m.id_movimiento LIMIT 20`,[source[0].fecha,source[0].idCuenta,source[0].monto]);
+  }
+
+  async crearTransferencia(dto:CreateTreasuryTransferDto,idUsuario?:number) {
+    const idSalida=Number(dto.idMovimientoSalida),idEntrada=Number(dto.idMovimientoEntrada);
+    if(idSalida===idEntrada)throw new BadRequestException('Selecciona dos movimientos distintos');
+    return this.dataSource.transaction(async manager=>{
+      await manager.query(`SELECT pg_advisory_xact_lock(hashtext('treasury-transfer:'||$1))`,[dto.requestId]);
+      const previous=await queryRows<{idTransferencia:number}>(manager,
+        `SELECT id_transferencia AS "idTransferencia" FROM tesoreria_transferencia WHERE request_id=$1`,[dto.requestId]);
+      if(previous.length)return{message:'Transferencia ya registrada',...previous[0],repeated:true};
+      const rows=await queryRows<{id:number;idCuenta:number;monto:string|number}>(manager,
+        `SELECT id_movimiento AS id,id_cuenta AS "idCuenta",monto FROM tesoreria_movimiento
+         WHERE id_movimiento=ANY($1::bigint[]) AND estado='Pendiente' ORDER BY id_movimiento FOR UPDATE`,
+        [[idSalida,idEntrada]]);
+      if(rows.length!==2)throw new ConflictException('Uno de los movimientos ya no está pendiente');
+      const output=rows.find(row=>Number(row.id)===idSalida)!;
+      const input=rows.find(row=>Number(row.id)===idEntrada)!;
+      if(output.idCuenta===input.idCuenta || Number(output.monto)>=0 || Number(input.monto)<=0 || this.money(Number(output.monto)+Number(input.monto))!==0) {
+        throw new BadRequestException('El traspaso debe tener salida y entrada iguales en cuentas distintas');
+      }
+      const group=await queryRows<{id:number}>(manager,`INSERT INTO tesoreria_conciliacion
+        (request_id,tipo,total_banco,total_sistema,ajuste,motivo,id_usuario) VALUES($1,'Transferencia',0,0,0,$2,$3)
+        RETURNING id_conciliacion AS id`,[dto.requestId,dto.referencia||'Traspaso entre cuentas propias',idUsuario||null]);
+      await manager.query(`UPDATE tesoreria_movimiento SET estado='Conciliado',id_conciliacion=$2,conciliado_por=$3,
+        conciliado_at=clock_timestamp(),metodo_conciliacion='Manual',puntaje_conciliacion=100,updated_at=clock_timestamp()
+        WHERE id_movimiento=ANY($1::bigint[])`,[[idSalida,idEntrada],group[0].id,idUsuario||null]);
+      const transfer=await queryRows<{idTransferencia:number}>(manager,`INSERT INTO tesoreria_transferencia
+        (request_id,id_conciliacion,id_movimiento_salida,id_movimiento_entrada,referencia,id_usuario)
+        VALUES($1,$2,$3,$4,$5,$6) RETURNING id_transferencia AS "idTransferencia"`,
+        [dto.requestId,group[0].id,idSalida,idEntrada,dto.referencia||null,idUsuario||null]);
+      return{message:'Transferencia interna conciliada',...transfer[0],idConciliacion:group[0].id};
+    });
+  }
+
+  async desconciliarMovimiento(idMovimiento:number,motivo:string,idUsuario?:number) {
+    return this.dataSource.transaction(async manager=>{
+      const groups=await queryRows<{id:number;estado:string;ajuste:string|number}>(manager,`SELECT c.id_conciliacion AS id,c.estado,c.ajuste
+        FROM tesoreria_movimiento m JOIN tesoreria_conciliacion c ON c.id_conciliacion=m.id_conciliacion
+        WHERE m.id_movimiento=$1 FOR UPDATE OF c`,[idMovimiento]);
+      if(!groups.length || groups[0].estado!=='Activa')throw new ConflictException('El movimiento no tiene una conciliación activa');
+      const group=groups[0];
+      await manager.query(`UPDATE tesoreria_movimiento SET estado='Pendiente',id_conciliacion=NULL,conciliado_por=NULL,
+        conciliado_at=NULL,metodo_conciliacion=NULL,puntaje_conciliacion=NULL,observaciones=$2,updated_at=clock_timestamp()
+        WHERE id_conciliacion=$1`,[group.id,`Desconciliado: ${motivo}`]);
+      await manager.query(`UPDATE tesoreria_conciliacion_sistema SET activo=false WHERE id_conciliacion=$1 AND NOT generado_ajuste`,[group.id]);
+      const ajuste=this.money(Number(group.ajuste));
+      if(ajuste!==0)await this.revertirAjusteConciliacion(manager,group.id,ajuste,idUsuario);
+      await manager.query(`UPDATE tesoreria_conciliacion SET estado='Revertida',revertida_por=$2,revertida_at=clock_timestamp(),
+        motivo_reversion=$3 WHERE id_conciliacion=$1`,[group.id,idUsuario||null,motivo]);
+      return{message:'Conciliación completa revertida',idConciliacion:group.id};
+    });
   }
 
   async ignorarMovimiento(idMovimiento:number,motivo:string) {
@@ -334,6 +428,95 @@ export class FinanzasService {
       updated_at=clock_timestamp() WHERE id_movimiento=$1 AND estado='Pendiente' RETURNING id_movimiento AS id`,[idMovimiento,motivo]);
     if(!rows.length)throw new ConflictException('El movimiento no está pendiente');
     return{message:'Movimiento marcado como ignorado'};
+  }
+
+  getCierres() {
+    return queryRows<Record<string,unknown>>(this.dataSource,`SELECT ci.id_cierre AS "idCierre",ci.id_cuenta AS "idCuenta",
+      c.nombre AS cuenta,c.banco,ci.anio,ci.mes,ci.saldo_estado_cuenta AS "saldoEstadoCuenta",
+      ci.saldo_calculado AS "saldoCalculado",ci.movimientos,ci.conciliados,ci.ignorados,
+      ci.created_at AS "createdAt",u.username AS usuario
+      FROM tesoreria_cierre ci JOIN tesoreria_cuenta c ON c.id_cuenta=ci.id_cuenta
+      JOIN auth_user u ON u.id_user=ci.id_usuario ORDER BY ci.anio DESC,ci.mes DESC,c.nombre`);
+  }
+
+  async cerrarTesoreria(dto:CloseTreasuryPeriodDto,idUsuario?:number) {
+    if(!idUsuario)throw new BadRequestException('Se requiere un usuario autenticado para cerrar tesorería');
+    const end=new Date(Date.UTC(dto.anio,dto.mes,0));
+    const endIso=end.toISOString().slice(0,10);
+    if(endIso>new Date().toISOString().slice(0,10))throw new BadRequestException('No se puede cerrar un mes que aún no termina');
+    return this.dataSource.transaction(async manager=>{
+      await manager.query(`SELECT pg_advisory_xact_lock(hashtext('treasury-close:'||$1))`,[dto.idCuenta]);
+      const account=await queryRows<{saldoInicial:string|number}>(manager,
+        `SELECT saldo_inicial AS "saldoInicial" FROM tesoreria_cuenta WHERE id_cuenta=$1 AND activa FOR UPDATE`,[dto.idCuenta]);
+      if(!account.length)throw new NotFoundException('Cuenta de tesorería no encontrada o inactiva');
+      const existing=await queryRows<{id:number}>(manager,
+        `SELECT id_cierre AS id FROM tesoreria_cierre WHERE id_cuenta=$1 AND anio=$2 AND mes=$3`,[dto.idCuenta,dto.anio,dto.mes]);
+      if(existing.length)throw new ConflictException('Ese mes ya está cerrado para la cuenta');
+      const pending=await queryRows<{total:number}>(manager,`SELECT count(*)::int AS total FROM tesoreria_movimiento
+        WHERE id_cuenta=$1 AND fecha<=$2::date AND estado='Pendiente'`,[dto.idCuenta,endIso]);
+      if(Number(pending[0]?.total)>0)throw new BadRequestException(`Hay ${pending[0].total} movimientos pendientes hasta el cierre`);
+      const summary=await queryRows<{saldo:string|number;movimientos:number;conciliados:number;ignorados:number}>(manager,`SELECT
+        $3::numeric+coalesce(sum(monto) FILTER(WHERE fecha<=$2::date),0) AS saldo,
+        count(*) FILTER(WHERE fecha BETWEEN make_date($4,$5,1) AND $2::date)::int AS movimientos,
+        count(*) FILTER(WHERE fecha BETWEEN make_date($4,$5,1) AND $2::date AND estado='Conciliado')::int AS conciliados,
+        count(*) FILTER(WHERE fecha BETWEEN make_date($4,$5,1) AND $2::date AND estado='Ignorado')::int AS ignorados
+        FROM tesoreria_movimiento WHERE id_cuenta=$1`,[dto.idCuenta,endIso,account[0].saldoInicial,dto.anio,dto.mes]);
+      const saldo=this.money(Number(summary[0].saldo));
+      if(saldo!==this.money(dto.saldoEstadoCuenta))throw new BadRequestException(`El saldo calculado (${saldo.toFixed(2)}) no coincide con el estado de cuenta`);
+      const result=await queryRows<{idCierre:number}>(manager,`INSERT INTO tesoreria_cierre
+        (id_cuenta,anio,mes,saldo_estado_cuenta,saldo_calculado,movimientos,conciliados,ignorados,id_usuario)
+        VALUES($1,$2,$3,$4,$4,$5,$6,$7,$8) RETURNING id_cierre AS "idCierre"`,
+        [dto.idCuenta,dto.anio,dto.mes,saldo,summary[0].movimientos,summary[0].conciliados,summary[0].ignorados,idUsuario]);
+      return{message:'Mes de tesorería cerrado',...result[0],saldo};
+    });
+  }
+
+  private async crearConciliacionExacta(manager:EntityManager,idMovimiento:number,idCajaMovimiento:number,idUsuario:number|undefined,metodo:'Manual'|'Automatica') {
+    const bank=await queryRows<{idCuenta:number;monto:string|number}>(manager,
+      `SELECT id_cuenta AS "idCuenta",monto FROM tesoreria_movimiento WHERE id_movimiento=$1 AND estado='Pendiente' FOR UPDATE`,[idMovimiento]);
+    const system=await queryRows<{monto:string|number}>(manager,`SELECT cm.banco AS monto FROM caja_movimiento cm WHERE cm.id_movimiento=$1
+      AND cm.banco<>0 AND NOT EXISTS(SELECT 1 FROM tesoreria_conciliacion_sistema cs WHERE cs.id_caja_movimiento=cm.id_movimiento AND cs.activo)
+      FOR UPDATE OF cm`,[idCajaMovimiento]);
+    if(!bank.length || !system.length || this.money(Number(bank[0].monto))!==this.money(Number(system[0].monto))) {
+      throw new ConflictException('La coincidencia exacta ya no está disponible');
+    }
+    const group=await queryRows<{id:number}>(manager,`INSERT INTO tesoreria_conciliacion
+      (request_id,id_cuenta,tipo,total_banco,total_sistema,ajuste,motivo,id_usuario)
+      VALUES($1,$2,'Exacta',$3,$3,0,$4,$5) RETURNING id_conciliacion AS id`,
+      [randomUUID(),bank[0].idCuenta,bank[0].monto,metodo==='Automatica'?'Coincidencia automática única':'Coincidencia manual',idUsuario||null]);
+    await manager.query(`INSERT INTO tesoreria_conciliacion_sistema(id_conciliacion,id_caja_movimiento,monto) VALUES($1,$2,$3)`,
+      [group[0].id,idCajaMovimiento,system[0].monto]);
+    await manager.query(`UPDATE tesoreria_movimiento SET estado='Conciliado',id_conciliacion=$2,conciliado_por=$3,
+      conciliado_at=clock_timestamp(),metodo_conciliacion=$4,puntaje_conciliacion=100,observaciones=NULL,updated_at=clock_timestamp()
+      WHERE id_movimiento=$1`,[idMovimiento,group[0].id,idUsuario||null,metodo]);
+    return group[0].id;
+  }
+
+  private async registrarAjusteConciliacion(manager:EntityManager,idConciliacion:number,ajuste:number,tipo:string,motivo:string,idUsuario?:number) {
+    const origin=`Ajuste conciliación bancaria #${idConciliacion}`;
+    await manager.query(`SELECT set_config('app.current_user_id',$1,true),set_config('app.movement_origin',$2,true)`,[idUsuario?String(idUsuario):'',origin]);
+    const balances=await queryRows<{id:number}>(manager,`UPDATE saldos SET cuenta_banco=cuenta_banco+$1
+      WHERE id_saldo=(SELECT min(id_saldo) FROM saldos) RETURNING id_saldo AS id`,[ajuste]);
+    if(!balances.length)throw new BadRequestException('Configura el saldo bancario general antes de registrar ajustes');
+    const movements=await queryRows<{id:number;monto:string|number}>(manager,
+      `SELECT id_movimiento AS id,banco AS monto FROM caja_movimiento WHERE origen=$1 ORDER BY id_movimiento DESC LIMIT 1`,[origin]);
+    if(!movements.length)throw new InternalServerErrorException('No se pudo generar el movimiento de ajuste');
+    await manager.query(`INSERT INTO tesoreria_conciliacion_sistema(id_conciliacion,id_caja_movimiento,monto,generado_ajuste)
+      VALUES($1,$2,$3,true)`,[idConciliacion,movements[0].id,movements[0].monto]);
+    const policies=await queryRows<{id:number}>(manager,`SELECT fn_preparar_poliza_automatica('AjusteBancario',$1,current_date,'Diario',$2,true) AS id`,
+      [idConciliacion,`${tipo}: ${motivo}`]);
+    const amount=Math.abs(ajuste);const debit=ajuste<0?(tipo==='Comision'?'6010':'6020'):'1110';const credit=ajuste<0?'1110':'4090';
+    await manager.query(`INSERT INTO poliza_contable_detalle(id_poliza,id_cuenta,concepto,debe)
+      VALUES($1,fn_cuenta_contable_id($2),$3,$4)`,[policies[0].id,debit,motivo,amount]);
+    await manager.query(`INSERT INTO poliza_contable_detalle(id_poliza,id_cuenta,concepto,haber)
+      VALUES($1,fn_cuenta_contable_id($2),$3,$4)`,[policies[0].id,credit,motivo,amount]);
+  }
+
+  private async revertirAjusteConciliacion(manager:EntityManager,idConciliacion:number,ajuste:number,idUsuario?:number) {
+    const origin=`Reverso ajuste conciliación bancaria #${idConciliacion}`;
+    await manager.query(`SELECT set_config('app.current_user_id',$1,true),set_config('app.movement_origin',$2,true)`,[idUsuario?String(idUsuario):'',origin]);
+    await manager.query(`UPDATE saldos SET cuenta_banco=cuenta_banco-$1 WHERE id_saldo=(SELECT min(id_saldo) FROM saldos)`,[ajuste]);
+    await manager.query(`SELECT fn_preparar_poliza_automatica('AjusteBancario',$1,current_date,'Diario',$2,false)`,[idConciliacion,origin]);
   }
 
   async getPeriodos() {
