@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { CuentasProveedorService } from './cuentas-proveedor.service';
 
@@ -39,5 +39,31 @@ describe('CuentasProveedorService', () => {
     const service = new CuentasProveedorService(source);
     await expect(service.uploadPdf(1,{mimetype:'application/pdf',buffer:Buffer.from('archivo inválido')} as Express.Multer.File))
       .rejects.toThrow('PDF válido');
+  });
+
+  it('impide cancelar una factura mientras conserve pagos activos', async () => {
+    const query = jest.fn(async (sql: string) => {
+      if (sql.includes('FROM factura_proveedor\n')) return [{ idFactura: 4, idProveedor: 2, saldo: 0, total: 100, estado: 'Pagada', tipoCambio: 1 }];
+      if (sql.includes('FROM factura_proveedor_pago')) return [{ id: 9 }];
+      return [];
+    });
+    const source = { transaction: (callback: (manager: { query: typeof query }) => unknown) => callback({ query }) } as unknown as DataSource;
+    const service = new CuentasProveedorService(source);
+    await expect(service.cancelInvoice(4,'CFDI cancelado por el proveedor',1)).rejects.toBeInstanceOf(ConflictException);
+    expect(query.mock.calls.some(([sql]) => sql.includes("SET estado='Cancelada'"))).toBe(false);
+  });
+
+  it('impide revertir dos veces el mismo pago', async () => {
+    const query = jest.fn(async (sql: string) => {
+      if (sql.includes('FROM factura_proveedor_pago p JOIN factura_proveedor')) return [{
+        idInvoice:4,amount:50,paymentDate:'2026-09-28',paymentMethod:'Transferencia',state:'Revertido',
+        idSchedule:null,balance:50,total:100,invoiceState:'Parcialmente pagada',exchangeRate:1,
+      }];
+      return [];
+    });
+    const source = { transaction: (callback: (manager: { query: typeof query }) => unknown) => callback({ query }) } as unknown as DataSource;
+    const service = new CuentasProveedorService(source);
+    await expect(service.reversePayment(9,'Segundo intento',1)).rejects.toBeInstanceOf(ConflictException);
+    expect(query.mock.calls.some(([sql]) => sql.includes("UPDATE factura_proveedor_pago SET estado='Revertido'"))).toBe(false);
   });
 });

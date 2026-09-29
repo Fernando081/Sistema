@@ -15,12 +15,12 @@ export interface SupplierDashboard {
   notasCredito:Array<{id:number;idProveedor:number;fecha:string;folio:string;total:number;saldo:number}>;
 }
 export interface SupplierInvoiceDetail extends SupplierInvoice {
-  id_proveedor:number; saldo_pendiente:number;
+  id_proveedor:number; saldo_pendiente:number; canceladaAt?:string; motivoCancelacion?:string; canceladaPor?:string;
   partidas:Array<{idDetalle:number;codigo:string;descripcion:string;cantidad:number;conciliada:number;costoUnitario:number;tasaIva:number;importe:number}>;
   discrepancias:Array<{idDiscrepancia:number;tipo:string;esperado:number;recibido:number;diferencia:number;estado:string;justificacion?:string}>;
   programaciones:Array<{idProgramacion:number;fechaProgramada:string;monto:number;estado:string;notas?:string}>;
-  pagos:Array<{idPago:number;fecha:string;monto:number;formaPago:string;referencia?:string}>;
-  aplicaciones:Array<{tipo:string;monto:number;createdAt:string}>;
+  pagos:Array<{idPago:number;fecha:string;monto:number;formaPago:string;referencia?:string;estado:string;revertidoAt?:string;motivoReversion?:string;revertidoPor?:string}>;
+  aplicaciones:Array<{tipo:string;monto:number;estado:string;createdAt:string;motivoReversion?:string}>;
 }
 
 @Injectable({providedIn:'root'})
@@ -34,8 +34,10 @@ export class CuentasProveedorService {
   uploadPdf(id:number,file:File){const data=new FormData();data.append('pdf',file);return this.http.post(`${this.api}/facturas/${id}/pdf`,data)}
   resolve(id:number,estado:'Aprobada'|'Rechazada',justificacion:string){return this.http.post(`${this.api}/discrepancias/${id}/resolver`,{estado,justificacion})}
   approve(id:number){return this.http.post(`${this.api}/facturas/${id}/aprobar`,{})}
+  cancel(id:number,motivo:string){return this.http.post(`${this.api}/facturas/${id}/cancelar`,{motivo})}
   schedule(id:number,dto:unknown){return this.http.post(`${this.api}/facturas/${id}/programaciones`,dto)}
   pay(id:number,dto:unknown){return this.http.post(`${this.api}/facturas/${id}/pagos`,dto)}
+  reversePayment(id:number,motivo:string){return this.http.post(`${this.api}/pagos/${id}/revertir`,{motivo})}
   credit(dto:unknown){return this.http.post(`${this.api}/notas-credito`,dto)}
   advance(dto:unknown){return this.http.post(`${this.api}/anticipos`,dto)}
   xml(id:number){return this.http.get(`${this.api}/facturas/${id}/xml`,{responseType:'blob'})}

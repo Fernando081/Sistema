@@ -1,5 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsDateString, IsIn, IsInt, IsNumber, IsOptional, IsString, IsUUID, MaxLength, Min, ValidateNested } from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsDateString, IsIn, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, MaxLength, Min, ValidateNested } from 'class-validator';
 
 const trim = ({ value }: { value: unknown }) => typeof value === 'string' ? value.trim() : value;
 
@@ -75,4 +75,8 @@ export class PaySupplierInvoiceDto {
   @Transform(trim) @IsString() @MaxLength(40) formaPago: string;
   @Transform(trim) @IsString() @MaxLength(120) @IsOptional() referencia?: string;
   @Transform(trim) @IsString() @MaxLength(1000) @IsOptional() notas?: string;
+}
+
+export class ReviewSupplierTransactionDto {
+  @Transform(trim) @IsString() @IsNotEmpty() @MaxLength(1000) motivo: string;
 }

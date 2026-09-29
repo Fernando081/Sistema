@@ -205,11 +205,11 @@ async function verifyOperations(ds) {
   await supplierAccounts.uploadPdf(supplierInvoice.idFacturaProveedor,{mimetype:'application/pdf',buffer:Buffer.from('%PDF-1.4\nfixture\n%%EOF')} );
   assert(Buffer.isBuffer(await supplierAccounts.document(supplierInvoice.idFacturaProveedor,'pdf')));
   await supplierAccounts.approveInvoice(supplierInvoice.idFacturaProveedor,user.id);
-  await supplierAccounts.createAdvance({requestId:randomUUID(),idProveedor:supplier.id,idFacturaProveedor:supplierInvoice.idFacturaProveedor,
+  const supplierAdvance=await supplierAccounts.createAdvance({requestId:randomUUID(),idProveedor:supplier.id,idFacturaProveedor:supplierInvoice.idFacturaProveedor,
     fecha:today,monto:10,montoAplicar:10,formaPago:'Transferencia',referencia:'E2E-ANT'},user.id);
-  await supplierAccounts.createCredit({requestId:randomUUID(),idProveedor:supplier.id,idFacturaProveedor:supplierInvoice.idFacturaProveedor,
+  const supplierCredit=await supplierAccounts.createCredit({requestId:randomUUID(),idProveedor:supplier.id,idFacturaProveedor:supplierInvoice.idFacturaProveedor,
     folio:'NC-'+randomUUID().slice(0,8),fecha:today,total:5,montoAplicar:5},user.id);
-  await supplierAccounts.pay(supplierInvoice.idFacturaProveedor,{requestId:randomUUID(),fecha:today,monto:40.68,
+  const supplierPayment=await supplierAccounts.pay(supplierInvoice.idFacturaProveedor,{requestId:randomUUID(),fecha:today,monto:40.68,
     formaPago:'Transferencia',referencia:'E2E-PAGO'},user.id);
   const [settledSupplierInvoice] = await ds.query('SELECT estado,saldo_pendiente FROM factura_proveedor WHERE id_factura_proveedor=$1',[supplierInvoice.idFacturaProveedor]);
   assert.equal(settledSupplierInvoice.estado,'Pagada');
@@ -217,6 +217,26 @@ async function verifyOperations(ds) {
   const [openSupplierSchedules] = await ds.query(`SELECT count(*)::int AS total FROM factura_proveedor_programacion
     WHERE id_factura_proveedor=$1 AND estado='Pendiente'`,[supplierInvoice.idFacturaProveedor]);
   assert.equal(openSupplierSchedules.total,0,'Una factura liquidada no debe conservar pagos programados pendientes');
+  await assert.rejects(()=>supplierAccounts.cancelInvoice(supplierInvoice.idFacturaProveedor,'Cancelación E2E antes del reembolso',user.id),
+    /Revierte los pagos activos/,'No se debe cancelar una factura con salidas de dinero activas');
+  await supplierAccounts.reversePayment(supplierPayment.idPago,'Reembolso confirmado en prueba aislada',user.id);
+  await supplierAccounts.cancelInvoice(supplierInvoice.idFacturaProveedor,'CFDI cancelado en prueba aislada',user.id);
+  const [cancelledSupplierInvoice] = await ds.query('SELECT estado,saldo_pendiente FROM factura_proveedor WHERE id_factura_proveedor=$1',[supplierInvoice.idFacturaProveedor]);
+  assert.equal(cancelledSupplierInvoice.estado,'Cancelada');assert.equal(Number(cancelledSupplierInvoice.saldo_pendiente),0);
+  const [reversedSupplierPayment] = await ds.query('SELECT estado FROM factura_proveedor_pago WHERE id_pago=$1',[supplierPayment.idPago]);
+  assert.equal(reversedSupplierPayment.estado,'Revertido');
+  const [releasedAdvance] = await ds.query('SELECT estado,saldo_disponible FROM anticipo_proveedor WHERE id_anticipo=$1',[supplierAdvance.idAnticipo]);
+  assert.equal(releasedAdvance.estado,'Disponible');assert.equal(Number(releasedAdvance.saldo_disponible),10);
+  const [releasedCredit] = await ds.query('SELECT estado,saldo_disponible FROM nota_credito_proveedor WHERE id_nota=$1',[supplierCredit.idNota]);
+  assert.equal(releasedCredit.estado,'Disponible');assert.equal(Number(releasedCredit.saldo_disponible),5);
+  const [reversedApplications] = await ds.query(`SELECT count(*)::int AS total FROM aplicacion_proveedor
+    WHERE id_factura_proveedor=$1 AND estado='Revertida'`,[supplierInvoice.idFacturaProveedor]);
+  assert.equal(reversedApplications.total,2);
+  const cancelledOrigins = await ds.query(`SELECT origen_tipo,estado FROM poliza_contable WHERE
+    (origen_tipo='FacturaProveedor' AND origen_id=$1) OR (origen_tipo='PagoFacturaProveedor' AND origen_id=$2)
+    OR (origen_tipo='AplicacionProveedor' AND origen_id IN(SELECT id_aplicacion FROM aplicacion_proveedor WHERE id_factura_proveedor=$1))`,
+    [supplierInvoice.idFacturaProveedor,supplierPayment.idPago]);
+  assert.equal(cancelledOrigins.length,4);assert(cancelledOrigins.every(row=>row.estado==='Cancelada'),'Las pólizas revertidas deben quedar canceladas');
 
   // Estado de cuenta: importa por lote, evita reimportaciones, concilia sólo
   // una coincidencia exacta y permite corregir o ignorar la revisión.

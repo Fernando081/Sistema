@@ -6,7 +6,7 @@ import { JwtPayload } from '../auth/auth.types';
 import { Permissions } from '../auth/permissions.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolUsuario } from '../common/enums/app.enums';
-import { CreateFacturaProveedorDto, CreateSupplierAdvanceDto, CreateSupplierCreditDto, PaySupplierInvoiceDto, ResolveDiscrepancyDto, ScheduleSupplierPaymentDto } from './cuentas-proveedor.dto';
+import { CreateFacturaProveedorDto, CreateSupplierAdvanceDto, CreateSupplierCreditDto, PaySupplierInvoiceDto, ResolveDiscrepancyDto, ReviewSupplierTransactionDto, ScheduleSupplierPaymentDto } from './cuentas-proveedor.dto';
 import { CuentasProveedorService } from './cuentas-proveedor.service';
 
 @Controller('cuentas-proveedor')
@@ -54,6 +54,12 @@ export class CuentasProveedorController {
   @Roles(RolUsuario.ADMIN) @Permissions('compras.pagar')
   approve(@Param('id', ParseIntPipe) id: number, @Req() req: { user: JwtPayload }) { return this.service.approveInvoice(id, req.user?.idUser); }
 
+  @Post('facturas/:id/cancelar')
+  @Roles(RolUsuario.ADMIN) @Permissions('compras.cancelar')
+  cancel(@Param('id', ParseIntPipe) id: number, @Body() dto: ReviewSupplierTransactionDto, @Req() req: { user: JwtPayload }) {
+    return this.service.cancelInvoice(id, dto.motivo, req.user?.idUser);
+  }
+
   @Post('facturas/:id/programaciones')
   @Roles(RolUsuario.ADMIN) @Permissions('compras.pagar')
   schedule(@Param('id', ParseIntPipe) id: number, @Body() dto: ScheduleSupplierPaymentDto, @Req() req: { user: JwtPayload }) {
@@ -64,6 +70,12 @@ export class CuentasProveedorController {
   @Roles(RolUsuario.ADMIN) @Permissions('compras.pagar')
   pay(@Param('id', ParseIntPipe) id: number, @Body() dto: PaySupplierInvoiceDto, @Req() req: { user: JwtPayload }) {
     return this.service.pay(id, dto, req.user?.idUser);
+  }
+
+  @Post('pagos/:id/revertir')
+  @Roles(RolUsuario.ADMIN) @Permissions('compras.cancelar')
+  reversePayment(@Param('id', ParseIntPipe) id: number, @Body() dto: ReviewSupplierTransactionDto, @Req() req: { user: JwtPayload }) {
+    return this.service.reversePayment(id, dto.motivo, req.user?.idUser);
   }
 
   @Post('notas-credito')

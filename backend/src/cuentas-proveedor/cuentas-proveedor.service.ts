@@ -150,9 +150,10 @@ export class CuentasProveedorService {
   async invoice(id: number) {
     const rows = await queryRows<Record<string,unknown>>(this.dataSource, `SELECT f.*,f.id_factura_proveedor AS "idFacturaProveedor",f.id_proveedor AS "idProveedor",
       f.fecha_emision AS "fechaEmision",f.fecha_vencimiento AS "fechaVencimiento",f.saldo_pendiente AS saldo,
+      f.cancelada_at AS "canceladaAt",f.motivo_cancelacion AS "motivoCancelacion",cu.username AS "canceladaPor",
       (f.xml_original IS NOT NULL) AS "tieneXml",(f.pdf_original IS NOT NULL) AS "tienePdf",
       p."RazonSocial" AS proveedor,o.folio AS "folioOrden" FROM factura_proveedor f JOIN proveedor p ON p."IdProveedor"=f.id_proveedor
-      JOIN orden_compra o ON o.id_orden=f.id_orden WHERE f.id_factura_proveedor=$1`, [id]);
+      JOIN orden_compra o ON o.id_orden=f.id_orden LEFT JOIN auth_user cu ON cu.id_user=f.cancelada_por WHERE f.id_factura_proveedor=$1`, [id]);
     if (!rows.length) throw new NotFoundException('Factura de proveedor no encontrada');
     const [details, discrepancies, schedules, payments, applications] = await Promise.all([
       queryRows<Record<string,unknown>>(this.dataSource, `SELECT d.id_detalle AS "idDetalle",d.id_producto AS "idProducto",p."Codigo" AS codigo,d.descripcion,d.cantidad,
@@ -163,9 +164,12 @@ export class CuentasProveedorService {
         FROM factura_proveedor_discrepancia WHERE id_factura_proveedor=$1 ORDER BY id_discrepancia`, [id]),
       queryRows<Record<string,unknown>>(this.dataSource, `SELECT id_programacion AS "idProgramacion",fecha_programada AS "fechaProgramada",monto,estado,notas
         FROM factura_proveedor_programacion WHERE id_factura_proveedor=$1 ORDER BY fecha_programada`, [id]),
-      queryRows<Record<string,unknown>>(this.dataSource, `SELECT id_pago AS "idPago",fecha,monto,forma_pago AS "formaPago",referencia
-        FROM factura_proveedor_pago WHERE id_factura_proveedor=$1 ORDER BY fecha DESC,id_pago DESC`, [id]),
-      queryRows<Record<string,unknown>>(this.dataSource, `SELECT tipo,monto,created_at AS "createdAt" FROM aplicacion_proveedor WHERE id_factura_proveedor=$1 ORDER BY created_at DESC`, [id]),
+      queryRows<Record<string,unknown>>(this.dataSource, `SELECT p.id_pago AS "idPago",p.fecha,p.monto,p.forma_pago AS "formaPago",p.referencia,p.estado,
+        p.revertido_at AS "revertidoAt",p.motivo_reversion AS "motivoReversion",u.username AS "revertidoPor"
+        FROM factura_proveedor_pago p LEFT JOIN auth_user u ON u.id_user=p.revertido_por
+        WHERE p.id_factura_proveedor=$1 ORDER BY p.fecha DESC,p.id_pago DESC`, [id]),
+      queryRows<Record<string,unknown>>(this.dataSource, `SELECT tipo,monto,estado,created_at AS "createdAt",motivo_reversion AS "motivoReversion"
+        FROM aplicacion_proveedor WHERE id_factura_proveedor=$1 ORDER BY created_at DESC`, [id]),
     ]);
     return { ...rows[0], partidas: details, discrepancias: discrepancies, programaciones: schedules, pagos: payments, aplicaciones: applications };
   }
@@ -238,6 +242,68 @@ export class CuentasProveedorService {
       await manager.query(`UPDATE saldos SET caja_chica=caja_chica-CASE WHEN $2 ILIKE '%Efectivo%' THEN $1::numeric ELSE 0::numeric END,
         cuenta_banco=cuenta_banco-CASE WHEN $2 ILIKE '%Efectivo%' THEN 0::numeric ELSE $1::numeric END,updated_at=now()`, [mxnAmount,dto.formaPago]);
       return { idPago: payment[0].id, saldo: balance };
+    });
+  }
+
+  reversePayment(id: number, reason: string, idUser?: number) {
+    return this.dataSource.transaction(async manager => {
+      const payments = await queryRows<{idInvoice:number;amount:number|string;paymentDate:string;paymentMethod:string;state:string;
+        idSchedule:number|null;balance:number|string;total:number|string;invoiceState:string;exchangeRate:number|string}>(manager, `SELECT
+        p.id_factura_proveedor AS "idInvoice",p.monto AS amount,p.fecha AS "paymentDate",p.forma_pago AS "paymentMethod",
+        p.estado AS state,p.id_programacion AS "idSchedule",f.saldo_pendiente AS balance,f.total,f.estado AS "invoiceState",f.tipo_cambio AS "exchangeRate"
+        FROM factura_proveedor_pago p JOIN factura_proveedor f ON f.id_factura_proveedor=p.id_factura_proveedor
+        WHERE p.id_pago=$1 FOR UPDATE OF p,f`, [id]);
+      if (!payments.length) throw new NotFoundException('Pago de proveedor no encontrado');
+      const payment=payments[0];
+      if(payment.state!=='Activo')throw new ConflictException('El pago ya fue revertido');
+      if(payment.invoiceState==='Cancelada')throw new ConflictException('No se puede modificar una factura cancelada');
+      await manager.query(`SELECT set_config('app.current_user_id',$1,true),set_config('app.movement_origin',$2,true)`,
+        [idUser?String(idUser):'',`Reverso pago proveedor #${id}: ${reason}`]);
+      await manager.query(`UPDATE factura_proveedor_pago SET estado='Revertido',revertido_por=$2,revertido_at=clock_timestamp(),
+        motivo_reversion=$3 WHERE id_pago=$1`,[id,idUser??null,reason]);
+      const newBalance=this.money(Number(payment.balance)+Number(payment.amount));
+      if(newBalance>this.money(Number(payment.total)))throw new ConflictException('El reverso excedería el total de la factura');
+      await manager.query(`UPDATE factura_proveedor SET saldo_pendiente=$2,estado=CASE WHEN $2::numeric=$3::numeric THEN 'Aprobada' ELSE 'Parcialmente pagada' END,
+        updated_at=clock_timestamp() WHERE id_factura_proveedor=$1`,[payment.idInvoice,newBalance,payment.total]);
+      if(payment.idSchedule)await manager.query(`UPDATE factura_proveedor_programacion SET estado='Pendiente' WHERE id_programacion=$1`,[payment.idSchedule]);
+      else await manager.query(`INSERT INTO factura_proveedor_programacion(id_factura_proveedor,fecha_programada,monto,notas,id_user)
+        VALUES($1,$2,$3,$4,$5)`,[payment.idInvoice,payment.paymentDate,payment.amount,`Pago revertido: ${reason}`,idUser??null]);
+      const mxnAmount=this.money(Number(payment.amount)*Number(payment.exchangeRate));
+      await manager.query(`UPDATE saldos SET caja_chica=caja_chica+CASE WHEN $2 ILIKE '%Efectivo%' THEN $1::numeric ELSE 0::numeric END,
+        cuenta_banco=cuenta_banco+CASE WHEN $2 ILIKE '%Efectivo%' THEN 0::numeric ELSE $1::numeric END,updated_at=clock_timestamp()`,
+        [mxnAmount,payment.paymentMethod]);
+      return{message:'Pago de proveedor revertido',idFacturaProveedor:payment.idInvoice,saldo:newBalance};
+    });
+  }
+
+  cancelInvoice(id:number,reason:string,idUser?:number) {
+    return this.dataSource.transaction(async manager=>{
+      const invoices=await queryRows<InvoiceRow>(manager,`SELECT id_factura_proveedor AS "idFactura",id_proveedor AS "idProveedor",
+        saldo_pendiente AS saldo,total,estado,tipo_cambio AS "tipoCambio" FROM factura_proveedor
+        WHERE id_factura_proveedor=$1 FOR UPDATE`,[id]);
+      if(!invoices.length)throw new NotFoundException('Factura de proveedor no encontrada');
+      if(invoices[0].estado==='Cancelada')return{message:'La factura ya estaba cancelada',idFacturaProveedor:id,repeated:true};
+      const payments=await queryRows<IdRow>(manager,`SELECT id_pago AS id FROM factura_proveedor_pago
+        WHERE id_factura_proveedor=$1 AND estado='Activo' ORDER BY id_pago FOR UPDATE`,[id]);
+      if(payments.length)throw new ConflictException('Revierte los pagos activos antes de cancelar la factura');
+      const applications=await queryRows<{id:number;type:'NotaCredito'|'Anticipo';sourceId:number;amount:number|string}>(manager,`SELECT
+        id_aplicacion AS id,tipo AS type,coalesce(id_nota,id_anticipo) AS "sourceId",monto AS amount
+        FROM aplicacion_proveedor WHERE id_factura_proveedor=$1 AND estado='Activa' ORDER BY id_aplicacion FOR UPDATE`,[id]);
+      await manager.query(`SELECT set_config('app.current_user_id',$1,true)`,[idUser?String(idUser):'']);
+      for(const application of applications){
+        const table=application.type==='NotaCredito'?'nota_credito_proveedor':'anticipo_proveedor';
+        const idColumn=application.type==='NotaCredito'?'id_nota':'id_anticipo';
+        await manager.query(`UPDATE ${table} SET saldo_disponible=saldo_disponible+$2,estado='Disponible' WHERE ${idColumn}=$1`,
+          [application.sourceId,application.amount]);
+        await manager.query(`UPDATE aplicacion_proveedor SET estado='Revertida',revertida_por=$2,revertida_at=clock_timestamp(),
+          motivo_reversion=$3 WHERE id_aplicacion=$1`,[application.id,idUser??null,`Cancelación de factura: ${reason}`]);
+      }
+      await manager.query(`UPDATE factura_proveedor_programacion SET estado='Cancelada' WHERE id_factura_proveedor=$1 AND estado='Pendiente'`,[id]);
+      await manager.query(`UPDATE factura_proveedor_discrepancia SET estado='Rechazada',justificacion=$2,resuelta_por=$3,resuelta_at=clock_timestamp()
+        WHERE id_factura_proveedor=$1 AND estado='Pendiente'`,[id,`Factura cancelada: ${reason}`,idUser??null]);
+      await manager.query(`UPDATE factura_proveedor SET estado='Cancelada',saldo_pendiente=0,cancelada_por=$2,cancelada_at=clock_timestamp(),
+        motivo_cancelacion=$3,updated_at=clock_timestamp() WHERE id_factura_proveedor=$1`,[id,idUser??null,reason]);
+      return{message:'Factura de proveedor cancelada',idFacturaProveedor:id,aplicacionesLiberadas:applications.length};
     });
   }
 
