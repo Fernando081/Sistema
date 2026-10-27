@@ -1,0 +1,36 @@
+
+> test:audit
+> node backend/verify-audit.js --backup=.backups/2026-10-20T00-44-40-972Z/database.dump
+
+OK: 098 verificada y aplicada solo en copia restaurada; AppModule real, fiscal mock y cron detenido
+OK: Historial anterior conservado campo a campo mediante huella y sin instantáneas/actores retroactivos
+{"type":"http_request","requestId":"b4ca8319-2ac8-4293-ae80-beee2aeeade9","method":"GET","path":"/api/v1/auditoria","statusCode":401,"durationMs":7.84,"idUser":null}
+{"type":"http_request","requestId":"23e7f86c-998d-4864-933b-c89477a7a462","method":"GET","path":"/api/v1/auditoria/estado","statusCode":401,"durationMs":3.17,"idUser":null}
+{"type":"http_request","requestId":"2b48e730-770f-46db-b1c1-ba80c183d93e","method":"GET","path":"/api/v1/auditoria/estado","statusCode":200,"durationMs":17.64,"idUser":2}
+{"type":"http_request","requestId":"847c3b62-6945-4a0c-96bb-61e8614389ba","method":"POST","path":"/api/v1/auth/register","statusCode":201,"durationMs":85.47,"idUser":2}
+{"type":"http_request","requestId":"5d9ae8c8-dac1-481a-ace1-a172f087e3f7","method":"GET","path":"/api/v1/auditoria","statusCode":403,"durationMs":3.03,"idUser":3}
+{"type":"http_request","requestId":"3846b1a6-6d56-4ab4-848a-55dfda68e6e9","method":"GET","path":"/api/v1/auditoria/estado","statusCode":403,"durationMs":2.74,"idUser":3}
+{"type":"http_request","requestId":"ee1b7bbb-f686-4512-b7c6-e807a1e47be9","method":"POST","path":"/api/v1/auth/access-profiles","statusCode":201,"durationMs":12.17,"idUser":2}
+{"type":"http_request","requestId":"51ef56fe-74e3-481e-8243-2f8c0166e148","method":"PUT","path":"/api/v1/auth/users/3/permissions","statusCode":200,"durationMs":8.34,"idUser":2}
+{"type":"http_request","requestId":"82061356-4487-4507-9c4b-121da3cbdcdf","method":"PATCH","path":"/api/v1/auth/users/3","statusCode":200,"durationMs":11.46,"idUser":2}
+{"type":"http_request","requestId":"31f9fe3b-2b26-4201-adc9-2e2ebc5e98bd","method":"PATCH","path":"/api/v1/auth/users/3","statusCode":200,"durationMs":10.24,"idUser":2}
+OK: API ADMIN privada/operador403; alta, permisos, perfil, estado y contraseña auditados con actor; hashes/secretos excluidos por whitelist
+OK: UPDATE,DELETE y TRUNCATE rechazados por PostgreSQL; guard ALWAYS también bajo replica cuando el rol permite ensayarlo
+OK: Fallo al escribir auditoría revierte perfil y eventos; contexto LOCAL desaparece al devolver la conexión
+{"type":"http_request","requestId":"b305ecdc-b8c8-4dee-a7c0-04c7c4763b01","method":"GET","path":"/api/v1/auditoria","statusCode":200,"durationMs":13.54,"idUser":2}
+OK: Renombrar/eliminar usuarios no reescribe ID o nombre histórico; consulta estable y acotada, sin atribución retroactiva
+{"type":"http_request","requestId":"cc1f40ec-640a-4ca2-aec6-f5991e8e8d0c","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":68.32,"idUser":null}
+{"type":"http_request","requestId":"1f93b48c-00dc-42ed-a952-e9f2c66689eb","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":85.06,"idUser":2}
+{"type":"http_request","requestId":"06c204a5-ccdd-4a8a-854a-78eb12032682","method":"GET","path":"/api/v1/auditoria","statusCode":200,"durationMs":73.71,"idUser":2}
+{"type":"http_request","requestId":"c5dc14c3-1cd0-45b9-a2d3-3108af9befe8","method":"GET","path":"/api/v1/auditoria/estado","statusCode":200,"durationMs":69.84,"idUser":2}
+{"type":"http_request","requestId":"88839777-86a9-4224-8f32-78bec873533f","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":75.59,"idUser":null}
+{"type":"http_request","requestId":"602d6e60-0a3f-4547-a193-db07868e1e3f","method":"GET","path":"/api/v1/auditoria/estado","statusCode":200,"durationMs":15.61,"idUser":2}
+{"type":"http_request","requestId":"36e320c8-da75-455b-a1bc-88bdb314354f","method":"GET","path":"/api/v1/auditoria","statusCode":200,"durationMs":29.53,"idUser":2}
+{"type":"http_request","requestId":"ded661da-6ce2-4735-96fb-84cfb276bc4c","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":131.89,"idUser":2}
+OK: Angular producción con dos logins reales: instantánea correcta, advertencia de privilegios, temas1280/390, scroll y axe sin infracciones
+{"type":"http_request","requestId":"e103486c-6422-49b3-b5a9-cde4ee49a1c5","method":"GET","path":"/api/v1/auditoria","statusCode":200,"durationMs":19.34,"idUser":2}
+{"type":"http_request","requestId":"88bd7bd4-a8d8-4a0f-b397-291779ecbc96","method":"GET","path":"/api/v1/auditoria/estado","statusCode":200,"durationMs":20.58,"idUser":2}
+{"type":"http_request","requestId":"ca6c941c-4e57-4f1e-aa61-5d0aabd3e98f","method":"GET","path":"/api/v1/auditoria/estado","statusCode":200,"durationMs":3.86,"idUser":2}
+{"type":"http_request","requestId":"167a5874-8fa0-441b-ad4b-9ecd04654610","method":"GET","path":"/api/v1/auditoria/estado","statusCode":200,"durationMs":6.64,"idUser":2}
+{"type":"http_request","requestId":"247cb0ec-9f1c-493d-b344-1966a3532cef","method":"GET","path":"/api/v1/auditoria","statusCode":200,"durationMs":33.77,"idUser":2}
+OK: Deshabilitar control en copia se detecta en API/UI sin afirmar integridad; control restaurado y recursos listos para cierre

@@ -1,0 +1,5 @@
+
+> verify:web-preview-backup
+> node public-web/preview-backup.mjs
+
+Recuperación de preview: verified-local. Reporte: .artifacts/web-preview-recovery.json

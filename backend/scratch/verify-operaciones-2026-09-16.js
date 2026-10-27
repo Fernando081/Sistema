@@ -1,3 +1,27 @@
+const { RegistroPedidoService } = require('../dist/pedido/registro-pedido.service');
+const { OperacionPedidoService } = require('../dist/pedido/operacion-pedido.service');
+const { ReservasPedidoService } = require('../dist/pedido/reservas-pedido.service');
+const { ConsultasPedidoService } = require('../dist/pedido/consultas-pedido.service');
+const { FacturacionPedidoService } = require('../dist/pedido/facturacion-pedido.service');
+const { PersistenciaPedidoService } = require('../dist/pedido/persistencia-pedido.service');
+const { CobranzaService } = require('../dist/pago/cobranza.service');
+const { RegistroRepService } = require('../dist/pago/registro-rep.service');
+const { RepPdfService } = require('../dist/pago/rep-pdf.service');
+const { RepXmlService } = require('../dist/pago/rep-xml.service');
+const { RegistroVentaService } = require('../dist/venta/registro-venta.service');
+const { ConsultasVentaService } = require('../dist/venta/consultas-venta.service');
+const { DocumentosVentaService } = require('../dist/venta/documentos-venta.service');
+const { ReversionVentaService } = require('../dist/venta/reversion-venta.service');
+const { FacturaGlobalService } = require('../dist/venta/factura-global.service');
+const { FacturasProveedorService } = require('../dist/cuentas-proveedor/facturas-proveedor.service');
+const { PagosProveedorService } = require('../dist/cuentas-proveedor/pagos-proveedor.service');
+const { SaldosProveedorService } = require('../dist/cuentas-proveedor/saldos-proveedor.service');
+const { ConsultasProveedorService } = require('../dist/cuentas-proveedor/consultas-proveedor.service');
+const {ContabilidadService}=require('../dist/finanzas/contabilidad.service');
+const {ConciliacionService}=require('../dist/finanzas/conciliacion.service');
+const {TesoreriaService}=require('../dist/finanzas/tesoreria.service');
+const {TransferenciasCierresService}=require('../dist/finanzas/transferencias-cierres.service');
+const {CorteFinancieroService}=require('../dist/finanzas/corte-financiero.service');
 /* Ejecutar exclusivamente sobre una copia desechable restaurada y migrada.
  * No envuelve todo en ROLLBACK: prueba transacciones reales de los servicios.
  */
@@ -19,7 +43,7 @@ const { MockFiscalProvider } = require('../dist/fiscal/providers/mock-fiscal.pro
 const { CuentasProveedorService } = require('../dist/cuentas-proveedor/cuentas-proveedor.service');
 const { FinanzasService } = require('../dist/finanzas/finanzas.service');
 
-async function verifyOperations(ds) {
+async function verifyOperations(ds, options = {}) {
   if (process.env.TEST_DATABASE_ISOLATED !== 'true') throw new Error('Se requiere TEST_DATABASE_ISOLATED=true; nunca ejecutar sobre la base de trabajo');
   const [client] = await ds.query('SELECT "IdCliente" AS id,"RFC" AS rfc,"RazonSocial" AS nombre,"CodigoPostal" AS cp FROM cliente ORDER BY "IdCliente" LIMIT 1');
   const [supplier] = await ds.query('SELECT "IdProveedor" AS id FROM proveedor ORDER BY "IdProveedor" LIMIT 1');
@@ -31,9 +55,9 @@ async function verifyOperations(ds) {
   assert(client && supplier && user && pue && ppd && form && tax, 'La copia necesita catálogos y un cliente/proveedor/usuario');
   const [product] = await ds.query(`INSERT INTO producto("Codigo","Descripcion","IdObjetoImpuesto","PrecioUnitario","Existencia","ObjetoImpuesto","TasaIVA","AplicaRetencionISR")
     VALUES($1,'Fixture aislado integridad',$2,10,100,'01',0,false) RETURNING "IdProducto" AS id`, ['TEST-'+randomUUID().slice(0,12), tax.id]);
-  const venta = new VentaService(ds, {});
+  const venta = new VentaService(new RegistroVentaService(ds), new ConsultasVentaService(ds), new DocumentosVentaService(ds, {}), new ReversionVentaService(ds), new FacturaGlobalService(ds));
   const compra = new CompraService(ds);
-  const pago = new PagoService(ds);
+  const pago = new PagoService(new CobranzaService(ds), new RegistroRepService(ds), new RepPdfService(ds), new RepXmlService(ds));
   const quote = new CotizacionService(ds);
   const stock = async () => Number((await ds.query('SELECT "Existencia" AS n FROM producto WHERE "IdProducto"=$1',[product.id]))[0].n);
   const cash = async () => Number((await ds.query('SELECT caja_chica AS n FROM saldos ORDER BY id_saldo LIMIT 1'))[0].n);
@@ -106,8 +130,8 @@ async function verifyOperations(ds) {
   })[key] };
   const fiscalBuilder = new FiscalXmlBuilder(ds, fiscalConfig);
   const fiscal = new FiscalService(ds, fiscalConfig, fiscalBuilder, new MockFiscalProvider());
-  const ventaFiscal = new VentaService(ds, {}, fiscal);
-  const pagoFiscal = new PagoService(ds, fiscal);
+  const ventaFiscal = new VentaService(new RegistroVentaService(ds), new ConsultasVentaService(ds), new DocumentosVentaService(ds, {}), new ReversionVentaService(ds, fiscal), new FacturaGlobalService(ds));
+  const pagoFiscal = new PagoService(new CobranzaService(ds), new RegistroRepService(ds, fiscal), new RepPdfService(ds), new RepXmlService(ds, fiscal));
   const fiscalInvoice = await venta.create(sale(1,10),user.id);
   const stampedInvoice = await fiscal.stamp('FACTURA',fiscalInvoice.idFactura,user.id);
   assert.equal(stampedInvoice.estado,'Timbrado');
@@ -141,7 +165,8 @@ async function verifyOperations(ds) {
   await assert.rejects(()=>quote.convertirParcial(cot.id,decision,form.id,pue.id,user.id),/cerrada|convertida|pendientes/);
 
   // Ciclo comercial completo con unidad VIN/ESN: pedido, apartado, surtido, entrega, factura y garantía.
-  const pedidos = new PedidoService(ds);
+  const persistencia = new PersistenciaPedidoService();
+const pedidos = new PedidoService(new RegistroPedidoService(ds, persistencia), new OperacionPedidoService(ds, persistencia), new ReservasPedidoService(ds, persistencia), new ConsultasPedidoService(ds, persistencia), new FacturacionPedidoService(ds));
   const garantias = new GarantiaService(ds);
   const unitCode = String(parseInt(randomUUID().replace(/-/g,'').slice(0,8),16)%1000000).padStart(6,'0');
   const [unit] = await ds.query(`INSERT INTO crm_unidad_cliente(id_cliente,vin,esn,numero_economico,marca,modelo,motor)
@@ -192,7 +217,7 @@ async function verifyOperations(ds) {
 
   // Conciliación de tres vías: la factura no vuelve a mover inventario, se
   // aprueba después de conciliar y se liquida con anticipo, nota y pago.
-  const supplierAccounts = new CuentasProveedorService(ds);
+  const supplierAccounts = new CuentasProveedorService(new FacturasProveedorService(ds), new PagosProveedorService(ds), new SaldosProveedorService(ds), new ConsultasProveedorService(ds));
   const today = new Date().toISOString().slice(0,10);
   const due = new Date(Date.now()+30*86400000).toISOString().slice(0,10);
   const stockBeforeSupplierInvoice = await stock();
@@ -238,9 +263,11 @@ async function verifyOperations(ds) {
     [supplierInvoice.idFacturaProveedor,supplierPayment.idPago]);
   assert.equal(cancelledOrigins.length,4);assert(cancelledOrigins.every(row=>row.estado==='Cancelada'),'Las pólizas revertidas deben quedar canceladas');
 
+  if (options.financialOnly) return { salePurchaseRepOrdersSupplyAndSupplierAccounts: true };
+
   // Estado de cuenta: importa por lote, evita reimportaciones, concilia sólo
   // una coincidencia exacta y permite corregir o ignorar la revisión.
-  const treasury=new FinanzasService(ds,{},{});
+  const treasury=new FinanzasService({},{},new ContabilidadService(ds),new ConciliacionService(ds),new TesoreriaService(ds,new ConciliacionService(ds)),new TransferenciasCierresService(ds),new CorteFinancieroService(ds,{}));
   const bankAccount=await treasury.crearCuentaTesoreria({nombre:'Cuenta aislada',banco:'Banco prueba',moneda:'MXN',ultimosCuatro:'9876',saldoInicial:0});
   await ds.query('UPDATE saldos SET cuenta_banco=cuenta_banco+$1::numeric,updated_at=clock_timestamp()',[91357.24]);
   const csv=Buffer.from(`Fecha,Descripcion,Referencia,Monto\n${today},Depósito aislado,RASTREO-E2E,91357.24\n${today},Comisión informativa,COM-E2E,-19.50\nfecha-mal,Renglón inválido,ERR,20`);

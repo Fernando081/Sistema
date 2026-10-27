@@ -1,0 +1,6 @@
+
+> db:check
+> node backend/run-migrations.js --check
+
+Verificada (se revertirá): 105_portal_publicaciones.sql
+Verificación terminada: cambios de esquema revertidos.

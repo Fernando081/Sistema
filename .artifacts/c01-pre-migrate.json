@@ -1,0 +1,24 @@
+{
+  "phase": "C01.1",
+  "startedAt": "2026-10-21T01:14:33.046Z",
+  "checks": [
+    "106 sin consentimiento implícito; permiso independiente401/403, DTO/tipos cerrados/no idCliente inyectado, clientes sin contactos y destinos inválidos excluidos",
+    "Segmentación compartida: canceladas/pendientes/notas de crédito no reinician inactividad; ingresos Timbrada/Pagada sí, con corte exacto de fecha Tampico",
+    "Autorización declarada/versionada e idempotente; sin campos de destino libres, fecha futura rechazada, contacto ajeno404; vigencia real vencida, deduplicación y conteo de segmento consistente",
+    "Preparación local conservada/idempotente con huella y referencias técnicas; campaña sigue Borrador y no crea comunicaciones ni duplica datos de contacto",
+    "Baja global por destino/canal aun fuera del segmento; invalida preparación, reintento no la resucita, autorización antigua rechazada y eliminar contacto no quita la baja",
+    "Cambio de dirección bloquea formulario viejo; dos decisiones concurrentes no sobrescriben versiones; preparación concurrente única y plantilla modificada invalida huella",
+    "Límite1000 sin lista parcial, borrador sin segmento/plantilla bloqueado y búsqueda literal/paginación privada",
+    "Historial append-only/ALWAYS y auditoría nominal sin destinos duplicados; fallo de auditoría revierte la decisión completa",
+    "Personal revocado mientras espera bloqueo no registra decisiones; preparación no consume inventario, factura ni crea envíos",
+    "Angular real claro1280/oscuro390: Cliente360 registra autorización/baja, historial y preparación con revisión/confirmación/recarga/obsolescencia; axe/reflujo y sin comunicaciones creadas"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "externalDeliveryEnabled": false,
+  "passed": true,
+  "completedAt": "2026-10-21T01:15:52.377Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular dark"
+}

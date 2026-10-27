@@ -1,0 +1,153 @@
+
+> test:unit-parts
+> node backend/verify-unit-parts.js --backup=.backups/2026-10-20T15-41-39-711Z/database.dump
+
+{"type":"http_request","requestId":"9a9eebf6-03e3-4f50-a834-6e8e21a95f49","method":"POST","path":"/api/v1/crm/clientes/2/unidades","statusCode":201,"durationMs":37.55,"idUser":2}
+{"type":"http_request","requestId":"d4c99d9d-a637-4755-8fb6-49f0bafc413f","method":"POST","path":"/api/v1/crm/clientes/2/unidades","statusCode":201,"durationMs":9.49,"idUser":2}
+{"type":"http_request","requestId":"a15a26c5-bd72-4870-b90d-7ffeff063be4","method":"POST","path":"/api/v1/crm/clientes/2/unidades","statusCode":201,"durationMs":4.94,"idUser":2}
+{"type":"http_request","requestId":"94f3f841-9c58-4c60-bc7b-92311301a3f0","method":"PUT","path":"/api/v1/comercial/clientes/2","statusCode":200,"durationMs":12.44,"idUser":2}
+{"type":"http_request","requestId":"30966204-cf05-471e-8b78-5f7ec4a74276","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":122.5,"idUser":2}
+{"type":"http_request","requestId":"9731aa12-cc87-4470-a008-0e53786c710c","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":17.26,"idUser":2}
+{"type":"http_request","requestId":"6f9b2370-dea8-4ad9-ab73-4f24c766b5dc","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":18.41,"idUser":2}
+{"type":"http_request","requestId":"c0d9f943-79c2-4a24-b36f-c71a75d28820","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":12.09,"idUser":2}
+{"type":"http_request","requestId":"5763874d-d900-452b-aeb0-13284f9c2157","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":401,"durationMs":3.62,"idUser":null}
+{"type":"http_request","requestId":"c29f1d29-0fec-46bb-bc76-baaebcd17143","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":403,"durationMs":4.21,"idUser":3}
+{"type":"http_request","requestId":"52e007bc-779e-4a97-9702-430c19950672","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":20.11,"idUser":2}
+{"type":"http_request","requestId":"6d51b04a-6012-402c-870b-199dcd542b1e","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":7.38,"idUser":2}
+{"type":"http_request","requestId":"d092ba4c-d4a2-4fc9-b5bd-cb8a37134fe0","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":400,"durationMs":3.55,"idUser":2}
+{"type":"http_request","requestId":"bc73eac5-b4cf-405e-af7f-b573cc7fa761","method":"PUT","path":"/api/v1/auth/users/3/permissions","statusCode":200,"durationMs":11.55,"idUser":2}
+{"type":"http_request","requestId":"dabd6807-1a24-40de-9891-df48eba9c687","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":5.87,"idUser":3}
+{"type":"http_request","requestId":"76e95408-60e7-4de4-bf79-cb95fc13aeee","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":403,"durationMs":2.7,"idUser":3}
+OK: 101 verificada/aplicada solo en copia; ventas existentes no generan instalaciones; privado401/403, no-store, paginación validada y consulta no permite gestionar
+{"type":"http_request","requestId":"6ab78c20-a6b2-459b-9df4-2118331e1e51","method":"GET","path":"/api/v1/crm/unidades/1/piezas/origenes","statusCode":200,"durationMs":12.14,"idUser":2}
+{"type":"http_request","requestId":"68f1063f-1e45-46ae-a94b-ccfa490df79e","method":"GET","path":"/api/v1/crm/unidades/1/piezas/origenes","statusCode":200,"durationMs":8.46,"idUser":2}
+{"type":"http_request","requestId":"7e619549-2252-4c9e-aad9-77c0814c3205","method":"GET","path":"/api/v1/crm/unidades/1/piezas/origenes","statusCode":200,"durationMs":8.77,"idUser":2}
+{"type":"http_request","requestId":"c656d713-05ad-4836-b0ae-2a2931947cab","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":409,"durationMs":10.07,"idUser":2}
+OK: Orígenes acotados al cliente/unidad, aplicaciones/restricciones informativas existentes y comodines literales; factura de otra unidad rechazada
+{"type":"http_request","requestId":"87443e50-95be-4e02-ba0b-8577abaf03ce","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":400,"durationMs":4.47,"idUser":2}
+{"type":"http_request","requestId":"aad1fa32-33cf-48bf-8263-289cd6f68481","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":400,"durationMs":3.97,"idUser":2}
+{"type":"http_request","requestId":"1ce3b7a5-1e80-4209-90d6-81dc71430eb3","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":400,"durationMs":3.18,"idUser":2}
+{"type":"http_request","requestId":"a3984719-0b56-4bf8-8c9f-98648b81d7bc","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":400,"durationMs":3.5,"idUser":2}
+{"type":"http_request","requestId":"909d957e-3ba1-4190-9a7d-08d2126b494d","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":409,"durationMs":11.74,"idUser":2}
+{"type":"http_request","requestId":"aeea44b4-3b3d-4f41-ba2a-afc62839610b","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":400,"durationMs":3.66,"idUser":2}
+{"type":"http_request","requestId":"98c10c42-6d67-4b24-87c8-906e03a699a3","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":201,"durationMs":9.08,"idUser":2}
+{"type":"http_request","requestId":"d44ca0b7-8ddb-4a11-9a4a-e285a59fa3e8","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":201,"durationMs":18.47,"idUser":2}
+{"type":"http_request","requestId":"b2343651-ad3e-4bc9-9e9f-e6f592141804","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":409,"durationMs":3.85,"idUser":2}
+{"type":"http_request","requestId":"6d9ded27-4871-41b7-8c9c-8e4aef47a0c1","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":18.51,"idUser":2}
+OK: Fecha/precisión/cantidad/fuente obligatorias, fecha anterior a venta rechazada y UUID/huella concurrente sin duplicado ni cambio de intención
+{"type":"http_request","requestId":"4d63d13b-06b3-4509-a23b-2d959155cb44","method":"POST","path":"/api/v1/crm/unidades/2/piezas","statusCode":201,"durationMs":7.99,"idUser":2}
+{"type":"http_request","requestId":"9a63c777-58b0-4efd-b31f-5a811ec7a6a9","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":409,"durationMs":15.01,"idUser":2}
+{"type":"http_request","requestId":"8fff0ea4-bf4f-4e99-8e80-548a1229ca69","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":201,"durationMs":11.82,"idUser":2}
+{"type":"http_request","requestId":"042699bf-df2e-4e96-9cdc-1fbe96d764a5","method":"POST","path":"/api/v1/crm/unidades/2/piezas","statusCode":201,"durationMs":9.93,"idUser":2}
+{"type":"http_request","requestId":"12d3a894-d6f1-4482-86fa-a3dcdd140eba","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":409,"durationMs":8.76,"idUser":2}
+OK: Asignación global por renglón serializada entre unidades: una alta y un409 concurrentes; suma decimal exacta0.1+0.2 y exceso rechazado
+{"type":"http_request","requestId":"7fb6f993-cc36-4f3e-a304-87dcb4121efa","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":7.42,"idUser":2}
+{"type":"http_request","requestId":"8d6da58c-d975-4302-acc7-946a01a68b9d","method":"PATCH","path":"/api/v1/crm/unidades/1","statusCode":200,"durationMs":6.62,"idUser":2}
+{"type":"http_request","requestId":"fcfd67d4-60cb-49c0-85da-0cbc07c65d1f","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":7.42,"idUser":2}
+{"type":"http_request","requestId":"1852d71d-f57c-46c8-9528-ac66366ec8b5","method":"POST","path":"/api/v1/crm/unidades/2/piezas/1/revision","statusCode":404,"durationMs":6.1,"idUser":2}
+{"type":"http_request","requestId":"9a2177c8-37c9-4377-a223-1cfefd9530e6","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/revision","statusCode":201,"durationMs":5.63,"idUser":2}
+{"type":"http_request","requestId":"a67e4f3c-13b9-4692-9607-85e61f0a706c","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/revision","statusCode":409,"durationMs":5.25,"idUser":2}
+{"type":"http_request","requestId":"a5b38b00-0893-445c-9fa2-a7b0ad9e5e88","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/revision","statusCode":201,"durationMs":4.14,"idUser":2}
+{"type":"http_request","requestId":"6ed566f3-70a8-4737-9ed0-991fb406de4f","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/revision","statusCode":409,"durationMs":7.76,"idUser":2}
+OK: VIN/ESN/código originales sobreviven cambios del maestro; revisión manual versionada concurrente y reintento sin nueva versión; IDs de otra unidad404
+{"type":"http_request","requestId":"0c3131ba-71ff-4d84-9d59-4644236d24b3","method":"POST","path":"/api/v1/garantias","statusCode":201,"durationMs":10.6,"idUser":2}
+{"type":"http_request","requestId":"6eaf4fb4-7ccb-4187-879e-c1b033572c32","method":"POST","path":"/api/v1/garantias","statusCode":201,"durationMs":6.15,"idUser":2}
+{"type":"http_request","requestId":"8bbbe36f-3a15-411f-9e2f-6e863ca82402","method":"POST","path":"/api/v1/garantias","statusCode":201,"durationMs":6.39,"idUser":2}
+{"type":"http_request","requestId":"db8c6f6d-4c22-4c89-80d5-91734cfd257e","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/garantias","statusCode":409,"durationMs":7.24,"idUser":2}
+{"type":"http_request","requestId":"2da5b1ee-7357-4b19-aa30-070464c14c7f","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/garantias","statusCode":409,"durationMs":6.28,"idUser":2}
+{"type":"http_request","requestId":"31044d1a-87ef-4f5c-bf16-21f5d2c9f5e1","method":"GET","path":"/api/v1/crm/unidades/1/piezas/1/garantias-candidatas","statusCode":200,"durationMs":5.67,"idUser":2}
+{"type":"http_request","requestId":"f34a02e0-bdff-492f-8011-2f72d9265be3","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/garantias","statusCode":201,"durationMs":6.8,"idUser":2}
+{"type":"http_request","requestId":"a40019c9-2354-49eb-a45a-15544d1a6023","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/garantias","statusCode":201,"durationMs":4.57,"idUser":2}
+{"type":"http_request","requestId":"df597415-7361-4a0d-b70b-734f1cfcf889","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/garantias","statusCode":409,"durationMs":5.44,"idUser":2}
+{"type":"http_request","requestId":"8956d495-949c-46ea-ba54-49ac30dea56f","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/anular","statusCode":409,"durationMs":4.82,"idUser":2}
+{"type":"http_request","requestId":"4498db85-576a-408e-9ef2-bcd309531887","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":201,"durationMs":6.66,"idUser":2}
+{"type":"http_request","requestId":"aa98ef68-2113-4133-a7de-85b0e427e804","method":"POST","path":"/api/v1/crm/unidades/2/piezas","statusCode":201,"durationMs":5.98,"idUser":2}
+{"type":"http_request","requestId":"d4789f01-5b10-45d9-b720-d6d28ddb56be","method":"POST","path":"/api/v1/garantias","statusCode":201,"durationMs":4.65,"idUser":2}
+{"type":"http_request","requestId":"aefaab11-ce4c-48f1-bc9c-aa08f00f81aa","method":"POST","path":"/api/v1/crm/unidades/1/piezas/5/garantias","statusCode":201,"durationMs":8.65,"idUser":2}
+{"type":"http_request","requestId":"259dc928-572a-4ece-9dfc-3d613d3314df","method":"POST","path":"/api/v1/crm/unidades/2/piezas/6/garantias","statusCode":409,"durationMs":8.91,"idUser":2}
+OK: Vínculos a garantías existentes validan venta y cantidad; vínculo único concurrente entre unidades, UUID estable y anulación bloqueada con vínculo activo
+{"type":"http_request","requestId":"e9baf43a-23a1-41f7-85a5-299a4789f8a2","method":"GET","path":"/api/v1/garantias","statusCode":200,"durationMs":10.82,"idUser":2}
+{"type":"http_request","requestId":"2ba32d10-388c-427a-b7a9-b62ba419a815","method":"PUT","path":"/api/v1/auth/users/3/permissions","statusCode":200,"durationMs":5.8,"idUser":2}
+{"type":"http_request","requestId":"3ff01429-0723-4ed4-9bcf-1d2b1a6eaeaa","method":"GET","path":"/api/v1/garantias","statusCode":200,"durationMs":4.65,"idUser":3}
+{"type":"http_request","requestId":"773c8b13-6dd9-4e56-b4e2-b617e708927f","method":"PUT","path":"/api/v1/auth/users/3/permissions","statusCode":200,"durationMs":6.64,"idUser":2}
+{"type":"http_request","requestId":"90c6d2f0-5ddf-4b87-8480-c1973c7d484c","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/garantias/1/retirar","statusCode":403,"durationMs":2.31,"idUser":3}
+{"type":"http_request","requestId":"0d41fdce-677a-4c1a-bd8b-e2ade2cdf68d","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/garantias/1/retirar","statusCode":201,"durationMs":7.52,"idUser":2}
+{"type":"http_request","requestId":"3cf5bb36-27df-42e1-86f7-c925b90ca009","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/garantias","statusCode":201,"durationMs":4.88,"idUser":2}
+{"type":"http_request","requestId":"33eed7a3-cbac-401e-bee8-da14d2f427aa","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":7.16,"idUser":2}
+{"type":"http_request","requestId":"d2e04655-18d7-409c-a89e-4e6115416130","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/anular","statusCode":403,"durationMs":2.28,"idUser":3}
+{"type":"http_request","requestId":"b549fd50-37ae-4b7f-a931-7f34ba7e69ed","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/anular","statusCode":201,"durationMs":4.56,"idUser":2}
+{"type":"http_request","requestId":"3b1d5748-08df-473b-b43f-40c283e7fa65","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/anular","statusCode":201,"durationMs":4.74,"idUser":2}
+{"type":"http_request","requestId":"675c90a4-1e04-4dfe-a373-6676296e46c6","method":"POST","path":"/api/v1/crm/unidades/1/piezas/1/anular","statusCode":409,"durationMs":3.77,"idUser":2}
+{"type":"http_request","requestId":"14789a12-4836-4614-8ae2-ac2afa6194d2","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":201,"durationMs":3.18,"idUser":2}
+{"type":"http_request","requestId":"fd8cc7e2-2bbb-4372-98e1-77b0d8577084","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":5.64,"idUser":2}
+{"type":"http_request","requestId":"6a36957b-2650-46cf-975c-79767fa361ba","method":"DELETE","path":"/api/v1/crm/unidades/1","statusCode":409,"durationMs":7.76,"idUser":2}
+OK: Garantías sólo expone enlace a quien tiene consulta; retiro/anulación ADMIN con motivo conservan historia, reintentos no reactivan y unidad con piezas no se elimina
+{"type":"http_request","requestId":"b830dcdd-499e-4201-a729-c0ab47a6ba0c","method":"PATCH","path":"/api/v1/garantias/4","statusCode":200,"durationMs":4.56,"idUser":2}
+{"type":"http_request","requestId":"87ac9b13-99c4-4431-b0d4-8d3b69d5c199","method":"PATCH","path":"/api/v1/garantias/4","statusCode":200,"durationMs":4.24,"idUser":2}
+{"type":"http_request","requestId":"0fdbe480-fd45-4409-8988-eadbe6bb9480","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":6.66,"idUser":2}
+{"type":"http_request","requestId":"3bdb94ab-c470-4a56-88c6-91fd90db1f34","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":409,"durationMs":5.26,"idUser":2}
+{"type":"http_request","requestId":"11cefe35-4045-4f47-aa4f-5bc8b6d96cc9","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":6.11,"idUser":2}
+{"type":"http_request","requestId":"4ca79f8e-bbdf-4fa7-b2b1-bcad6a50ac9b","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":400,"durationMs":8.84,"idUser":2}
+{"type":"http_request","requestId":"f8d927d4-fa13-4053-ada6-ef0298895cb7","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":5.72,"idUser":2}
+OK: Origen cancelado visible sin borrar historia y bloquea nuevas instalaciones; fallo de auditoría revierte alta, actor registrado y stock sin movimientos D02
+{"type":"http_request","requestId":"a45b5b41-77ad-404c-8249-f376751d9ea1","method":"PATCH","path":"/api/v1/garantias/1","statusCode":200,"durationMs":4.38,"idUser":2}
+{"type":"http_request","requestId":"6b96d3d7-1009-488f-8ef0-b053d8fb7c16","method":"PATCH","path":"/api/v1/garantias/1","statusCode":200,"durationMs":9.57,"idUser":2}
+{"type":"http_request","requestId":"5bff7c7f-9c36-47c6-86d1-e5873b68c921","method":"PATCH","path":"/api/v1/garantias/2","statusCode":200,"durationMs":4.27,"idUser":2}
+{"type":"http_request","requestId":"1fe0bb82-3113-4486-bdbf-b274f062d0e3","method":"PATCH","path":"/api/v1/garantias/2","statusCode":200,"durationMs":7.46,"idUser":2}
+{"type":"http_request","requestId":"4980a62b-dfda-4819-bcb9-305af2c6477e","method":"POST","path":"/api/v1/venta/107/devoluciones","statusCode":201,"durationMs":21.7,"idUser":2}
+{"type":"http_request","requestId":"8f50924c-49a4-4028-8bc7-c0a754e0872a","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":8.79,"idUser":2}
+{"type":"http_request","requestId":"1c9c863b-33cd-4230-9c0e-f5f88487c660","method":"POST","path":"/api/v1/crm/unidades/1/piezas","statusCode":409,"durationMs":10.09,"idUser":2}
+{"type":"http_request","requestId":"cb303a7b-8fd7-4161-88c0-37c60d546d96","method":"GET","path":"/api/v1/crm/unidades/1/piezas/origenes","statusCode":200,"durationMs":11.18,"idUser":2}
+OK: Devolución real del flujo existente marca origen por conciliar, lo retira de candidatos y bloquea altas sin borrar historial de instalación
+{"type":"http_request","requestId":"e525746c-fba2-4f1e-97b3-b787bdebaa29","method":"GET","path":"/api/v1/crm/unidades/1/piezas","statusCode":200,"durationMs":10.57,"idUser":2}
+OK: Actor revocado durante bloqueo no registra instalación; permisos/versiones revalidados dentro de la transacción
+{"type":"http_request","requestId":"e8ebf3f4-3782-4577-bc38-ac718b5b4563","method":"POST","path":"/api/v1/crm/clientes/2/unidades","statusCode":201,"durationMs":5.38,"idUser":2}
+{"type":"http_request","requestId":"2e0dedbc-c106-4feb-9e66-c01292d52728","method":"GET","path":"/api/v1/crm/unidades/4/piezas","statusCode":200,"durationMs":6.1,"idUser":2}
+{"type":"http_request","requestId":"b7986b59-4880-46ef-bfd2-2213980c96d0","method":"GET","path":"/api/v1/crm/unidades/4/piezas","statusCode":200,"durationMs":5.53,"idUser":2}
+{"type":"http_request","requestId":"a44a1f83-63ec-4c47-a511-ef46641ddc8d","method":"GET","path":"/api/v1/crm/unidades/4/piezas","statusCode":200,"durationMs":4.65,"idUser":2}
+OK: Historial acotado/paginado20 con total correcto incluso fuera de rango; fixtures de volumen exclusivamente en copia
+{"type":"http_request","requestId":"a2f31508-b0c8-4a1f-8093-231a986842c1","method":"GET","path":"/api/v1/crm/unidades/1/piezas/1/garantias-historial","statusCode":200,"durationMs":4.57,"idUser":2}
+{"type":"http_request","requestId":"f9f1a5d7-9d74-41e5-9ec6-a2981cbf093f","method":"GET","path":"/api/v1/crm/unidades/2/piezas/1/garantias-historial","statusCode":404,"durationMs":4.63,"idUser":2}
+OK: Historial completo de vínculos accesible por páginas20, incluidos retirados; resumen10 explícito e IDs de otra unidad404
+{"type":"http_request","requestId":"f5dee557-4d62-4515-a298-d419a58bf2c8","method":"POST","path":"/api/v1/garantias","statusCode":201,"durationMs":6.65,"idUser":2}
+{"type":"http_request","requestId":"9a87559d-68a7-4c32-a942-c8185436df58","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":62.96,"idUser":null}
+{"type":"http_request","requestId":"33142934-d266-43c8-ab1a-75ae74de861e","method":"GET","path":"/api/v1/crm/unidades/3/expediente","statusCode":200,"durationMs":16.37,"idUser":2}
+{"type":"http_request","requestId":"fc7c600f-8269-4b58-955f-3f4875a15388","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":46.64,"idUser":2}
+{"type":"http_request","requestId":"d248ea95-f79b-47d1-86ef-11cc6b096d2f","method":"GET","path":"/api/v1/crm/unidades/3/piezas","statusCode":200,"durationMs":6.13,"idUser":2}
+{"type":"http_request","requestId":"c5f51685-afa7-4a45-8e72-c40fcb5f8ead","method":"GET","path":"/api/v1/crm/unidades/3/piezas/origenes","statusCode":200,"durationMs":19.27,"idUser":2}
+{"type":"http_request","requestId":"30558330-6055-4b0d-a8ed-fe9a055ffa7f","method":"GET","path":"/api/v1/crm/unidades/3/piezas/origenes","statusCode":200,"durationMs":13.06,"idUser":2}
+{"type":"http_request","requestId":"d6fffcca-8a19-47e0-a1f0-33f0a8341f4a","method":"POST","path":"/api/v1/crm/unidades/3/piezas","statusCode":409,"durationMs":16.47,"idUser":2}
+{"type":"http_request","requestId":"54c98241-cd7c-4aac-b1ef-ffeea9a52e13","method":"POST","path":"/api/v1/crm/unidades/3/piezas","statusCode":201,"durationMs":16.95,"idUser":2}
+{"type":"http_request","requestId":"9f868b5b-8bbb-4188-8d9e-fb1cf4477e0e","method":"GET","path":"/api/v1/crm/unidades/3/piezas","statusCode":200,"durationMs":13.14,"idUser":2}
+{"type":"http_request","requestId":"5d841d91-ec76-4545-981d-1346199ef786","method":"GET","path":"/api/v1/crm/unidades/3/piezas","statusCode":200,"durationMs":9.77,"idUser":2}
+{"type":"http_request","requestId":"82abb613-5cd3-4696-8db1-62070454d3fa","method":"POST","path":"/api/v1/crm/unidades/3/piezas/33/revision","statusCode":201,"durationMs":15.53,"idUser":2}
+{"type":"http_request","requestId":"628cad18-2065-432c-900d-ba127d4c64af","method":"GET","path":"/api/v1/crm/unidades/3/piezas","statusCode":200,"durationMs":10.93,"idUser":2}
+{"type":"http_request","requestId":"c02c4e6c-d56a-4849-8fe4-24002712fd75","method":"GET","path":"/api/v1/crm/unidades/3/piezas/33/garantias-candidatas","statusCode":200,"durationMs":6.56,"idUser":2}
+{"type":"http_request","requestId":"c3c0f921-e612-47ac-a256-2260e564f6e6","method":"POST","path":"/api/v1/crm/unidades/3/piezas/33/garantias","statusCode":201,"durationMs":17.78,"idUser":2}
+{"type":"http_request","requestId":"e0f92248-fbbc-423d-93a2-5a8567ce1043","method":"GET","path":"/api/v1/crm/unidades/3/piezas","statusCode":200,"durationMs":25.18,"idUser":2}
+{"type":"http_request","requestId":"4ad3d59c-2c9f-41f5-9a15-d9f328194b8c","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":4.28,"idUser":2}
+{"type":"http_request","requestId":"06e905e8-f874-4914-aa45-69b0c1f82073","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":75.83,"idUser":2}
+{"type":"http_request","requestId":"e2dc5b85-628b-44a4-a5b6-52a93eaa807a","method":"GET","path":"/api/v1/garantias","statusCode":200,"durationMs":24.63,"idUser":2}
+{"type":"http_request","requestId":"bd4bbea2-2ca6-4b14-bcab-5eb4decf1f5b","method":"GET","path":"/api/v1/crm/unidades/3/expediente","statusCode":200,"durationMs":12.94,"idUser":2}
+{"type":"http_request","requestId":"78f22027-09c1-445d-84cb-9e48b978823d","method":"GET","path":"/api/v1/crm/unidades/3/piezas","statusCode":200,"durationMs":8.56,"idUser":2}
+{"type":"http_request","requestId":"72cdc731-cb39-423f-8898-23ca3e0739a8","method":"GET","path":"/api/v1/crm/unidades/3/piezas/33/garantias-historial","statusCode":200,"durationMs":10.21,"idUser":2}
+{"type":"http_request","requestId":"5bdbd6cc-e82c-4965-8d42-39748bbb8b15","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":67.04,"idUser":null}
+{"type":"http_request","requestId":"3bfbd0d5-946a-439f-a4ac-911490d9df61","method":"GET","path":"/api/v1/crm/unidades/3/expediente","statusCode":200,"durationMs":10.13,"idUser":2}
+{"type":"http_request","requestId":"d6489e2e-4a09-4960-b142-ec91f5eaa2d8","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":45.23,"idUser":2}
+{"type":"http_request","requestId":"f40acd56-9ba7-4fc6-ba46-d5131b5fdc12","method":"GET","path":"/api/v1/crm/unidades/3/piezas","statusCode":200,"durationMs":6.78,"idUser":2}
+{"type":"http_request","requestId":"cd0861cb-99b6-4c44-b3f8-d74fc73baff3","method":"GET","path":"/api/v1/crm/unidades/3/piezas/origenes","statusCode":200,"durationMs":10.2,"idUser":2}
+{"type":"http_request","requestId":"38716a16-26a6-498d-805c-9d92179b1b42","method":"GET","path":"/api/v1/crm/unidades/3/piezas/origenes","statusCode":200,"durationMs":9.83,"idUser":2}
+{"type":"http_request","requestId":"e9b10b4d-005e-455e-b043-c610db318c47","method":"POST","path":"/api/v1/crm/unidades/3/piezas","statusCode":409,"durationMs":7.3,"idUser":2}
+{"type":"http_request","requestId":"502a18a5-d85a-46ab-80b5-c79d1eb7a731","method":"POST","path":"/api/v1/crm/unidades/3/piezas","statusCode":201,"durationMs":8.35,"idUser":2}
+{"type":"http_request","requestId":"2dadbea9-51ec-41da-9998-5803642fe5e4","method":"GET","path":"/api/v1/crm/unidades/3/piezas","statusCode":200,"durationMs":5.28,"idUser":2}
+{"type":"http_request","requestId":"fc8eb8ca-6a47-488a-923a-796bc32ac2a5","method":"GET","path":"/api/v1/crm/unidades/3/piezas","statusCode":200,"durationMs":6.17,"idUser":2}
+{"type":"http_request","requestId":"44922404-c149-474e-af0a-98fd0396b25d","method":"POST","path":"/api/v1/crm/unidades/3/piezas/34/revision","statusCode":201,"durationMs":7.54,"idUser":2}
+{"type":"http_request","requestId":"1e0cdf13-133a-4e2e-aed4-c3213e7d7a1a","method":"GET","path":"/api/v1/crm/unidades/3/piezas","statusCode":200,"durationMs":6.87,"idUser":2}
+{"type":"http_request","requestId":"d5e28b19-8f0d-402e-a8b5-305cad57ae32","method":"GET","path":"/api/v1/crm/unidades/3/piezas/34/garantias-historial","statusCode":200,"durationMs":10.49,"idUser":2}
+OK: Angular producción/login real: buscar venta, error con borrador, alta/revisión y vínculo de garantía con regreso desde Garantías; claro1280/oscuro390/axe/reflujo sin errores JS
+{"type":"http_request","requestId":"f1b4bf4a-7558-4850-b0ac-41ebd8844efd","method":"PUT","path":"/api/v1/auth/users/3/permissions","statusCode":200,"durationMs":8.74,"idUser":2}
+{"type":"http_request","requestId":"317ef7a4-45a5-4f7a-9ed1-a7b00db501c9","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":58.99,"idUser":null}
+{"type":"http_request","requestId":"658ef91e-6082-4686-a157-055e90a60d3b","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":13.07,"idUser":3}
+{"type":"http_request","requestId":"5bb0e3bb-9c03-43e7-accf-9d955a91ebd0","method":"GET","path":"/api/v1/crm/unidades/3/expediente","statusCode":200,"durationMs":7.49,"idUser":3}
+{"type":"http_request","requestId":"da94acef-7f60-4ba3-b466-8a846d91ba99","method":"GET","path":"/api/v1/crm/unidades/3/piezas","statusCode":200,"durationMs":6.74,"idUser":3}
+OK: Operador real de sólo consulta ve historial sin alta/revisión/vínculo; no se confunde permiso efectivo con rol

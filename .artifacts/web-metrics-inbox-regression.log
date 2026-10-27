@@ -1,0 +1,7 @@
+Web pública: 15 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+Formulario nativo → puente firmado → PostgreSQL: commit sin recibo, reintentos sin duplicar, conflicto y conversión aprobados en esquema aislado.
+Rotación HTTP: legacy→v2→v2, clave anterior acotada/revocada, ID firmado, huella estable y conflicto aprobados.
+Perfil local: ambas claves/aviso/ID comprobados por HTTP firmado; errores impiden preparación y comprobación sin escrituras.
+Resolución conservadora: idempotencia, carreras, rollback, retención, historial20 y bloqueo de edición/borrado aprobados.
+Puente HTTP firmado: cerrado, firma inválida, huella inválida y persistencia idempotente aprobados.
+Bandeja web: conversión única, snapshot, historial, reintentos, versiones y purga aprobados en esquema aislado.

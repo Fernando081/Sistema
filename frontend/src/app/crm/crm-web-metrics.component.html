@@ -1,0 +1,182 @@
+<details class="web-metrics">
+  <summary>Medición de solicitudes</summary>
+  <section aria-labelledby="web-metrics-title" [attr.aria-busy]="loading()">
+    <h3 id="web-metrics-title">De la consulta a la oportunidad</h3>
+    <p>Este panel usa registros guardados en la base actual. Si son de prueba, los resultados también lo son.</p>
+    <form (ngSubmit)="load()" class="period-form" ngNativeValidate>
+      <label for="web-metrics-from">Recibidas desde
+        <input id="web-metrics-from" name="desde" type="date" required min="2000-01-01" max="2099-12-31"
+          [ngModel]="desde()" (ngModelChange)="changePeriod('desde', $event)" [disabled]="loading()">
+      </label>
+      <label for="web-metrics-until">Recibidas hasta
+        <input id="web-metrics-until" name="hasta" type="date" required min="2000-01-01" max="2099-12-31"
+          [ngModel]="hasta()" (ngModelChange)="changePeriod('hasta', $event)" [disabled]="loading()">
+      </label>
+      <button mat-stroked-button type="submit" [disabled]="loading()">Consultar medición</button>
+    </form>
+    <p class="hint">Ambas fechas incluidas · Zona de Tampico (America/Mexico_City) · Máximo 366 días.</p>
+    @if (loading()) { <p role="status">Calculando a partir de los registros…</p> }
+    @if (error()) { <p role="alert">{{error()}}</p> }
+    @if (report(); as data) {
+      <p class="hint">Consulta: {{data.generatedAt | date:'short':'':'es-MX'}}.
+        Estado actual de las solicitudes recibidas entre {{data.period.desde}} y {{data.period.hasta}}.
+        Después de atender la bandeja, consulta otra vez para actualizar.</p>
+      @if (!data.totals.recibidas) {
+        <p role="status" class="empty">No hay solicitudes recibidas en este periodo. La conversión todavía no se puede calcular.</p>
+      }
+      <dl class="metrics-cards" aria-label="Resumen de solicitudes">
+        <div><dt>Solicitudes recibidas</dt><dd>{{data.totals.recibidas | number}}</dd></div>
+        <div><dt>Oportunidades creadas</dt><dd>{{data.totals.oportunidades | number}}</dd></div>
+        <div><dt>Conversión a oportunidad</dt><dd>@if (data.conversionPct === null) { Sin datos }
+          @else { {{data.conversionPct | number:'1.0-2'}} % }</dd></div>
+        <div><dt>Pendientes sin oportunidad</dt><dd>{{data.totals.pendientes | number}}</dd></div>
+      </dl>
+      <p>Revisadas sin oportunidad: <strong>{{data.totals.revisadasSinOportunidad | number}}</strong> ·
+        Descartadas: <strong>{{data.totals.descartadas | number}}</strong>.</p>
+      <p>Oportunidades abiertas: <strong>{{data.totals.abiertasCrm | number}}</strong> ·
+        Ganadas en CRM: <strong>{{data.totals.ganadasCrm | number}}</strong> ·
+        Perdidas en CRM: <strong>{{data.totals.perdidasCrm | number}}</strong>.</p>
+      <p class="hint">Conversión = oportunidades vinculadas ÷ solicitudes recibidas × 100.
+        Un reintento con el mismo identificador no cuenta como otra solicitud.
+        Los estados pueden cambiar después del periodo; «Ganada» en CRM no confirma una venta.</p>
+      @if (data.commercial; as commercial) {
+        <h4>Documentos de venta con origen vinculado</h4>
+        <dl class="metrics-cards" aria-label="Trazabilidad comercial">
+          <div><dt>Solicitudes con cotización</dt><dd>{{commercial.solicitudesConCotizacion | number}}</dd></div>
+          <div><dt>Solicitudes con venta registrada</dt><dd>{{commercial.solicitudesConVenta | number}}</dd></div>
+          <div><dt>Documentos de venta vigentes</dt><dd>{{commercial.documentosVentaVigentes | number}}</dd></div>
+        </dl>
+        <p class="hint">Cotizaciones vinculadas: {{commercial.cotizacionesVinculadas | number}} ·
+          Documentos cancelados: {{commercial.documentosCancelados | number}} ·
+          Documentos inconsistentes, excluidos: {{commercial.documentosInconsistentes | number}}.</p>
+        <p class="hint">Origen declarado al vincular la cotización en la ficha de oportunidad; cadena de cliente/documentos comprobada.
+          Se observa su estado actual. Una solicitud puede tener varias ventas parciales; cada documento se cuenta una vez.
+          No demuestra un timbrado fiscal real. Ventas sin vínculo explícito quedan fuera.</p>
+      }
+      @if (data.finance; as finance) {
+        <details class="finance">
+          <summary>Importes y cobros por moneda</summary>
+          <p>Ventas vinculadas a las solicitudes del periodo, con sus ajustes y cobros registrados hasta esta consulta.
+            Las fechas seleccionan la recepción de la solicitud, no la fecha de la venta o del pago.</p>
+          <p class="hint">Documentos vinculados: {{finance.coverage.documentosVinculados | number}} ·
+            Documentos financieros: {{finance.coverage.documentosFinancieros | number}} ·
+            Facturas globales excluidas: {{finance.coverage.globalesExcluidas | number}}.</p>
+          @for (money of finance.currencies; track money.moneda) {
+            <section class="currency" [attr.aria-label]="'Importes en ' + money.moneda">
+              <h4>Moneda {{money.moneda}} · {{money.documentos | number}} documentos</h4>
+              <dl class="metrics-cards financial-cards">
+                <div><dt>Importe documentado, con impuestos</dt><dd>{{amount(money.importeDocumentado, money.moneda)}}</dd></div>
+                <div><dt>Ventas netas, sin impuestos</dt><dd>{{amount(money.ventasNetasSinImpuestos, money.moneda)}}</dd></div>
+                <div><dt>Cobros registrados</dt><dd>{{amount(money.cobrosRegistrados, money.moneda)}}</dd></div>
+                <div><dt>Saldo pendiente registrado</dt><dd>{{amount(money.saldoRegistrado, money.moneda)}}</dd></div>
+                <div><dt>Notas de crédito, con impuestos</dt><dd>{{amount(money.notasCredito, money.moneda)}}</dd></div>
+                <div><dt>Devoluciones, con impuestos</dt><dd>{{amount(money.devoluciones, money.moneda)}}</dd></div>
+              </dl>
+              <p class="hint">Documentos por conciliar: venta neta {{money.documentosNetoDesconocido | number}},
+                cobro {{money.documentosCobroDesconocido | number}}, saldo {{money.documentosSaldoDesconocido | number}}.
+                Sin registros de pago: {{money.documentosSinPagos | number}} ·
+                Saldo y detalle de cobros no coincidentes: {{money.documentosSaldoNoConciliado | number}}.</p>
+              @if (money.cash; as cash) {
+                <details class="cash">
+                  <summary>Cobros netos y reembolsos en {{money.moneda}}</summary>
+                  <section class="cash-content" [attr.aria-label]="'Cobros netos en ' + money.moneda">
+                    <dl class="metrics-cards financial-cards">
+                      <div><dt>Reembolsos en efectivo vinculados</dt><dd>{{amount(cash.reembolsosEfectivo, money.moneda)}}</dd></div>
+                      <div><dt>Cobros netos registrados</dt><dd>{{amount(cash.cobrosNetosRegistrados, money.moneda)}}</dd></div>
+                      <div><dt>Saldo a favor generado, sin salida de efectivo</dt><dd>{{amount(cash.saldoAFavorGenerado, money.moneda)}}</dd></div>
+                    </dl>
+                    <p class="hint">Documentos con cobro neto comprobado: {{cash.documentosConCobroNeto | number}} ·
+                      Por conciliar: {{cash.documentosCobroNetoDesconocido | number}}.
+                      Reembolso no comprobado: {{cash.documentosReembolsoDesconocido | number}} ·
+                      Reembolsos sin gasto vinculado: {{cash.reembolsosSinGastoVinculado | number}} ·
+                      Gastos no conciliados: {{cash.gastosNoConciliados | number}} ·
+                      Historial de pagos no conciliado: {{cash.documentosPagosNoConciliados | number}} ·
+                      Moneda no comparable: {{cash.documentosMonedaNoComparable | number}}.
+                      Los motivos pueden coincidir en un documento.</p>
+                    <p class="hint">Cobro neto registrado = cobros registrados − reembolsos en efectivo con gasto vinculado,
+                      vigente, exclusivo y del mismo importe. El saldo a favor es el importe generado por estos ajustes,
+                      no el saldo disponible actual del cliente, y no se resta como efectivo.
+                      La comparación local requiere MXN y factor 1. Si falta un vínculo o el historial de pagos no concilia,
+                      el total muestra «Por conciliar»; no se infieren gastos por su descripción ni cobros por el estado Pagada.
+                      Estas cifras corresponden a las ventas vinculadas de la cohorte; no incluyen gastos operativos ni todo el flujo de caja del negocio.</p>
+                  </section>
+                </details>
+              }
+              @if (money.profit; as profit) {
+                <details class="profit">
+                  <summary>Rentabilidad de las ventas en {{money.moneda}}</summary>
+                  <section class="profit-content" [attr.aria-label]="'Rentabilidad en ' + money.moneda">
+                    <dl class="metrics-cards financial-cards">
+                      <div><dt>Costo histórico neto</dt><dd>{{amount(profit.costoVentaNeto, money.moneda)}}</dd></div>
+                      <div><dt>Utilidad bruta @if (profit.utilidadBruta?.startsWith('-')) { (pérdida) }</dt>
+                        <dd>{{amount(profit.utilidadBruta, money.moneda)}}</dd></div>
+                      <div><dt>Margen bruto</dt><dd>{{percentage(profit.margenBrutoPct, profit.documentosRentabilidadDesconocida)}}</dd></div>
+                    </dl>
+                    <p class="hint">Documentos con rentabilidad comprobada: {{profit.documentosConRentabilidad | number}} ·
+                      Por conciliar: {{profit.documentosRentabilidadDesconocida | number}}.
+                      Sin costo válido: {{profit.documentosSinCostoValido | number}} ·
+                      Moneda/costo no comparables: {{profit.documentosMonedaCostoNoComparable | number}} ·
+                      Detalle no conciliado: {{profit.documentosDetalleNoConciliado | number}}.
+                      Los motivos pueden coincidir en un documento.</p>
+                    <p class="hint">Utilidad bruta = venta neta sin impuestos − costo histórico neto.
+                      Margen = utilidad bruta ÷ venta neta × 100, con una base positiva.
+                      El costo original congelado se reduce por cantidades devueltas; no se consulta el precio de compra actual.
+                      El costo local es comparable con ventas MXN de factor 1. Otras monedas conservan sus importes y muestran rentabilidad por conciliar.
+                      No descuenta gastos operativos ni representa utilidad contable final.</p>
+                  </section>
+                </details>
+              }
+            </section>
+          } @empty {
+            <p class="empty">No hay documentos con moneda identificada para desglosar importes en este periodo.</p>
+          }
+          <p class="hint">Moneda desconocida, sin desglose: {{finance.coverage.monedaDesconocida | number}} ·
+            Importes de documento inconsistentes: {{finance.coverage.importesInconsistentes | number}} ·
+            Notas canceladas excluidas: {{finance.coverage.notasCanceladasExcluidas | number}} ·
+            REP cancelados excluidos: {{finance.coverage.repsCanceladosExcluidos | number}} ·
+            Copias de pago REP omitidas: {{finance.coverage.pagosRepCompatibilidadOmitidos | number}}.</p>
+          <p class="hint">Cada moneda se conserva separada. Las ventas netas descuentan notas y devoluciones comprobadas;
+            los cobros se cuentan una vez y el saldo se lee del ERP. Un estado Pagada o método PUE no crea un registro de cobro.
+            «Por conciliar» significa información incompleta o inconsistente, no cero. Cobros y saldos no son utilidad;
+            el detalle de cobros netos descuenta únicamente reembolsos comprobados.</p>
+        </details>
+      }
+      <details class="reference-detail" open>
+        <summary>Las diez referencias más solicitadas</summary>
+        <p class="hint">Clasificadas por número de solicitudes distintas; cantidad significa unidades solicitadas, no vendidas.
+          Código y marca se agrupan tal como se registraron, sin asumir equivalencias.</p>
+        @if (data.references.length) {
+          <ol class="references">
+            @for (item of data.references; track $index) {
+              <li><div><strong>{{item.code}}</strong><span>{{item.brand || 'Marca por confirmar'}}</span></div>
+                <p>{{item.solicitudes | number}} solicitudes · {{item.cantidad | number}} unidades solicitadas</p></li>
+            }
+          </ol>
+        } @else { <p>No hay referencias disponibles para clasificar.</p> }
+        <p class="hint">Listas vigentes: {{data.totals.piezasVigentes | number}} ·
+          Snapshots de oportunidades: {{data.totals.piezasSnapshot | number}} ·
+          Solicitudes sin lista disponible: {{data.totals.sinPiezas | number}}.
+          Las piezas de contactos vencidos se omiten si no existe un snapshot comercial conservado.</p>
+      </details>
+      <details>
+        <summary>Tendencia diaria del periodo</summary>
+        <p class="hint">Día de recepción y oportunidades vinculadas hoy a esas solicitudes; no fecha de conversión.</p>
+        <ul class="daily" tabindex="0" aria-label="Solicitudes por día">
+          @for (day of data.daily; track day.fecha) {
+            <li><time [attr.datetime]="day.fecha">{{day.fecha}}</time>
+              <span>{{day.recibidas | number}} recibidas · {{day.oportunidades | number}} oportunidades</span></li>
+          }
+        </ul>
+      </details>
+      <details>
+        <summary>Vigencia del contenido</summary>
+        <p>Vigentes: {{data.totals.vigentes | number}} · Vencidas sin purgar: {{data.totals.vencidas | number}} ·
+          Purgadas: {{data.totals.purgadas | number}}.</p>
+        <p class="hint">Los conteos usan metadatos conservados; no recuperan contactos vencidos ni cambian la retención.
+          Por eso pueden incluir más registros que la bandeja de solicitudes vigentes.</p>
+      </details>
+    }
+    <p class="measurement-limit">Sin medición de visitas, búsquedas, clics de cotización/WhatsApp, búsquedas sin resultado,
+      ventas sin vínculo o flujo de caja integral. Un clic de WhatsApp no demuestra que llegó un mensaje.</p>
+  </section>
+</details>

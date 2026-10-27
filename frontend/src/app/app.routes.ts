@@ -45,6 +45,14 @@ export const AUTHENTICATED_ROUTES: Routes = [
         (m) => m.Auditoria,
       ),
   },
+  {path:'cotizacion/:id/versiones',canActivate:[authGuard],loadComponent:()=>import('./cotizacion/versiones/cotizacion-version.component').then(m=>m.CotizacionVersionComponent)},
+  {path:'crm/unidades/:id/expediente',canActivate:[authGuard],loadComponent:()=>import('./crm/unidad-expediente.component').then(m=>m.UnidadExpedienteComponent)},
+  {path:'almacen/movil',canActivate:[authGuard],loadComponent:()=>import('./almacen/almacen-movil.component').then(m=>m.AlmacenMovilComponent)},
+  {path:'crm/reportes-programados',canActivate:[authGuard],data:{roles:['admin']},loadComponent:()=>import('./crm/crm-reportes.component').then(m=>m.CrmReportesComponent)},
+  {path:'crm/bandeja',canActivate:[authGuard],loadComponent:()=>import('./crm/crm-bandeja.component').then(m=>m.CrmBandejaComponent)},
+  {path:'crm/campanas',canActivate:[authGuard],loadComponent:()=>import('./crm/campanas-locales.component').then(m=>m.CampanasLocalesComponent)},
+  {path:'crm/secuencias',canActivate:[authGuard],loadComponent:()=>import('./crm/crm-secuencias.component').then(m=>m.CrmSecuenciasComponent)},
+  {path:'crm/reglas-secuencias',canActivate:[authGuard],data:{roles:['admin']},loadComponent:()=>import('./crm/crm-secuencia-reglas.component').then(m=>m.CrmSecuenciaReglasComponent)},
   {
     path: 'crm',
     canActivate: [authGuard],
@@ -82,6 +90,7 @@ export const AUTHENTICATED_ROUTES: Routes = [
         (m) => m.ProductoListComponent,
       ),
   },
+  {path: 'catalogo-web', canActivate: [authGuard], data: {roles: ['admin']}, loadComponent: () => import('./producto/web-catalog-quality.component').then(m => m.WebCatalogQualityComponent)},
   {
     path: 'venta',
     canActivate: [authGuard],
@@ -106,6 +115,7 @@ export const AUTHENTICATED_ROUTES: Routes = [
     loadComponent: () =>
       import('./venta/factura-global/factura-global.component').then((m) => m.FacturaGlobalComponent),
   },
+  {path:'facturas/correos',canActivate:[authGuard],loadComponent:()=>import('./venta/salida-documentos.component').then(m=>m.SalidaDocumentosComponent)},
   {
     path: 'almacen',
     canActivate: [authGuard],

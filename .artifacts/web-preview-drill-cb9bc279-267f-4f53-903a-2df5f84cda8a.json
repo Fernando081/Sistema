@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "drillId": "cb9bc279-267f-4f53-903a-2df5f84cda8a",
+  "generatedAt": "2026-10-11T23:43:44.993Z",
+  "status": "not-completed",
+  "stage": "arguments",
+  "scope": "Simulacro de la vista previa instalada sobre copias temporales y runtime actual. No interviene en dist, ERP/BD, captación ni versiones; no certifica aceptación comercial, hosting o recuperación ante pérdida del disco."
+}

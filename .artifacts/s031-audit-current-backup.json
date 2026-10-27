@@ -1,0 +1,199 @@
+{
+  "phase": "S03.1",
+  "startedAt": "2026-10-20T00:23:12.551Z",
+  "checks": [
+    "098 verificada y aplicada solo en copia restaurada; AppModule real, fiscal mock y cron detenido",
+    "Historial anterior conservado campo a campo mediante huella y sin instantáneas/actores retroactivos",
+    "API ADMIN privada/operador403; alta, permisos, perfil, estado y contraseña auditados con actor; hashes/secretos excluidos por whitelist",
+    "UPDATE,DELETE y TRUNCATE rechazados por PostgreSQL; guard ALWAYS también bajo replica cuando el rol permite ensayarlo",
+    "Fallo al escribir auditoría revierte perfil y eventos; contexto LOCAL desaparece al devolver la conexión",
+    "Renombrar/eliminar usuarios no reescribe ID o nombre histórico; consulta estable y acotada, sin atribución retroactiva",
+    "Angular producción con dos logins reales: instantánea correcta, advertencia de privilegios, temas1280/390, scroll y axe sin infracciones",
+    "Deshabilitar control en copia se detecta en API/UI sin afirmar integridad; control restaurado y recursos listos para cierre"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "restoredMigration098AlreadyPresent": true,
+  "uiDiagnostics": {
+    "rect": {
+      "x": 266,
+      "y": 991.296875,
+      "width": 52,
+      "height": 25,
+      "top": 991.296875,
+      "right": 318,
+      "bottom": 1016.296875,
+      "left": 266
+    },
+    "ancestors": [
+      {
+        "tag": "DIV",
+        "class": "mat-mdc-form-field-infix",
+        "top": 983.296875,
+        "height": 41,
+        "client": 41,
+        "scroll": 45,
+        "overflow": "visible"
+      },
+      {
+        "tag": "DIV",
+        "class": "mat-mdc-form-field-flex",
+        "top": 983.296875,
+        "height": 41,
+        "client": 41,
+        "scroll": 45,
+        "overflow": "visible"
+      },
+      {
+        "tag": "DIV",
+        "class": "mat-mdc-text-field-wrapper mdc-text-field mdc-text-field--outlined mdc-text-field--no-label",
+        "top": 983.296875,
+        "height": 41,
+        "client": 41,
+        "scroll": 45,
+        "overflow": "visible"
+      },
+      {
+        "tag": "MAT-FORM-FIELD",
+        "class": "mat-mdc-form-field mat-mdc-paginator-page-size-select mat-mdc-form-field-type-mat-select mat-form-field-appearance-outline mat-primary",
+        "top": 983.296875,
+        "height": 41,
+        "client": 41,
+        "scroll": 45,
+        "overflow": "visible"
+      },
+      {
+        "tag": "DIV",
+        "class": "mat-mdc-paginator-page-size",
+        "top": 983.296875,
+        "height": 41,
+        "client": 41,
+        "scroll": 45,
+        "overflow": "visible"
+      },
+      {
+        "tag": "DIV",
+        "class": "mat-mdc-paginator-container",
+        "top": 983.296875,
+        "height": 81,
+        "client": 81,
+        "scroll": 85,
+        "overflow": "visible"
+      },
+      {
+        "tag": "DIV",
+        "class": "mat-mdc-paginator-outer-container",
+        "top": 983.296875,
+        "height": 81,
+        "client": 81,
+        "scroll": 85,
+        "overflow": "visible"
+      },
+      {
+        "tag": "MAT-PAGINATOR",
+        "class": "mat-mdc-paginator",
+        "top": 983.296875,
+        "height": 81,
+        "client": 81,
+        "scroll": 85,
+        "overflow": "visible"
+      },
+      {
+        "tag": "MAT-CARD",
+        "class": "mat-mdc-card mdc-card",
+        "top": 268.296875,
+        "height": 796,
+        "client": 796,
+        "scroll": 800,
+        "overflow": "visible"
+      },
+      {
+        "tag": "SECTION",
+        "class": "audit-page",
+        "top": -488.703125,
+        "height": 1573,
+        "client": 1573,
+        "scroll": 1573,
+        "overflow": "visible"
+      },
+      {
+        "tag": "APP-AUDITORIA",
+        "class": "",
+        "top": -488.703125,
+        "height": 1573,
+        "client": 0,
+        "scroll": 0,
+        "overflow": "visible"
+      },
+      {
+        "tag": "MAIN",
+        "class": "app-content",
+        "top": 68,
+        "height": 1032,
+        "client": 1032,
+        "scroll": 1699,
+        "overflow": "auto"
+      },
+      {
+        "tag": "MAT-SIDENAV-CONTENT",
+        "class": "mat-drawer-content mat-sidenav-content wrap-content-shell",
+        "top": 0,
+        "height": 1100,
+        "client": 1100,
+        "scroll": 1100,
+        "overflow": "auto"
+      },
+      {
+        "tag": "MAT-SIDENAV-CONTAINER",
+        "class": "mat-drawer-container mat-sidenav-container h-screen w-screen bg-transparent",
+        "top": 0,
+        "height": 1100,
+        "client": 1100,
+        "scroll": 1100,
+        "overflow": "hidden"
+      },
+      {
+        "tag": "APP-AUTHENTICATED-SHELL",
+        "class": "",
+        "top": 0,
+        "height": 1100,
+        "client": 0,
+        "scroll": 0,
+        "overflow": "visible"
+      },
+      {
+        "tag": "APP-ROOT",
+        "class": "",
+        "top": 0,
+        "height": 1100,
+        "client": 1100,
+        "scroll": 1100,
+        "overflow": "visible"
+      },
+      {
+        "tag": "BODY",
+        "class": "",
+        "top": 0,
+        "height": 1100,
+        "client": 1100,
+        "scroll": 1100,
+        "overflow": "visible"
+      },
+      {
+        "tag": "HTML",
+        "class": "dark",
+        "top": 0,
+        "height": 1100,
+        "client": 1100,
+        "scroll": 1100,
+        "overflow": "visible"
+      }
+    ],
+    "point": "mat-mdc-paginator-touch-target"
+  },
+  "passed": true,
+  "completedAt": "2026-10-20T00:23:25.679Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular snapshot dark"
+}

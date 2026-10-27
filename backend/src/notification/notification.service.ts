@@ -1,21 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { queryRows } from '../common/database/typed-query';
+import { runScheduledJob } from '../common/scheduled-job';
+import { syncScheduledJobAlerts } from '../common/scheduled-job-alerts';
 
 export interface AppNotification {
-  idNotification: number; type: string; title: string; message: string;
-  severity: 'info'|'warning'|'critical'; route?: string; readAt?: string; createdAt: string;
+  idNotification: number;
+  type: string;
+  title: string;
+  message: string;
+  severity: 'info' | 'warning' | 'critical';
+  route?: string;
+  readAt?: string;
+  createdAt: string;
 }
+
+const scheduledJobVisibility = `AND (source_type IS DISTINCT FROM 'scheduled_job' OR EXISTS
+  (SELECT 1 FROM auth_user viewer WHERE viewer.id_user=$1 AND viewer.is_active AND viewer.role='admin'))`;
 
 @Injectable()
 export class NotificationService {
+  private readonly logger = new Logger(NotificationService.name);
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
   @Cron('0 */10 * * * *')
+  async scheduledRefreshOperationalAlerts() {
+    try {
+      await runScheduledJob(
+        this.dataSource,
+        'operational_alerts',
+        () => this.refreshOperationalAlerts(),
+        (message) => this.logger.error(message),
+      );
+    } catch {
+      this.logger.error('Falló la generación programada de alertas operativas');
+    }
+  }
+
   async refreshOperationalAlerts() {
-    await this.dataSource.transaction(async manager => {
+    await this.dataSource.transaction(async (manager) => {
       await manager.query(`INSERT INTO app_notification(id_user,type,title,message,severity,route,source_type,source_id,dedupe_key)
         SELECT u.id_user,'crm_overdue','Seguimiento CRM vencido',
           concat(o.empresa,': ',coalesce(o.siguiente_accion,'Seguimiento pendiente')),'warning','/crm','crm_oportunidad',o.id_oportunidad,
@@ -34,13 +59,15 @@ export class NotificationService {
       await manager.query(`UPDATE app_notification n SET read_at=coalesce(n.read_at,clock_timestamp())
         WHERE n.type='crm_task_overdue' AND n.read_at IS NULL AND NOT EXISTS(
           SELECT 1 FROM crm_tarea t WHERE t.id_tarea=n.source_id
-          AND t.estado IN ('Pendiente','En progreso') AND t.fecha_vencimiento<clock_timestamp())`);
+          AND t.id_responsable=n.id_user AND t.estado IN ('Pendiente','En progreso') AND t.fecha_vencimiento<clock_timestamp()
+          AND NOT EXISTS(SELECT 1 FROM crm_secuencia s WHERE s.id_secuencia=t.id_secuencia AND s.estado='Pausada'))`);
       await manager.query(`INSERT INTO app_notification(id_user,type,title,message,severity,route,source_type,source_id,dedupe_key)
         SELECT t.id_responsable,'crm_task_overdue','Tarea CRM vencida',t.titulo,
           CASE WHEN t.prioridad='Urgente' OR t.fecha_vencimiento<clock_timestamp()-interval '1 day' THEN 'critical' ELSE 'warning' END,
           '/crm','crm_tarea',t.id_tarea,concat('crm-task-overdue:',t.id_tarea,':',t.id_responsable)
         FROM crm_tarea t JOIN auth_user u ON u.id_user=t.id_responsable AND u.is_active
         WHERE t.estado IN ('Pendiente','En progreso') AND t.fecha_vencimiento<clock_timestamp()
+          AND NOT EXISTS(SELECT 1 FROM crm_secuencia s WHERE s.id_secuencia=t.id_secuencia AND s.estado='Pausada')
         ON CONFLICT(dedupe_key) DO UPDATE SET message=excluded.message,severity=excluded.severity`);
       await manager.query(`UPDATE app_notification n SET read_at=coalesce(n.read_at,clock_timestamp())
         WHERE n.read_at IS NULL AND (
@@ -81,21 +108,49 @@ export class NotificationService {
   }
 
   async list(idUser: number) {
-    await this.refreshOperationalAlerts();
-    const items=await queryRows<AppNotification>(this.dataSource,`SELECT id_notification AS "idNotification",type,title,message,severity,route,
+    try {
+      await this.refreshOperationalAlerts();
+    } catch {
+      this.logger.error(
+        'No se pudieron revisar nuevas alertas al abrir notificaciones',
+      );
+    }
+    // Independent of business-alert generation: its failure must not prevent
+    // detecting a persisted cron incident or reading existing notifications.
+    try {
+      await syncScheduledJobAlerts(this.dataSource);
+    } catch {
+      this.logger.error('No se pudieron revisar avisos de procesos automáticos');
+    }
+    const items = await queryRows<AppNotification>(
+      this.dataSource,
+      `SELECT id_notification AS "idNotification",type,title,message,severity,route,
       read_at AS "readAt",created_at AS "createdAt" FROM app_notification WHERE id_user=$1
-      ORDER BY (read_at IS NULL) DESC,created_at DESC LIMIT 40`,[idUser]);
-    const total=await queryRows<{unread:number|string}>(this.dataSource,'SELECT count(*) AS unread FROM app_notification WHERE id_user=$1 AND read_at IS NULL',[idUser]);
-    return {unread:Number(total[0]?.unread||0),items};
+      ${scheduledJobVisibility}
+      ORDER BY (read_at IS NULL) DESC,created_at DESC LIMIT 40`,
+      [idUser],
+    );
+    const total = await queryRows<{ unread: number | string }>(
+      this.dataSource,
+      `SELECT count(*) AS unread FROM app_notification WHERE id_user=$1 AND read_at IS NULL ${scheduledJobVisibility}`,
+      [idUser],
+    );
+    return { unread: Number(total[0]?.unread || 0), items };
   }
 
-  async markRead(idUser:number,idNotification:number){
-    await this.dataSource.query('UPDATE app_notification SET read_at=coalesce(read_at,clock_timestamp()) WHERE id_notification=$1 AND id_user=$2',[idNotification,idUser]);
-    return {message:'Notificación leída'};
+  async markRead(idUser: number, idNotification: number) {
+    await this.dataSource.query(
+      'UPDATE app_notification SET read_at=coalesce(read_at,clock_timestamp()) WHERE id_notification=$1 AND id_user=$2',
+      [idNotification, idUser],
+    );
+    return { message: 'Notificación leída' };
   }
 
-  async markAllRead(idUser:number){
-    await this.dataSource.query('UPDATE app_notification SET read_at=clock_timestamp() WHERE id_user=$1 AND read_at IS NULL',[idUser]);
-    return {message:'Notificaciones leídas'};
+  async markAllRead(idUser: number) {
+    await this.dataSource.query(
+      'UPDATE app_notification SET read_at=clock_timestamp() WHERE id_user=$1 AND read_at IS NULL',
+      [idUser],
+    );
+    return { message: 'Notificaciones leídas' };
   }
 }

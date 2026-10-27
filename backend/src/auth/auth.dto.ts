@@ -9,6 +9,9 @@ import {
   Matches,
   IsArray,
   ValidateNested,
+  ArrayMaxSize,
+  IsInt,
+  Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { RolUsuario } from '../common/enums/app.enums';
@@ -73,6 +76,9 @@ export class UserPermissionDto {
 }
 
 export class UpdateUserPermissionsDto {
-  @IsArray() @ValidateNested({each:true}) @Type(()=>UserPermissionDto)
+  @IsArray() @ArrayMaxSize(1000) @ValidateNested({each:true}) @Type(()=>UserPermissionDto)
   permissions!: UserPermissionDto[];
+
+  @IsInt() @Min(0)
+  accessVersion!: number;
 }

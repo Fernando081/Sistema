@@ -1,0 +1,6 @@
+
+> db:check
+> node backend/run-migrations.js --check
+
+Verificada (se revertirá): 097_recuperacion_cuenta_local.sql
+Verificación terminada: cambios de esquema revertidos.

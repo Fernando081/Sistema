@@ -19,17 +19,17 @@ export interface HoraDiaVenta {
 export interface VentasFacturacion {
   ingresos_brutos: string | number;
   ingresos_netos: string | number;
-  ticket_promedio: string | number;
-  margen_utilidad_bruta: string | number;
+  ticket_promedio: string | number | null;
+  margen_utilidad_bruta: string | number | null;
   ventas_por_categoria: CategoriaVenta[];
   comportamiento_hora_dia: HoraDiaVenta[];
-  descuento_promedio_otorgado: string | number;
+  descuento_promedio_otorgado: string | number | null;
 }
 
 export interface LentoMovimiento {
   codigo: string;
   descripcion: string;
-  dias_sin_ventas: number;
+  dias_sin_ventas: number | null;
   existencia: number;
 }
 
@@ -39,15 +39,16 @@ export interface HistoricoDato {
 }
 
 export interface InventarioAlmacen {
-  valor_total_inventario: string | number;
-  tasa_rotacion_inventario: string | number;
+  valor_total_inventario: string | number | null;
+  tasa_rotacion_inventario: string | number | null;
   indice_quiebre_stock: string | number;
-  dias_inventario: string | number;
+  dias_inventario: string | number | null;
   mercancia_lento_movimiento: LentoMovimiento[];
   merma_shrinkage: string | number;
   shrinkage_historico_json: HistoricoDato[];
-  retorno_inversion_inventario: string | number;
-  costo_aterrizado: string | number;
+  retorno_inversion_inventario: string | number | null;
+  gmroi_dias_historial?: number;
+  costo_aterrizado: string | number | null;
 }
 
 export interface AgingReport {
@@ -59,13 +60,13 @@ export interface ClientesCobranza {
   tasa_retencion_clientes: string | number;
   cuentas_por_cobrar: AgingReport[];
   valor_tiempo_vida: string | number;
-  dias_cuentas_por_pagar: string | number;
+  dias_cuentas_por_pagar: string | number | null;
 }
 
 export interface RentabilidadProveedor {
   proveedor: string;
   marca: string;
-  rentabilidad: string | number;
+  rentabilidad: string | number | null;
 }
 
 export interface DashboardMetrics {
@@ -80,17 +81,25 @@ export interface DashboardMetrics {
 }
 
 export interface OperacionesAvanzadas {
-  tasa_conversion_cotizaciones: string | number;
-  tasa_devoluciones: string | number;
+  tasa_conversion_cotizaciones: string | number | null;
+  tasa_devoluciones: string | number | null;
   tasa_de_devoluciones_historico: HistoricoDato[];
   rentabilidad_proveedor_marca: RentabilidadProveedor[];
-  tasa_cumplimiento: string | number;
-  indice_ventas_cruzadas: string | number;
+  tasa_cumplimiento: string | number | null;
+  indice_ventas_cruzadas: string | number | null;
 }
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
   private http = inject(HttpClient);
+
+  getRefreshStatus(): Observable<DashboardRefreshStatus> {
+    return this.http.get<DashboardRefreshStatus>(`${API_URL}/refresh-status`);
+  }
+
+  getScheduledJobs(): Observable<ScheduledJobStatus[]> {
+    return this.http.get<ScheduledJobStatus[]>(`${API_URL}/scheduled-jobs`);
+  }
 
   getMetrics(): Observable<DashboardMetrics> {
     return this.http.get<DashboardMetrics>(API_URL);
@@ -111,4 +120,24 @@ export class DashboardService {
   getOperaciones(): Observable<OperacionesAvanzadas[]> {
     return this.http.get<OperacionesAvanzadas[]>(`${API_URL}/operaciones`);
   }
+}
+
+export interface DashboardRefreshStatus {
+  checkedAt: string;
+  expectedAt: string;
+  lastSuccessAt: string | null;
+  overdue: boolean;
+  freshness: 'current' | 'pending' | 'overdue';
+  lastRun: { id: string; startedAt: string; finishedAt: string | null; status: 'running' | 'success' | 'failed' } | null;
+  recentRuns: { id: string; startedAt: string; finishedAt: string | null; status: 'running' | 'success' | 'failed' }[];
+}
+
+export interface ScheduledJobStatus {
+  name: 'operational_alerts' | 'dashboard_freshness' | 'crm_reports';
+  checkedAt: string;
+  expectedAt: string;
+  lastSuccessAt: string | null;
+  overdue: boolean;
+  lastRun: DashboardRefreshStatus['lastRun'];
+  recentRuns: DashboardRefreshStatus['recentRuns'];
 }

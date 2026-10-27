@@ -1,0 +1,5 @@
+
+> db:migrate
+> node backend/run-migrations.js
+
+Aplicada: 105_portal_publicaciones.sql

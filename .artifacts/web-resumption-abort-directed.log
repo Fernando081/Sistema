@@ -1,0 +1,23 @@
+✔ cancela cuatro etapas sin fabricar recibos ni modificar reconciliación y mantenimiento originales (4361.8876ms)
+✔ tres partidas originales quedan pendientes y se resuelven con cancelación o nueva reanudación independientes (7063.5633ms)
+✔ recibo original previo se conserva y habilita cierre de mantenimiento sin simular éxito de reanudación (1263.6805ms)
+✔ reanudación sucesora interrumpida no invalida cancelación histórica ni completa prematuramente reconciliación (1511.7818ms)
+✔ publicación residual conserva recuperación ordinaria y cancelaciones independientes (1947.5282ms)
+✔ rechaza guardas activas ajenas sin vínculo, v1, etapas corruptas y reanudación completada sin mutar (17485.6746ms)
+✔ revisión exacta exige motivo acotado e IDs nuevos y rechaza plan desactualizado o trasplantado (1456.2979ms)
+✔ dos revisores concurrentes cancelan una vez y motivo o responsable distinto impide replay (1015.3737ms)
+✔ cinco cortes conservan exclusión de diez herramientas y dejan la propia cancelación para revisión (6975.606ms)
+✔ sustituciones entre pasos no certifican cancelación y conservan guarda y evidencia (10183.143ms)
+✔ alteraciones históricas y recibo de reanudación insertado invalidan cancelación y éxito sin guardas (1315.4704ms)
+✔ dos cancelaciones válidas del mismo origen se diagnostican ambiguas y nunca se elige una (899.2186ms)
+✔ reserva tres destinos sin truncar y permite cancelar cuando no caben los seis de una continuación (9486.8741ms)
+✔ CLI de lectura no muta y un fallo sustituye reporte previo sin exponer responsable o motivo (1946.1236ms)
+✔ fallo del recibo después de retirar guarda conserva cancelación pendiente y bloquea preparaciones aun sin guarda (1083.3847ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68161.9942

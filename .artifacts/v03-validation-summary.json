@@ -1,0 +1,25 @@
+{
+  "v03-portal.json": {
+    "passed": true,
+    "groups": 10,
+    "copyRemoved": true,
+    "apiMocked": false
+  },
+  "v03-v02-regression.json": {
+    "passed": true,
+    "groups": 9,
+    "copyRemoved": true,
+    "apiMocked": false
+  },
+  "generalUi": {
+    "initialPassed": 78,
+    "initialFailed": 1,
+    "targetedRerunPassed": 1,
+    "note": "Timeout esperando login no reproducido en repeticion aislada; primera corrida no fue79/79"
+  },
+  "unitTests": {
+    "backend": 285,
+    "http": 19,
+    "frontend": 95
+  }
+}

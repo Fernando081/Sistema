@@ -25,7 +25,7 @@ describe('PermissionsGuard', () => {
     getAllAndOverride.mockReturnValue(['caja.cerrar','contabilidad.operar']);
     query.mockResolvedValue([{code:'caja.cerrar'},{code:'contabilidad.operar'}]);
     await expect(new PermissionsGuard(reflector,dataSource).canActivate(context({idUser:3,role:'admin'}))).resolves.toBe(true);
-    expect(query).toHaveBeenCalledWith(expect.stringContaining('app_user_permission'),[['caja.cerrar','contabilidad.operar'],3,'admin']);
+    expect(query).toHaveBeenCalledWith(expect.stringContaining('fn_effective_permission'),[['caja.cerrar','contabilidad.operar'],3,'admin']);
   });
 
   it('indica el permiso faltante sin autorizar parcialmente', async () => {

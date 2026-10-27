@@ -1,0 +1,46 @@
+
+> frontend@0.0.0 build
+> ng build
+
+> Building...
+√ Building...
+Initial chunk files   | Names                         |  Raw size | Estimated transfer size
+chunk-Z372REGR.js     | -                             | 188.26 kB |                55.03 kB
+styles-ZR5LCSUD.css   | styles                        |  97.10 kB |                12.96 kB
+chunk-AAWL57G3.js     | -                             |  77.17 kB |                19.17 kB
+chunk-27DCHG5Y.js     | -                             |  39.12 kB |                11.09 kB
+polyfills-IA5XWQYN.js | polyfills                     |  34.59 kB |                11.33 kB
+chunk-QK32HO6M.js     | -                             |  18.75 kB |                 5.42 kB
+chunk-CSV4AKUC.js     | -                             |   8.24 kB |                 2.57 kB
+main-I7Z2QN6U.js      | main                          |   5.14 kB |                 2.25 kB
+chunk-JQAP6LOE.js     | -                             |   4.85 kB |                 1.79 kB
+chunk-3WIDSDBZ.js     | -                             |   1.77 kB |               736 bytes
+chunk-MVGLRNG4.js     | -                             | 767 bytes |               767 bytes
+chunk-2HONLG2P.js     | -                             | 548 bytes |               548 bytes
+chunk-GWUJ7F7H.js     | -                             | 394 bytes |               394 bytes
+chunk-EW6ETKZP.js     | -                             |  76 bytes |                76 bytes
+
+                      | Initial total                 | 476.79 kB |               124.15 kB
+
+Lazy chunk files      | Names                         |  Raw size | Estimated transfer size
+chunk-WARKF735.js     | -                             | 607.55 kB |               174.18 kB
+chunk-LQMNI44V.js     | crm-pipeline-component        | 129.79 kB |                28.70 kB
+chunk-LF67WYVD.js     | factura-global-component      | 108.40 kB |                21.00 kB
+chunk-GVUAXMNE.js     | -                             | 107.63 kB |                14.12 kB
+chunk-YLW2CO7S.js     | producto-list-component       |  75.41 kB |                16.94 kB
+chunk-RID7ARL6.js     | contabilidad-component        |  65.12 kB |                13.47 kB
+chunk-RTC2L6FL.js     | browser                       |  64.21 kB |                17.23 kB
+chunk-SO4OS5UJ.js     | authenticated-shell-component |  58.40 kB |                12.34 kB
+chunk-SADM6MFE.js     | -                             |  51.63 kB |                11.81 kB
+chunk-EU4LPJNJ.js     | -                             |  50.31 kB |                 9.79 kB
+chunk-GGH3F6LR.js     | cuentas-por-pagar-component   |  48.82 kB |                10.61 kB
+chunk-LQ75545L.js     | venta-component               |  47.95 kB |                12.13 kB
+chunk-OXMEN7VW.js     | -                             |  45.50 kB |                11.63 kB
+chunk-KPO27YBX.js     | -                             |  43.83 kB |                 9.30 kB
+chunk-EMGC5UNC.js     | -                             |  43.27 kB |                 9.30 kB
+...and 76 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [25.048 seconds] - 2026-10-12T14:08:04.511Z
+
+Output location: C:\Sistema\frontend\dist\frontend
+

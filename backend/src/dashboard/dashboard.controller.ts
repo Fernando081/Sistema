@@ -15,6 +15,16 @@ import { RolUsuario } from '../common/enums/app.enums';
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
+  @Get('refresh-status')
+  getRefreshStatus() {
+    return this.dashboardService.getRefreshStatus();
+  }
+
+  @Get('scheduled-jobs')
+  getScheduledJobs() {
+    return this.dashboardService.getScheduledJobs();
+  }
+
   @Get()
   getMetrics() {
     return this.dashboardService.getMetrics();

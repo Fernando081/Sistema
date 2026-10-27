@@ -1,3 +1,4 @@
+import { CompraQueryDto, compraPage, compraCsv } from './compra-query';
 // frontend/src/app/compra/compra.service.ts
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -9,7 +10,6 @@ import { queryRows } from '../common/database/typed-query';
 interface IdempotencyRow { response: Record<string, unknown>; payload_hash: string; }
 interface ProductoIdRow { IdProducto: number; }
 interface CompraIdRow { id_compra: number; }
-interface CountRow { count: string | number; }
 interface BackorderRow { idBackorder: number; idPedido: number; idDetalle: number; pendiente: string | number; }
 
 @Injectable()
@@ -153,37 +153,10 @@ export class CompraService {
     return allocated;
   }
 
-  async findAll(page: number = 1, limit: number = 10, term = '', sortBy = '', sortOrder = '') {
-    const safePage = Math.max(1, page);
-    const safeLimit = Math.min(Math.max(1, limit), 100);
-    const offset = (safePage - 1) * safeLimit;
-
-    const sortColumns: Record<string, string> = {
-      id_compra: 'id_compra', fecha_compra: 'fecha_compra', total: 'total',
-      estatus: 'estatus', folio_factura: 'folio_factura', nombre_proveedor: 'nombre_proveedor',
-    };
-    const direction = sortOrder.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
-    const sortColumn = sortColumns[sortBy] || 'id_compra';
-    const filter = `FROM fn_get_compras() c WHERE $1 = ''
-      OR concat_ws(' ',id_compra::text,folio_factura,nombre_proveedor,rfc_proveedor) ILIKE '%' || $1 || '%'`;
-    const [totalResult, dataResult] = await Promise.all([
-      queryRows<CountRow>(this.dataSource, `SELECT COUNT(*) as count ${filter}`, [term.trim()]),
-      queryRows<Record<string, unknown>>(this.dataSource,
-        `SELECT * ${filter} ORDER BY ${sortColumn} ${direction}, id_compra DESC LIMIT $2 OFFSET $3`,
-        [term.trim(), safeLimit, offset]
-      ),
-    ]);
-
-    const total = Number(totalResult[0].count);
-    const totalPages = Math.ceil(total / safeLimit);
-
-    return {
-      data: dataResult,
-      total,
-      page: safePage,
-      totalPages,
-    };
+  async findAll(page = 1, limit = 10, term = '', sortBy = '', sortOrder = '', estado = '', desde = '', hasta = '') {
+    return compraPage(this.dataSource, Object.assign(new CompraQueryDto(), { page: Math.max(1, page), limit: Math.min(100, Math.max(1, limit)), term, sortBy, sortOrder, estado, desde, hasta }));
   }
+  exportCsv(query: CompraQueryDto) { return compraCsv(this.dataSource, query); }
 
   async findDetalle(idCompra: number) {
     return queryRows<Record<string, unknown>>(this.dataSource, 'SELECT * FROM fn_get_detalle_compra($1)', [

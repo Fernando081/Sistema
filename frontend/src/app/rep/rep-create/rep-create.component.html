@@ -141,9 +141,12 @@
           </div>
         </div>
 
+        @if (repPendingConfirmation) {
+          <p role="status" class="mt-4 text-amber-800 dark:text-amber-200">El resultado sigue pendiente de confirmar. Reintenta con los mismos datos; se conservará la clave para evitar duplicar el REP.</p>
+        }
         <div class="mt-6 flex justify-end">
           <button mat-flat-button color="primary" class="h-12 px-8 text-lg rounded-full" [disabled]="totalRep <= 0 || !repForm.valid || isSaving" (click)="generarRep()">
-            <mat-icon>receipt_long</mat-icon> Registrar borrador REP
+            <mat-icon>receipt_long</mat-icon> {{ repPendingConfirmation ? 'Reintentar registro pendiente' : 'Registrar borrador REP' }}
           </button>
         </div>
       </mat-card-content>

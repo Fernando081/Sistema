@@ -1,0 +1,5 @@
+
+> db:migrate
+> node backend/run-migrations.js
+
+Aplicada: 096_autenticacion_dos_pasos.sql

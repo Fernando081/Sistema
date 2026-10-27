@@ -6,7 +6,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { AuditoriaService, AuditLog } from '../../services/auditoria.service';
+import { MatButtonModule } from '@angular/material/button';
+import { finalize, forkJoin } from 'rxjs';
+import { AuditoriaService, AuditLog, AuditProtection } from '../../services/auditoria.service';
+
+import { auditDiff, AuditRecord, AuditChange } from './audit-diff';
 
 @Component({
   selector: 'app-auditoria',
@@ -19,6 +23,7 @@ import { AuditoriaService, AuditLog } from '../../services/auditoria.service';
     MatProgressSpinnerModule,
     MatTooltipModule,
     MatPaginatorModule,
+    MatButtonModule,
   ],
   templateUrl: './auditoria.html',
   styleUrls: ['./auditoria.css']
@@ -27,40 +32,26 @@ export class Auditoria implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['timestamp', 'app_user', 'action', 'table_name', 'cambios'];
   dataSource = new MatTableDataSource<AuditLog>([]);
   isLoading = signal(true);
+  readonly error=signal(false);
+  readonly protection=signal<AuditProtection|null>(null);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(private auditoriaService: AuditoriaService) {}
 
-  ngOnInit(): void {
-    this.auditoriaService.getAuditLogs().subscribe({
-      next: (data) => {
-        this.dataSource.data = data;
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-      }
-    });
+  ngOnInit(): void {this.load();}
+  load():void{
+    this.isLoading.set(true);this.error.set(false);
+    forkJoin({logs:this.auditoriaService.getAuditLogs(),protection:this.auditoriaService.getProtection()})
+      .pipe(finalize(()=>this.isLoading.set(false))).subscribe({next:value=>{this.dataSource.data=value.logs;this.protection.set(value.protection);this.paginator?.firstPage();},
+        error:()=>{this.error.set(true);this.dataSource.data=[];this.protection.set(null);}});
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
 
-  getDiff(oldRec: any, newRec: any, action: string): { field: string, old: string, new: string }[] {
-    const diff: { field: string, old: string, new: string }[] = [];
-    if (action === 'INSERT' && newRec) {
-       diff.push({ field: '(Nuevo Registro)', old: '-', new: JSON.stringify(newRec) });
-    } else if (action === 'DELETE' && oldRec) {
-       diff.push({ field: '(Registro Borrado)', old: JSON.stringify(oldRec), new: '-' });
-    } else if (action === 'UPDATE' && oldRec && newRec) {
-       for (const key in newRec) {
-         if (oldRec[key] !== newRec[key]) {
-           diff.push({ field: key, old: oldRec[key] !== null ? String(oldRec[key]) : 'null', new: newRec[key] !== null ? String(newRec[key]) : 'null' });
-         }
-       }
-    }
-    return diff;
+  getDiff(oldRec: AuditRecord | null, newRec: AuditRecord | null, action: string): AuditChange[] {
+    return auditDiff(oldRec, newRec, action);
   }
 }

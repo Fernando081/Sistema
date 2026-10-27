@@ -1,0 +1,27 @@
+{
+  "phase": "D02",
+  "startedAt": "2026-10-20T15:41:49.522Z",
+  "checks": [
+    "101 verificada/aplicada solo en copia; ventas existentes no generan instalaciones; privado401/403, no-store, paginación validada y consulta no permite gestionar",
+    "Orígenes acotados al cliente/unidad, aplicaciones/restricciones informativas existentes y comodines literales; factura de otra unidad rechazada",
+    "Fecha/precisión/cantidad/fuente obligatorias, fecha anterior a venta rechazada y UUID/huella concurrente sin duplicado ni cambio de intención",
+    "Asignación global por renglón serializada entre unidades: una alta y un409 concurrentes; suma decimal exacta0.1+0.2 y exceso rechazado",
+    "VIN/ESN/código originales sobreviven cambios del maestro; revisión manual versionada concurrente y reintento sin nueva versión; IDs de otra unidad404",
+    "Vínculos a garantías existentes validan venta y cantidad; vínculo único concurrente entre unidades, UUID estable y anulación bloqueada con vínculo activo",
+    "Garantías sólo expone enlace a quien tiene consulta; retiro/anulación ADMIN con motivo conservan historia, reintentos no reactivan y unidad con piezas no se elimina",
+    "Origen cancelado visible sin borrar historia y bloquea nuevas instalaciones; fallo de auditoría revierte alta, actor registrado y stock sin movimientos D02",
+    "Devolución real del flujo existente marca origen por conciliar, lo retira de candidatos y bloquea altas sin borrar historial de instalación",
+    "Actor revocado durante bloqueo no registra instalación; permisos/versiones revalidados dentro de la transacción",
+    "Historial acotado/paginado20 con total correcto incluso fuera de rango; fixtures de volumen exclusivamente en copia",
+    "Historial completo de vínculos accesible por páginas20, incluidos retirados; resumen10 explícito e IDs de otra unidad404",
+    "Angular producción/login real: buscar venta, error con borrador, alta/revisión y vínculo de garantía con regreso desde Garantías; claro1280/oscuro390/axe/reflujo sin errores JS",
+    "Operador real de sólo consulta ve historial sin alta/revisión/vínculo; no se confunde permiso efectivo con rol"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "passed": true,
+  "completedAt": "2026-10-20T15:42:05.946Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular"
+}

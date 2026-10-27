@@ -1,0 +1,6 @@
+
+> db:check
+> node backend/run-migrations.js --check
+
+Verificada (se revertirá): 093_gasto_reembolso_devolucion.sql
+Verificación terminada: cambios de esquema revertidos.

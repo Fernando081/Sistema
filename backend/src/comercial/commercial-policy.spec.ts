@@ -38,6 +38,7 @@ describe('Política comercial transaccional', () => {
     }) };
     const ids = await validateCommercialPolicy(executor, {
       idCliente: 7,
+      total:140,
       lineas: [{ idProducto: 3, cantidad: 2, precio: 70 }],
     });
     expect(ids).toEqual([9]);

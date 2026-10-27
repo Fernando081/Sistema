@@ -105,11 +105,7 @@ export class CompraComponent implements OnInit {
 
   cargarCatalogos() {
     this.proveedorService.getProveedores().subscribe((data) => {
-      this.listaProveedores = data.map((p) => ({
-        idProveedor: p['IdProveedor'],
-        rfc: p['RFC'],
-        razonSocial: p['RazonSocial'],
-      })) as unknown as Proveedor[];
+      this.listaProveedores = data;
       this.proveedorControl.updateValueAndValidity({ emitEvent: true });
     });
 

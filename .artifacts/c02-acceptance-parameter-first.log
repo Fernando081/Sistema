@@ -1,0 +1,41 @@
+
+> test:crm-sequences
+> node backend/verify-crm-sequences.js --backup=.backups/2026-10-21T06-12-22-771Z/database.dump
+
+{"type":"http_request","requestId":"93e9c616-d41b-486e-9c09-28910d215a56","method":"GET","path":"/api/v1/crm/secuencias","statusCode":401,"durationMs":6.13,"idUser":null}
+{"type":"http_request","requestId":"87268030-9a3b-4ee9-aab1-4487b42806f0","method":"GET","path":"/api/v1/crm/secuencias","statusCode":403,"durationMs":12.25,"idUser":3}
+{"type":"http_request","requestId":"c755adef-8be6-426f-9da0-adb8147b2839","method":"GET","path":"/api/v1/crm/secuencias","statusCode":400,"durationMs":8.3,"idUser":2}
+{"type":"http_request","requestId":"7dda3cb3-f28c-4ae1-b78b-b32f3633bba4","method":"GET","path":"/api/v1/crm/secuencias","statusCode":400,"durationMs":4.82,"idUser":2}
+{"type":"http_request","requestId":"f223cb33-308b-4a33-9748-b51ff634cd67","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":10.18,"idUser":2}
+{"type":"http_request","requestId":"49449789-a622-4d9f-97b4-cbf1903dd36e","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":4.23,"idUser":2}
+{"type":"http_request","requestId":"1ac09759-db5a-4975-82ca-1312345ee132","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":2.67,"idUser":2}
+{"type":"http_request","requestId":"7de8092a-0dad-41c9-9bec-04813ae68339","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":3.04,"idUser":2}
+{"type":"http_request","requestId":"edee8a48-7ae6-4130-8329-d758e5fcb885","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":10.26,"idUser":2}
+OK: HTTP real401/403, DTO cerrado con pasos1–8/plazos0–720 y consultas privadas; sin inscripción por migración
+{"type":"http_request","requestId":"dd4abc09-998c-4471-9c1e-e42fafe951ef","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":201,"durationMs":7.09,"idUser":2}
+{"type":"http_request","requestId":"20eac203-4b2c-4678-a542-57d5b35c33db","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":201,"durationMs":5.2,"idUser":2}
+{"type":"http_request","requestId":"1fc1a1e5-52e0-41ea-9d4f-66756f7d4c5f","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":409,"durationMs":4.77,"idUser":2}
+{"type":"http_request","requestId":"c3f2e491-8a82-455c-93a9-49aed35c2a4c","method":"GET","path":"/api/v1/crm/secuencias/clientes","statusCode":200,"durationMs":7.14,"idUser":2}
+{"type":"http_request","requestId":"63ae6bdf-646e-4427-bb6f-e484e88ecee4","method":"GET","path":"/api/v1/crm/secuencias/clientes","statusCode":200,"durationMs":5.53,"idUser":2}
+{"type":"http_request","requestId":"b245f576-ab16-4bec-b45e-e02a03c0ccc4","method":"POST","path":"/api/v1/crm/secuencias","statusCode":409,"durationMs":12.67,"idUser":2}
+{"type":"http_request","requestId":"8efb85ec-74c8-4390-8e79-b1dd2aa5772f","method":"POST","path":"/api/v1/crm/secuencias","statusCode":400,"durationMs":2.7,"idUser":2}
+OK: Modelos conservados e idempotentes; búsqueda literal de cliente; inicio concurrente crea exactamente una tarea y rechaza duplicado activo
+{"type":"http_request","requestId":"056e487f-9824-42c4-9fae-eb328f193bec","method":"GET","path":"/api/v1/crm/secuencias/2fb97692-78ed-40f3-8de3-4c34882bb386","statusCode":200,"durationMs":11.42,"idUser":2}
+{"type":"http_request","requestId":"329ffac5-3fdd-4fcb-b27d-4192f5c457ca","method":"PATCH","path":"/api/v1/crm/tareas/1","statusCode":409,"durationMs":5.27,"idUser":2}
+Diagnóstico de avance: [
+  [
+    'QueryFailedError',
+    '42P08',
+    'para el parámetro $2 se dedujeron tipos de dato inconsistentes'
+  ],
+  [
+    'QueryFailedError',
+    '42P08',
+    'para el parámetro $2 se dedujeron tipos de dato inconsistentes'
+  ]
+]
+Falló aceptación C02: Expected values to be strictly equal:
+
+0 !== 1
+     at main (C:\Sistema\backend\verify-crm-sequences.js:57:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) Etapa en .artifacts/c02-secuencias.json; sin secretos.

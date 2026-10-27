@@ -1,0 +1,71 @@
+{
+  "phase": "O02.4",
+  "generatedAt": "2026-10-12T20:39:07.090Z",
+  "node": "24.19.0",
+  "source": "current-local-services",
+  "passed": true,
+  "probes": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4300/login",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4600/catalogo",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503
+    },
+    {
+      "url": "http://127.0.0.1:4600/solicitar",
+      "status": 503
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/notifications",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/dashboard/scheduled-jobs",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/auth/login",
+      "status": 201
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/notifications",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/dashboard/scheduled-jobs",
+      "status": 200
+    }
+  ],
+  "ui": {
+    "realLogin": true,
+    "apiMocked": false,
+    "injectedJwt": false,
+    "theme": "dark",
+    "width": 390,
+    "processesOpen": true,
+    "reflow": true,
+    "notificationBounds": true
+  },
+  "jobNames": [
+    "dashboard_freshness",
+    "operational_alerts"
+  ],
+  "unread": 4,
+  "limits": [
+    "Sin incidentes sintéticos inyectados en la base de trabajo; fallos/recuperaciones comprobados por separado en esquema/copia propios."
+  ]
+}

@@ -1,0 +1,7 @@
+
+> prepare:web-test-pilot
+> node backend/scratch/prepare-web-test-pilot.js
+
+Web pública: 27 páginas; máximo HTML+CSS 23559 bytes; JavaScript cliente 0 bytes.
+Web pública: 25 páginas; máximo HTML+CSS 23403 bytes; JavaScript cliente 0 bytes.
+Piloto de BD de prueba: prepared-test-pilot; etapa completed. Reporte .artifacts/web-test-pilot.json

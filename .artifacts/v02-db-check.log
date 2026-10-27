@@ -1,0 +1,6 @@
+
+> db:check
+> node backend/run-migrations.js --check
+
+Verificada (se revertirá): 103_entrega_evidencia.sql
+Verificación terminada: cambios de esquema revertidos.

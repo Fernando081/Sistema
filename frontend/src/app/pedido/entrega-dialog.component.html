@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Evidencias de entrega · Pedido {{id}}</h2>
+<mat-dialog-content>
+ @if(error()){<p role="alert" class="error">{{error()}}</p>}
+ @if(state();as s){
+  @if(s.evidencia;as e){
+   <section aria-label="Entrega registrada"><h3>Entrega registrada</h3><p>Recibió: <strong>{{e.snapshot.recibidoPor}}</strong></p><p>Registró {{e.autor}} · {{e.creadaEn|date:'medium'}}</p><p>{{e.snapshot.notas}}</p>
+   @if(e.snapshot.motivoSinEvidencia){<p>Motivo declarado: {{e.snapshot.motivoSinEvidencia}}</p>}
+   @if(e.snapshot.ubicacion;as u){<p>Ubicación reportada: {{u.latitud}}, {{u.longitud}} · precisión ±{{u.precision|number:'1.0-0'}}m · {{u.fecha|date:'medium'}}</p>}@else{<p>Sin ubicación recabada.</p>}
+   <div class="downloads"><button mat-flat-button (click)="download('comprobante')" [disabled]="busy()">Descargar comprobante PDF</button>
+   @for(f of e.snapshot.archivos;track f.tipo){<button mat-button (click)="download(f.tipo)" [disabled]="busy()">Descargar {{f.tipo}}</button>}</div>
+   <p class="hash">Huella del comprobante: {{e.sha256}}</p></section>
+  }@else if(s.entregaAnterior;as previous){<h3>Entrega anterior</h3><p>Recibió: {{previous.recibidoPor||'Sin receptor capturado'}} · {{previous.fecha|date:'medium'}}</p><p>{{previous.notas}}</p><p>Esta entrega se registró sin expediente de evidencias. No se generan firma, ubicación ni comprobante retroactivos.</p>
+  }@else if(s.estado==='Surtido'){
+   <p>Confirma la recepción. La ubicación es opcional y sólo se solicita al pulsar el botón. El registro conservará estos datos sin reemplazarlos.</p>
+   <form (ngSubmit)="submit()" #deliveryForm="ngForm">
+    <fieldset [disabled]="busy()"><legend>Receptor y evidencias</legend>
+     <label>Nombre de quien recibe<input name="receiver" [(ngModel)]="recibidoPor" required maxlength="200" autocomplete="off"></label>
+     <label>Notas de entrega<textarea name="notes" [(ngModel)]="notas" maxlength="1000" rows="2"></textarea></label>
+     <p id="signatureHelp">Firma con el dedo o mouse, o adjunta una firma PNG (hasta512KiB).</p>
+     <canvas #canvas width="600" height="180" aria-label="Área para capturar firma" aria-describedby="signatureHelp" (pointerdown)="pointer($event,true)" (pointermove)="pointer($event)" (pointerup)="stop()" (pointercancel)="stop()"></canvas>
+     <button mat-button type="button" (click)="clear()">Limpiar firma</button>
+     <label>Adjuntar firma PNG<input #signatureInput type="file" accept="image/png" (change)="select($event,'firma')"></label>
+     <label>Foto de entrega (hasta5MiB)<input type="file" accept="image/jpeg,image/png,image/webp" (change)="select($event,'foto')"></label>
+     <label>Si no hay firma ni foto, explica el motivo<textarea name="reason" [(ngModel)]="motivo" maxlength="1000" rows="2"></textarea></label>
+     <div><button mat-button type="button" (click)="locate()" [disabled]="locating()">{{locating()?'Obteniendo ubicación…':'Agregar ubicación del dispositivo'}}</button>
+     @if(ubicacion||locating()){<button mat-button type="button" (click)="removeLocation()">Quitar ubicación</button>}</div>
+     @if(ubicacion;as u){<p>Ubicación capturada · precisión ±{{u.precision|number:'1.0-0'}}m. Refresca si pasan10 minutos.</p>}
+     @if(locationError()){<p role="status">{{locationError()}}</p>}
+     <label class="check"><input type="checkbox" name="confirmation" [(ngModel)]="confirmacion" required>Confirmo la recepción y la captura autorizada de estas evidencias.</label>
+    </fieldset>
+    <button mat-flat-button type="submit" [disabled]="busy()||locating()||deliveryForm.invalid||!recibidoPor.trim()">Registrar entrega y conservar evidencias</button>
+   </form>
+  }@else{<p>El pedido debe estar completamente surtido para registrar su entrega.</p>}
+  <p class="disclaimer">La firma capturada y la ubicación son datos declarados. No verifican identidad ni constituyen firma electrónica avanzada, factura o comprobante de pago.</p>
+ }@else if(busy()){<p role="status">Cargando entrega…</p>}@else{<button mat-button (click)="load()">Reintentar consulta</button>}
+</mat-dialog-content>
+<mat-dialog-actions><button mat-button (click)="close()" [disabled]="busy()">Cerrar</button></mat-dialog-actions>

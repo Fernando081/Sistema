@@ -1,0 +1,5 @@
+
+> db:migrate
+> node backend/run-migrations.js
+
+Aplicada: 108_crm_secuencias_control.sql

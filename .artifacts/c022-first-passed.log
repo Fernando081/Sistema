@@ -1,0 +1,157 @@
+
+> test:crm-sequence-control
+> node backend/verify-crm-sequences.js --control --backup=.backups/2026-10-21T07-49-39-609Z/database.dump
+
+{"type":"http_request","requestId":"722c498e-45bc-4098-a507-a3ccd28f1c56","method":"POST","path":"/api/v1/crm/tareas","statusCode":201,"durationMs":30.09,"idUser":2}
+{"type":"http_request","requestId":"24e36f44-711c-4e18-bf6b-11cdfadc712b","method":"PATCH","path":"/api/v1/crm/tareas/1","statusCode":200,"durationMs":10.47,"idUser":2}
+{"type":"http_request","requestId":"26a5f70d-d1ae-4ab5-9206-b8f40cb5a967","method":"GET","path":"/api/v1/crm/secuencias","statusCode":401,"durationMs":1.09,"idUser":null}
+{"type":"http_request","requestId":"a992b554-a139-4cc1-88f2-e52efb8dd8ce","method":"GET","path":"/api/v1/crm/secuencias","statusCode":403,"durationMs":6.89,"idUser":3}
+{"type":"http_request","requestId":"71c752f2-cd35-492e-a5b5-ab592a5ed3ea","method":"GET","path":"/api/v1/crm/secuencias","statusCode":400,"durationMs":5.19,"idUser":2}
+{"type":"http_request","requestId":"9c3c1993-69bd-481a-a933-04aed8c29762","method":"GET","path":"/api/v1/crm/secuencias","statusCode":400,"durationMs":6.93,"idUser":2}
+{"type":"http_request","requestId":"b646328c-5237-4b1c-9ea1-56bca941aa43","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":5.82,"idUser":2}
+{"type":"http_request","requestId":"41d46888-fbd5-4177-8369-9572fce313df","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":23.43,"idUser":2}
+{"type":"http_request","requestId":"947fd819-bfc0-4f0a-aa32-47486b9eb90b","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":5.75,"idUser":2}
+{"type":"http_request","requestId":"79e1714e-2da5-4fdc-844b-497689286050","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":3.01,"idUser":2}
+{"type":"http_request","requestId":"ffaa8a44-deb3-4c2b-86ff-1c517e93665e","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":9.48,"idUser":2}
+OK: HTTP real401/403, DTO cerrado con pasos1–8/plazos0–720 y consultas privadas; sin inscripción por migración
+{"type":"http_request","requestId":"9c44a8c8-d34f-4182-a275-826b8a163d02","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":201,"durationMs":6.28,"idUser":2}
+{"type":"http_request","requestId":"44817dfb-7263-41fa-934c-35448ca7c377","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":201,"durationMs":4.7,"idUser":2}
+{"type":"http_request","requestId":"6e9566b2-9182-445d-ab31-8e1946431459","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":409,"durationMs":4.41,"idUser":2}
+{"type":"http_request","requestId":"c9facc72-1e81-4df0-acbc-b5e774498ba7","method":"GET","path":"/api/v1/crm/secuencias/clientes","statusCode":200,"durationMs":4.97,"idUser":2}
+{"type":"http_request","requestId":"cf4f02d7-4dfe-46f1-87e4-439626e08651","method":"GET","path":"/api/v1/crm/secuencias/clientes","statusCode":200,"durationMs":3.89,"idUser":2}
+{"type":"http_request","requestId":"12d384f6-9d1f-4fd0-9359-fa6d7fd827be","method":"POST","path":"/api/v1/crm/secuencias","statusCode":409,"durationMs":9.59,"idUser":2}
+{"type":"http_request","requestId":"b98b12b0-da8a-4055-8a25-c05c1f7a2b44","method":"POST","path":"/api/v1/crm/secuencias","statusCode":400,"durationMs":2.84,"idUser":2}
+OK: Modelos conservados e idempotentes; búsqueda literal de cliente; inicio concurrente crea exactamente una tarea y rechaza duplicado activo
+{"type":"http_request","requestId":"b79b7d28-3a01-42de-b93c-8ee2ab66f70c","method":"GET","path":"/api/v1/crm/secuencias/961ff9be-300c-44a4-a321-7c1ecbda1447","statusCode":200,"durationMs":10.2,"idUser":2}
+{"type":"http_request","requestId":"1b793f7c-7315-4548-b480-8ec7af920f9a","method":"PATCH","path":"/api/v1/crm/tareas/2","statusCode":409,"durationMs":2.61,"idUser":2}
+{"type":"http_request","requestId":"574c6362-68e8-493f-b6cb-62c8f4447d22","method":"GET","path":"/api/v1/crm/secuencias/961ff9be-300c-44a4-a321-7c1ecbda1447","statusCode":200,"durationMs":6.12,"idUser":2}
+{"type":"http_request","requestId":"c9777d68-c14c-4c6a-9fca-8aea0f70bb13","method":"PATCH","path":"/api/v1/crm/tareas/2","statusCode":409,"durationMs":4.11,"idUser":2}
+{"type":"http_request","requestId":"581ac474-96de-4fee-9628-56bfd5a1db04","method":"PATCH","path":"/api/v1/crm/tareas/3","statusCode":200,"durationMs":5.84,"idUser":2}
+{"type":"http_request","requestId":"8fb36c7c-6913-4599-8c2a-5c225472ee89","method":"GET","path":"/api/v1/crm/secuencias/961ff9be-300c-44a4-a321-7c1ecbda1447","statusCode":200,"durationMs":13.92,"idUser":2}
+{"type":"http_request","requestId":"ee2e82c3-6de9-4c0c-ad5d-ff2911d0750c","method":"PATCH","path":"/api/v1/crm/secuencias/961ff9be-300c-44a4-a321-7c1ecbda1447/tarea","statusCode":200,"durationMs":9.98,"idUser":2}
+{"type":"http_request","requestId":"c99b09a6-322f-4a9f-a580-81f3683adc48","method":"GET","path":"/api/v1/crm/secuencias/961ff9be-300c-44a4-a321-7c1ecbda1447","statusCode":200,"durationMs":3.92,"idUser":2}
+OK: Completar concurrentemente produce un solo siguiente paso/plazo; recorrido HTTP heredado también avanza; cierre final y rechazo de reapertura/contexto
+{"type":"http_request","requestId":"0747ed3a-fcd5-4dff-94dd-f30ede64bb81","method":"GET","path":"/api/v1/crm/secuencias/961ff9be-300c-44a4-a321-7c1ecbda1447","statusCode":404,"durationMs":4.71,"idUser":3}
+{"type":"http_request","requestId":"b441f9c9-cfbf-4f61-9622-10d1ae7d70ae","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":5.4,"idUser":3}
+{"type":"http_request","requestId":"4870167f-3f35-432a-b9b3-6c0a87846aeb","method":"POST","path":"/api/v1/crm/secuencias","statusCode":403,"durationMs":4.5,"idUser":3}
+{"type":"http_request","requestId":"5fceb428-546a-498d-a7ae-1b8edf2877f4","method":"PATCH","path":"/api/v1/crm/secuencias/a467efa5-abb8-4e9f-aae6-34ac691a5c99/tarea","statusCode":404,"durationMs":3.62,"idUser":3}
+{"type":"http_request","requestId":"ced93a39-f53f-4a66-bb31-4829764384bc","method":"PATCH","path":"/api/v1/crm/secuencias/a467efa5-abb8-4e9f-aae6-34ac691a5c99/tarea","statusCode":400,"durationMs":13.54,"idUser":2}
+{"type":"http_request","requestId":"58c60c25-7a04-416b-b963-f2115df91ff5","method":"PATCH","path":"/api/v1/crm/secuencias/a467efa5-abb8-4e9f-aae6-34ac691a5c99/tarea","statusCode":200,"durationMs":9.16,"idUser":2}
+OK: ACL404 ajeno, permiso delegable y asignación protegida; responsable inactivo impide crear siguiente paso pero permite cancelar sin perder historia
+OK: Historial/modelos inmutables, tarea preservada, auditoría con actor y fallo forzado revierte estado/evento/siguiente tarea completos
+OK: Reutilización real del generador de alertas: vencida deduplicada y atendida al cancelar, sin cron nuevo
+OK: Revocación mientras espera guardia real: vuelve a validar la cuenta antes de escribir
+{"type":"http_request","requestId":"873a45bd-deb7-4ef1-b432-5175a6044875","method":"GET","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":401,"durationMs":0.78,"idUser":null}
+{"type":"http_request","requestId":"7fd26c99-3421-4fac-9781-17328dac3514","method":"POST","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":400,"durationMs":9.11,"idUser":2}
+{"type":"http_request","requestId":"9d16ba83-1976-463f-b9c9-3fe9f543ef79","method":"POST","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":400,"durationMs":5.58,"idUser":2}
+{"type":"http_request","requestId":"bb9989b0-c902-462b-9dca-47b17f356a0b","method":"POST","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":400,"durationMs":8.23,"idUser":2}
+{"type":"http_request","requestId":"15c5a2a1-921c-4586-be0d-ca040ebf5777","method":"GET","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":200,"durationMs":6.37,"idUser":2}
+{"type":"http_request","requestId":"1f876061-3d15-4f95-a683-7b5cd36469a4","method":"GET","path":"/api/v1/crm/secuencias/responsables","statusCode":403,"durationMs":3.74,"idUser":3}
+{"type":"http_request","requestId":"c5701384-b36e-4c0a-b02c-16cb99e3c457","method":"POST","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":201,"durationMs":10.8,"idUser":2}
+{"type":"http_request","requestId":"5d5afc25-9629-4420-a47a-6a10d6823c81","method":"POST","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":201,"durationMs":5.15,"idUser":2}
+{"type":"http_request","requestId":"7d1402d5-8f19-47af-bc3d-771cdcf53363","method":"POST","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":409,"durationMs":6.08,"idUser":2}
+{"type":"http_request","requestId":"5dd75130-41aa-4398-98ed-0207402b95de","method":"POST","path":"/api/v1/crm/secuencias","statusCode":409,"durationMs":4.4,"idUser":2}
+{"type":"http_request","requestId":"00eb58b3-99df-433e-aeaf-59ad771af868","method":"PATCH","path":"/api/v1/crm/tareas/7","statusCode":400,"durationMs":4.99,"idUser":2}
+{"type":"http_request","requestId":"b0fdf5df-8714-4fac-8f2f-2eeae128b9a8","method":"PATCH","path":"/api/v1/crm/tareas/7","statusCode":400,"durationMs":3.33,"idUser":2}
+OK: C02.2a HTTP/DTO/confirmación/ACL; pausa versionada/idempotente bloquea avanzar por ruta heredada y duplicados activos, sin crear otra tarea; avisos suspendidos
+{"type":"http_request","requestId":"d7736b3f-7c29-4bd0-85f0-4ae57126964b","method":"POST","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":409,"durationMs":5.66,"idUser":2}
+{"type":"http_request","requestId":"c7dfec62-f456-4a07-8187-8468be3c520c","method":"POST","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":201,"durationMs":7.84,"idUser":2}
+{"type":"http_request","requestId":"26e5fe13-e8dd-4560-9ea9-a9dfcc2227e9","method":"POST","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":201,"durationMs":8.8,"idUser":2}
+{"type":"http_request","requestId":"db04e336-ad39-4da0-817a-49155628a65b","method":"POST","path":"/api/v1/crm/secuencias/d1d1391d-b877-4eb7-aeff-47f819fc8c96/controles","statusCode":403,"durationMs":6.33,"idUser":3}
+OK: Reanudar conserva el saldo firmado del plazo y reactiva aviso vencido; reasignación ADMIN mueve sólo tarea actual/futuras y respeta pasos cerrados
+{"type":"http_request","requestId":"b06df672-102c-483c-aa79-a5e7ce247e13","method":"GET","path":"/api/v1/crm/secuencias/fe64f54a-3aee-4c7a-bc6a-a9a74a616507","statusCode":404,"durationMs":2.39,"idUser":3}
+{"type":"http_request","requestId":"9ba53de5-f90c-4403-8012-6ff55be47a6b","method":"GET","path":"/api/v1/crm/secuencias/fe64f54a-3aee-4c7a-bc6a-a9a74a616507/controles","statusCode":404,"durationMs":3.79,"idUser":3}
+OK: Responsable inactivo: pausa permitida, reanudación bloqueada y rescate por reasignación ADMIN; pierde acceso el antiguo asignado que no creó la ejecución
+OK: Concurrencia real entre controles y entre pausa/completado: un solo ganador, sin avance en pausa o tarea duplicada
+OK: Rollback forzado revierte control/estado/plazo/versiones; historial paginado22 controles reales e inmutable, auditoría nominal
+OK: Cuenta revocada mientras espera la tarea no controla la secuencia; contexto LOCAL no se conserva al devolver conexión
+{"type":"http_request","requestId":"28534918-67bb-4914-b6b5-9add91e1efa2","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":66.59,"idUser":null}
+{"type":"http_request","requestId":"119daf4c-52c7-4040-9882-0950f5844952","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":33.06,"idUser":2}
+{"type":"http_request","requestId":"6725a9ec-d09d-4434-95b1-fde2873c2249","method":"GET","path":"/api/v1/crm/secuencias/modelos","statusCode":200,"durationMs":14.92,"idUser":2}
+{"type":"http_request","requestId":"6d026f8b-6843-49fa-a5d4-74c316b8f9ad","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":11.24,"idUser":2}
+{"type":"http_request","requestId":"d0f6decb-eebe-4d21-8f87-d2b5d57aa347","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":65.34,"idUser":2}
+{"type":"http_request","requestId":"9ad7032d-a0f4-40ed-8a08-0c514c2ec634","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":201,"durationMs":27.11,"idUser":2}
+{"type":"http_request","requestId":"d4bca866-6bc0-4011-b1d3-fa8924c739c1","method":"GET","path":"/api/v1/crm/secuencias/modelos","statusCode":200,"durationMs":8.35,"idUser":2}
+{"type":"http_request","requestId":"fed96adf-9fe2-4fd0-9004-f50f5f1fdf72","method":"GET","path":"/api/v1/crm/secuencias/clientes","statusCode":200,"durationMs":14.41,"idUser":2}
+{"type":"http_request","requestId":"3033b790-d1bc-4c17-8fc8-f78c227b85f2","method":"POST","path":"/api/v1/crm/secuencias","statusCode":201,"durationMs":23.84,"idUser":2}
+{"type":"http_request","requestId":"ee2d3329-2a7f-45df-9cd5-1ae1866b7714","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":200,"durationMs":8.68,"idUser":2}
+{"type":"http_request","requestId":"32740c95-a87f-4685-bcfc-8fcb2e5a0801","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb","statusCode":200,"durationMs":15.2,"idUser":2}
+{"type":"http_request","requestId":"3d28aa63-407f-4e8f-8413-954647fd5e13","method":"POST","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":201,"durationMs":42.56,"idUser":2}
+{"type":"http_request","requestId":"ef509363-d063-4f27-a064-3f64da8f3ba0","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":200,"durationMs":10.12,"idUser":2}
+{"type":"http_request","requestId":"7855462d-164b-43cd-804d-08f1b48d05f1","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb","statusCode":200,"durationMs":12.67,"idUser":2}
+{"type":"http_request","requestId":"e91ab050-b578-4efe-b265-c689b343337a","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.8,"idUser":2}
+{"type":"http_request","requestId":"cda73e26-eae4-40ee-8283-c4950b85eef4","method":"GET","path":"/api/v1/crm/secuencias/modelos","statusCode":200,"durationMs":17.09,"idUser":2}
+{"type":"http_request","requestId":"b6f0c556-1ebc-4993-9279-5f85ed52f882","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":14.89,"idUser":2}
+{"type":"http_request","requestId":"cee46750-5b2d-4826-8fd4-d344a88769dd","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":90.67,"idUser":2}
+{"type":"http_request","requestId":"0c4a8de5-f082-4072-95f6-4f3912b284af","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":65.68,"idUser":2}
+{"type":"http_request","requestId":"563f188d-d4fd-4732-9d45-350054554d50","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":200,"durationMs":11.08,"idUser":2}
+{"type":"http_request","requestId":"8bca867c-6bd1-4fe0-855d-665cfb5a017c","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb","statusCode":200,"durationMs":52.89,"idUser":2}
+{"type":"http_request","requestId":"da123fa5-1017-4f2f-9456-628c44c92a5c","method":"POST","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":201,"durationMs":28.92,"idUser":2}
+{"type":"http_request","requestId":"9acb962e-4aa7-4912-9ac9-748876a9a0f5","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":200,"durationMs":6.06,"idUser":2}
+{"type":"http_request","requestId":"f2b21bb6-d93a-452d-b9fd-75c218f74489","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb","statusCode":200,"durationMs":7.5,"idUser":2}
+{"type":"http_request","requestId":"5363dbe0-7ee6-4167-b244-bf2f7754b070","method":"GET","path":"/api/v1/crm/secuencias/responsables","statusCode":200,"durationMs":6.93,"idUser":2}
+{"type":"http_request","requestId":"396881e1-cdda-4c91-891d-85964555b247","method":"POST","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":201,"durationMs":16.42,"idUser":2}
+{"type":"http_request","requestId":"bc346310-de7d-48dc-acfd-60ec6bc3db7c","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":200,"durationMs":6.65,"idUser":2}
+{"type":"http_request","requestId":"46b7d912-2f1e-4db8-942e-cbe3a94e04ee","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb","statusCode":200,"durationMs":10.52,"idUser":2}
+{"type":"http_request","requestId":"fe1ce748-51c5-46b0-82ee-a627cc8d9de4","method":"PATCH","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/tarea","statusCode":200,"durationMs":18.51,"idUser":2}
+{"type":"http_request","requestId":"96a6d064-4e26-4948-a9fd-20b89b6c915f","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":200,"durationMs":6.68,"idUser":2}
+{"type":"http_request","requestId":"66ec851c-7694-42ca-bf70-5a66c4ca5edf","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb","statusCode":200,"durationMs":10.1,"idUser":2}
+{"type":"http_request","requestId":"126125d8-9d09-4c67-bc15-954486304cc4","method":"PATCH","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/tarea","statusCode":200,"durationMs":8.56,"idUser":2}
+{"type":"http_request","requestId":"0d97ef77-3615-4cca-8b36-3cab57369456","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":200,"durationMs":8.66,"idUser":2}
+{"type":"http_request","requestId":"5bde4a75-d9f7-4069-9ba5-40c06a830fe7","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb","statusCode":200,"durationMs":10.96,"idUser":2}
+{"type":"http_request","requestId":"0a15d779-5217-44bd-bd73-d109d1298778","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.76,"idUser":2}
+{"type":"http_request","requestId":"5e69f46b-7ac4-426a-8c92-b283d763d55e","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":2.74,"idUser":2}
+{"type":"http_request","requestId":"7f61b1fc-44c5-44c1-a333-c4d0ca9bf4b7","method":"GET","path":"/api/v1/crm/secuencias/modelos","statusCode":200,"durationMs":9.75,"idUser":2}
+{"type":"http_request","requestId":"06babc95-9d41-4484-a81c-cc6acde94407","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":9.8,"idUser":2}
+{"type":"http_request","requestId":"a1e84f5a-afa5-4578-8e7d-a2a7fea71eca","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb","statusCode":200,"durationMs":9.46,"idUser":2}
+{"type":"http_request","requestId":"cdba5023-d892-4f5f-8e32-8950efdb3509","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":200,"durationMs":8.05,"idUser":2}
+{"type":"http_request","requestId":"1edc35d8-51ea-4317-84d9-819e50928ddc","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":70.34,"idUser":2}
+{"type":"http_request","requestId":"26641c2f-6b3d-4055-8262-ecfa74ff9c70","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":7.9,"idUser":2}
+{"type":"http_request","requestId":"0c957f6f-1369-4701-a889-25759f164ae8","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb/controles","statusCode":200,"durationMs":7,"idUser":2}
+{"type":"http_request","requestId":"860e6420-c9d6-4135-b1ef-e0715e89cbe2","method":"GET","path":"/api/v1/crm/secuencias/27badb87-9a57-4e88-9f47-09565730e4cb","statusCode":200,"durationMs":8.51,"idUser":2}
+{"type":"http_request","requestId":"d239ce47-2fa5-4785-8c7c-1dc4027ab1da","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":65.61,"idUser":null}
+{"type":"http_request","requestId":"ad6f7fdf-75ca-49eb-8e13-840a47f44b4e","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":14.57,"idUser":2}
+{"type":"http_request","requestId":"9ec09aa5-16c4-4ce9-b090-7d017c7a5e2e","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":1.55,"idUser":2}
+{"type":"http_request","requestId":"db593974-51de-48ed-b173-6c7567b0f2de","method":"GET","path":"/api/v1/crm/secuencias/modelos","statusCode":200,"durationMs":5.55,"idUser":2}
+{"type":"http_request","requestId":"865caeff-a11d-4a50-8311-70da948a14d0","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":6.22,"idUser":2}
+{"type":"http_request","requestId":"287bf8c1-60e6-48df-bda1-c7dde52f7e85","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":201,"durationMs":7.98,"idUser":2}
+{"type":"http_request","requestId":"fa13e744-23ea-4cd5-8030-ecd00e6ce86d","method":"GET","path":"/api/v1/crm/secuencias/modelos","statusCode":200,"durationMs":7.62,"idUser":2}
+{"type":"http_request","requestId":"8e310016-0d4a-4184-ac3b-1aee4a141fff","method":"GET","path":"/api/v1/crm/secuencias/clientes","statusCode":200,"durationMs":6.43,"idUser":2}
+{"type":"http_request","requestId":"07411e69-03e7-40c0-b86e-c8be2cd1d1fc","method":"POST","path":"/api/v1/crm/secuencias","statusCode":201,"durationMs":8.8,"idUser":2}
+{"type":"http_request","requestId":"ea305b8d-d204-4686-bf44-def1b8f854d8","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643","statusCode":200,"durationMs":8.5,"idUser":2}
+{"type":"http_request","requestId":"b3809a2e-934b-4d70-9314-a83e7c87d87b","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":200,"durationMs":7.65,"idUser":2}
+{"type":"http_request","requestId":"705a0193-b0bf-4d9d-bb89-530edc61b2f7","method":"POST","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":201,"durationMs":17.2,"idUser":2}
+{"type":"http_request","requestId":"f0173583-0721-4a17-b64d-11b99ef981dc","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":200,"durationMs":7.07,"idUser":2}
+{"type":"http_request","requestId":"b677cdf8-0bff-43af-8d45-ce3937e35c2d","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643","statusCode":200,"durationMs":9.73,"idUser":2}
+{"type":"http_request","requestId":"a8ab12c2-3960-4cc8-9369-9ea3566f7087","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":4.17,"idUser":2}
+{"type":"http_request","requestId":"647bc54f-6f29-4f80-ad80-4f80e4105a92","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":23.88,"idUser":2}
+{"type":"http_request","requestId":"923a8a04-190e-4394-b3bc-76a5198ef4ef","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":4.36,"idUser":2}
+{"type":"http_request","requestId":"92d4c942-07fb-488d-924d-8501ae5870fd","method":"GET","path":"/api/v1/crm/secuencias/modelos","statusCode":200,"durationMs":15.29,"idUser":2}
+{"type":"http_request","requestId":"3de86dd0-8cb3-4bd4-afc3-3d4b9dd43904","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":13.66,"idUser":2}
+{"type":"http_request","requestId":"0674f78a-1c74-4650-9580-4254c80de359","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643","statusCode":200,"durationMs":9.3,"idUser":2}
+{"type":"http_request","requestId":"67311b91-ec3b-4fa3-911d-d560cfbe1394","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":200,"durationMs":8.64,"idUser":2}
+{"type":"http_request","requestId":"7f82aeee-5c5c-465b-b558-3b89b57cd6e2","method":"POST","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":201,"durationMs":14.98,"idUser":2}
+{"type":"http_request","requestId":"810c276d-3f1a-48f9-9f21-acee8f552d5a","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":200,"durationMs":7.33,"idUser":2}
+{"type":"http_request","requestId":"ce1cc250-8a7b-4ee2-9414-aa98848d6598","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643","statusCode":200,"durationMs":9.41,"idUser":2}
+{"type":"http_request","requestId":"55600fba-00f1-4b3c-b2a7-5bb78993a829","method":"GET","path":"/api/v1/crm/secuencias/responsables","statusCode":200,"durationMs":4.41,"idUser":2}
+{"type":"http_request","requestId":"d635081d-db68-4807-9c83-a84953c98520","method":"POST","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":201,"durationMs":11.75,"idUser":2}
+{"type":"http_request","requestId":"3f9f3888-cb0d-42ff-b053-382664af1550","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643","statusCode":200,"durationMs":8.81,"idUser":2}
+{"type":"http_request","requestId":"c9761707-31cb-4fb9-b4c3-88add4651820","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":200,"durationMs":7.89,"idUser":2}
+{"type":"http_request","requestId":"451e4a59-2353-4663-9b4c-b8bd86f5df2d","method":"PATCH","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/tarea","statusCode":200,"durationMs":19.01,"idUser":2}
+{"type":"http_request","requestId":"5db2c191-fbad-4266-a6b2-4fdd27567b62","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":200,"durationMs":8.78,"idUser":2}
+{"type":"http_request","requestId":"81acc81d-e62f-4252-8316-b571b8fde39a","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643","statusCode":200,"durationMs":10.76,"idUser":2}
+{"type":"http_request","requestId":"1fcb4c14-e00a-450d-8f18-c44f3016b9e1","method":"PATCH","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/tarea","statusCode":200,"durationMs":15.18,"idUser":2}
+{"type":"http_request","requestId":"c454ca9a-44be-4dbd-8f0e-96c39f8736cc","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643","statusCode":200,"durationMs":9.01,"idUser":2}
+{"type":"http_request","requestId":"3ae7c0b2-3fb5-4e53-996d-c503478a57e7","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":200,"durationMs":11.73,"idUser":2}
+{"type":"http_request","requestId":"1e6cb995-786e-4716-ab40-9170e937e060","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.08,"idUser":2}
+{"type":"http_request","requestId":"4dc439b7-7365-41c4-9113-9bf0b3400c7d","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":4.2,"idUser":2}
+{"type":"http_request","requestId":"656170bf-3564-4500-8bff-32b1193d2e7a","method":"GET","path":"/api/v1/crm/secuencias/modelos","statusCode":200,"durationMs":22.67,"idUser":2}
+{"type":"http_request","requestId":"d0e4e818-8b9b-4f92-8c56-5f8ddc7c0ce0","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":51.72,"idUser":2}
+{"type":"http_request","requestId":"300e5caa-7957-46ad-bdcc-f60fd907b1c6","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":25.18,"idUser":2}
+{"type":"http_request","requestId":"a321c413-de30-43c2-86ec-18c3eabab8b1","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":200,"durationMs":7.96,"idUser":2}
+{"type":"http_request","requestId":"a9f75ead-0efd-4627-b0fd-514ddd804f49","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643","statusCode":200,"durationMs":18.3,"idUser":2}
+{"type":"http_request","requestId":"6176d15e-3abd-42d6-a61a-95a538e6568d","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":12.72,"idUser":2}
+{"type":"http_request","requestId":"d004bbfd-950b-42d3-a430-7f83957bce9b","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643","statusCode":200,"durationMs":11.25,"idUser":2}
+{"type":"http_request","requestId":"6e0f4ff4-a2ba-43f8-bfdc-46b7fbd650c7","method":"GET","path":"/api/v1/crm/secuencias/35be4be6-1607-410b-bb50-9a1130337643/controles","statusCode":200,"durationMs":11.05,"idUser":2}
+OK: Angular real claro1280/oscuro390: crear modelo, buscar cliente, revisar/iniciar/completar/cancelar y recargar historial; axe/reflujo/errores JS
+OK: No crea comunicaciones ficticias, facturas ni envíos externos; cohortes sólo en copia propia

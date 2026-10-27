@@ -12,6 +12,8 @@ import { RolesGuard } from '../src/auth/roles.guard';
 import { Roles } from '../src/auth/roles.decorator';
 import { RolUsuario } from '../src/common/enums/app.enums';
 import { configureApp } from '../src/configure-app';
+import { randomUUID } from 'node:crypto';
+import { UnauthorizedException } from '@nestjs/common';
 
 @Controller('protected')
 class ProtectedController {
@@ -40,6 +42,12 @@ describe('HTTP: autenticación, permisos y revocación (sin base real)', () => {
         { provide: APP_GUARD, useClass: JwtAuthGuard },
         { provide: APP_GUARD, useClass: RolesGuard }],
     }).compile();
+    // Esta suite usa repositorio/sesiones simulados; SQL/MFA reales se prueban en verify-mfa y verify-account-sessions.
+    const authService=module.get(AuthService),sessions=new Set<string>();
+    jest.spyOn(authService.mfa,'challenge').mockResolvedValue(null);
+    jest.spyOn(authService['sessions'],'create').mockImplementation(async()=>{const sid=randomUUID();sessions.add(sid);return sid;});
+    jest.spyOn(authService['sessions'],'validate').mockImplementation(async actor=>{if(!actor.sid||!sessions.has(actor.sid))throw new UnauthorizedException();});
+    jest.spyOn(authService['sessions'],'revoke').mockImplementation(async(actor,sid)=>{sessions.delete(sid);return {message:'Sesión cerrada',current:actor.sid===sid};});
     app = module.createNestApplication();
     configureApp(app);
     await app.init();

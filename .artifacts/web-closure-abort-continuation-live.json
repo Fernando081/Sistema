@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-11T22:25:59.579Z",
+  "nodeVersion": "24.19.0",
+  "scope": "HTTP local; sin escritura de negocio, credenciales o aceptación comercial",
+  "passed": 9,
+  "total": 9,
+  "probes": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/",
+      "expected": 200,
+      "status": 200,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4300/login",
+      "expected": 200,
+      "status": 200,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "expected": 200,
+      "status": 200,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/solicitar",
+      "expected": 503,
+      "status": 503,
+      "passed": true
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:3100/api/v1/web-lead-bridge/check",
+      "expected": 503,
+      "status": 503,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/closure-abort-continuation.mjs",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/.artifacts/web-closure-abort-continuation-status.json",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/publish-continued-closure-abort-finalization-00000000-0000-4000-8000-000000000000.lock",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/closure-abort-continuation-00000000-0000-4000-8000-000000000000.intent.json",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    }
+  ]
+}

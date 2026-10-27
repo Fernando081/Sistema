@@ -48,8 +48,8 @@ export class SmartRestockComponent implements OnInit {
   cargarRestock() {
     this.isLoading = true;
     this.productoService.getSmartRestock().subscribe({
-      next: (res: any) => {
-        this.dataSource = res.data || res;
+      next: (res) => {
+        this.dataSource = res;
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -63,8 +63,8 @@ export class SmartRestockComponent implements OnInit {
   cargarPrediccion() {
     this.isPredLoading = true;
     this.productoService.getPrediccionDemanda().subscribe({
-      next: (res: any) => {
-        this.predDataSource = res.data || res;
+      next: (res) => {
+        this.predDataSource = res;
         this.isPredLoading = false;
         this.cdr.detectChanges();
       },

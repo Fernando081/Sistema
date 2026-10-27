@@ -7,6 +7,8 @@ import { Cliente } from './cliente.entity';
 import { CreateClienteContactoDto, CreateClienteDto, UpdateClienteDto } from './cliente.dto'; // Importamos los DTOs
 import { queryRows } from '../common/database/typed-query';
 
+import { DirectoryQueryDto, directoryPage, directoryCsv } from '../common/directory-query';
+
 @Injectable()
 export class ClienteService {
   constructor(
@@ -19,6 +21,14 @@ export class ClienteService {
   async findAll(): Promise<Cliente[]> {
     // ¡CAMBIO! Ahora llama a tu función de PostgreSQL
     return queryRows<Cliente>(this.dataSource, 'SELECT * FROM fn_get_clientes()');
+  }
+
+  findPage(query: DirectoryQueryDto) {
+    return directoryPage<Record<string, unknown>>(this.dataSource, 'cliente', query);
+  }
+
+  exportCsv(query: DirectoryQueryDto) {
+    return directoryCsv(this.dataSource, 'cliente', query);
   }
 
   async findOne(idCliente: number): Promise<Cliente> {

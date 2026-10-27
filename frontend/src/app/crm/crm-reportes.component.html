@@ -1,0 +1,40 @@
+<section class="campaign-page" aria-labelledby="reports-title" [attr.aria-busy]="busy()">
+ <header class="heading"><div><h1 id="reports-title">Reportes comerciales programados</h1><p>Resumen interno de compromisos pendientes, conservado a la hora de su generación.</p></div><a mat-stroked-button routerLink="/crm/bandeja">Bandeja comercial</a></header>
+ <p>Programaciones propias de administración. Hora de Tampico; ejecución cada diez minutos con el servidor encendido. No envía mensajes.</p>
+ @if(error()){<p class="notice" role="alert">{{error()}} <button mat-button (click)="refresh()" [disabled]="busy()">Actualizar</button><button mat-button (click)="back()" [disabled]="busy()">Volver a programaciones</button></p>}
+ @if(notice()){<p class="notice" role="status">{{notice()}}</p>}
+ @if(busy()){<p role="status">Consultando o guardando…</p>}
+ @if(detail();as p){
+  <section class="panel"><div class="heading"><h2>{{p.nombre}}</h2><button mat-stroked-button (click)="back()" [disabled]="busy()">Volver a programaciones</button></div>
+   <p>{{p.activa?'Activa':'Suspendida'}} · {{p.frecuencia}} @if(p.dia){ · {{days[p.dia-1]}}} · {{p.hora|number:'2.0-0'}}:{{p.minuto|number:'2.0-0'}} · Tampico</p>
+   <p>{{sources[p.tipo]}} · {{deadlines[p.plazo]}}</p><small>Vigente desde {{date(p.vigenteDesde)}}. El destinatario es tu usuario; se consulta en esta sección.</small>
+   <div class="actions"><button mat-stroked-button (click)="toggle(p)" [disabled]="busy()">{{p.activa?'Suspender':'Reanudar'}}</button><button mat-button (click)="refresh()" [disabled]="busy()">Actualizar historial</button><a mat-button routerLink="/crm/bandeja" [queryParams]="{tipo:p.tipo,plazo:p.plazo}">Ver estado actual en la bandeja</a></div>
+  </section>
+  <h2>Historial conservado</h2><p>El horario programado y la fecha real de generación pueden diferir. Los resultados anteriores no se recalculan al abrirlos.</p>
+  @for(r of reports();track r.id){<article class="panel"><h3>{{r.estado}} · Programado {{date(r.programadaEn)}}</h3><small>Registrado {{date(r.generadaEn)}}</small>
+   @if(r.snapshot;as s){<p>Corte de los datos: {{date(s.consultadoEn)}}</p><div class="metrics"><article><strong>{{s.total}}</strong>Total de asuntos</article><article><strong>{{s.resumen.vencidas}}</strong>Vencidas</article><article><strong>{{s.resumen.hoy}}</strong>Para hoy</article><article><strong>{{s.resumen.proximas}}</strong>Próximos 7 días</article><article><strong>{{s.resumen.sinFecha}}</strong>Sin fecha</article></div>}
+   @else{<p>No se pudo conservar el resumen. Código: {{r.codigo}}. El error original permanece en el historial.</p>
+    @if(r.reintento;as q){<section aria-label="Estado del reintento"><h4>Recuperación: {{q.estado==='EnCurso'?'En curso':q.estado}}</h4><p>Intentos iniciados: {{q.intentos}} de 3.</p>
+     @if(q.estado==='Pendiente'){<p>Disponible desde {{date(q.disponibleEn)}}. Se revisa cada diez minutos con el servidor encendido.</p>}
+     @if(q.estado==='Agotado'){<p>Se agotaron los intentos. Revisa la causa del fallo; los próximos periodos conservan su programación.</p>}
+     @if(q.estado==='Pendiente'||q.estado==='EnCurso'){<button mat-stroked-button (click)="cancelRetry(r)" [disabled]="busy()">Cancelar reintento</button>}
+     <details><summary>Ver bitácora de intentos</summary>@for(e of q.eventos;track $index){<p>Intento {{e.intento}} · {{e.fase}} · {{date(e.creadaEn)}} @if(e.codigo){ · {{e.codigo}}}</p>}@empty{<p>Aún no inicia un intento.</p>}</details>
+    </section>}@else if(p.activa){<button mat-stroked-button (click)="retry(r)" [disabled]="busy()">Preparar reintento</button>}
+    @if(r.recuperacion;as c){<section aria-label="Resumen recuperado"><h4>Resumen recuperado</h4><small>Conservado {{date(c.generadaEn)}} · Corte real {{date(c.snapshot.consultadoEn)}}</small><p>Este corte posterior no reconstruye los datos del horario original.</p><div class="metrics"><article><strong>{{c.snapshot.total}}</strong>Total de asuntos</article><article><strong>{{c.snapshot.resumen.vencidas}}</strong>Vencidas</article><article><strong>{{c.snapshot.resumen.hoy}}</strong>Para hoy</article><article><strong>{{c.snapshot.resumen.proximas}}</strong>Próximos 7 días</article><article><strong>{{c.snapshot.resumen.sinFecha}}</strong>Sin fecha</article></div></section>}
+   }
+  </article>}@empty{<p class="notice">Aún no hay resultados para esta programación. Guardarla o abrirla no ejecuta el reporte.</p>}
+  <nav class="actions pagination" aria-label="Páginas del historial"><button mat-stroked-button (click)="open(p.id,-1)" [disabled]="busy()||historyPage<=1">Anterior</button><span>Página {{historyPage}} · {{historyTotal}} resultados</span><button mat-stroked-button (click)="open(p.id,1)" [disabled]="busy()||historyPage*20>=historyTotal">Siguiente</button></nav>
+ }@else if(!busy()&&!error()){
+  <form class="panel" (ngSubmit)="create()"><h2>Nueva programación</h2><label for="report-name">Nombre</label><input id="report-name" name="nombre" [(ngModel)]="nombre" maxlength="120" required>
+   <div class="recipients"><div><label for="report-frequency">Frecuencia</label><select id="report-frequency" name="frecuencia" [(ngModel)]="frecuencia"><option value="Diaria">Diaria</option><option value="Semanal">Semanal</option></select></div><div><label for="report-time">Hora de Tampico</label><input id="report-time" type="time" step="600" name="hora" [(ngModel)]="hora" required><small>Minutos:00,10,20,30,40 o50.</small></div>
+    @if(frecuencia==='Semanal'){<div><label for="report-day">Día de la semana</label><select id="report-day" name="dia" [(ngModel)]="dia">@for(d of days;track d;let i=$index){<option [ngValue]="i+1">{{d}}</option>}</select></div>}
+    <div><label for="report-source">Origen</label><select id="report-source" name="tipo" [(ngModel)]="tipo">@for(s of sources|keyvalue;track s.key){<option [value]="s.key">{{s.value}}</option>}</select></div><div><label for="report-deadline">Plazo</label><select id="report-deadline" name="plazo" [(ngModel)]="plazo">@for(d of deadlines|keyvalue;track d.key){<option [value]="d.key">{{d.value}}</option>}</select></div>
+   </div><p>Conserva sólo conteos y filtros; sin contactos, listas de clientes, importes ni piezas. Cada origen se cuenta como un asunto. En web, el plazo corresponde a conservación del contenido.</p><button mat-flat-button [disabled]="busy()||!valid()">Guardar programación</button>
+  </form>
+  <section class="panel"><div class="heading"><h2>Mis programaciones</h2><button mat-button (click)="load()" [disabled]="busy()">Actualizar lista</button></div>
+   @for(p of schedules();track p.id){<article><h3>{{p.nombre}}</h3><p>{{p.activa?'Activa':'Suspendida'}} · {{p.frecuencia}} · {{p.hora|number:'2.0-0'}}:{{p.minuto|number:'2.0-0'}} · {{sources[p.tipo]}}</p><button mat-stroked-button (click)="open(p.id)" [disabled]="busy()">Abrir programación</button></article>}@empty{<p>Aún no has creado programaciones.</p>}
+   <nav class="actions pagination" aria-label="Páginas de programaciones"><button mat-stroked-button (click)="load(-1)" [disabled]="busy()||page<=1">Anterior</button><span>Página {{page}} · {{total}} programaciones</span><button mat-stroked-button (click)="load(1)" [disabled]="busy()||page*20>=total">Siguiente</button></nav>
+  </section>
+ }
+ <small>No sustituye reportes de ventas/utilidad. Se conserva un resultado por horario, sin completar días pasados. Los plazos posteriores a siete días sólo figuran en el total. Cambiar el horario requiere otra programación y suspender la anterior. Monitor externo y retención aprobada siguen pendientes.</small>
+</section>

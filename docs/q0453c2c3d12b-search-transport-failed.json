@@ -1,0 +1,169 @@
+{
+  "generatedAt": "2026-10-05T18:57:50.531Z",
+  "phase": "Q04.5.3c2c3d12b",
+  "status": "failed",
+  "injectedTransportFailure": true,
+  "injectedGeneratorFailure": false,
+  "injectedFinancialClientFailure": false,
+  "failure": "HTTP GET /api/v1/__q04_transport_failure: body-json; TypeError; UND_ERR_SOCKET",
+  "injectedCoverageFailure": false,
+  "injectedObjectiveFailure": false,
+  "secondsPerGroup": 40,
+  "fixtureCount": 1000,
+  "profile": {
+    "name": "soak",
+    "readers": 8,
+    "readerPauseMs": 2000,
+    "businessPauseMs": 3000,
+    "financialPauseMs": 30000,
+    "sqlPauseMs": 60,
+    "duration": 600
+  },
+  "groups": [
+    {
+      "elapsedMs": 5432.4334,
+      "requests": 0,
+      "writerCommits": 6,
+      "financialCycles": 0,
+      "business": {
+        "transfers": 2,
+        "assembled": 1,
+        "disassembled": 1,
+        "payments": 1,
+        "replays": 2
+      },
+      "memoryDiagnostic": {
+        "scope": "Padre: AppModule, monitor, escritor SQL y cliente de almacen/pagos; lectores y cliente financiero/documental separados.",
+        "samples": 54,
+        "elapsedMs": 5432.1109000000015,
+        "quarterSamples": 13,
+        "comparison": {
+          "rss": {
+            "firstMean": 165184433.23076922,
+            "lastMean": 165800408.6153846,
+            "deltaBytes": 615975.3846153915,
+            "peak": 165806080
+          },
+          "heapUsed": {
+            "firstMean": 71426300.3076923,
+            "lastMean": 72891682.46153846,
+            "deltaBytes": 1465382.1538461596,
+            "peak": 72966440
+          },
+          "heapTotal": {
+            "firstMean": 121094774.15384616,
+            "lastMean": 121802752,
+            "deltaBytes": 707977.8461538404,
+            "peak": 121802752
+          },
+          "external": {
+            "firstMean": 5174527.538461538,
+            "lastMean": 5183734,
+            "deltaBytes": 9206.461538461968,
+            "peak": 5183734
+          },
+          "arrayBuffers": {
+            "firstMean": 1011901.6153846154,
+            "lastMean": 1021105,
+            "deltaBytes": 9203.384615384624,
+            "peak": 1021105
+          }
+        },
+        "windows": [
+          {
+            "minute": 0,
+            "samples": 54,
+            "means": {
+              "rss": 165439108.74074075,
+              "heapUsed": 72172489.77777778,
+              "heapTotal": 121361218.37037037,
+              "external": 5181193.62962963,
+              "arrayBuffers": 1018565.3703703703
+            },
+            "peaks": {
+              "rss": 165806080,
+              "heapUsed": 72966440,
+              "heapTotal": 121802752,
+              "external": 5183734,
+              "arrayBuffers": 1021105
+            }
+          }
+        ]
+      },
+      "financialClientMemory": {
+        "scope": "Cliente financiero/documental persistente separado; incluye fetch, Blob y una conexión PostgreSQL de verificación. No sumar picos independientes.",
+        "samples": 32,
+        "elapsedMs": 3176.7920000000004,
+        "quarterSamples": 8,
+        "comparison": {
+          "rss": {
+            "firstMean": 62550528,
+            "lastMean": 64405504,
+            "deltaBytes": 1854976,
+            "peak": 64413696
+          },
+          "heapUsed": {
+            "firstMean": 9105450,
+            "lastMean": 9978140,
+            "deltaBytes": 872690,
+            "peak": 9987464
+          },
+          "heapTotal": {
+            "firstMean": 12926464,
+            "lastMean": 13504512,
+            "deltaBytes": 578048,
+            "peak": 13504512
+          },
+          "external": {
+            "firstMean": 3809091.75,
+            "lastMean": 4294820,
+            "deltaBytes": 485728.25,
+            "peak": 4294841
+          },
+          "arrayBuffers": {
+            "firstMean": 181321.375,
+            "lastMean": 202478,
+            "deltaBytes": 21156.625,
+            "peak": 202499
+          }
+        },
+        "windows": [
+          {
+            "minute": 0,
+            "samples": 32,
+            "means": {
+              "rss": 63921408,
+              "heapUsed": 9745847.75,
+              "heapTotal": 13360000,
+              "external": 4173386.4375,
+              "arrayBuffers": 197187.34375
+            },
+            "peaks": {
+              "rss": 64413696,
+              "heapUsed": 9987464,
+              "heapTotal": 13504512,
+              "external": 4294841,
+              "arrayBuffers": 202499
+            }
+          }
+        ]
+      },
+      "errors": 1,
+      "incomplete": true,
+      "failureContext": {
+        "source": "financial-document-client",
+        "elapsedMs": 240.9989999999998,
+        "diagnostic": {
+          "method": "GET",
+          "route": "/api/v1/__q04_transport_failure",
+          "stage": "body-json",
+          "name": "TypeError",
+          "code": "UND_ERR_SOCKET"
+        }
+      },
+      "readerResultAvailable": false,
+      "failure": "HTTP GET /api/v1/__q04_transport_failure: body-json; TypeError; UND_ERR_SOCKET"
+    }
+  ],
+  "scope": "Diagnóstico fallido publicado después de eliminar la copia; no reemplaza evidencia exitosa ni certifica rendimiento"
+}

@@ -1,0 +1,29 @@
+BORRADOR PARA REVISIÓN — NO APROBADO — NO PUBLICAR NI USAR PARA ACTIVAR CAPTURA
+Versión documental propuesta: borrador-web-2026-10-10
+Alcance: solicitudes de refacciones desde el formulario web, no todo el ERP.
+
+1. Responsable y contacto
+[[RESPONSABLE_LEGAL]] opera bajo el nombre comercial Refacciones y Tractorepuestos Tampico, con domicilio en Calle Sor Juana Inés de la Cruz #201-A, Colonia Nuevo Progreso, C.P. 89318, Tampico, Tamaulipas.
+El canal propuesto para privacidad es [[CANAL_PRIVACIDAD_CONFIRMADO]]. El correo comercial conocido es refaccionesytractorepuestos@hotmail.com; su uso para privacidad todavía debe confirmarse y tener una persona encargada.
+
+2. Datos de la consulta
+Para atender una consulta, el formulario solicita nombre y un medio de respuesta elegido: correo electrónico, teléfono o WhatsApp. Recibe hasta diez piezas con sus cantidades; para referencias libres permite indicar número de parte, marca y aplicación. Registra identificador de solicitud y versión del aviso aceptada.
+No solicita documentos de identidad, datos bancarios, contraseñas, datos fiscales, VIN ni ESN. Evite escribir información personal adicional en los campos de piezas o aplicación. El tratamiento posterior de datos de clientes y unidades en el ERP requiere su propio alcance y revisión.
+
+3. Uso propuesto
+Revisar las piezas solicitadas, confirmar aplicación y disponibilidad, responder por el medio elegido y, cuando proceda, dar seguimiento a una oportunidad comercial en nuestro CRM privado. Enviar una consulta no confirma pedido, precio, compatibilidad, existencia, crédito ni factura.
+Este formulario no incluye autorización para campañas promocionales. Cualquier finalidad adicional debe definirse y revisarse antes de incorporarla.
+
+4. Conservación propuesta, aún pendiente
+El contenido de la bandeja tiene actualmente vencimiento técnico de 90 días desde su creación. Ese valor no es una política aprobada. El acceso ordinario deja de mostrar contenido vencido; eliminarlo requiere la purga configurada o intervención administrativa.
+Si la consulta se convierte a una oportunidad, el contacto y las piezas se conservan en CRM por [[CRITERIO_Y_PLAZO_CRM]]. La purga de la bandeja no los elimina. Los identificadores, huellas técnicas e historial se conservan por [[CRITERIO_Y_PLAZO_METADATOS]]. Las copias históricas tienen [[POLITICA_DE_RESPALDOS_Y_RESTAURACION]]. Resolver estos puntos y sus mecanismos efectivos antes de publicar este aviso; no prometer eliminación de todas las copias al día 90.
+
+5. Canales externos y proveedores
+Si usted decide abrir WhatsApp, correo o Maps, utiliza un servicio externo. El catálogo prepara enlaces; no envía por sí mismo un mensaje a WhatsApp ni acredita que se haya recibido.
+Antes de publicar deben identificarse los proveedores reales de alojamiento, correo y respaldos, y documentar sus accesos, ubicaciones y condiciones: [[PROVEEDORES_Y_COMUNICACIONES_REVISADOS]]. No existe integración automática con APIs bancarias en este proyecto.
+
+6. Privacidad, solicitudes y cambios
+Para acceso, rectificación, cancelación u oposición, limitación de uso o revocación, el procedimiento propuesto es contactar [[CANAL_PRIVACIDAD_CONFIRMADO]] indicando la solicitud y un medio de respuesta. La persona designada atenderá y verificará identidad por un canal adecuado antes de comunicar datos. Procedimiento definitivo y responsable: [[PROCEDIMIENTO_Y_ENCARGADO_CONFIRMADOS]].
+Los cambios al aviso se comunicarían mediante [[MEDIO_DE_CAMBIOS_CONFIRMADO]] y una versión identificable. No hay una dirección pública de aviso confirmada todavía.
+
+PENDIENTE: identidad legal, canal y encargado, retenciones efectivas, proveedores, procedimiento y medio de cambios. Este archivo es documentación interna; no es aviso vigente ni evidencia de cumplimiento o aprobación.

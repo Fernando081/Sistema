@@ -4,10 +4,14 @@ import { BusquedaGlobalQuery, CreateCampanaDto, CreateCrmComunicacionDto, Create
 import { JwtPayload } from '../auth/auth.types';
 import { Roles } from '../auth/roles.decorator';
 import { RolUsuario } from '../common/enums/app.enums';
+import { CrmSolicitudesWebService } from './crm-solicitudes-web.service';
 
 @Controller('crm')
 export class CrmController {
-  constructor(private readonly service: CrmService) {}
+  constructor(private readonly service: CrmService, private readonly web: CrmSolicitudesWebService) {}
+  @Get('oportunidades/:id/consulta-web') consultaWeb(@Param('id', ParseIntPipe) id: number, @Req() req: { user: JwtPayload }) {
+    return this.web.snapshot(id, req.user.idUser!, req.user.role === RolUsuario.ADMIN);
+  }
 
   @Get('resumen') resumen() { return this.service.resumen(); }
   @Get('busqueda') busqueda(@Query() query: BusquedaGlobalQuery) { return this.service.busquedaGlobal(query.q); }
@@ -61,7 +65,7 @@ export class CrmController {
   @Post('metas') @Roles(RolUsuario.ADMIN) createMeta(@Body() dto: CreateMetaDto) { return this.service.createMeta(dto); }
   @Get('tareas') tareas(@Query() query: CrmTareasQuery, @Req() req: { user: JwtPayload }) { return this.service.tareas(query, req.user.idUser!, req.user.role); }
   @Post('tareas') createTarea(@Body() dto: CreateCrmTareaDto, @Req() req: { user: JwtPayload }) { return this.service.createTarea(dto, req.user.idUser!, req.user.role); }
-  @Patch('tareas/:id') updateTarea(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateCrmTareaDto, @Req() req: { user: JwtPayload }) { return this.service.updateTarea(id, dto, req.user.idUser!, req.user.role); }
+  @Patch('tareas/:id') updateTarea(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateCrmTareaDto, @Req() req: { user: JwtPayload }) { return this.service.updateTarea(id, dto, req.user.idUser!, req.user.role,req.user,false); }
   @Get('comunicaciones') comunicaciones(@Query('idCliente') idCliente?: string, @Query('idOportunidad') idOportunidad?: string) { return this.service.comunicaciones(idCliente ? Number(idCliente) : undefined, idOportunidad ? Number(idOportunidad) : undefined); }
   @Post('comunicaciones') createComunicacion(@Body() dto: CreateCrmComunicacionDto, @Req() req: { user: JwtPayload }) { return this.service.createComunicacion(dto, req.user.idUser!); }
 }

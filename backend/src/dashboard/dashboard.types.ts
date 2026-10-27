@@ -13,9 +13,9 @@ export interface HoraDiaVenta {
 export interface MvVentasFacturacion {
   ingresos_brutos: string | number;
   ingresos_netos: string | number;
-  ticket_promedio: string | number;
-  margen_utilidad_bruta: string | number;
-  descuento_promedio_otorgado: string | number;
+  ticket_promedio: string | number | null;
+  margen_utilidad_bruta: string | number | null;
+  descuento_promedio_otorgado: string | number | null;
   ventas_por_categoria: CategoriaVenta[];
   comportamiento_hora_dia: HoraDiaVenta[];
 }
@@ -23,7 +23,7 @@ export interface MvVentasFacturacion {
 export interface LentoMovimiento {
   codigo: string;
   descripcion: string;
-  dias_sin_ventas: number;
+  dias_sin_ventas: number | null;
   existencia: number;
 }
 
@@ -34,13 +34,14 @@ export interface HistoricoDato {
 
 // 2. View: mv_inventario_almacen
 export interface MvInventarioAlmacen {
-  valor_total_inventario: string | number;
+  valor_total_inventario: string | number | null;
   merma_shrinkage: string | number;
-  tasa_rotacion_inventario: string | number;
+  tasa_rotacion_inventario: string | number | null;
   indice_quiebre_stock: string | number;
-  dias_inventario: string | number;
-  costo_aterrizado: string | number;
-  retorno_inversion_inventario: string | number;
+  dias_inventario: string | number | null;
+  costo_aterrizado: string | number | null;
+  retorno_inversion_inventario: string | number | null;
+  gmroi_dias_historial?: number;
   mercancia_lento_movimiento: LentoMovimiento[];
   shrinkage_historico_json: HistoricoDato[];
 }
@@ -54,22 +55,22 @@ export interface AgingReport {
 export interface MvClientesCobranza {
   tasa_retencion_clientes: string | number;
   valor_tiempo_vida: string | number;
-  dias_cuentas_por_pagar: string | number;
+  dias_cuentas_por_pagar: string | number | null;
   cuentas_por_cobrar: AgingReport[];
 }
 
 export interface RentabilidadProveedor {
   proveedor: string;
   marca: string;
-  rentabilidad: string | number;
+  rentabilidad: string | number | null;
 }
 
 // 4. View: mv_operaciones_avanzadas
 export interface MvOperacionesAvanzadas {
-  tasa_conversion_cotizaciones: string | number;
-  tasa_devoluciones: string | number;
-  tasa_cumplimiento: string | number;
-  indice_ventas_cruzadas: string | number;
+  tasa_conversion_cotizaciones: string | number | null;
+  tasa_devoluciones: string | number | null;
+  tasa_cumplimiento: string | number | null;
+  indice_ventas_cruzadas: string | number | null;
   rentabilidad_proveedor_marca: RentabilidadProveedor[];
   tasa_de_devoluciones_historico: HistoricoDato[];
 }

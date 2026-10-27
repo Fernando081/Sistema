@@ -1,0 +1,23 @@
+✔ dieciséis combinaciones conservan recibos y decisión; no crean éxito original ni retiran mantenimiento o recuperación (23031.11ms)
+✔ origen pendiente continúa por revisión nueva y cierre separado; historial y puntero posterior conservan replay (6231.5605ms)
+✔ publicación residual queda intacta para recuperación ordinaria independiente (1154.0683ms)
+✔ concurrencia con IDs distintos comparte un solo destino exclusivo por cancelación (1215.2005ms)
+✔ revisiones mal formadas IDs originales cambios previos y trasplante se rechazan sin mutar (13790.7794ms)
+✔ guardas activas extranjeras inválidas ausentes o sin vínculo e intenciones ambiguas requieren revisión (8927.5015ms)
+✔ seis cortes conservan finalización y excluyen doce herramientas incluso con cinco controles ocupados (8923.5247ms)
+✔ recibo v1 previo sigue cancelado cuando la nueva auditoría parcial pierde controles (1411.2972ms)
+✔ sustituciones entre archivo y retirada conservan controles sin certificar resultado (11874.8497ms)
+✔ fallo al escribir auditoría no confirma recibo v2 aislado y mantiene finalización y archivo (2486.3507ms)
+✔ rechazo antes de intentar intención libera sólo su archivo propio intacto (1924.2049ms)
+✔ alteración posterior de archivo recibo vínculo u origen invalida diagnóstico y replay (10181.1752ms)
+✔ dos auditorías válidas de un mismo recibo v1 son ambiguas y no eligen revisor (1394.4194ms)
+✔ reserva todos los destinos bajo límite600 y no trunca historial (8593.8609ms)
+✔ CLI sólo observa al preparar y reemplaza éxito previo por resultado incierto sin datos privados (1827.2286ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103119.4383

@@ -1,0 +1,139 @@
+{
+  "generatedAt": "2026-10-01T22:14:23.623Z",
+  "node": "24.19.0",
+  "comparisons": 174,
+  "existingComparisons": 18,
+  "plans": 70,
+  "metrics": [
+    {
+      "term": "Q04TARGET",
+      "before": {
+        "medianMs": 17.203,
+        "samplesMs": [
+          15.368,
+          15.912,
+          17.203,
+          19.864,
+          27.035
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 0.391,
+        "samplesMs": [
+          0.33,
+          0.388,
+          0.391,
+          0.395,
+          0.43899999999999995
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "term": "Proveedor",
+      "before": {
+        "medianMs": 18.541,
+        "samplesMs": [
+          17.276,
+          17.351,
+          18.541,
+          24.122,
+          24.401
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 23.245,
+        "samplesMs": [
+          18.766000000000002,
+          21.547,
+          23.245,
+          25.099999999999998,
+          29.057
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "term": "RFC1000",
+      "before": {
+        "medianMs": 19.573,
+        "samplesMs": [
+          16.007,
+          16.702,
+          19.573,
+          19.576,
+          21.28
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 1.217,
+        "samplesMs": [
+          0.837,
+          1.0390000000000001,
+          1.217,
+          1.376,
+          1.7959999999999998
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "term": "F1000",
+      "before": {
+        "medianMs": 17.645,
+        "samplesMs": [
+          17.029,
+          17.256,
+          17.645,
+          17.719,
+          22.541
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 0.275,
+        "samplesMs": [
+          0.23299999999999998,
+          0.271,
+          0.275,
+          0.277,
+          0.34199999999999997
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "term": "F1000 Q04TARGET",
+      "before": {
+        "medianMs": 21.374,
+        "samplesMs": [
+          15.975,
+          16.643,
+          21.374,
+          23.121,
+          23.175
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 19.412,
+        "samplesMs": [
+          16.36,
+          16.508,
+          19.412,
+          22.034,
+          27.804
+        ],
+        "indexUsed": false
+      }
+    }
+  ],
+  "limitations": [
+    "Fixtures sintéticos; sin concurrencia ni SLA.",
+    "Tiempos posteriores incluyen sondeo, que puede aumentar costo de términos amplios.",
+    "Espacios y términos cortos/signos usan consulta anterior."
+  ]
+}

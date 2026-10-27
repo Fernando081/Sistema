@@ -1,0 +1,64 @@
+:host {
+  display: block;
+  color: var(--text-main);
+}
+section {
+  background: var(--bg-card);
+  border: 1px solid var(--wrap-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  overflow-wrap: anywhere;
+}
+label {
+  display: block;
+  margin: 12px 0;
+}
+input:not([type='checkbox']),
+textarea {
+  display: block;
+  width: 100%;
+  color: var(--text-main);
+  background: var(--bg-card);
+  border: 1px solid var(--wrap-border);
+  padding: 12px;
+  border-radius: 8px;
+}
+textarea {
+  font-family: monospace;
+}
+button {
+  background: #0b3650;
+  color: #fff;
+  padding: 12px;
+  min-height: 44px;
+  border-radius: 8px;
+  margin: 8px 8px 8px 0;
+}
+button:disabled {
+  opacity: 0.5;
+}
+input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
+h2,
+h3 {
+  font-weight: 700;
+  margin: 12px 0;
+}
+article {
+  border-top: 1px solid var(--wrap-border);
+  margin-top: 20px;
+  padding-top: 12px;
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+fieldset {
+  min-width: 0;
+  border: 1px solid var(--wrap-border);
+  padding: 12px;
+}

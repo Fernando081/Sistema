@@ -1,11 +1,11 @@
+import { MatSelectModule } from '@angular/material/select';
 // frontend/src/app/venta/factura-list/factura-list.component.ts
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, DestroyRef, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import anime from 'animejs';
 import { CommonModule } from '@angular/common';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,8 +19,9 @@ import { FacturaDetalleComponent } from '../factura-detalle/factura-detalle.comp
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
-import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
-import { ConfirmService } from '../../shared/confirm.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RemoteDirectory } from '../../shared/remote-directory';
+import { localDate } from '../../shared/document-download';
 
 
 @Component({
@@ -30,7 +31,7 @@ import { ConfirmService } from '../../shared/confirm.service';
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatChipsModule, MatDialogModule, MatSnackBarModule,
-    MatButtonToggleModule, FormsModule
+    MatButtonToggleModule, FormsModule, MatSelectModule
   ],
   templateUrl: './factura-list.component.html',
   styles: [`
@@ -38,81 +39,34 @@ import { ConfirmService } from '../../shared/confirm.service';
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
   `]
 })
-export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class FacturaListComponent implements OnInit, OnDestroy {
   
   displayedColumns: string[] = ['folio', 'fecha', 'receptor', 'rfc', 'total', 'estatus', 'fiscal', 'acciones'];
-  dataSource = new MatTableDataSource<FacturaResumen>();
-  totalItems = 0;
-  activeFilter = '';
-  activeTipo = '';
-  searchSubject = new Subject<string>();
-  private readonly destroyRef = inject(DestroyRef);
-  private request?: Subscription;
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  readonly directory: RemoteDirectory<FacturaResumen>;
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  get dataSource() { return this.directory.dataSource; }
+  get totalItems() { return this.directory.total(); }
 
   constructor(private ventaService: VentaService,
               public dialog: MatDialog,
               private snackBar: MatSnackBar,
-              private confirm: ConfirmService,
-  ) {}
+
+  ) {
+    this.directory = new RemoteDirectory(query => this.ventaService.getFacturas(query.page, query.limit, query.term, query.tipo || '', query.sortBy, query.sortOrder, query.estado || '', query.desde || '', query.hasta || ''),
+      message => this.snackBar.open(message, 'Cerrar', { duration: 5000 }), ['folio', 'fecha', 'receptor', 'rfc', 'total', 'estatus']);
+  }
 
   ngOnInit(): void {
-    this.cargarFacturas();
-
-    this.searchSubject.pipe(
-      debounceTime(400),
-      distinctUntilChanged(), takeUntilDestroyed(this.destroyRef)
-    ).subscribe(term => {
-      this.activeFilter = term;
-      if (this.paginator) {
-        this.paginator.pageIndex = 0;
-      }
-      this.cargarFacturas();
-    });
+    this.directory.connectUrl(this.route, this.router, true);
+    this.directory.start();
   }
-
-  ngOnDestroy(): void {
-    this.searchSubject.complete();
-    this.request?.unsubscribe();
+  ngOnDestroy(): void { this.directory.dispose(); }
+  cargarFacturas(): void { this.directory.reload(); }
+  applyFilter(event: Event): void {
+    if (event.target instanceof HTMLInputElement) this.directory.setTerm(event.target.value);
   }
-
-  ngAfterViewInit(): void {
-    this.paginator.page.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.cargarFacturas();
-    });
-  }
-
-  cargarFacturas() {
-    this.request?.unsubscribe();
-    const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
-    const limit = this.paginator ? this.paginator.pageSize : 10;
-    
-    this.request = this.ventaService.getFacturas(page, limit, this.activeFilter, this.activeTipo).subscribe({
-      next: (response) => {
-        const data = response.data || response;
-        this.totalItems = response.total || 0;
-        this.dataSource.data = data;
-        setTimeout(() => this.animarEntradaTabla(), 0);
-        // this.dataSource.paginator = this.paginator;
-        // this.dataSource.sort = this.sort;
-      },
-      error: (err) => console.error('Error cargando facturas', err)
-    });
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.searchSubject.next(filterValue.trim().toLowerCase());
-  }
-
-  onTipoChange(event: any) {
-    if (this.paginator) {
-      this.paginator.pageIndex = 0;
-    }
-    this.cargarFacturas();
-  }
+  exportar(): void { this.directory.export(query => this.ventaService.exportCsv(query, query.tipo || ''), 'facturas_' + localDate() + '.csv'); }
 
   // Función auxiliar para el color del chip de estatus
   getColorEstatus(estatus: string): string {
@@ -135,14 +89,8 @@ export class FacturaListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  enviarPorCorreo(row: FacturaResumen) {
-    this.confirm.ask({ title: 'Enviar factura', message: `La factura A${row.folio} se enviará al correo registrado del cliente.`, confirmLabel: 'Enviar correo', tone: 'primary' }).subscribe(confirmed => {
-      if (!confirmed) return;
-      this.ventaService.enviarCorreo(row.id_factura).subscribe({
-        next: () => this.snackBar.open('Correo enviado correctamente', 'Ok', { duration: 4000 }),
-        error: (err) => this.snackBar.open('Error: ' + (err.error?.message || err.message), 'Ok'),
-      });
-    });
+  prepararCorreoLocal(row: FacturaResumen) {
+    void this.router.navigate(['/facturas/correos'],{queryParams:{factura:row.id_factura}});
   }
 
   animarEntradaTabla() {

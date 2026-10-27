@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Header, UseGuards } from '@nestjs/common';
 import { AuditoriaService } from './auditoria.service';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -11,7 +11,11 @@ export class AuditoriaController {
 
   @Get()
   @Roles(RolUsuario.ADMIN)
+  @Header('Cache-Control','private, no-store')
   findAll() {
     return this.auditoriaService.findAll();
   }
+
+  @Get('estado') @Roles(RolUsuario.ADMIN) @Header('Cache-Control','private, no-store')
+  protection(){return this.auditoriaService.protection();}
 }

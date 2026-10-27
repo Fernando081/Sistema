@@ -1,0 +1,27 @@
+{
+  "phase": "V01",
+  "startedAt": "2026-10-20T16:35:59.451Z",
+  "checks": [
+    "102 en copia; activación explícita sin backfill, consulta privada/permisos/idempotencia, snapshot exacto y evidencia no reescribible por UPDATE",
+    "Sin aceptación no hay pedido/venta y crear pedido directo con idCotizacion no evade el flujo versionado",
+    "Emisión HMAC de servidor/hash único sin token en metadata; formulario JSON/cabecera, proyección pública mínima y HTTP rechazado en modo producción",
+    "Confirmación explícita, única respuesta concurrente, reintento idéntico sin duplicado y nombre declarado separado de actor autenticado",
+    "Nueva revisión conserva anterior/cliente, crea cotización atómica, no hereda respuesta y retira enlace/conversión/pedido de la sustituida",
+    "Dos revisiones concurrentes producen una alta/un409; fallo de auditoría revierte cotización nueva y evidencia juntas",
+    "Vencimiento/revocación bloquean consulta; cambios posteriores al sello se detectan sin reescribir la evidencia",
+    "Aceptación permite conversión a precio aceptado; precio/impuestos cambiados se rechazan y cotización no versionada conserva conversión anterior",
+    "Pedido desde revisión aceptada funciona y documento ya utilizado no admite nueva revisión",
+    "Rechazo explícito impide pedido y la propuesta corregida exige nueva respuesta",
+    "Historial por familia paginado20 conserva anteriores, respuestas y total fuera de rango; documentos de volumen sólo en copia",
+    "Permiso delegado revalidado en transacción: actor revocado mientras espera no sella cotización",
+    "Ocho cotizaciones concurrentes por HTTP conservan folios distintos; asignación serializada en creación y nuevas revisiones",
+    "Angular producción con login real y destinatario anónimo: sello/enlace/aceptación/nueva revisión, fragmento borrado y sin token en red/almacenamiento; claro1280/oscuro390/axe/reflujo sin errores JS"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "passed": true,
+  "completedAt": "2026-10-20T16:36:15.994Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular"
+}

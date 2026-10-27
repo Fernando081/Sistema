@@ -1,0 +1,6 @@
+
+> db:check
+> node backend/run-migrations.js --check
+
+Verificada (se revertirá): 099_aprobaciones_por_operacion.sql
+Verificación terminada: cambios de esquema revertidos.

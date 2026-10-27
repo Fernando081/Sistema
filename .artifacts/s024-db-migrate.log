@@ -1,0 +1,5 @@
+
+> db:migrate
+> node backend/run-migrations.js
+
+Aplicada: 097_recuperacion_cuenta_local.sql

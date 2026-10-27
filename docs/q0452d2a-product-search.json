@@ -1,0 +1,760 @@
+{
+  "generatedAt": "2026-10-01T21:30:01.614Z",
+  "node": "24.19.0",
+  "fixtureProducts": 20004,
+  "equivalenceComparisons": 58,
+  "plans": 180,
+  "indexBuildMs": 761.5342,
+  "indexedUpdateMs": 2.331500000000233,
+  "indexBytes": 2678784,
+  "rows": [
+    {
+      "scenario": "Q04TARGET",
+      "matches": 20,
+      "before": {
+        "medianMs": 41.171,
+        "samplesMs": [
+          34.248,
+          38.545,
+          41.171,
+          42.851,
+          46.943
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.167,
+        "samplesMs": [
+          0.154,
+          0.163,
+          0.167,
+          0.211,
+          0.372
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Bitmap Heap Scan": 3,
+          "BitmapOr": 1,
+          "Bitmap Index Scan": 5,
+          "Nested Loop": 3,
+          "Seq Scan": 1,
+          "Index Scan": 1,
+          "Index Only Scan": 2
+        }
+      }
+    },
+    {
+      "scenario": "OEM-1000",
+      "matches": 11,
+      "before": {
+        "medianMs": 40.276,
+        "samplesMs": [
+          34.494,
+          39.044,
+          40.276,
+          47.446,
+          54.143
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.528,
+        "samplesMs": [
+          0.335,
+          0.378,
+          0.528,
+          0.737,
+          0.909
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Bitmap Heap Scan": 3,
+          "BitmapOr": 1,
+          "Bitmap Index Scan": 5,
+          "Nested Loop": 3,
+          "Seq Scan": 1,
+          "Index Scan": 1,
+          "Index Only Scan": 2
+        }
+      }
+    },
+    {
+      "scenario": "ISX",
+      "matches": 20,
+      "before": {
+        "medianMs": 31.763,
+        "samplesMs": [
+          30.987,
+          31.538,
+          31.763,
+          33.122,
+          38.264
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.228,
+        "samplesMs": [
+          0.208,
+          0.219,
+          0.228,
+          0.243,
+          0.25
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Bitmap Heap Scan": 3,
+          "BitmapOr": 1,
+          "Bitmap Index Scan": 5,
+          "Nested Loop": 3,
+          "Seq Scan": 1,
+          "Index Scan": 1,
+          "Index Only Scan": 2
+        }
+      }
+    },
+    {
+      "scenario": "Especial",
+      "matches": 20,
+      "before": {
+        "medianMs": 31.61,
+        "samplesMs": [
+          30.924,
+          31.011,
+          31.61,
+          32.8,
+          33.693
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.175,
+        "samplesMs": [
+          0.155,
+          0.161,
+          0.175,
+          0.181,
+          0.19
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Bitmap Heap Scan": 3,
+          "BitmapOr": 1,
+          "Bitmap Index Scan": 5,
+          "Nested Loop": 3,
+          "Seq Scan": 1,
+          "Index Scan": 1,
+          "Index Only Scan": 2
+        }
+      }
+    },
+    {
+      "scenario": "Filtros",
+      "matches": 19980,
+      "before": {
+        "medianMs": 34.906,
+        "samplesMs": [
+          34.402,
+          34.501,
+          34.906,
+          37.924,
+          39.214
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 7.754,
+        "samplesMs": [
+          7.534,
+          7.717,
+          7.754,
+          8.774,
+          14.85
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Bitmap Heap Scan": 3,
+          "BitmapOr": 1,
+          "Bitmap Index Scan": 5,
+          "Nested Loop": 3,
+          "Seq Scan": 1,
+          "Index Scan": 1,
+          "Index Only Scan": 2
+        }
+      }
+    },
+    {
+      "scenario": "Filtro",
+      "matches": 19980,
+      "before": {
+        "medianMs": 24.96,
+        "samplesMs": [
+          22.155,
+          24.642,
+          24.96,
+          25.411,
+          27.619
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 20.913,
+        "samplesMs": [
+          20.068,
+          20.172,
+          20.913,
+          25.655,
+          25.79
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Seq Scan": 2,
+          "Nested Loop": 3,
+          "Index Scan": 1,
+          "Bitmap Heap Scan": 2,
+          "Bitmap Index Scan": 2,
+          "Index Only Scan": 2
+        }
+      }
+    },
+    {
+      "scenario": "%",
+      "matches": 21,
+      "before": {
+        "medianMs": 28.997,
+        "samplesMs": [
+          27.909,
+          28.663,
+          28.997,
+          29.583,
+          29.989
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Result": 1,
+          "Hash Join": 1,
+          "Seq Scan": 3,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 56.985,
+        "samplesMs": [
+          40.624,
+          44.447,
+          56.985,
+          62.164,
+          66.106
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Seq Scan": 3,
+          "Hash Join": 1,
+          "Hash": 1,
+          "Result": 1,
+          "Nested Loop": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1,
+          "Index Only Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "_",
+      "matches": 1,
+      "before": {
+        "medianMs": 34.657,
+        "samplesMs": [
+          32.035,
+          32.92,
+          34.657,
+          35.153,
+          44.102
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Result": 1,
+          "Hash Join": 1,
+          "Seq Scan": 3,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 47.673,
+        "samplesMs": [
+          41.783,
+          44.878,
+          47.673,
+          68.56,
+          74.661
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Seq Scan": 3,
+          "Hash Join": 1,
+          "Hash": 1,
+          "Result": 1,
+          "Nested Loop": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1,
+          "Index Only Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "\\",
+      "matches": 0,
+      "before": {
+        "medianMs": 30.231,
+        "samplesMs": [
+          28.762,
+          29.312,
+          30.231,
+          30.618,
+          34.571
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Result": 1,
+          "Hash Join": 1,
+          "Seq Scan": 3,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 46.626,
+        "samplesMs": [
+          41.557,
+          43.338,
+          46.626,
+          55.26,
+          59.908
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Seq Scan": 3,
+          "Hash Join": 1,
+          "Hash": 1,
+          "Result": 1,
+          "Nested Loop": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1,
+          "Index Only Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "---",
+      "matches": 0,
+      "before": {
+        "medianMs": 35.917,
+        "samplesMs": [
+          32.602,
+          35.293,
+          35.917,
+          38.406,
+          39.928
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Result": 1,
+          "Hash Join": 1,
+          "Seq Scan": 3,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 44.924,
+        "samplesMs": [
+          42.029,
+          42.262,
+          44.924,
+          56.454,
+          60.012
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Seq Scan": 2,
+          "Nested Loop": 2,
+          "Index Scan": 1,
+          "Result": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1,
+          "Index Only Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "ÁRBOL",
+      "matches": 1,
+      "before": {
+        "medianMs": 41.78,
+        "samplesMs": [
+          29.888,
+          30.565,
+          41.78,
+          49.041,
+          61.182
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.135,
+        "samplesMs": [
+          0.068,
+          0.077,
+          0.135,
+          0.152,
+          0.237
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Bitmap Heap Scan": 3,
+          "BitmapOr": 1,
+          "Bitmap Index Scan": 5,
+          "Nested Loop": 3,
+          "Seq Scan": 1,
+          "Index Scan": 1,
+          "Index Only Scan": 2
+        }
+      }
+    },
+    {
+      "scenario": "Ñ",
+      "matches": 1,
+      "before": {
+        "medianMs": 32.22,
+        "samplesMs": [
+          30.995,
+          31.059,
+          32.22,
+          35.724,
+          44.054
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 57.524,
+        "samplesMs": [
+          45.339,
+          54.798,
+          57.524,
+          60.23,
+          66.634
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Seq Scan": 3,
+          "Nested Loop": 3,
+          "Index Scan": 1,
+          "Index Only Scan": 2,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "İ",
+      "matches": 1,
+      "before": {
+        "medianMs": 37.853,
+        "samplesMs": [
+          33.961,
+          36.618,
+          37.853,
+          40.926,
+          51.531
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 61.934,
+        "samplesMs": [
+          48.814,
+          56.049,
+          61.934,
+          65.508,
+          70.184
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Seq Scan": 3,
+          "Nested Loop": 3,
+          "Index Scan": 1,
+          "Index Only Scan": 2,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "ß",
+      "matches": 1,
+      "before": {
+        "medianMs": 30.559,
+        "samplesMs": [
+          28.814,
+          29.744,
+          30.559,
+          30.85,
+          43.771
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 48.716,
+        "samplesMs": [
+          42.987,
+          47.113,
+          48.716,
+          50.093,
+          59.45
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Seq Scan": 3,
+          "Nested Loop": 3,
+          "Index Scan": 1,
+          "Index Only Scan": 2,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "A B",
+      "matches": 1,
+      "before": {
+        "medianMs": 34.393,
+        "samplesMs": [
+          29.508,
+          30.176,
+          34.393,
+          34.826,
+          41.968
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.981,
+        "samplesMs": [
+          0.972,
+          0.977,
+          0.981,
+          1.028,
+          1.122
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Bitmap Heap Scan": 2,
+          "BitmapOr": 1,
+          "Bitmap Index Scan": 4,
+          "Nested Loop": 3,
+          "Seq Scan": 2,
+          "Index Scan": 1,
+          "Index Only Scan": 2
+        }
+      }
+    },
+    {
+      "scenario": "A  B",
+      "matches": 1,
+      "before": {
+        "medianMs": 36.777,
+        "samplesMs": [
+          36.39,
+          36.705,
+          36.777,
+          40.602,
+          45.094
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 1.353,
+        "samplesMs": [
+          0.928,
+          1.051,
+          1.353,
+          1.411,
+          2.678
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Bitmap Heap Scan": 2,
+          "BitmapOr": 1,
+          "Bitmap Index Scan": 4,
+          "Nested Loop": 3,
+          "Seq Scan": 2,
+          "Index Scan": 1,
+          "Index Only Scan": 2
+        }
+      }
+    },
+    {
+      "scenario": "%_'\\",
+      "matches": 0,
+      "before": {
+        "medianMs": 34.785,
+        "samplesMs": [
+          29.294,
+          30.166,
+          34.785,
+          37.235,
+          42.228
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Result": 1,
+          "Hash Join": 1,
+          "Seq Scan": 3,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 49.995,
+        "samplesMs": [
+          42.273,
+          46.053,
+          49.995,
+          54.445,
+          55.062
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Seq Scan": 2,
+          "Nested Loop": 2,
+          "Index Scan": 1,
+          "Result": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1,
+          "Index Only Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "sin-coincidencias",
+      "matches": 0,
+      "before": {
+        "medianMs": 36.219,
+        "samplesMs": [
+          34.644,
+          34.762,
+          36.219,
+          37.101,
+          37.455
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Hash Join": 1,
+          "Seq Scan": 4,
+          "Hash": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.257,
+        "samplesMs": [
+          0.247,
+          0.252,
+          0.257,
+          0.293,
+          0.301
+        ],
+        "nodes": {
+          "Aggregate": 2,
+          "Append": 1,
+          "Bitmap Heap Scan": 3,
+          "BitmapOr": 1,
+          "Bitmap Index Scan": 5,
+          "Nested Loop": 3,
+          "Seq Scan": 1,
+          "Index Scan": 1,
+          "Index Only Scan": 2
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Prototipo aislado sintetico; aun no integrado en servicios.",
+    "Terminos frecuentes pueden empeorar: requiere estrategia de fallback antes de integrar.",
+    "Sin concurrrencia ni SLA; costos de escritura son una muestra.",
+    "Vacio debe usar listado sin filtro en integracion; no se ensaya UNION para vacio."
+  ]
+}

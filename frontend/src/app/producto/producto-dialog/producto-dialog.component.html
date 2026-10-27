@@ -6,9 +6,14 @@
   </button>
 </div>
 
-<form [formGroup]="form" (ngSubmit)="guardar()" class="flex flex-col h-full">
+<form [formGroup]="form" (ngSubmit)="!webTabActive && guardar()" class="flex flex-col h-full">
   <div mat-dialog-content class="!p-0">
-    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" (selectedIndexChange)="selectedTab = $event">
+      <mat-tab label="Ficha web" *ngIf="isEditMode && canPrepareWeb">
+        <ng-template matTabContent>
+          <app-web-product-editor [productId]="data.idProducto" />
+        </ng-template>
+      </mat-tab>
       <mat-tab label="Datos Generales">
         <div class="p-6 pt-4 grid grid-cols-1 md:grid-cols-2 gap-x-4">
           <div class="col-span-1 md:col-span-2 flex flex-col items-center mb-4 p-4 border-2 border-dashed border-gray-300 rounded-md bg-gray-50">
@@ -154,7 +159,7 @@
           <div class="p-4 rounded-xl border border-gray-200"><span class="text-sm text-gray-500">Precio de venta</span><strong class="block text-xl">{{ data.precioUnitario | currency:'MXN' }}</strong></div>
         </div>
         <section><h3 class="font-bold mb-2">Movimientos recientes</h3><div class="overflow-auto border rounded-xl"><table class="w-full text-sm"><thead><tr><th class="p-3 text-left">Fecha</th><th class="p-3 text-left">Movimiento</th><th class="p-3 text-right">Cantidad</th><th class="p-3 text-right">Existencia final</th><th class="p-3 text-left">Referencia</th></tr></thead><tbody>@for(m of kardex();track m.id_kardex){<tr class="border-t"><td class="p-3">{{m.fecha|date:'short'}}</td><td class="p-3"><span class="badge badge-info">{{m.tipo_movimiento}}</span></td><td class="p-3 text-right">{{m.cantidad}}</td><td class="p-3 text-right font-bold">{{m.stock_resultante}}</td><td class="p-3">{{m.referencia||'—'}}</td></tr>}@empty{<tr><td colspan="5"><div class="erp-empty-state compact">No hay movimientos registrados.</div></td></tr>}</tbody></table></div></section>
-        <section><h3 class="font-bold mb-2">Cotizaciones de proveedores</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3">@for(c of cotizacionesProveedor();track c.id_cotizacion_prov){<article class="p-4 border rounded-xl"><strong>{{c.proveedor||c.razon_social||'Proveedor'}}</strong><p class="m-0">{{c.precio|currency:'MXN'}} · Entrega {{c.dias_entrega||0}} días</p><small>{{c.fecha|date:'shortDate'}}</small></article>}@empty{<div class="erp-empty-state compact md:col-span-2">Aún no hay cotizaciones de proveedor.</div>}</div></section>
+        <section><h3 class="font-bold mb-2">Cotizaciones de proveedores</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3">@for(c of cotizacionesProveedor();track c.id_cotizacion_prov){<article class="p-4 border rounded-xl"><strong>{{c.proveedor_nombre||'Proveedor'}}</strong><p class="m-0">{{c.precio_cotizado|currency:'MXN'}} · Entrega {{c.dias_entrega||0}} días</p><small>{{c.fecha_registro|date:'shortDate'}}</small></article>}@empty{<div class="erp-empty-state compact md:col-span-2">Aún no hay cotizaciones de proveedor.</div>}</div></section>
       </div>
     </ng-template>
   </mat-tab>
@@ -279,6 +284,6 @@
 
   <div mat-dialog-actions align="end" class="!px-6 !py-4 border-t border-gray-100 bg-gray-50/30">
     <button mat-stroked-button type="button" class="!rounded-lg" (click)="cerrar()">Cancelar</button>
-    <button mat-flat-button color="primary" type="submit" class="!rounded-lg" [disabled]="isSaving() || form.invalid">Guardar</button>
+    <button *ngIf="!webTabActive" mat-flat-button color="primary" type="submit" class="!rounded-lg" [disabled]="isSaving() || form.invalid">Guardar</button>
   </div>
 </form>

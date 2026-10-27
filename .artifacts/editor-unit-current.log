@@ -1,0 +1,46 @@
+
+> test:frontend
+> npm --workspace frontend test -- --watch=false --browsers=ChromeHeadless --include=src/app/producto/web-product-editor.component.spec.ts
+
+
+> frontend@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless --include=src/app/producto/web-product-editor.component.spec.ts
+
+> Building...
+√ Building...
+Initial chunk files                                    | Names                                               |  Raw size
+chunk-RKAPEXNM.js                                      | -                                                   |   2.26 MB | 
+polyfills.js                                           | polyfills                                           |   1.02 MB | 
+spec-app-producto-web-product-editor.component.spec.js | spec-app-producto-web-product-editor.component.spec | 763.53 kB | 
+jasmine-cleanup-1.js                                   | jasmine-cleanup-1                                   |  67.13 kB | 
+styles.css                                             | styles                                              |  62.72 kB | 
+test_main.js                                           | test_main                                           |  21.68 kB | 
+chunk-7TFVBDWB.js                                      | -                                                   |   5.89 kB | 
+jasmine-cleanup-0.js                                   | jasmine-cleanup-0                                   | 397 bytes | 
+
+                                                       | Initial total                                       |   4.20 MB
+
+Application bundle generation complete. [6.385 seconds] - 2026-10-06T18:38:35.597Z
+
+06 10 2026 12:38:35.971:INFO [karma-server]: Karma v6.4.4 server started at http://localhost:9876/
+06 10 2026 12:38:35.972:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+06 10 2026 12:38:35.996:INFO [launcher]: Starting browser ChromeHeadless
+06 10 2026 12:38:37.371:INFO [Chrome Headless 122.0.6261.129 (Windows 10)]: Connected on socket lp_pgKBBB89tfU5DAAAA with id 81109470
+Chrome Headless 122.0.6261.129 (Windows 10): Executed 0 of 12[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 1 of 12[32m SUCCESS[39m (0 secs / 0.072 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 2 of 12[32m SUCCESS[39m (0 secs / 0.079 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 3 of 12[32m SUCCESS[39m (0 secs / 0.085 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 4 of 12[32m SUCCESS[39m (0 secs / 0.089 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 5 of 12[32m SUCCESS[39m (0 secs / 0.093 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 6 of 12[32m SUCCESS[39m (0 secs / 0.098 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 7 of 12[32m SUCCESS[39m (0 secs / 0.102 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 8 of 12[32m SUCCESS[39m (0 secs / 0.107 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 9 of 12[32m SUCCESS[39m (0 secs / 0.111 secs)
+[1A[2KWARN: [36m'Spec 'Editor web no exporta borrador ni cambios sin guardar' has no expectations.'[39m
+Chrome Headless 122.0.6261.129 (Windows 10): Executed 9 of 12[32m SUCCESS[39m (0 secs / 0.111 secs)
+WARN: 'Spec 'Editor web no exporta borrador ni cambios sin guardar' has no expectations.'
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 10 of 12[32m SUCCESS[39m (0 secs / 0.114 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 11 of 12[32m SUCCESS[39m (0 secs / 0.117 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 12 of 12[32m SUCCESS[39m (0 secs / 0.119 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 12 of 12[32m SUCCESS[39m (0.13 secs / 0.119 secs)
+[32mTOTAL: 12 SUCCESS[39m

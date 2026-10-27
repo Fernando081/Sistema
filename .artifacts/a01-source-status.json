@@ -1,0 +1,36 @@
+{
+  "phase": "A01.1",
+  "migration111Checksum": true,
+  "sourceVerifications": 0,
+  "pendingCopies": 0,
+  "defaultRoles": [
+    "admin"
+  ],
+  "http": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/almacen/movil/pedidos",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:4300/almacen/movil",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503
+    },
+    {
+      "url": "http://127.0.0.1:4600/",
+      "status": 200
+    }
+  ],
+  "passed": true
+}

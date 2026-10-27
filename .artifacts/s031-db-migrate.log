@@ -1,0 +1,5 @@
+
+> db:migrate
+> node backend/run-migrations.js
+
+Aplicada: 098_auditoria_append_only.sql

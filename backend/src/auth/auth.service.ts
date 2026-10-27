@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   Logger,
   UnauthorizedException,
@@ -16,10 +17,14 @@ import {
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { RolUsuario } from '../common/enums/app.enums';
-import { LoginResponse, JwtPayload } from './auth.types';
+import { LoginResponse, LoginResult, JwtPayload } from './auth.types';
 import { AuthUser } from './auth-user.entity';
 import { ChangePasswordDto, UpdateUserDto } from './auth.dto';
 import { queryRows } from '../common/database/typed-query';
+import { AuthSessionStore } from './auth-session.store';
+import { AuthMfaStore } from './auth-mfa.store';
+import { validatePasswordPolicy } from './password-policy';
+import { setAuditActor } from './audit-actor';
 
 @Injectable()
 export class AuthService {
@@ -29,11 +34,15 @@ export class AuthService {
   private readonly authUser = this.getEnvOrDefault('AUTH_USERNAME', RolUsuario.ADMIN);
   private readonly authPassword = process.env.AUTH_PASSWORD ?? '';
   private readonly expiresInSeconds = 60 * 60 * 8;
+  private readonly sessions: AuthSessionStore;
+  readonly mfa: AuthMfaStore;
 
   constructor(
     @InjectRepository(AuthUser)
     private readonly authUserRepository: Repository<AuthUser>,
   ) {
+    this.sessions = new AuthSessionStore(this.authUserRepository.manager);
+    this.mfa = new AuthMfaStore(this.authUserRepository.manager);
     this.validateProductionSecurity();
     if (!this.hasConfiguredJwtSecret && process.env.NODE_ENV !== 'test') {
       this.logger.warn('JWT_SECRET no está configurado; se usará una clave temporal hasta reiniciar.');
@@ -64,6 +73,7 @@ export class AuthService {
     username: string,
     password: string,
     role = RolUsuario.USER,
+    actor?:JwtPayload,
   ): Promise<{ idUser: number; username: string; role: string }> {
     username = username.trim();
     if (!/^\S{3,100}$/.test(username) || !Object.values(RolUsuario).includes(role)) {
@@ -88,7 +98,11 @@ export class AuthService {
     });
 
     try {
-      const savedUser = await this.authUserRepository.save(newUser);
+      const savedUser = actor ? await this.authUserRepository.manager.transaction(async manager=>{
+        const rows=await queryRows(manager,"SELECT id_user FROM auth_user WHERE id_user=$1 AND role='admin' AND is_active AND token_version=$2 FOR UPDATE",[actor.idUser,actor.version]);
+        if(!rows.length)throw new ForbiddenException('Inicia sesión con un administrador vigente');
+        await setAuditActor(manager,actor.idUser);return manager.getRepository(AuthUser).save(newUser);
+      }):await this.authUserRepository.save(newUser);
 
       this.logger.log(
         `User registered successfully: username=${savedUser.username}, role=${savedUser.role}, idUser=${savedUser.idUser}`,
@@ -108,7 +122,7 @@ export class AuthService {
     }
   }
 
-  async login(username: string, password: string): Promise<LoginResponse> {
+  async login(username: string, password: string, userAgent?: string): Promise<LoginResult> {
     const normalizedUsername = username.trim();
     const dbResult = await this.validateFromDatabase(normalizedUsername, password);
     if (!dbResult.databaseAvailable) {
@@ -137,6 +151,16 @@ export class AuthService {
       
     }
 
+    if(dbUser?.idUser){const challenge=await this.mfa.challenge(dbUser);if(challenge)return challenge;}
+    return this.issueSession(normalizedUsername,dbUser,userAgent);
+  }
+
+  async completeMfa(challenge:string,code:string,userAgent?:string):Promise<LoginResponse>{
+    const user=await this.mfa.complete(challenge,code);
+    return this.issueSession(user.username,user,userAgent);
+  }
+
+  private async issueSession(normalizedUsername:string,dbUser:AuthUser|null,userAgent?:string):Promise<LoginResponse>{
     const issuedAt = Math.floor(Date.now() / 1000);
     const payload: JwtPayload = {
       sub: normalizedUsername,
@@ -148,6 +172,7 @@ export class AuthService {
       iss: 'sistema-erp',
       aud: 'sistema-web',
     };
+    if(dbUser?.idUser)payload.sid=await this.sessions.create(dbUser,payload.exp,userAgent);
 
     return {
       access_token: this.sign(payload),
@@ -199,6 +224,7 @@ export class AuthService {
       !Number.isSafeInteger(payload.version) || payload.version < 0 ||
       payload.iss !== 'sistema-erp' || payload.aud !== 'sistema-web' ||
       (payload.idUser !== undefined && (!Number.isSafeInteger(payload.idUser) || payload.idUser <= 0)) ||
+      (payload.idUser !== undefined && (typeof payload.sid !== 'string' || !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(payload.sid))) ||
       payload.iat > Math.floor(Date.now() / 1000) + 30 || payload.exp <= payload.iat ||
       payload.exp - payload.iat > this.expiresInSeconds
     ) {
@@ -226,6 +252,7 @@ export class AuthService {
     if (!user || !user.isActive || user.username !== payload.sub || (user.tokenVersion ?? 0) !== payload.version || user.role !== payload.role) {
       throw new UnauthorizedException('La sesión fue revocada. Inicia sesión nuevamente.');
     }
+    await this.sessions.validate(payload);
     return payload;
   }
 
@@ -234,11 +261,11 @@ export class AuthService {
   }
 
   async listUsers() {
-    return this.authUserRepository.find({
-      select: { idUser: true, username: true, role: true, isActive: true },
-      order: { username: 'ASC' },
-      take: 500,
-    });
+    return queryRows(this.authUserRepository.manager,`SELECT u.id_user AS "idUser",u.username,u.role,u.is_active AS "isActive",
+      u.token_version AS "accessVersion",p.id_profile AS "idProfile",p.name AS "profileName",
+      (SELECT count(*)::int FROM app_user_permission WHERE id_user=u.id_user) AS "overrideCount"
+      FROM auth_user u LEFT JOIN app_user_access_profile a ON a.id_user=u.id_user
+      LEFT JOIN app_access_profile p ON p.id_profile=a.id_profile ORDER BY u.username LIMIT 500`);
   }
 
   async updateUser(id: number, changes: UpdateUserDto, actor: JwtPayload) {
@@ -250,6 +277,9 @@ export class AuthService {
     return this.authUserRepository.manager.transaction(async (manager) => {
       // Serializa cambios administrativos para conservar al menos un administrador activo.
       await manager.query("SELECT pg_advisory_xact_lock(hashtext('auth-user-administration'))");
+      const administrator=await queryRows(manager,"SELECT id_user FROM auth_user WHERE id_user=$1 AND role='admin' AND is_active AND token_version=$2 FOR UPDATE",[actor.idUser,actor.version]);
+      if(!administrator.length)throw new ForbiddenException('Inicia sesión con un administrador vigente');
+      await setAuditActor(manager,actor.idUser);
       const repo = manager.getRepository(AuthUser);
       const user = await repo.findOne({ where: { idUser: id }, lock: { mode: 'pessimistic_write' } });
       if (!user) throw new NotFoundException('Usuario no encontrado');
@@ -264,6 +294,7 @@ export class AuthService {
         }
       }
       if (nextRole !== user.role || nextActive !== user.isActive) {
+        if (nextRole === RolUsuario.ADMIN) await manager.query('DELETE FROM app_user_access_profile WHERE id_user=$1',[id]);
         user.tokenVersion = (user.tokenVersion ?? 0) + 1;
         user.role = nextRole;
         user.isActive = nextActive;
@@ -277,23 +308,32 @@ export class AuthService {
   async getUserPermissions(id:number){
     const user=await this.authUserRepository.findOne({where:{idUser:id}});
     if(!user)throw new NotFoundException('Usuario no encontrado');
-    return queryRows<{permissionCode:string;description:string;granted:boolean;overridden:boolean}>(this.authUserRepository.manager,`
-      SELECT p.code AS "permissionCode",p.description,
-        coalesce(up.granted,exists(SELECT 1 FROM app_role_permission rp WHERE rp.role=$2 AND rp.permission_code=p.code)) AS granted,
+    return queryRows<{permissionCode:string;description:string;granted:boolean;overridden:boolean;inheritedGranted:boolean;accessVersion:number}>(this.authUserRepository.manager,`
+      SELECT p.code AS "permissionCode",p.description,$3::int AS "accessVersion",
+        fn_effective_permission($1::integer,$2::text,p.code) AS granted,
+        COALESCE((SELECT EXISTS(SELECT 1 FROM app_access_profile_permission pp WHERE pp.id_profile=a.id_profile AND pp.permission_code=p.code)
+          FROM app_user_access_profile a WHERE a.id_user=$1 AND $2='user'),
+          EXISTS(SELECT 1 FROM app_role_permission rp WHERE rp.role=$2 AND rp.permission_code=p.code)) AS "inheritedGranted",
         up.permission_code IS NOT NULL AS overridden
       FROM app_permission p LEFT JOIN app_user_permission up ON up.id_user=$1 AND up.permission_code=p.code
-      ORDER BY split_part(p.code,'.',1),p.code`,[id,user.role]);
+      ORDER BY split_part(p.code,'.',1),p.code`,[id,user.role,user.tokenVersion]);
   }
 
-  async updateUserPermissions(id:number,permissions:Array<{permissionCode:string;granted:boolean}>){
+  async updateUserPermissions(id:number,permissions:Array<{permissionCode:string;granted:boolean}>,accessVersion:number,actor:JwtPayload){
     if(new Set(permissions.map(item=>item.permissionCode)).size!==permissions.length)throw new BadRequestException('Hay permisos repetidos');
     return this.authUserRepository.manager.transaction(async manager=>{
-      const users=await queryRows<{id_user:number}>(manager,'SELECT id_user FROM auth_user WHERE id_user=$1 FOR UPDATE',[id]);
+      await manager.query("SELECT pg_advisory_xact_lock(hashtext('auth-user-administration'))");
+      const administrator=await queryRows(manager,"SELECT id_user FROM auth_user WHERE id_user=$1 AND role='admin' AND is_active AND token_version=$2 FOR UPDATE",[actor.idUser,actor.version]);
+      if(!administrator.length)throw new ForbiddenException('Inicia sesión con un administrador vigente');
+      await setAuditActor(manager,actor.idUser);
+      const users=await queryRows<{id_user:number;token_version:number}>(manager,'SELECT id_user,token_version FROM auth_user WHERE id_user=$1 FOR UPDATE',[id]);
       if(!users.length)throw new NotFoundException('Usuario no encontrado');
+      if(users[0].token_version!==accessVersion)throw new ConflictException('El acceso del usuario cambió; vuelve a abrir sus permisos');
       const valid=permissions.length?await queryRows<{code:string}>(manager,'SELECT code FROM app_permission WHERE code=ANY($1::text[])',[permissions.map(item=>item.permissionCode)]):[];
       if(valid.length!==permissions.length)throw new BadRequestException('La lista contiene permisos desconocidos');
       await manager.query('DELETE FROM app_user_permission WHERE id_user=$1',[id]);
       for(const item of permissions)await manager.query(`INSERT INTO app_user_permission(id_user,permission_code,granted) VALUES($1,$2,$3)`,[id,item.permissionCode,item.granted]);
+      await manager.query('UPDATE auth_user SET token_version=token_version+1 WHERE id_user=$1',[id]);
       return {message:'Permisos actualizados'};
     });
   }
@@ -308,6 +348,7 @@ export class AuthService {
         throw new UnauthorizedException('La contraseña actual o la sesión no son válidas');
       }
       user.passwordHash = await AuthService.hashPassword(body.newPassword);
+      await setAuditActor(manager,actor.idUser);
       user.tokenVersion += 1;
       await repo.save(user);
     });
@@ -315,16 +356,16 @@ export class AuthService {
   }
 
   async logout(actor: JwtPayload) {
-    if (actor.idUser) {
-      await this.authUserRepository.increment({ idUser: actor.idUser }, 'tokenVersion', 1);
-    }
-    return { message: 'Sesiones cerradas' };
+    if(actor.idUser&&actor.sid)return this.sessions.revoke(actor,actor.sid);
+    return { message: 'Sesión local cerrada' };
   }
 
+  listSessions(actor: JwtPayload) { return this.sessions.list(actor); }
+  revokeSession(actor: JwtPayload,id: string) { return this.sessions.revoke(actor,id); }
+  logoutAll(actor: JwtPayload) { return this.sessions.revokeAll(actor); }
+
   private validateNewPassword(password: string) {
-    if (typeof password !== 'string' || password.length < 10 || Buffer.byteLength(password, 'utf8') > 72) {
-      throw new BadRequestException('La contraseña debe tener al menos 10 caracteres y máximo 72 bytes');
-    }
+    validatePasswordPolicy(password);
   }
 
   private async validateFromDatabase(

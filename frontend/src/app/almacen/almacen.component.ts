@@ -1,4 +1,6 @@
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { AlmacenMovilService } from './almacen-movil.service';
 import { Component, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +18,7 @@ import { ClienteService } from '../services/cliente.service';
 import { ProductoService } from '../services/producto.service';
 import { NotificationService } from '../shared/notification.service';
 
-@Component({ selector: 'app-almacen', standalone: true, imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatTabsModule], templateUrl: './almacen.component.html', styleUrl: './almacen.component.css' })
+@Component({ selector: 'app-almacen', standalone: true, imports: [RouterLink, CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatTabsModule], templateUrl: './almacen.component.html', styleUrl: './almacen.component.css' })
 export class AlmacenComponent {
   private readonly api = inject(AlmacenService); private readonly productsApi = inject(ProductoService); private readonly clientsApi = inject(ClienteService); private readonly fb = inject(FormBuilder); private readonly notice = inject(NotificationService);
   readonly warehouses = signal<Almacen[]>([]); readonly locations = signal<Ubicacion[]>([]); readonly stock = signal<ExistenciaUbicacion[]>([]); readonly products = signal<Producto[]>([]); readonly clients = signal<Cliente[]>([]);
@@ -46,5 +48,8 @@ export class AlmacenComponent {
   saveCore() { if (this.core.invalid) return this.core.markAllAsTouched(); const r = this.core.getRawValue(); this.api.crearCasco({ ...r, idCliente: r.idCliente > 0 ? r.idCliente : undefined }).subscribe({ next: () => { this.notice.show('Casco recuperable registrado.', 3500, 'info'); this.core.reset({ idProducto: 0, idCliente: 0, deposito: 0, referencia: '', notas: '' }); this.load(); }, error: () => this.notice.show('No se pudo registrar el casco.') }); }
   nextCore(c: CascoRecuperable) { const next: Record<string, string> = { Pendiente: 'Recibido', Recibido: 'Enviado', Enviado: 'Acreditado' }; const estado = next[c.estado]; if (!estado) return; this.api.actualizarCasco(c.idCasco, estado).subscribe({ next: () => { this.notice.show(`Casco marcado como ${estado}.`, 3500, 'info'); this.load(); }, error: () => this.notice.show('No se pudo actualizar el casco.') }); }
   previewLabel() { if (this.labelForm.invalid) return; const r = this.labelForm.getRawValue(); const req = r.tipo === 'Producto' ? this.api.etiquetaProducto(r.id) : this.api.etiquetaUbicacion(r.id); req.subscribe({ next: x => { this.labelType.set(r.tipo as 'Producto' | 'Ubicación'); this.label.set(x); }, error: () => this.notice.show('No se pudo generar la etiqueta.') }); }
+  private readonly mobileApi=inject(AlmacenMovilService);
+  downloadQr(){const label=this.label();if(!label)return;const kind=this.labelType()==='Producto'?'producto':'ubicacion',id=Number(label[kind==='producto'?'idProducto':'idUbicacion']);
+    this.mobileApi.label(kind,id).subscribe({next:blob=>{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`etiqueta-${kind}-${id}.pdf`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);},error:()=>this.notice.show('No se pudo descargar la etiqueta QR. Revisa tu permiso de escaneo.')});}
   printLabel() { window.print(); }
 }

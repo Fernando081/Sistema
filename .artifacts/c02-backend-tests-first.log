@@ -1,0 +1,118 @@
+
+> test
+> npm --workspace backend test -- --runInBand && npm --workspace backend run test:e2e -- --runInBand --runInBand
+
+
+> backend@0.0.1 test
+> jest --runInBand
+
+FAIL src/crm/crm-secuencias.spec.ts (15.864 s)
+  ● C02: contratos de secuencias y protección de tareas › rechaza pasos o campos fuera del contrato: %j
+
+    thrown: "Exceeded timeout of 5000 ms for a test while waiting for `done()` to be called.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      at ../../node_modules/jest/node_modules/jest-each/build/bind.js:47:15
+          at Array.forEach (<anonymous>)
+      at crm/file:/C:/Sistema/backend/src/crm/crm-secuencias.spec.ts:15:163
+      at Object.<anonymous> (crm/file:/C:/Sistema/backend/src/crm/crm-secuencias.spec.ts:10:1)
+
+PASS src/crm/crm-solicitudes-web.controller.spec.ts
+PASS src/pedido/pedido.module.spec.ts
+[Nest] 27852  - 21/10/2026, 12:19:32 a.m.     LOG [AuthService] User registered successfully: username=nuevo-admin, role=admin, idUser=1
+[Nest] 27852  - 21/10/2026, 12:19:32 a.m.     LOG [AuthService] User registered successfully: username=nuevo-por-defecto, role=user, idUser=1
+[Nest] 27852  - 21/10/2026, 12:19:32 a.m.     LOG [AuthService] User registered successfully: username=usuario-con-log, role=user, idUser=1
+[Nest] 27852  - 21/10/2026, 12:19:33 a.m.   ERROR [AuthService] Invalid password hash: storedHash is null, undefined, empty, or not a string
+[Nest] 27852  - 21/10/2026, 12:19:33 a.m.   ERROR [AuthService] No se pudo validar autenticación contra la base de datos.
+PASS src/auth/auth.service.spec.ts
+PASS src/crm/crm.module.spec.ts
+PASS src/crm/campana-consentimiento-policy.spec.ts
+PASS src/auth/password-recovery.service.spec.ts
+PASS src/crm/crm-web-metrics.service.spec.ts
+PASS src/finanzas/finanzas.module.spec.ts
+PASS src/crm/web-lead-bridge.controller.spec.ts
+PASS src/venta/venta.integridad.spec.ts
+PASS src/cuentas-proveedor/cuentas-proveedor.module.spec.ts
+PASS src/pago/pago.service.spec.ts
+PASS src/cotizacion/documentos-inexistentes.spec.ts
+PASS src/cotizacion/cotizacion.integridad.spec.ts
+PASS src/cliente/cliente.service.spec.ts
+PASS src/venta/venta.module.spec.ts
+PASS src/pago/pago.module.spec.ts
+PASS src/compra/compra.service.spec.ts
+PASS src/crm/crm.service.spec.ts
+PASS src/web-catalog/web-catalog.spec.ts
+PASS src/producto/producto-list.spec.ts
+PASS src/pedido/pedido.service.spec.ts
+PASS src/almacen/almacen.service.spec.ts
+PASS src/finanzas/finanzas.service.spec.ts
+PASS src/fiscal/fiscal-xml.builder.spec.ts
+PASS src/pago/pago.integridad.spec.ts
+PASS src/dashboard/dashboard.service.spec.ts
+[Nest] 27852  - 21/10/2026, 12:19:41 a.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 27852  - 21/10/2026, 12:19:41 a.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 27852  - 21/10/2026, 12:19:41 a.m.     LOG [DashboardService] Refresco de vistas completado con éxito.
+[Nest] 27852  - 21/10/2026, 12:19:41 a.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 27852  - 21/10/2026, 12:19:41 a.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 27852  - 21/10/2026, 12:19:41 a.m.     LOG [DashboardService] Refresco de vistas completado con éxito.
+[Nest] 27852  - 21/10/2026, 12:19:41 a.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+PASS src/cuentas-proveedor/cuentas-proveedor.service.spec.ts
+PASS src/web-catalog/web-catalog-export.spec.ts
+PASS src/notification/notification.service.spec.ts
+PASS src/auth/permissions.guard.spec.ts
+PASS src/crm/crm-solicitudes-web-maintenance.service.spec.ts
+PASS src/pago-proveedor/pago-proveedor.service.spec.ts
+PASS src/abastecimiento/abastecimiento.service.spec.ts
+PASS src/caja/caja.service.spec.ts
+PASS src/venta/factura-query.spec.ts
+PASS src/compra/compra-search.spec.ts
+PASS src/compra/compra-query.spec.ts
+PASS src/cotizacion/cotizacion-query.spec.ts
+PASS src/cotizacion/cotizacion-version-policy.spec.ts
+PASS src/common/directory-query.spec.ts
+PASS src/common/document-search.spec.ts
+PASS src/app.controller.spec.ts
+PASS src/comercial/commercial-policy.spec.ts
+PASS src/crm/unidad-piezas.dto.spec.ts
+PASS src/web-catalog/web-catalog-batch.spec.ts
+PASS src/finanzas/bank-statement.parser.spec.ts
+PASS src/crm/web-lead-bridge.config.spec.ts
+PASS src/auth/browser-auth.spec.ts
+PASS src/portal/portal-transport.spec.ts
+PASS src/auth/mfa-crypto.spec.ts
+PASS src/auth/auth-session.store.spec.ts
+PASS src/cuentas-proveedor/supplier-json.spec.ts
+PASS src/common/scheduled-job.spec.ts
+PASS src/auth/audit-actor.spec.ts
+PASS src/fiscal/fiscal.config.spec.ts
+PASS src/db-ssl.util.spec.ts
+PASS src/common/database/read-snapshot.spec.ts
+PASS src/common/scheduled-job-alerts.spec.ts
+PASS src/upload/image-validation.spec.ts
+PASS src/fiscal/providers/mock-fiscal.provider.spec.ts
+
+Summary of all failing tests
+FAIL crm/crm-secuencias.spec.ts (15.864 s)
+  ● C02: contratos de secuencias y protección de tareas › rechaza pasos o campos fuera del contrato: %j
+
+    thrown: "Exceeded timeout of 5000 ms for a test while waiting for `done()` to be called.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      at ../../node_modules/jest/node_modules/jest-each/build/bind.js:47:15
+          at Array.forEach (<anonymous>)
+      at crm/file:/C:/Sistema/backend/src/crm/crm-secuencias.spec.ts:15:163
+      at Object.<anonymous> (crm/file:/C:/Sistema/backend/src/crm/crm-secuencias.spec.ts:10:1)
+
+
+Test Suites: 1 failed, 61 passed, 62 total
+Tests:       1 failed, 299 passed, 300 total
+Snapshots:   0 total
+Time:        37.715 s
+Ran all test suites.
+npm error Lifecycle script `test` failed with error:
+npm error code 1
+npm error path C:\Sistema\backend
+npm error workspace backend@0.0.1
+npm error location C:\Sistema\backend
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c jest --runInBand

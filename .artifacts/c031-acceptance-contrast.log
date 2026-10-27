@@ -1,0 +1,113 @@
+{"type":"http_request","requestId":"0db61c6b-5ee4-4ccf-95bb-e74b39bc4e7c","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":42.66,"idUser":3}
+{"type":"http_request","requestId":"8c293be7-8ea8-4a29-a34a-52187991a765","method":"GET","path":"/api/v1/crm/bandeja","statusCode":403,"durationMs":11.13,"idUser":3}
+{"type":"http_request","requestId":"ae3f5ec8-0e40-46eb-850e-dfa208044287","method":"GET","path":"/api/v1/crm/bandeja","statusCode":403,"durationMs":6.59,"idUser":3}
+OK: ACL real: tareas propias/creadas, oportunidad asignada, otras fuentes administrativas403
+{"type":"http_request","requestId":"b78e6187-cbe2-40a9-be59-120c12c022bf","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":11.71,"idUser":2}
+OK: ADMIN incluye asuntos sin asignar y ajenos; excluye tareas/oportunidades cerradas
+{"type":"http_request","requestId":"a07ad75d-34a0-4290-b075-8f1630644477","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":8.24,"idUser":2}
+{"type":"http_request","requestId":"ada545a5-d0f9-47a6-ba15-29d2b5c8ccac","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":9.12,"idUser":2}
+OK: Búsqueda literal de comodines y parámetros sin inyección SQL
+{"type":"http_request","requestId":"973f96c5-d1a2-499e-80ce-d49c35a781d2","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":7.41,"idUser":2}
+{"type":"http_request","requestId":"86f8cfe4-10ca-4040-966b-510c17619c69","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":8.94,"idUser":2}
+{"type":"http_request","requestId":"c3d20834-f424-49ac-a912-4b9e66e5eafe","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":9.78,"idUser":2}
+OK: Plazos excluyentes de Tampico, sin fecha y resumen consistentes con filtros
+{"type":"http_request","requestId":"f0c8d35a-0665-4cfb-97b8-c2e3c9986c15","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":6.67,"idUser":2}
+{"type":"http_request","requestId":"59606640-89d6-406e-b7ff-5f9650b4b3c4","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":5.3,"idUser":2}
+{"type":"http_request","requestId":"eb7a3819-89e9-43d8-9dcb-f908a080110c","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":7.66,"idUser":2}
+{"type":"http_request","requestId":"38a8609b-8830-4dc6-97ca-443b1fddd7dd","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":5.74,"idUser":2}
+{"type":"http_request","requestId":"ece12c11-3e04-4b9c-882f-0dc5eac8d55c","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":7.63,"idUser":2}
+OK: Solicitudes vigentes sin conversión: descarta vencidas/purgadas/descartadas/vinculadas y no devuelve contactos o piezas
+{"type":"http_request","requestId":"8ba8c3dc-799d-4854-b06e-59cfcdbf4589","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":7.44,"idUser":2}
+{"type":"http_request","requestId":"2ca409cc-c47c-4a33-a585-b9a7d5e72b8d","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":5.68,"idUser":2}
+OK: Cotización pendiente real por vencer: identidad/fecha correctas y deja de aparecer al cancelarse
+{"type":"http_request","requestId":"cf6092b3-6798-459f-afa6-b2123a4db10d","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":6.93,"idUser":2}
+{"type":"http_request","requestId":"462d4e4a-5c89-4cd4-b9bc-a8b2fce9a3a9","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":7.12,"idUser":2}
+{"type":"http_request","requestId":"9a0a3b62-3849-4deb-af31-fcdd7f6cec10","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":8.31,"idUser":2}
+{"type":"http_request","requestId":"fe928229-d758-4c02-bbfa-6122fab54d5e","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":6.27,"idUser":2}
+OK: Paginación estable sin duplicados, totales completos y página vacía conservando resumen
+{"type":"http_request","requestId":"f9f6e191-0283-49c8-b6ed-02746bfde608","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":8.01,"idUser":2}
+{"type":"http_request","requestId":"bb79c9b2-679e-4ddd-b778-3ed045b8174c","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":8.7,"idUser":2}
+OK: Secuencia activa aparece; pausarla retira su tarea de la bandeja sin reactivar ni duplicar
+{"type":"http_request","requestId":"bd2d5640-27bc-4a8e-99d5-97fba6aef9b8","method":"GET","path":"/api/v1/crm/bandeja","statusCode":400,"durationMs":4.23,"idUser":2}
+{"type":"http_request","requestId":"3179e31b-95db-4ff7-ab0f-006e55661a04","method":"GET","path":"/api/v1/crm/bandeja","statusCode":400,"durationMs":3.88,"idUser":2}
+{"type":"http_request","requestId":"56f0eab6-3684-44a7-97d0-821149ca1ed0","method":"GET","path":"/api/v1/crm/bandeja","statusCode":400,"durationMs":4.68,"idUser":2}
+{"type":"http_request","requestId":"046ef4ac-8f3d-4429-b13b-8c8f099eb9b0","method":"GET","path":"/api/v1/crm/bandeja","statusCode":400,"durationMs":4.13,"idUser":2}
+{"type":"http_request","requestId":"4ec9e95d-6bd0-46e1-b152-019298b41936","method":"GET","path":"/api/v1/crm/bandeja","statusCode":400,"durationMs":5.23,"idUser":2}
+{"type":"http_request","requestId":"10fbad88-5b15-44fc-89f4-610cf82b7770","method":"GET","path":"/api/v1/crm/bandeja","statusCode":400,"durationMs":3.75,"idUser":2}
+{"type":"http_request","requestId":"660a58ad-fada-4ebf-aca9-05257ec208f6","method":"GET","path":"/api/v1/crm/bandeja","statusCode":400,"durationMs":4.47,"idUser":2}
+{"type":"http_request","requestId":"d3b18512-a0fd-422c-a02d-fcac0624c8ac","method":"GET","path":"/api/v1/crm/bandeja","statusCode":401,"durationMs":1.45,"idUser":null}
+{"type":"http_request","requestId":"6ffbf931-795e-409c-b7c0-8cd6049cfda1","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":9.97,"idUser":2}
+{"type":"http_request","requestId":"4873c19e-a7bd-4241-bdad-e30a84047e4b","method":"GET","path":"/api/v1/crm/tareas","statusCode":400,"durationMs":6.3,"idUser":2}
+{"type":"http_request","requestId":"bd7ac97a-02c7-472a-851b-7e8e0c5b5ca6","method":"GET","path":"/api/v1/crm/tareas","statusCode":400,"durationMs":3.58,"idUser":2}
+{"type":"http_request","requestId":"7da65996-c6f1-4718-8176-2c79c174249a","method":"GET","path":"/api/v1/crm/tareas","statusCode":200,"durationMs":13.35,"idUser":3}
+{"type":"http_request","requestId":"8a210535-1d77-4e9d-962e-84a59fdd5bab","method":"GET","path":"/api/v1/crm/tareas","statusCode":200,"durationMs":7.48,"idUser":3}
+OK: HTTP real: sin sesión401, DTO cerrado400, caché privada y acceso directo a tarea conserva ACL/bigint
+{"type":"http_request","requestId":"d0958e04-f023-482c-a1ca-9a41b374e27f","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":10.52,"idUser":2}
+{"type":"http_request","requestId":"39122a20-ff61-4016-bcc3-e887ba6f281a","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":42.04,"idUser":2}
+{"type":"http_request","requestId":"f0ce9065-455f-4bc9-a0cb-c87ee8c0aae6","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":97.41,"idUser":3}
+OK: Revalidación de cuenta/version y lecturas concurrentes sin crear tareas/avisos/auditoría ni modificar fuentes
+{"type":"http_request","requestId":"76ba9f5e-0f48-499c-a686-1bf09ba882c1","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":104.14,"idUser":null}
+{"type":"http_request","requestId":"ebe9bab3-9ace-4f82-81e4-040410524714","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":20.67,"idUser":2}
+{"type":"http_request","requestId":"ccc9c63c-ea1f-402f-b0a7-5eb898919ebb","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":105.13,"idUser":2}
+{"type":"http_request","requestId":"c8e87cef-65dc-45fe-8a48-d1162af52eae","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":13.9,"idUser":2}
+{"type":"http_request","requestId":"c25db541-9e1a-4c51-89b6-fdf091436997","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":15.14,"idUser":2}
+{"type":"http_request","requestId":"1d42d2b2-a3f0-4417-a96e-143bce84fb60","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":15.08,"idUser":2}
+{"type":"http_request","requestId":"c6790cb7-d797-409a-8cc6-0b3cd51f0e3c","method":"GET","path":"/api/v1/crm/oportunidades/1","statusCode":200,"durationMs":4.04,"idUser":2}
+{"type":"http_request","requestId":"fb2caa09-a522-439a-b295-f452022c5b54","method":"GET","path":"/api/v1/crm/oportunidades/1","statusCode":200,"durationMs":13.58,"idUser":2}
+{"type":"http_request","requestId":"897728e7-9887-4a5b-b301-0abc827b0763","method":"GET","path":"/api/v1/crm/oportunidades/1/consulta-web","statusCode":200,"durationMs":23.4,"idUser":2}
+{"type":"http_request","requestId":"d8546f97-8c89-4315-b955-ff103aed94f3","method":"GET","path":"/api/v1/crm/oportunidades/1/seguimientos","statusCode":200,"durationMs":19.76,"idUser":2}
+{"type":"http_request","requestId":"38c4eec0-fb85-4b84-896a-dd959f73bfd4","method":"GET","path":"/api/v1/crm/oportunidades/1/unidades","statusCode":200,"durationMs":156.7,"idUser":2}
+{"type":"http_request","requestId":"1900f29d-00cb-42a8-875d-61f343286f70","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":38.69,"idUser":2}
+OK: Angular real light: login, filtros, páginas, oportunidad existente, Axe sin infracciones y reflujo 1280px
+{"type":"http_request","requestId":"b87a6b52-c8f3-4385-ab3c-4d79c3dcc46f","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":10.9,"idUser":2}
+{"type":"http_request","requestId":"0f96ef6a-d596-4e93-84aa-2fa730147f32","method":"GET","path":"/api/v1/crm/plantillas","statusCode":200,"durationMs":25.23,"idUser":2}
+{"type":"http_request","requestId":"9f4c4121-8218-4e49-8d57-e0b364a23351","method":"GET","path":"/api/v1/crm/encuestas","statusCode":200,"durationMs":20.81,"idUser":2}
+{"type":"http_request","requestId":"82a446e4-7bd8-4d81-ab7c-7e2c063d81c8","method":"GET","path":"/api/v1/crm/campanas","statusCode":200,"durationMs":28.8,"idUser":2}
+{"type":"http_request","requestId":"84ceef2c-fee5-43a9-a97b-bf8992b68699","method":"GET","path":"/api/v1/crm/segmentos","statusCode":200,"durationMs":37.59,"idUser":2}
+{"type":"http_request","requestId":"884be8a4-8325-42c6-a5de-4022982b2be2","method":"GET","path":"/api/v1/cliente","statusCode":200,"durationMs":14.28,"idUser":2}
+{"type":"http_request","requestId":"934783c2-bc88-4ae4-a96e-f258fde857d9","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":7.82,"idUser":2}
+{"type":"http_request","requestId":"7475e101-3239-4f0a-9d1c-10535e1e82e2","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":19.99,"idUser":2}
+{"type":"http_request","requestId":"dacd5be5-e176-4e5f-a86f-0d377bcb1656","method":"GET","path":"/api/v1/crm/oportunidades","statusCode":200,"durationMs":20.89,"idUser":2}
+{"type":"http_request","requestId":"8ce0a062-f343-4009-a974-924518b47401","method":"GET","path":"/api/v1/crm/resumen","statusCode":200,"durationMs":19.3,"idUser":2}
+{"type":"http_request","requestId":"5673e2fd-2c21-4f8d-8200-4916cfad930d","method":"GET","path":"/api/v1/crm/ventas-perdidas","statusCode":200,"durationMs":31.19,"idUser":2}
+{"type":"http_request","requestId":"806f2bbc-322e-4e5b-a993-2e8fa8995d67","method":"GET","path":"/api/v1/crm/metas","statusCode":200,"durationMs":116.59,"idUser":2}
+{"type":"http_request","requestId":"e0f30c3f-ca55-4e7b-a111-88d7700e4b38","method":"GET","path":"/api/v1/crm/tareas","statusCode":200,"durationMs":121.8,"idUser":2}
+{"type":"http_request","requestId":"9528b0fd-fa2f-42e8-84a6-a4c0cbe7d6c9","method":"GET","path":"/api/v1/crm/plantillas","statusCode":200,"durationMs":18.45,"idUser":2}
+{"type":"http_request","requestId":"827b5389-8d7c-447c-9545-5a30ffa9ade5","method":"GET","path":"/api/v1/crm/campanas","statusCode":200,"durationMs":17.21,"idUser":2}
+{"type":"http_request","requestId":"d0916d37-38b3-41cf-8f50-e99773ab033c","method":"GET","path":"/api/v1/crm/encuestas","statusCode":200,"durationMs":16.42,"idUser":2}
+{"type":"http_request","requestId":"a1651fde-fba4-45f0-b7de-c26c7fb954c0","method":"GET","path":"/api/v1/crm/segmentos","statusCode":200,"durationMs":31.58,"idUser":2}
+{"type":"http_request","requestId":"8be1183b-d2d3-42f4-b09f-84ffe01041e0","method":"GET","path":"/api/v1/crm/metas","statusCode":200,"durationMs":17.5,"idUser":2}
+{"type":"http_request","requestId":"887983e6-1c3e-4811-bbdc-8020ae4ca9fb","method":"GET","path":"/api/v1/crm/tareas","statusCode":200,"durationMs":17.86,"idUser":2}
+{"type":"http_request","requestId":"ecc95bf8-6370-42d7-8311-bd4cc2924ecd","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":9.62,"idUser":2}
+{"type":"http_request","requestId":"94b46a11-55e8-42fe-9306-677404e6b772","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":9.99,"idUser":2}
+{"type":"http_request","requestId":"293399bf-6439-4e0f-96a3-fb0ce654f99d","method":"GET","path":"/api/v1/crm/encuestas","statusCode":200,"durationMs":10.61,"idUser":2}
+{"type":"http_request","requestId":"48a016df-c56d-4591-a8e1-f78e8347836b","method":"GET","path":"/api/v1/crm/plantillas","statusCode":200,"durationMs":14.99,"idUser":2}
+{"type":"http_request","requestId":"9d842274-e207-4acc-a363-7973504382db","method":"GET","path":"/api/v1/crm/campanas","statusCode":200,"durationMs":17.27,"idUser":2}
+{"type":"http_request","requestId":"fac8a6d1-c148-4bf9-9d7a-971d9887d0cc","method":"GET","path":"/api/v1/crm/metas","statusCode":200,"durationMs":14.38,"idUser":2}
+{"type":"http_request","requestId":"63f03ab3-209d-4d49-96bd-d6717e862f57","method":"GET","path":"/api/v1/crm/segmentos","statusCode":200,"durationMs":37.63,"idUser":2}
+{"type":"http_request","requestId":"582c1e00-30e3-4404-9599-6bdee38d6e3a","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":13.9,"idUser":2}
+{"type":"http_request","requestId":"ea744fcf-67e7-4baa-87fc-a93a10e028cc","method":"GET","path":"/api/v1/cliente","statusCode":200,"durationMs":19.05,"idUser":2}
+{"type":"http_request","requestId":"113607a3-e435-4a68-bee3-dc5c48aa6456","method":"GET","path":"/api/v1/crm/tareas","statusCode":200,"durationMs":48.63,"idUser":2}
+{"type":"http_request","requestId":"bae8cb92-0e6f-4ebe-8c86-5d8fb8f33f4f","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":28.07,"idUser":2}
+{"type":"http_request","requestId":"12fbb9c4-75e3-41e5-b4ac-3395a4be0c99","method":"GET","path":"/api/v1/crm/oportunidades","statusCode":200,"durationMs":32.23,"idUser":2}
+{"type":"http_request","requestId":"ed534228-4f7a-4901-b329-ad6ac03b9359","method":"GET","path":"/api/v1/crm/solicitudes-web","statusCode":200,"durationMs":11.58,"idUser":2}
+{"type":"http_request","requestId":"4654c410-ed81-4b4c-9426-3de64bf0172c","method":"GET","path":"/api/v1/crm/resumen","statusCode":200,"durationMs":20.83,"idUser":2}
+{"type":"http_request","requestId":"a8af820f-5d1b-4a46-9588-a5deac683c70","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":11.03,"idUser":2}
+{"type":"http_request","requestId":"d1dfa74e-2e3d-4116-a33c-34b560ce0c99","method":"GET","path":"/api/v1/crm/ventas-perdidas","statusCode":200,"durationMs":26.03,"idUser":2}
+OK: Navegación light: tarea exacta con ACL, quitar foco en misma ruta y volver, solicitudes en pestaña correcta
+{"type":"http_request","requestId":"df8affb7-f573-4cbd-b450-d113ac9a0066","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":67.02,"idUser":null}
+{"type":"http_request","requestId":"1ff92487-c2c3-42bd-b040-14f7541c3851","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":53.91,"idUser":2}
+{"type":"http_request","requestId":"c22b4490-5bed-43d3-86af-cf049e540f6d","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":24.3,"idUser":2}
+{"type":"http_request","requestId":"6b356cf6-1327-4079-afa1-5722b90fcf1b","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":8.69,"idUser":2}
+{"type":"http_request","requestId":"4d06fd1b-5df7-4fe4-91c5-72452921f7db","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":8.14,"idUser":2}
+{"type":"http_request","requestId":"74816cc3-91e1-4b7b-9769-34af825c3208","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":6.56,"idUser":2}
+{"type":"http_request","requestId":"be493f2d-f155-44f3-80ff-cf7db0ea421e","method":"GET","path":"/api/v1/crm/oportunidades/1","statusCode":200,"durationMs":4.62,"idUser":2}
+{"type":"http_request","requestId":"13babbcc-d2eb-427a-9c73-9924fec01ec9","method":"GET","path":"/api/v1/crm/oportunidades/1","statusCode":200,"durationMs":5.35,"idUser":2}
+{"type":"http_request","requestId":"ebbaeb7e-abf0-4012-a6b6-ae427666a150","method":"GET","path":"/api/v1/crm/oportunidades/1/consulta-web","statusCode":200,"durationMs":8.4,"idUser":2}
+{"type":"http_request","requestId":"d08e4b64-348d-4c6b-ab66-0962433db20d","method":"GET","path":"/api/v1/crm/oportunidades/1/unidades","statusCode":200,"durationMs":6,"idUser":2}
+{"type":"http_request","requestId":"5f5bd0a1-d157-4a75-b779-5573036713ee","method":"GET","path":"/api/v1/crm/oportunidades/1/seguimientos","statusCode":200,"durationMs":9.13,"idUser":2}
+{"type":"http_request","requestId":"cd3d8ba0-6612-4396-a3b5-aafdfcf259c7","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":7.2,"idUser":2}
+Falló aceptación C03.1: [{"id":"color-contrast","nodes":[[".page-head > div > p"]]}]
+
+1 !== 0
+     at main (C:\Sistema\backend\verify-crm-inbox.js:43:102) Etapa en .artifacts/c031-bandeja.json; sin secretos.

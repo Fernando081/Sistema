@@ -1,0 +1,43 @@
+{
+  "phase": "WEB05.1-acceptance-local",
+  "startedAt": "2026-10-12T14:09:38.879Z",
+  "checks": [
+    "Respaldo restaurado; db:check antes de db:migrate solo en copia",
+    "AppModule completo, guards globales, fiscal mock y cron detenido en copia",
+    "Login PostgreSQL real; anónimo401, operador403, JWT alterado401 y UUID inválido400",
+    "Perfil explícito local y preflight firmado sin escrituras; formulario reintenta con adaptador preparado",
+    "Rotación legacy/v2 y segunda rotación v2; reintentos históricos estables y diagnóstico privado sin secretos",
+    "Formulario nativo sin JS → puente firmado → commit sin recibo → diagnóstico ADMIN → reintentos y conflicto",
+    "Angular producción claro1280/oscuro390: login, bandeja, diagnóstico, conversión, ficha, Axe y reflujo"
+  ],
+  "browser": [
+    {
+      "theme": "light",
+      "width": 1280,
+      "login": "real",
+      "bridgeStatus": "passed",
+      "receipt": "passed",
+      "resolution": "passed",
+      "conversionLink": "passed",
+      "snapshot": "passed",
+      "axeViolations": 0
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "login": "real",
+      "bridgeStatus": "passed",
+      "receipt": "passed",
+      "resolution": "passed",
+      "conversionLink": "passed",
+      "snapshot": "passed",
+      "axeViolations": 0
+    }
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "operationalCaptureEnabled": false,
+  "copyRemoved": true,
+  "lastStage": "Medición financiera WEB05.2c",
+  "cleanupPassed": true
+}

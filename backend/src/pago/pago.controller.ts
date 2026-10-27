@@ -58,10 +58,10 @@ export class PagoController {
 
   @Get(':id/pdf')
   async descargarRepPdf(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Res() res: Response
   ) {
-    const idPago = parseInt(id, 10);
+    const idPago = id;
     const buffer = await this.pagoService.generarRepPdf(idPago);
 
     res.set({
@@ -75,10 +75,10 @@ export class PagoController {
 
   @Get(':id/xml')
   async descargarRepXml(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Res() res: Response
   ) {
-    const idPago = parseInt(id, 10);
+    const idPago = id;
     const xmlStr = await this.pagoService.generarRepXml(idPago);
 
     res.set({

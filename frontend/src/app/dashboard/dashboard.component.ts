@@ -1,5 +1,5 @@
 // frontend/src/app/dashboard/dashboard.component.ts
-import { Component, inject, effect, signal, WritableSignal } from '@angular/core';
+import { Component, ElementRef, inject, effect, signal, viewChild, WritableSignal } from '@angular/core';
 import anime from 'animejs';
 import { CommonModule, CurrencyPipe, PercentPipe, DecimalPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -7,8 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import type { EChartsCoreOption as EChartsOption } from 'echarts/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { forkJoin, of, timer } from 'rxjs';
+import { catchError, filter, map, switchMap } from 'rxjs/operators';
 import {
   DashboardService,
   CategoriaVenta,
@@ -19,7 +19,7 @@ import {
 import { ThemeService } from '../services/theme.service';
 import { ErpEchartsDirective } from '../shared/echarts.provider';
 import { CrmService } from '../services/crm.service';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, NavigationSkipped, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,6 +33,11 @@ export class DashboardComponent {
   private dashboardService = inject(DashboardService);
   private themeService = inject(ThemeService);
   private crmService = inject(CrmService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly automaticProcesses = viewChild<ElementRef<HTMLDetailsElement>>('automaticProcesses');
+  private readonly navigation = toSignal(inject(Router).events.pipe(
+    filter(event => event instanceof NavigationEnd || event instanceof NavigationSkipped),
+  ));
 
   // Animated Signals
   ventasHoyAnimado = signal(0);
@@ -58,6 +63,12 @@ export class DashboardComponent {
 
   theme = this.themeService.isDarkMode;
   readonly loadError = signal(false);
+  readonly refreshStatus = toSignal(timer(0, 60000).pipe(
+    switchMap(() => this.dashboardService.getRefreshStatus().pipe(catchError(() => of(null)))),
+  ));
+  readonly scheduledJobs = toSignal(timer(0, 60000).pipe(
+    switchMap(() => this.dashboardService.getScheduledJobs().pipe(catchError(() => of(null)))),
+  ));
 
   dashboardData = toSignal(
     forkJoin({
@@ -100,6 +111,11 @@ export class DashboardComponent {
   alertaColumns = ['codigo', 'descripcion', 'existencia'];
 
   constructor() {
+    effect(() => {
+      this.navigation();
+      const panel = this.automaticProcesses();
+      if (panel && this.route.snapshot.queryParamMap.get('procesos') === '1') panel.nativeElement.open = true;
+    });
     effect(() => {
       const data = this.dashboardData();
       if (data) {
@@ -272,27 +288,21 @@ export class DashboardComponent {
   }
 
   private buildRentabilidadChart(rentabilidad: RentabilidadProveedor[]): EChartsOption {
-    const data = rentabilidad.map((r) => ({
+    const data = rentabilidad.filter(r => r.rentabilidad != null).map((r) => ({
       name: r.marca || r.proveedor || 'Desconocido',
       value: Number(r.rentabilidad),
     }));
 
     return {
-      tooltip: { trigger: 'item' },
-      legend: { top: '5%', left: 'center', type: 'scroll' },
+      tooltip: { trigger: 'axis' },
+      grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+      xAxis: { type: 'value' },
+      yAxis: { type: 'category', data: data.map(item => item.name) },
       series: [
         {
           name: 'Rentabilidad',
-          type: 'pie',
-          radius: ['40%', '70%'],
-          avoidLabelOverlap: false,
-          itemStyle: { borderRadius: 10, borderColor: '#fff', borderWidth: 2 },
-          label: { show: false, position: 'center' },
-          emphasis: {
-            label: { show: true, fontSize: 16, fontWeight: 'bold' },
-          },
-          labelLine: { show: false },
-          data: data,
+          type: 'bar',
+          data: data.map(item => item.value),
         },
       ],
     };

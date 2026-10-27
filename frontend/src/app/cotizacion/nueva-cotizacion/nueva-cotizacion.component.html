@@ -1,4 +1,5 @@
 <!-- frontend/src/app/cotizacion/nueva-cotizacion/nueva-cotizacion.component.html -->
+@if(revisionSource){<section class="p-4"><h1 class="text-2xl">Preparar nueva revisión</h1><p>Se conserva el cliente y la revisión anterior. Revisa cantidades/precios; impuestos se recalculan con el catálogo actual. La respuesta anterior no se hereda. Revisa el historial antes de cambiar datos de un envío incierto.</p>@if(revisionLoading()){<p role="status">Cargando propuesta anterior…</p>}@if(revisionError()){<p role="alert">{{revisionError()}}</p>}<mat-form-field><mat-label>Motivo de la nueva revisión</mat-label><textarea matInput [formControl]="revisionMotive" maxlength="1000"></textarea></mat-form-field></section>}
  <div class="grid grid-cols-12 gap-4 h-full">
   
   <div class="col-span-12 md:col-span-8 flex flex-col gap-4">
@@ -28,14 +29,14 @@
         <ng-container matColumnDef="cantidad">
           <th mat-header-cell *matHeaderCellDef> Cant. </th>
           <td mat-cell *matCellDef="let item">
-            <input type="number" min="1" [(ngModel)]="item.cantidad" (change)="alCambiarValor(item)" class="w-16 p-1 border rounded text-center">
+            <input type="number" min="0.000001" step="0.000001" [attr.aria-label]="'Cantidad de '+item.descripcion" style="background:var(--wrap-card-bg);color:var(--wrap-text-title)" [(ngModel)]="item.cantidad" (change)="alCambiarValor(item)" class="w-16 p-1 border rounded text-center">
           </td>
         </ng-container>
 
         <ng-container matColumnDef="precio">
           <th mat-header-cell *matHeaderCellDef> Precio </th>
           <td mat-cell *matCellDef="let item">
-            <input type="number" min="0" [(ngModel)]="item.valorUnitario" (change)="alCambiarValor(item)" class="w-20 p-1 border rounded text-right">
+            <input type="number" min="0" step="0.01" [attr.aria-label]="'Precio de '+item.descripcion" style="background:var(--wrap-card-bg);color:var(--wrap-text-title)" [(ngModel)]="item.valorUnitario" (change)="alCambiarValor(item)" class="w-20 p-1 border rounded text-right">
           </td>
         </ng-container>
 
@@ -92,7 +93,7 @@
           <span>Total:</span> <span>{{totalGeneral | currency}}</span>
         </div>
         <button mat-flat-button color="warn" class="w-full mt-4" (click)="guardar()" [disabled]="isSaving() || !clienteSeleccionado || carrito.length === 0">
-          <mat-icon>picture_as_pdf</mat-icon> Generar Cotización
+          <mat-icon>picture_as_pdf</mat-icon> {{revisionSource?'Guardar nueva revisión':'Generar Cotización'}}
         </button>
       </mat-card-content>
     </mat-card>

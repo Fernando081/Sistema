@@ -1,0 +1,359 @@
+{
+  "generatedAt": "2026-10-03T16:23:04.319Z",
+  "postgresSettings": {
+    "version": "18.2",
+    "autovacuum": "on"
+  },
+  "profile": null,
+  "phase": "Q04.5.3c2c3d5",
+  "financialHttpResults": [
+    {
+      "reversals": {
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "reversals": {
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "reversals": {
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "reversals": {
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "reversals": {
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "reversals": {
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    }
+  ],
+  "transactionAgeScope": {
+    "client": "client backend: aplicación, escritor SQL y conexiones de medición; no exclusivamente HTTP",
+    "auxiliary": "backend_type distinto de client backend; incluye autovacuum",
+    "autovacuum": "autovacuum worker; subconjunto de auxiliares",
+    "peaks": "Máximos independientes muestreados cada 500 ms; no se suman ni equivalen a duración de solicitudes"
+  },
+  "transactionAgeContract": {
+    "mixedBackendTypes": true,
+    "otherDatabaseExcluded": true,
+    "emptyGroupsZero": true
+  },
+  "node": "24.19.0",
+  "fixturesPerDomain": 20000,
+  "poolMax": 10,
+  "secondsPerGroup": 120,
+  "relational": true,
+  "separateGenerator": true,
+  "schedulerJobs": 2,
+  "preflight": {
+    "throttler429": true,
+    "notificationJobExecuted": true,
+    "unauthorized401": true,
+    "invalidLimit400": true,
+    "invalidDate400": true,
+    "csvSixDomains": true
+  },
+  "groups": [
+    {
+      "business": {
+        "transfers": 112,
+        "assembled": 56,
+        "disassembled": 56,
+        "payments": 56,
+        "replays": 18
+      },
+      "financialCycles": 6,
+      "businessIntegrity": {
+        "stockPhysicalAligned": true,
+        "stockRestored": true,
+        "paymentBalanceCashAligned": true
+      },
+      "postgresProcesses": {
+        "samples": 24,
+        "availableSamples": 24,
+        "unavailableSamples": 0,
+        "workingSetSumPeakBytes": 809799680,
+        "cpuMillisecondsDelta": 21718.75,
+        "readTransferBytesDelta": 6286757,
+        "writeTransferBytesDelta": 178220338,
+        "maxDeadTuples": 11684,
+        "maxLiveTuples": 789176,
+        "autovacuumCountPeak": 18
+      },
+      "walBytesClusterWide": 46330360,
+      "readers": 8,
+      "generatorResources": {
+        "rssPeak": 72073216,
+        "heapPeak": 16494056,
+        "cpuMicroseconds": {
+          "user": 1015000,
+          "system": 359000
+        },
+        "eventLoopP95Ms": 35.061759
+      },
+      "readWindows": [
+        {
+          "minute": 0,
+          "requests": 304,
+          "p95": 77.06850000000122
+        },
+        {
+          "minute": 1,
+          "requests": 314,
+          "p95": 64.66639999998733
+        },
+        {
+          "minute": 2,
+          "requests": 8,
+          "p95": 64.12799999999697
+        }
+      ],
+      "postgres": {
+        "peak": {
+          "samples": 239,
+          "connections": 13,
+          "active": 3,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 16.722598,
+          "clientConnections": 12,
+          "auxiliaryConnections": 1,
+          "maxClientTransactionAgeSeconds": 0.418566,
+          "maxAuxiliaryTransactionAgeSeconds": 16.722601,
+          "maxAutovacuumTransactionAgeSeconds": 16.722602
+        },
+        "countersDelta": {
+          "xact_commit": 6930,
+          "xact_rollback": 84,
+          "blks_read": 27559,
+          "blks_hit": 2278041,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 626,
+      "writerCommits": 2866,
+      "elapsedMs": 125794.46710000001,
+      "rps": 4.976371492574175,
+      "p50": 23.94050000000425,
+      "p95": 72.52140000001236,
+      "max": 156.51749999999447,
+      "rssPeak": 181575680,
+      "heapPeak": 83637504,
+      "poolConnectionsPeak": 10,
+      "poolWaitingPeak": 2,
+      "cpuMicroseconds": {
+        "user": 8985000,
+        "system": 2687000
+      },
+      "eventLoopP95Ms": 34.275327,
+      "eventLoopMaxMs": 224.788479,
+      "idleTransactions": 0,
+      "cases": {
+        "cliente:": 25,
+        "proveedor:": 29,
+        "proveedor:Q04TARGET": 30,
+        "proveedor:Q04HTTPONLY": 30,
+        "cliente:Q04HTTPONLY": 28,
+        "cliente:Q04TARGET": 26,
+        "proveedor:%": 31,
+        "cliente:%": 27,
+        "producto:": 29,
+        "producto:Q04TARGET": 28,
+        "producto:%": 28,
+        "producto:Q04HTTPONLY": 26,
+        "cotizacion:": 25,
+        "cotizacion:Q04TARGET": 24,
+        "cotizacion:%": 24,
+        "cotizacion:Q04HTTPONLY": 24,
+        "compra:": 24,
+        "compra:Q04TARGET": 24,
+        "compra:%": 24,
+        "compra:Q04HTTPONLY": 24,
+        "venta:": 24,
+        "venta:Q04TARGET": 24,
+        "venta:%": 24,
+        "venta:Q04HTTPONLY": 24
+      },
+      "errors": 0
+    }
+  ],
+  "limitations": [
+    "Ocho solicitudes concurrentes por operación de proveedor; UUID mayúscula, contenido/operación distinta 409 y rollback tras efectos financieros. Registros anteriores sin huella se rechazan. No prueba caída física ni todas las carreras entre operaciones con claves distintas.",
+    "Seis proyecciones reales; transferencias/kits/cobros por HTTP y mutación SQL de nombres para carreras total/página. Modalidad financiera indicada por financialHttpResults; escritores de caja coordinados. Imágenes como metadatos, no archivos.",
+    "Carga cerrada, caché caliente y ventanas de 120 segundos y 20000 registros por dominio: no certificación de capacidad máxima, SLA ni soak de horas.",
+    "CPU/memoria/event loop del padre incluyen servidor, escritor y monitor; generador en hijo separado. PostgreSQL: actividad, tuplas/autovacuum y CPU/working set/transferencia de procesos asociados a la copia muestreados con CIM Windows. Working sets sumados incluyen páginas compartidas; I/O de proceso incluye red y no equivale a disco. WAL global del cluster incluye otras bases; estadísticas pueden retrasarse. Pool de aplicación sin ajuste, observado máximo 10."
+  ]
+}

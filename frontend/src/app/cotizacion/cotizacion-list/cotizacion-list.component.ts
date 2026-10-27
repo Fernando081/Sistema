@@ -1,11 +1,13 @@
+import { MatSelectModule } from '@angular/material/select';
+import { CotizacionResumen } from '../../services/cotizacion-api.types';
 // frontend/src/app/cotizacion/cotizacion-list/cotizacion-list.component.ts
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, DestroyRef, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { downloadDocument } from '../../shared/document-download';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { RemoteDirectory } from '../../shared/remote-directory';
+import { downloadDocument, localDate } from '../../shared/document-download';
 import { CommonModule } from '@angular/common';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -14,17 +16,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { forkJoin, Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { CotizacionService } from '../../services/cotizacion.service';
 import { CatalogosService } from '../../services/catalogos.service';
 import { ConvertirDialogComponent } from './convertir-dialog.component';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PedidoService } from '../../services/pedido.service';
 
 @Component({
   selector: 'app-cotizacion-list',
   standalone: true,
-  imports: [
+  imports: [MatSelectModule,
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatSnackBarModule, MatTooltipModule,
@@ -32,18 +34,13 @@ import { PedidoService } from '../../services/pedido.service';
   ],
   templateUrl: './cotizacion-list.component.html',
 })
-export class CotizacionListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CotizacionListComponent implements OnInit, OnDestroy {
   
   displayedColumns: string[] = ['folio', 'fecha', 'cliente', 'total', 'estatus', 'acciones'];
-  dataSource = new MatTableDataSource<any>();
-  totalItems = 0;
-  activeFilter = '';
-  searchSubject = new Subject<string>();
-  private readonly destroyRef = inject(DestroyRef);
-  private request?: Subscription;
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  readonly directory: RemoteDirectory<CotizacionResumen>;
+  private readonly route = inject(ActivatedRoute);
+  get dataSource() { return this.directory.dataSource; }
+  get totalItems() { return this.directory.total(); }
 
   constructor(
     private cotizacionService: CotizacionService,
@@ -52,9 +49,12 @@ export class CotizacionListComponent implements OnInit, AfterViewInit, OnDestroy
     private dialog: MatDialog,
     private pedidoService: PedidoService,
     private router: Router,
-  ) {}
+  ) {
+    this.directory = new RemoteDirectory(query => this.cotizacionService.getAll(query.page, query.limit, query.term, query.sortBy, query.sortOrder, query.estado || '', query.desde || '', query.hasta || ''),
+      message => this.snackBar.open(message, 'Cerrar', { duration: 5000 }), ['folio', 'fecha', 'cliente', 'total', 'estatus']);
+  }
 
-  crearPedido(row: any) {
+  crearPedido(row: CotizacionResumen) {
     this.pedidoService.createFromQuote(row.id_cotizacion, { requestId: crypto.randomUUID() }).subscribe({
       next: ({ idPedido }) => {
         this.snackBar.open(`Pedido PED-${idPedido} creado desde la cotización.`, 'Abrir', { duration: 6000 })
@@ -66,52 +66,16 @@ export class CotizacionListComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnInit(): void {
-    this.cargarCotizaciones();
-
-    this.searchSubject.pipe(
-      debounceTime(400),
-      distinctUntilChanged(), takeUntilDestroyed(this.destroyRef)
-    ).subscribe(term => {
-      this.activeFilter = term;
-      if (this.paginator) {
-        this.paginator.pageIndex = 0;
-      }
-      this.cargarCotizaciones();
-    });
+    this.directory.connectUrl(this.route, this.router, false, ['Vigente', 'Pendiente', 'Convertida', 'Rechazada']);
+    this.directory.start();
   }
-
-  ngOnDestroy(): void {
-    this.searchSubject.complete();
-    this.request?.unsubscribe();
+  ngOnDestroy(): void { this.directory.dispose(); }
+  cargarCotizaciones(): void { this.directory.reload(); }
+  applyFilter(event: Event): void {
+    if (event.target instanceof HTMLInputElement) this.directory.setTerm(event.target.value);
   }
-
-  ngAfterViewInit(): void {
-    // Escuchar el paginador para recargar
-    if(this.paginator) {
-      this.paginator.page.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-        this.cargarCotizaciones();
-      });
-    }
-  }
-
-  cargarCotizaciones() {
-    this.request?.unsubscribe();
-    const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
-    const limit = this.paginator ? this.paginator.pageSize : 10;
-    
-    this.request = this.cotizacionService.getAll(page, limit, this.activeFilter).subscribe({
-      next: (response) => {
-        const data = response.data || response;
-        this.totalItems = response.total || 0;
-        this.dataSource.data = data;
-      },
-      error: (e) => console.error(e)
-    });
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.searchSubject.next(filterValue.trim().toLowerCase());
+  exportar(): void {
+    this.directory.export(query => this.cotizacionService.exportCsv(query), 'cotizaciones_' + localDate() + '.csv');
   }
 
   descargarPdf(id: number) {
@@ -121,7 +85,7 @@ export class CotizacionListComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   // --- LA FUNCIÓN MODIFICADA PARA CRM B2B ---
-  convertir(row: any) {
+  convertir(row: CotizacionResumen) {
     forkJoin({
       formasPago: this.catalogosService.getFormasPago(),
       metodosPago: this.catalogosService.getMetodosPago()

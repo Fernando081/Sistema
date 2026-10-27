@@ -1,0 +1,73 @@
+
+> test:crm-reports
+> node backend/verify-crm-reports.js --backup=.backups/2026-10-21T16-43-33-611Z/database.dump
+
+{"type":"http_request","requestId":"ada9acd6-2bd8-459d-b72e-0620c78ad54f","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":201,"durationMs":35.1,"idUser":2}
+{"type":"http_request","requestId":"5a9f9245-4551-4c41-a0a0-3e76583ce062","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":201,"durationMs":9.85,"idUser":2}
+{"type":"http_request","requestId":"267e7a6c-6bbe-4fb7-8f31-f28d66507013","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":201,"durationMs":6.14,"idUser":2}
+{"type":"http_request","requestId":"dbb15876-ce3c-4d48-b14b-51a0226e53cb","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":409,"durationMs":5.97,"idUser":2}
+{"type":"http_request","requestId":"092138dd-2820-4bc7-ae95-d4786aace790","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":400,"durationMs":3.67,"idUser":2}
+{"type":"http_request","requestId":"c61854cd-5747-4da0-bfce-bb6b69cad275","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":400,"durationMs":2.98,"idUser":2}
+{"type":"http_request","requestId":"4f34c19e-bcbd-4172-bd51-1bbc408926b9","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":400,"durationMs":3.33,"idUser":2}
+{"type":"http_request","requestId":"517d2fa7-d77e-42c2-b221-d512acc89315","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":403,"durationMs":3.14,"idUser":3}
+{"type":"http_request","requestId":"94e94760-7e03-4383-9c8b-ca2b3bb87d61","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":401,"durationMs":0.82,"idUser":null}
+{"type":"http_request","requestId":"b278b846-8fd4-455e-9229-c521c76b5402","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":6.3,"idUser":2}
+{"type":"http_request","requestId":"16829554-c23b-4edd-b1db-b6e49d2cf3ac","method":"GET","path":"/api/v1/crm/reportes-programados/df9e6dfd-d12e-4602-b0de-f6b07f376d6a/historial","statusCode":404,"durationMs":4.56,"idUser":4}
+{"type":"http_request","requestId":"595c0b19-e926-4278-988b-7a69430e01ad","method":"PATCH","path":"/api/v1/crm/reportes-programados/df9e6dfd-d12e-4602-b0de-f6b07f376d6a","statusCode":404,"durationMs":3.73,"idUser":4}
+{"type":"http_request","requestId":"80abce33-f6be-4be5-93af-5a9dc74af66e","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":5.94,"idUser":4}
+OK: HTTP/SQL: configuración cerrada, validación cruzada, UUID/huella, caché privada, operador403 y ACL incluso entre administradores
+OK: Callback cron real y exclusión PostgreSQL entre instancias; diarios/semanales, sin retroactividad y un resultado por periodo
+OK: Snapshot reutiliza conteos completos de C03.1, conserva corte/filtros y no cambia al modificar el origen; sin datos de contacto o listas recortadas
+OK: Suspensión y reanudación versionadas, corte nuevo sin completar periodos anteriores, día semanal y siguiente diario
+OK: Fallo real registra resultado Error sin snapshot ni SQL; job/avisos existentes detectan fallo/recuperación sin repetir ese periodo
+OK: El ejecutor no genera para propietario sin rol actual autorizado y la consulta pierde acceso al revocar autoridad
+OK: Revocación del permiso efectivo bloquea consulta y generación aunque el propietario siga siendo ADMIN
+OK: Configuración/historial conservados con guardas ALWAYS y auditoría humana de configuración separada del cron sin autor humano inventado
+OK: Revocación durante espera de bloqueo real impide el control y revalida cuenta/version después de esperar
+{"type":"http_request","requestId":"3d218b29-ef62-4e81-aff5-f26bdb1a8283","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":3.92,"idUser":2}
+{"type":"http_request","requestId":"10ca8990-beb1-4080-8fae-06b38413c9db","method":"GET","path":"/api/v1/crm/reportes-programados/df9e6dfd-d12e-4602-b0de-f6b07f376d6a/historial","statusCode":200,"durationMs":4.58,"idUser":2}
+OK: Lecturas no ejecutan reportes y paginación conserva totales/IDs sin duplicar
+{"type":"http_request","requestId":"8eacfaa6-6e68-4b3f-9b72-9129bbd056ca","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":60.02,"idUser":null}
+{"type":"http_request","requestId":"f7c11b35-31d0-4076-a30f-aed79435db1f","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":9.29,"idUser":2}
+{"type":"http_request","requestId":"8f1266aa-1596-4ab8-ba61-a27ae59c049f","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":48.21,"idUser":2}
+{"type":"http_request","requestId":"bb7e0d3f-02c8-4455-8862-cca21abad6bd","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":11.05,"idUser":2}
+{"type":"http_request","requestId":"fbccc93e-3e66-4242-a133-72dcd48d79d1","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":201,"durationMs":5.8,"idUser":2}
+{"type":"http_request","requestId":"99bce004-a293-46a1-908b-c1309b024ec8","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":4.24,"idUser":2}
+{"type":"http_request","requestId":"217b21ac-e1e6-48e4-9293-755650561d5b","method":"GET","path":"/api/v1/crm/reportes-programados/f50cef1a-683e-4536-b7d8-8e7601124559/historial","statusCode":200,"durationMs":7.08,"idUser":2}
+{"type":"http_request","requestId":"176b795b-b393-4fc4-8ef7-f3d2aac52e60","method":"PATCH","path":"/api/v1/crm/reportes-programados/f50cef1a-683e-4536-b7d8-8e7601124559","statusCode":200,"durationMs":8.49,"idUser":2}
+{"type":"http_request","requestId":"ed0b4fdb-4707-4213-a8dd-9622c85b02a3","method":"GET","path":"/api/v1/crm/reportes-programados/f50cef1a-683e-4536-b7d8-8e7601124559/historial","statusCode":200,"durationMs":3.93,"idUser":2}
+{"type":"http_request","requestId":"64ed36bc-333d-47ef-8d00-ec9dfafb4fa5","method":"PATCH","path":"/api/v1/crm/reportes-programados/f50cef1a-683e-4536-b7d8-8e7601124559","statusCode":200,"durationMs":10.15,"idUser":2}
+{"type":"http_request","requestId":"9fa6d703-1300-4fb6-a6e3-683a1253a254","method":"GET","path":"/api/v1/crm/reportes-programados/f50cef1a-683e-4536-b7d8-8e7601124559/historial","statusCode":200,"durationMs":8.06,"idUser":2}
+{"type":"http_request","requestId":"570c3523-d172-4924-ab7e-3152cbae4f29","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":4.49,"idUser":2}
+{"type":"http_request","requestId":"5ff5de9d-e6df-44ab-887b-a51caa5cea9b","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":19.79,"idUser":2}
+{"type":"http_request","requestId":"410372ca-9ee5-4691-9a6b-29a9d901bac1","method":"GET","path":"/api/v1/crm/reportes-programados/f50cef1a-683e-4536-b7d8-8e7601124559/historial","statusCode":200,"durationMs":6.57,"idUser":2}
+{"type":"http_request","requestId":"7cfb7f8d-d30b-4624-b42a-a96371f808c0","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.7,"idUser":2}
+{"type":"http_request","requestId":"69b86fed-50ae-4a58-8828-00f91835a03d","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":16.33,"idUser":2}
+{"type":"http_request","requestId":"0a59a101-a8a1-49b5-9398-1f381d12e3b0","method":"GET","path":"/api/v1/crm/reportes-programados/df9e6dfd-d12e-4602-b0de-f6b07f376d6a/historial","statusCode":200,"durationMs":8.13,"idUser":2}
+{"type":"http_request","requestId":"39b476c8-7fb9-4753-a7c1-33ce1f29a3f5","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.61,"idUser":2}
+{"type":"http_request","requestId":"50b875e4-7838-4df1-82e4-1de376bfc73c","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":19.6,"idUser":2}
+{"type":"http_request","requestId":"1b631025-075e-4256-b14f-7f3beaf138d2","method":"GET","path":"/api/v1/crm/reportes-programados/ed409591-4429-452c-8e37-a3d7313d821f/historial","statusCode":200,"durationMs":7.94,"idUser":2}
+{"type":"http_request","requestId":"f6ef3e2b-20b1-4085-baba-d7fe12ec38d3","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":11.04,"idUser":2}
+OK: Angular real light: páginas, formulario semanal, suspensión/reanudación, recarga, snapshots/error y enlace C03.1; Axe/reflujo 1280px
+{"type":"http_request","requestId":"f7d2964b-4f04-4d53-a2ec-e92c0023d0b1","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":63.61,"idUser":null}
+{"type":"http_request","requestId":"7ac43074-5a0a-49c2-a0d5-1f2495986afb","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":5.28,"idUser":2}
+{"type":"http_request","requestId":"cf1dc2a4-b00a-442c-ae7d-962a2e0725e1","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":60.28,"idUser":2}
+{"type":"http_request","requestId":"95bd5e77-d971-465b-bd92-c29b19648606","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":4.57,"idUser":2}
+{"type":"http_request","requestId":"660be69c-db41-4eae-8fcc-479e8c0f3bd4","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":201,"durationMs":9.75,"idUser":2}
+{"type":"http_request","requestId":"4c3ebe36-10cd-4243-8132-21822b177bee","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":3.34,"idUser":2}
+{"type":"http_request","requestId":"10aa78c5-0e34-465a-9992-e8f1e059db5a","method":"GET","path":"/api/v1/crm/reportes-programados/748410ba-1f2b-4a92-893f-338449ae34a9/historial","statusCode":200,"durationMs":8.84,"idUser":2}
+{"type":"http_request","requestId":"dd228216-d53d-4f13-a203-24b4973cb56d","method":"PATCH","path":"/api/v1/crm/reportes-programados/748410ba-1f2b-4a92-893f-338449ae34a9","statusCode":200,"durationMs":4.25,"idUser":2}
+{"type":"http_request","requestId":"1f461916-94cc-4bbe-a06f-ac2f25f130a9","method":"GET","path":"/api/v1/crm/reportes-programados/748410ba-1f2b-4a92-893f-338449ae34a9/historial","statusCode":200,"durationMs":7.07,"idUser":2}
+{"type":"http_request","requestId":"b3867378-b90c-4c38-a8e8-106a7d7214f3","method":"PATCH","path":"/api/v1/crm/reportes-programados/748410ba-1f2b-4a92-893f-338449ae34a9","statusCode":200,"durationMs":5.76,"idUser":2}
+{"type":"http_request","requestId":"b6881589-8da3-4ff9-929a-78c12334c999","method":"GET","path":"/api/v1/crm/reportes-programados/748410ba-1f2b-4a92-893f-338449ae34a9/historial","statusCode":200,"durationMs":3.98,"idUser":2}
+{"type":"http_request","requestId":"e915d9ef-3bcf-4836-8058-06093f576cf0","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":4.75,"idUser":2}
+{"type":"http_request","requestId":"c55f8127-1d85-4794-9a6c-5874d999ec25","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":22.79,"idUser":2}
+{"type":"http_request","requestId":"88118298-aad0-4184-97e7-8b5c4901c69b","method":"GET","path":"/api/v1/crm/reportes-programados/748410ba-1f2b-4a92-893f-338449ae34a9/historial","statusCode":200,"durationMs":7.72,"idUser":2}
+{"type":"http_request","requestId":"9fbd9734-d3ea-4625-b623-f128180c3fb8","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.87,"idUser":2}
+{"type":"http_request","requestId":"ccc36999-3bd5-422b-a1c9-ce227512d47e","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":16.05,"idUser":2}
+{"type":"http_request","requestId":"76b8ae1c-c3f4-45f6-aef4-b1e11f20be1e","method":"GET","path":"/api/v1/crm/reportes-programados/df9e6dfd-d12e-4602-b0de-f6b07f376d6a/historial","statusCode":200,"durationMs":6.47,"idUser":2}
+{"type":"http_request","requestId":"da22e79a-1250-4792-86b5-c4921b4a1ab6","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.36,"idUser":2}
+{"type":"http_request","requestId":"c085d0dc-f4e1-490a-93a0-5c3cbb863f03","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":18.65,"idUser":2}
+{"type":"http_request","requestId":"ba3e4eac-ad8b-4191-a419-e61ef1b9686d","method":"GET","path":"/api/v1/crm/reportes-programados/ed409591-4429-452c-8e37-a3d7313d821f/historial","statusCode":200,"durationMs":5.96,"idUser":2}
+{"type":"http_request","requestId":"9ec2bf15-c2cc-4445-9063-e3bc7609ff5e","method":"GET","path":"/api/v1/crm/bandeja","statusCode":200,"durationMs":7.94,"idUser":2}
+OK: Angular real dark: páginas, formulario semanal, suspensión/reanudación, recarga, snapshots/error y enlace C03.1; Axe/reflujo 390px

@@ -1,0 +1,28 @@
+{
+  "phase": "O01.2a",
+  "startedAt": "2026-10-22T15:52:46.918Z",
+  "checks": [
+    "Venta real y revisión pura: HTTP401/403, permiso nuevo, DTO cerrado/confirmación, sin función histórica con escrituras ni SMTP",
+    "Preparación atómica de metadatos/PDF/destinatario, UUID/huella y recibo idempotente sin duplicar",
+    "PDF privado byte a byte, simulación/recibo/cierre únicos; factura, stock e historial SMTP intactos",
+    "Cambio de destinatario invalida revisión y consumidor; correo vacío/múltiple/inyección rechazados, Obsoleto conservado",
+    "Cambio real de concepto invalida la preparación sin recalcular o reemplazar su archivo conservado",
+    "Cancelación con motivo/confirmación, respuesta repetida y competencia de cierre conservan un solo resultado terminal",
+    "Delegación USER limitada a sus solicitudes, ADMIN con consulta/control, factura ajena y acceso PDF aislados",
+    "Rollback real de preparación, guardas ALWAYS y auditoría nominal sin destinatario/cuerpo/bytes",
+    "Revocación de sesión mientras espera bloqueo de factura impide preparar; autoridad revalidada en transacción",
+    "Protección explícita de archivo en auditoría, cuota20 serializada y recibo original válido incluso tras llegar al límite",
+    "Angular/SQL reales light: revisión/confirmación, respuesta perdida sin duplicar, PDF/simulación/cancelación/recarga y acceso desde Facturas; Axe/reflujo 1280px",
+    "Angular/SQL reales dark: revisión/confirmación, respuesta perdida sin duplicar, PDF/simulación/cancelación/recarga y acceso desde Facturas; Axe/reflujo 390px",
+    "Transporte SMTP vigilado: cero llamadas; sólo consumidor local sin aceptación ni entrega ficticias"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "externalDeliveryEnabled": false,
+  "smtpCalls": 0,
+  "passed": true,
+  "completedAt": "2026-10-22T15:53:02.663Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular O01.2a"
+}

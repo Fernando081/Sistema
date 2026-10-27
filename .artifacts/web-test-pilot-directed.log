@@ -1,0 +1,23 @@
+✔ proyección de prueba conserva códigos/aplicaciones y excluye campos privados (1.9335ms)
+✔ aviso técnico es explícito y el modo normal conserva sus bytes (6.905ms)
+Web pública: 15 páginas; máximo HTML+CSS 23099 bytes; JavaScript cliente 0 bytes.
+Web pública: 14 páginas; máximo HTML+CSS 23099 bytes; JavaScript cliente 0 bytes.
+✔ HTTP dinámico, estático y errores conservan aviso/noindex sin captación (1114.0077ms)
+✔ piloto rechaza recibo comercial y modo inválido antes de crear publicación (0.8134ms)
+Web pública: 15 páginas; máximo HTML+CSS 23099 bytes; JavaScript cliente 0 bytes.
+Web pública: 14 páginas; máximo HTML+CSS 23099 bytes; JavaScript cliente 0 bytes.
+✔ respaldo de dos versiones restaura y ensaya daño/rollback desde archivo guardado (2792.5375ms)
+Web pública: 15 páginas; máximo HTML+CSS 23099 bytes; JavaScript cliente 0 bytes.
+Web pública: 14 páginas; máximo HTML+CSS 23099 bytes; JavaScript cliente 0 bytes.
+✔ contenido corrupto/traversal/ajeno falla antes de crear destino de restauración (1324.4852ms)
+Web pública: 15 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+Web pública: 14 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ el respaldo de pruebas no admite una publicación normal/comercial (1245.8445ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6823.8187

@@ -1,0 +1,151 @@
+{
+  "generatedAt": "2026-10-03T22:46:30.803Z",
+  "phase": "Q04.5.3c2c3d11",
+  "sources": [
+    "q0453c2c3d10-separated.json",
+    "q0453c2c3d11-separated-soak.json"
+  ],
+  "baseline": {
+    "seconds": 600,
+    "reads": 2360,
+    "commits": 8319,
+    "financialCycles": 18,
+    "p95": 65.33260000002338,
+    "parent": {
+      "rss": {
+        "firstMean": 167338806.61570534,
+        "lastMean": 233965748.7477415,
+        "deltaBytes": 66626942.13203615,
+        "peak": 256581632
+      },
+      "heapUsed": {
+        "firstMean": 64610613.503822096,
+        "lastMean": 81568204.19735928,
+        "deltaBytes": 16957590.693537183,
+        "peak": 115098688
+      },
+      "heapTotal": {
+        "firstMean": 118569445.31480195,
+        "lastMean": 198788150.79360667,
+        "deltaBytes": 80218705.47880472,
+        "peak": 198938624
+      },
+      "external": {
+        "firstMean": 5690953.186240445,
+        "lastMean": 6763983.186240445,
+        "deltaBytes": 1073030,
+        "peak": 27346326
+      },
+      "arrayBuffers": {
+        "firstMean": 1533193.298123697,
+        "lastMean": 2602200.9409312024,
+        "deltaBytes": 1069007.6428075053,
+        "peak": 23189603
+      }
+    },
+    "financialClient": {
+      "rss": {
+        "firstMean": 118824515.15937941,
+        "lastMean": 139357075.6784203,
+        "deltaBytes": 20532560.519040897,
+        "peak": 209567744
+      },
+      "heapUsed": {
+        "firstMean": 13027866.273624824,
+        "lastMean": 14197230.465444287,
+        "deltaBytes": 1169364.191819463,
+        "peak": 18146240
+      },
+      "heapTotal": {
+        "firstMean": 23387533.17912553,
+        "lastMean": 25172323.294781383,
+        "deltaBytes": 1784790.1156558543,
+        "peak": 31068160
+      },
+      "external": {
+        "firstMean": 22068151.144569818,
+        "lastMean": 18686852.216502115,
+        "deltaBytes": -3381298.928067703,
+        "peak": 88416574
+      },
+      "arrayBuffers": {
+        "firstMean": 45473724.43229901,
+        "lastMean": 181524426.09661496,
+        "deltaBytes": 136050701.66431594,
+        "peak": 220630239
+      }
+    }
+  },
+  "extended": {
+    "seconds": 3600,
+    "reads": 14122,
+    "commits": 47317,
+    "financialCycles": 105,
+    "p95": 72.31319999997504,
+    "parent": {
+      "rss": {
+        "firstMean": 226906544.39006183,
+        "lastMean": 250848714.07068706,
+        "deltaBytes": 23942169.68062523,
+        "peak": 273981440
+      },
+      "heapUsed": {
+        "firstMean": 77047606.93526188,
+        "lastMean": 83905228.73579843,
+        "deltaBytes": 6857621.800536558,
+        "peak": 115778336
+      },
+      "heapTotal": {
+        "firstMean": 183450592.10824683,
+        "lastMean": 202997185.70955324,
+        "deltaBytes": 19546593.60130641,
+        "peak": 205926400
+      },
+      "external": {
+        "firstMean": 6610084.259769042,
+        "lastMean": 6687931.126560131,
+        "deltaBytes": 77846.86679108907,
+        "peak": 29319561
+      },
+      "arrayBuffers": {
+        "firstMean": 2452127.0201796335,
+        "lastMean": 2530898.361017147,
+        "deltaBytes": 78771.34083751356,
+        "peak": 25162838
+      }
+    },
+    "financialClient": {
+      "rss": {
+        "firstMean": 173775346.4370861,
+        "lastMean": 243730463.00094607,
+        "deltaBytes": 69955116.56385997,
+        "peak": 435863552
+      },
+      "heapUsed": {
+        "firstMean": 14444617.763481552,
+        "lastMean": 18551257.34626301,
+        "deltaBytes": 4106639.5827814583,
+        "peak": 21597392
+      },
+      "heapTotal": {
+        "firstMean": 25272693.46452223,
+        "lastMean": 30148141.048249763,
+        "deltaBytes": 4875447.583727531,
+        "peak": 33824768
+      },
+      "external": {
+        "firstMean": 20246339.828878902,
+        "lastMean": 22595168.014191106,
+        "deltaBytes": 2348828.185312204,
+        "peak": 88488973
+      },
+      "arrayBuffers": {
+        "firstMean": 157392036.39723274,
+        "lastMean": 984113063.7295412,
+        "deltaBytes": 826721027.3323084,
+        "peak": 1153914503
+      }
+    }
+  },
+  "scope": "Ventanas de diez y sesenta minutos con cuartos de distinta duracion: comparacion descriptiva, sin inferir causalidad, tasas lineales ni fuga. Padre conserva monitor/escritores. Picos independientes no se suman. Umbrales del perfil se aplican al padre; cliente tiene diagnostico y cobertura."
+}

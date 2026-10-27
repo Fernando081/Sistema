@@ -10,6 +10,14 @@ export interface Gasto {
   idCompra?: number;
 }
 
+export interface GastoRegistro extends Omit<Gasto, 'monto' | 'idCompra'> {
+  idGasto: number; fecha: string; monto: number | string;
+  idCompra: number | null; idUsuario: number | null; anulado: boolean; createdAt: string;
+}
+export interface SaldoActual {
+  idSaldo: number; cajaChica: number | string; cuentaBanco: number | string; updatedAt: string;
+}
+
 export interface CuentaContable {
   idCuenta: number;
   codigo: string;
@@ -94,15 +102,15 @@ export class FinanzasService {
   private apiUrl = `${environment.apiBaseUrl}/finanzas`;
 
   crearGasto(gasto: Gasto) {
-    return this.http.post(`${this.apiUrl}/gastos`, gasto);
+    return this.http.post<{ message: string }>(`${this.apiUrl}/gastos`, gasto);
   }
 
   getGastos() {
-    return this.http.get<any[]>(`${this.apiUrl}/gastos`);
+    return this.http.get<GastoRegistro[]>(`${this.apiUrl}/gastos`);
   }
 
   getSaldos() {
-    return this.http.get<any[]>(`${this.apiUrl}/saldos`);
+    return this.http.get<SaldoActual[]>(`${this.apiUrl}/saldos`);
   }
 
   getCortePdf() {

@@ -1,0 +1,110 @@
+
+> frontend@0.0.0 test:e2e
+> playwright test tests/web-metrics.spec.ts tests/crm-commercial.spec.ts tests/web-inbox.spec.ts
+
+[WebServer] (node:26760) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:26760) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 26 tests using 1 worker
+
+(node:37028) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium] › tests\crm-commercial.spec.ts:6:7 › Origen comercial: cliente, confirmación, reintento y retiro light (12.4s)
+  ok  2 [chromium] › tests\crm-commercial.spec.ts:89:7 › Origen comercial: error, búsqueda vacía y recuperación light (2.0s)
+  ok  3 [chromium] › tests\crm-commercial.spec.ts:6:7 › Origen comercial: cliente, confirmación, reintento y retiro dark (6.7s)
+  ok  4 [chromium] › tests\crm-commercial.spec.ts:89:7 › Origen comercial: error, búsqueda vacía y recuperación dark (2.1s)
+  ok  5 [chromium] › tests\web-inbox.spec.ts:5:7 › Puente privado: error y transición sin secretos light (2.0s)
+  ok  6 [chromium] › tests\web-inbox.spec.ts:5:7 › Puente privado: error y transición sin secretos dark (2.2s)
+  ok  7 [chromium] › tests\web-inbox.spec.ts:34:7 › Resolución conservadora: decisión incierta, reintento e historial light (2.5s)
+  ok  8 [chromium] › tests\web-inbox.spec.ts:34:7 › Resolución conservadora: decisión incierta, reintento e historial dark (2.3s)
+  ok  9 [chromium] › tests\web-inbox.spec.ts:111:5 › Ficha muestra piezas originales de consulta web (1.2s)
+  ok 10 [chromium] › tests\web-inbox.spec.ts:129:7 › Bandeja web: error, revisión y vacío light (2.1s)
+  ok 11 [chromium] › tests\web-inbox.spec.ts:129:7 › Bandeja web: error, revisión y vacío dark (1.9s)
+  ok 12 [chromium] › tests\web-inbox.spec.ts:161:5 › Conversión conserva vínculo y retira acciones de modificación (1.3s)
+  ok 13 [chromium] › tests\web-inbox.spec.ts:194:7 › Comprobación privada de recepción: estados y errores light (2.3s)
+  ok 14 [chromium] › tests\web-inbox.spec.ts:194:7 › Comprobación privada de recepción: estados y errores dark (2.9s)
+  x  15 [chromium] › tests\web-metrics.spec.ts:46:7 › Rentabilidad web: costo original, margen y moneda no comparable light (6.7s)
+(node:21956) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 16 [chromium] › tests\web-metrics.spec.ts:78:7 › Rentabilidad web: pérdida, cero, desconocido y limpieza light (2.8s)
+  ok 17 [chromium] › tests\web-metrics.spec.ts:118:7 › Medición financiera: monedas, cobros, cobertura y accesibilidad light (2.5s)
+  ok 18 [chromium] › tests\web-metrics.spec.ts:151:7 › Medición financiera: centavos grandes, desconocido y vacío light (2.5s)
+  ok 19 [chromium] › tests\web-metrics.spec.ts:189:7 › Medición web: periodo, cohortes, referencias y accesibilidad light (2.3s)
+  ok 20 [chromium] › tests\web-metrics.spec.ts:233:7 › Medición web: validación, fallo, carga bloqueada y vacío light (2.3s)
+  x  21 [chromium] › tests\web-metrics.spec.ts:46:7 › Rentabilidad web: costo original, margen y moneda no comparable dark (6.6s)
+(node:13752) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 22 [chromium] › tests\web-metrics.spec.ts:78:7 › Rentabilidad web: pérdida, cero, desconocido y limpieza dark (2.7s)
+  ok 23 [chromium] › tests\web-metrics.spec.ts:118:7 › Medición financiera: monedas, cobros, cobertura y accesibilidad dark (2.4s)
+  ok 24 [chromium] › tests\web-metrics.spec.ts:151:7 › Medición financiera: centavos grandes, desconocido y vacío dark (2.7s)
+  ok 25 [chromium] › tests\web-metrics.spec.ts:189:7 › Medición web: periodo, cohortes, referencias y accesibilidad dark (2.5s)
+  ok 26 [chromium] › tests\web-metrics.spec.ts:233:7 › Medición web: validación, fallo, carga bloqueada y vacío dark (2.3s)
+
+
+  1) [chromium] › tests\web-metrics.spec.ts:46:7 › Rentabilidad web: costo original, margen y moneda no comparable light 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('app-crm-web-metrics').getByRole('region', { name: 'Rentabilidad en MXN' })
+    Expected substring: "no representa utilidad contable final"
+    Received string:    "Costo histórico neto48.00 MXNUtilidad bruta 32.00 MXNMargen bruto40.00 %Documentos con rentabilidad comprobada: 2 · Por conciliar: 0. Sin costo válido: 0 · Moneda/costo no comparables: 0 · Detalle no conciliado: 0. Los motivos pueden coincidir en un documento.Utilidad bruta = venta neta sin impuestos − costo histórico neto. Margen = utilidad bruta ÷ venta neta × 100, con una base positiva. El costo original congelado se reduce por cantidades devueltas; no se consulta el precio de compra actual. El costo local es comparable con ventas MXN de factor 1. Otras monedas conservan sus importes y muestran rentabilidad por conciliar. No descuenta gastos operativos ni representa utilidad contable final."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('app-crm-web-metrics').getByRole('region', { name: 'Rentabilidad en MXN' }) with timeout 5000ms
+      - waiting for locator('app-crm-web-metrics').getByRole('region', { name: 'Rentabilidad en MXN' })
+        14 × locator resolved to <section class="profit-content" _ngcontent-ng-c3121937114="" aria-label="Rentabilidad en MXN">…</section>
+           - unexpected value "Costo histórico neto48.00 MXNUtilidad bruta 32.00 MXNMargen bruto40.00 %Documentos con rentabilidad comprobada: 2 · Por conciliar: 0. Sin costo válido: 0 · Moneda/costo no comparables: 0 · Detalle no conciliado: 0. Los motivos pueden coincidir en un documento.Utilidad bruta = venta neta sin impuestos − costo histórico neto. Margen = utilidad bruta ÷ venta neta × 100, con una base positiva. El costo original congelado se reduce por cantidades devueltas; no se consulta el precio de compra actual. El costo local es comparable con ventas MXN de factor 1. Otras monedas conservan sus importes y muestran rentabilidad por conciliar. No descuenta gastos operativos ni representa utilidad contable final."
+
+
+      68 |     await expect(usd.locator('dd').filter({ hasText: 'Por conciliar' })).toHaveCount(3);
+      69 |     await expect(usd).toContainText('Moneda/costo no comparables: 1');
+    > 70 |     await expect(mxn).toContainText('no representa utilidad contable final');
+         |                       ^
+      71 |     await mxn.evaluate(element => element.scrollIntoView({ block: 'start' }));
+      72 |     expect((await new AxeBuilder({ page }).include('app-crm-web-metrics').analyze()).violations).toEqual([]);
+      73 |     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+        at C:\Sistema\frontend\tests\web-metrics.spec.ts:70:23
+
+    Error Context: test-results\web-metrics-Rentabilidad-w-9923c--moneda-no-comparable-light-chromium\error-context.md
+
+  2) [chromium] › tests\web-metrics.spec.ts:46:7 › Rentabilidad web: costo original, margen y moneda no comparable dark 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('app-crm-web-metrics').getByRole('region', { name: 'Rentabilidad en MXN' })
+    Expected substring: "no representa utilidad contable final"
+    Received string:    "Costo histórico neto48.00 MXNUtilidad bruta 32.00 MXNMargen bruto40.00 %Documentos con rentabilidad comprobada: 2 · Por conciliar: 0. Sin costo válido: 0 · Moneda/costo no comparables: 0 · Detalle no conciliado: 0. Los motivos pueden coincidir en un documento.Utilidad bruta = venta neta sin impuestos − costo histórico neto. Margen = utilidad bruta ÷ venta neta × 100, con una base positiva. El costo original congelado se reduce por cantidades devueltas; no se consulta el precio de compra actual. El costo local es comparable con ventas MXN de factor 1. Otras monedas conservan sus importes y muestran rentabilidad por conciliar. No descuenta gastos operativos ni representa utilidad contable final."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('app-crm-web-metrics').getByRole('region', { name: 'Rentabilidad en MXN' }) with timeout 5000ms
+      - waiting for locator('app-crm-web-metrics').getByRole('region', { name: 'Rentabilidad en MXN' })
+        14 × locator resolved to <section class="profit-content" _ngcontent-ng-c3121937114="" aria-label="Rentabilidad en MXN">…</section>
+           - unexpected value "Costo histórico neto48.00 MXNUtilidad bruta 32.00 MXNMargen bruto40.00 %Documentos con rentabilidad comprobada: 2 · Por conciliar: 0. Sin costo válido: 0 · Moneda/costo no comparables: 0 · Detalle no conciliado: 0. Los motivos pueden coincidir en un documento.Utilidad bruta = venta neta sin impuestos − costo histórico neto. Margen = utilidad bruta ÷ venta neta × 100, con una base positiva. El costo original congelado se reduce por cantidades devueltas; no se consulta el precio de compra actual. El costo local es comparable con ventas MXN de factor 1. Otras monedas conservan sus importes y muestran rentabilidad por conciliar. No descuenta gastos operativos ni representa utilidad contable final."
+
+
+      68 |     await expect(usd.locator('dd').filter({ hasText: 'Por conciliar' })).toHaveCount(3);
+      69 |     await expect(usd).toContainText('Moneda/costo no comparables: 1');
+    > 70 |     await expect(mxn).toContainText('no representa utilidad contable final');
+         |                       ^
+      71 |     await mxn.evaluate(element => element.scrollIntoView({ block: 'start' }));
+      72 |     expect((await new AxeBuilder({ page }).include('app-crm-web-metrics').analyze()).violations).toEqual([]);
+      73 |     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+        at C:\Sistema\frontend\tests\web-metrics.spec.ts:70:23
+
+    Error Context: test-results\web-metrics-Rentabilidad-w-adcd1-y-moneda-no-comparable-dark-chromium\error-context.md
+
+  2 failed
+    [chromium] › tests\web-metrics.spec.ts:46:7 › Rentabilidad web: costo original, margen y moneda no comparable light 
+    [chromium] › tests\web-metrics.spec.ts:46:7 › Rentabilidad web: costo original, margen y moneda no comparable dark 
+  24 passed (2.1m)
+npm error Lifecycle script `test:e2e` failed with error:
+npm error code 1
+npm error path C:\Sistema\frontend
+npm error workspace frontend@0.0.0
+npm error location C:\Sistema\frontend
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c playwright test tests/web-metrics.spec.ts tests/crm-commercial.spec.ts tests/web-inbox.spec.ts

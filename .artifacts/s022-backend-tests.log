@@ -1,0 +1,76 @@
+
+> backend@0.0.1 test
+> jest --runInBand
+
+PASS src/pedido/pedido.module.spec.ts
+PASS src/auth/browser-auth.spec.ts
+PASS src/crm/web-lead-bridge.controller.spec.ts
+PASS src/pago/pago.module.spec.ts
+[Nest] 22060  - 19/10/2026, 1:18:56 p.m.     LOG [AuthService] User registered successfully: username=nuevo-admin, role=admin, idUser=1
+[Nest] 22060  - 19/10/2026, 1:18:56 p.m.     LOG [AuthService] User registered successfully: username=nuevo-por-defecto, role=user, idUser=1
+[Nest] 22060  - 19/10/2026, 1:18:56 p.m.     LOG [AuthService] User registered successfully: username=usuario-con-log, role=user, idUser=1
+[Nest] 22060  - 19/10/2026, 1:18:57 p.m.   ERROR [AuthService] Invalid password hash: storedHash is null, undefined, empty, or not a string
+[Nest] 22060  - 19/10/2026, 1:18:57 p.m.   ERROR [AuthService] No se pudo validar autenticación contra la base de datos.
+PASS src/auth/auth.service.spec.ts
+PASS src/finanzas/finanzas.module.spec.ts
+PASS src/cuentas-proveedor/cuentas-proveedor.module.spec.ts
+PASS src/crm/crm-solicitudes-web.controller.spec.ts
+PASS src/cliente/cliente.service.spec.ts
+PASS src/dashboard/dashboard.service.spec.ts
+[Nest] 22060  - 19/10/2026, 1:19:00 p.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 22060  - 19/10/2026, 1:19:00 p.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 22060  - 19/10/2026, 1:19:00 p.m.     LOG [DashboardService] Refresco de vistas completado con éxito.
+[Nest] 22060  - 19/10/2026, 1:19:00 p.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 22060  - 19/10/2026, 1:19:00 p.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 22060  - 19/10/2026, 1:19:00 p.m.     LOG [DashboardService] Refresco de vistas completado con éxito.
+[Nest] 22060  - 19/10/2026, 1:19:00 p.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+PASS src/cotizacion/documentos-inexistentes.spec.ts
+PASS src/crm/crm.module.spec.ts
+PASS src/cuentas-proveedor/cuentas-proveedor.service.spec.ts
+PASS src/venta/venta.integridad.spec.ts
+PASS src/crm/crm.service.spec.ts
+PASS src/web-catalog/web-catalog.spec.ts
+PASS src/venta/venta.module.spec.ts
+PASS src/fiscal/fiscal-xml.builder.spec.ts
+PASS src/cotizacion/cotizacion.integridad.spec.ts
+PASS src/pago/pago.integridad.spec.ts
+PASS src/producto/producto-list.spec.ts
+PASS src/finanzas/finanzas.service.spec.ts
+PASS src/abastecimiento/abastecimiento.service.spec.ts
+PASS src/compra/compra.service.spec.ts
+PASS src/web-catalog/web-catalog-export.spec.ts
+PASS src/pago/pago.service.spec.ts
+PASS src/crm/crm-solicitudes-web-maintenance.service.spec.ts
+PASS src/common/directory-query.spec.ts
+PASS src/crm/crm-web-metrics.service.spec.ts
+PASS src/pedido/pedido.service.spec.ts
+PASS src/caja/caja.service.spec.ts
+PASS src/compra/compra-query.spec.ts
+PASS src/notification/notification.service.spec.ts
+PASS src/pago-proveedor/pago-proveedor.service.spec.ts
+PASS src/auth/permissions.guard.spec.ts
+PASS src/almacen/almacen.service.spec.ts
+PASS src/cotizacion/cotizacion-query.spec.ts
+PASS src/venta/factura-query.spec.ts
+PASS src/common/document-search.spec.ts
+PASS src/compra/compra-search.spec.ts
+PASS src/auth/auth-session.store.spec.ts
+PASS src/web-catalog/web-catalog-batch.spec.ts
+PASS src/app.controller.spec.ts
+PASS src/crm/web-lead-bridge.config.spec.ts
+PASS src/cuentas-proveedor/supplier-json.spec.ts
+PASS src/finanzas/bank-statement.parser.spec.ts
+PASS src/db-ssl.util.spec.ts
+PASS src/comercial/commercial-policy.spec.ts
+PASS src/common/scheduled-job.spec.ts
+PASS src/common/scheduled-job-alerts.spec.ts
+PASS src/upload/image-validation.spec.ts
+PASS src/common/database/read-snapshot.spec.ts
+PASS src/fiscal/fiscal.config.spec.ts
+PASS src/fiscal/providers/mock-fiscal.provider.spec.ts
+
+Test Suites: 54 passed, 54 total
+Tests:       240 passed, 240 total
+Snapshots:   0 total
+Time:        27.279 s, estimated 29 s
+Ran all test suites.

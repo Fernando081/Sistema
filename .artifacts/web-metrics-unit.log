@@ -1,0 +1,14 @@
+
+> backend@0.0.1 test
+> jest --runInBand crm-web-metrics.service.spec.ts crm-solicitudes-web.controller.spec.ts crm-solicitudes-web-maintenance.service.spec.ts crm.module.spec.ts
+
+PASS src/crm/crm-web-metrics.service.spec.ts (12.466 s)
+PASS src/crm/crm-solicitudes-web.controller.spec.ts
+PASS src/crm/crm.module.spec.ts
+PASS src/crm/crm-solicitudes-web-maintenance.service.spec.ts
+
+Test Suites: 4 passed, 4 total
+Tests:       9 passed, 9 total
+Snapshots:   0 total
+Time:        20.631 s
+Ran all test suites matching /crm-web-metrics.service.spec.ts|crm-solicitudes-web.controller.spec.ts|crm-solicitudes-web-maintenance.service.spec.ts|crm.module.spec.ts/i.

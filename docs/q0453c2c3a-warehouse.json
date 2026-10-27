@@ -1,0 +1,42 @@
+{
+  "warehouseConcurrentReplays": true,
+  "warehousePayloadConflicts409": true,
+  "warehouseLegacyConflict409": true,
+  "transferRollbackAndRetry": true,
+  "countKitRaceWithoutDeadlock": true,
+  "mixedLoad": {
+    "durationSeconds": 121,
+    "reads": 183515,
+    "writes": 32548,
+    "p95Ms": 7.43,
+    "postgres": {
+      "samples": 120,
+      "maxConnections": 8,
+      "maxWaiting": 1,
+      "maxTransactionSeconds": 5.839544,
+      "maxDeadTuples": 3995,
+      "autovacuumRuns": 28
+    },
+    "deadlocks": 0,
+    "snapshotMismatches": 0
+  },
+  "processPeakRssBytes": 251703296,
+  "generatedAt": "2026-10-02T18:32:02.279Z",
+  "node": "24.19.0",
+  "directCountSingleKardex": true,
+  "approvedCountSingleKardex": true,
+  "kitAssemblyDisassemblySingleKardex": true,
+  "replaysNoExtraMovement": true,
+  "kitFailureRollsBackAllProductsAndLocations": true,
+  "retryAfterRollback": true,
+  "manualPriceAndStockStillAudited": true,
+  "nestedFlagsRestored": true,
+  "transactionRequired": true,
+  "physicalStockAligned": true,
+  "idleTransactions": 0,
+  "limitations": [
+    "Servicios reales de almacén y snapshots SQL; no HTTP ni carga de todas las áreas.",
+    "GarantiaService actual no modifica existencias.",
+    "Carga acotada de almacén; mismo proceso para generador/lectores, sin medir CPU del proceso PostgreSQL. No repara Kardex histórico ni certifica todos los flujos."
+  ]
+}

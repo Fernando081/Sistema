@@ -1,0 +1,27 @@
+{
+  "phase": "D01",
+  "startedAt": "2026-10-20T15:38:59.362Z",
+  "checks": [
+    "100 check/migrate en copia; VIN/ESN existentes conservados; acceso privado401/403, no-store y datos desconocidos sin ceros inventados",
+    "Delegación S01 efectiva: operador sin permiso denegado; consulta sola no permite escritura; gestión se concede explícitamente",
+    "Lectura cero explícita, idempotencia concurrente por UUID/huella y rechazo de contenido distinto, vacíos, fechas futuras/sin zona y negativos",
+    "Inserción intermedia respeta vecinos por fecha; reducción rechazada; lecturas parciales conservan último valor de cada medidor",
+    "Anulación ADMIN con motivo conserva historial/reintento y recalcula valores; IDs de otra unidad no operan; unidad con expediente no se elimina",
+    "Mantenimiento por fecha/km/horas con objetivos obligatorios, idempotencia y condiciones Vencido/Vence hoy/Sin lectura suficiente",
+    "Cierre versionado con fecha/motivo: una decisión concurrente y un409, repetición idéntica no reabre ni duplica historial",
+    "PDF/foto privados en BD: bytes íntegros, hash/metadata sin contenido, descarga autenticada attachment/no-store/nosniff, otra unidad404 y reintento único",
+    "Rechazo de MIME falso/SVG/PDF truncado/tamaño; corrupción detectada por SHA; retiro ADMIN conserva bytes y bloquea nueva descarga",
+    "Cuotas por unidad y paginación20 real; fixtures de cuota solo en copia sin desbordar respuesta o duplicar adjuntos",
+    "Fallo al auditar revierte lectura; eventos de metadata conservan actor y no copian archivos a bitácora",
+    "Actor revocado durante espera de bloqueo no registra lecturas; comprobación dentro de transacción",
+    "Angular producción/login real: lectura, mantenimiento/cierre, subida/imagen decodificada/descarga privada; claro1280/oscuro390/axe/reflujo sin errores JS",
+    "Operador de solo consulta ve expediente/foto autenticada sin controles de gestión; no se confunde rol con permiso efectivo"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "passed": true,
+  "completedAt": "2026-10-20T15:39:17.627Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "UI foto dark"
+}

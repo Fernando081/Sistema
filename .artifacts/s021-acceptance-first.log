@@ -1,0 +1,18 @@
+
+> test:account-sessions
+> node backend/verify-account-sessions.js --backup=.backups/2026-10-19T18-33-17-986Z/database.dump
+
+OK: Respaldo restaurado; check/migrate solo en copia, AppModule completo con guards, fiscal mock y cron detenido
+{"type":"http_request","requestId":"ae781cf0-28f7-4cde-9343-3241842b37a3","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":84.51,"idUser":null}
+{"type":"http_request","requestId":"4f0ac31d-80c7-4985-8843-7dcdfccbc673","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":64.68,"idUser":null}
+{"type":"http_request","requestId":"e64eaf29-98f8-486c-8d88-f0bfaabe23fc","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":65.18,"idUser":null}
+{"type":"http_request","requestId":"4333de3a-571d-454f-8c21-5748b158a952","method":"GET","path":"/api/v1/auth/sessions","statusCode":401,"durationMs":1.17,"idUser":null}
+{"type":"http_request","requestId":"03faa871-9efd-481d-9c23-0c648d485813","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":7.73,"idUser":2}
+{"type":"http_request","requestId":"546b2302-98bb-46e7-8663-7c30623fc09d","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":4.12,"idUser":2}
+{"type":"http_request","requestId":"03758b24-6a3a-4c1a-ba44-4500b6a4bac2","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":3.44,"idUser":3}
+OK: Login HTTP bcrypt/JWT crea sesiones distintas; lista privada aislada, sesión actual correcta y metadata reducida sin tokens/IP/User-Agent completo
+{"type":"http_request","requestId":"bcfa7fef-c870-4316-9d66-4b4b63d48f3e","method":"POST","path":"/api/v1/auth/sessions/e207ceb3-7f9c-487b-b1ae-ea41af8696e1/revoke","statusCode":201,"durationMs":14.82,"idUser":2}
+Falló S02.1: POST auth/sessions/e207ceb3-7f9c-487b-b1ae-ea41af8696e1/revoke: 201 != 404
+
+201 !== 404
+ Revisar etapa en .artifacts/s021-account-sessions.json; no se imprimen secretos o respuestas privadas.

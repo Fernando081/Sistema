@@ -13,6 +13,10 @@ import { ProveedorService } from '../../services/proveedor.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
+import { CotizacionProveedor, CotizacionProveedorGrupo } from '../../services/producto-api.types';
+
+import { Proveedor } from '../../proveedor/proveedor.interface';
+
 @Component({
   selector: 'app-producto-cotizaciones-dialog',
   standalone: true,
@@ -33,19 +37,19 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 export class ProductoCotizacionesDialogComponent implements OnInit {
 
   // Signals
-  cotizaciones = signal<any[]>([]);
+  cotizaciones = signal<CotizacionProveedor[]>([]);
   isSaving = signal<boolean>(false);
-  proveedores: any[] = [];
+  proveedores: Proveedor[] = [];
   
-  historialDataSource = new MatTableDataSource<any>();
+  historialDataSource = new MatTableDataSource<CotizacionProveedorGrupo>();
   displayedColumns: string[] = ['fecha', 'proveedor', 'marca', 'dias', 'precio'];
   displayedColumnsWithExpand = [...this.displayedColumns, 'expand'];
-  expandedElement: any | null = null;
+  expandedElement: CotizacionProveedorGrupo | null = null;
 
   nuevaCotizacion = {
-    idProveedor: null,
+    idProveedor: null as number | null,
     marcaOfrecida: '',
-    precioCotizado: null,
+    precioCotizado: null as number | null,
     diasEntrega: 0
   };
 
@@ -74,7 +78,7 @@ export class ProductoCotizacionesDialogComponent implements OnInit {
     this.productoService.getCotizacionesProveedor(this.data.idProducto).subscribe({
       next: (res) => {
         // Agrupar por Proveedor y Marca
-        const gruposMap = new Map<string, any[]>();
+        const gruposMap = new Map<string, CotizacionProveedor[]>();
         res.forEach(c => {
           const marcaClean = (c.marca_ofrecida || 'GENERIC').toUpperCase().trim();
           const key = `${c.id_proveedor}-${marcaClean}`;
@@ -82,7 +86,7 @@ export class ProductoCotizacionesDialogComponent implements OnInit {
           gruposMap.get(key)!.push(c);
         });
 
-        const activeRows: any[] = [];
+        const activeRows: Omit<CotizacionProveedorGrupo, 'esMasBarato'>[] = [];
         let minPrice = Number.MAX_VALUE;
 
         // Construir filas principales
@@ -96,8 +100,7 @@ export class ProductoCotizacionesDialogComponent implements OnInit {
             minPrice = precioNum;
           }
 
-          mostRecent.history = groupItems.length > 1 ? groupItems.slice(1) : []; // Los demás van al historial desplegable
-          activeRows.push(mostRecent);
+          activeRows.push({ ...mostRecent, history: groupItems.slice(1) });
         }
 
         // Marcar el más barato
@@ -118,7 +121,7 @@ export class ProductoCotizacionesDialogComponent implements OnInit {
     
     this.isSaving.set(true);
 
-    this.productoService.addCotizacionProveedor(this.data.idProducto, this.nuevaCotizacion).subscribe({
+    this.productoService.addCotizacionProveedor(this.data.idProducto, { ...this.nuevaCotizacion, idProveedor: this.nuevaCotizacion.idProveedor, precioCotizado: this.nuevaCotizacion.precioCotizado }).subscribe({
       next: () => {
         this.snackBar.open('Cotización guardada.', 'Cerrar', { duration: 3000 });
         this.isSaving.set(false);

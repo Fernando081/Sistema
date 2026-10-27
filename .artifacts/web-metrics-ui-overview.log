@@ -1,0 +1,19 @@
+
+> frontend@0.0.0 test:e2e
+> playwright test tests/web-metrics.spec.ts
+
+[WebServer] (node:23316) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:23316) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:1520) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [chromium] › tests\web-metrics.spec.ts:23:7 › Medición web: periodo, cohortes, referencias y accesibilidad light (3.8s)
+  ok 2 [chromium] › tests\web-metrics.spec.ts:65:7 › Medición web: validación, fallo, carga bloqueada y vacío light (2.3s)
+  ok 3 [chromium] › tests\web-metrics.spec.ts:23:7 › Medición web: periodo, cohortes, referencias y accesibilidad dark (2.5s)
+  ok 4 [chromium] › tests\web-metrics.spec.ts:65:7 › Medición web: validación, fallo, carga bloqueada y vacío dark (2.4s)
+
+  4 passed (24.5s)

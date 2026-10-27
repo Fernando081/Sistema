@@ -23,16 +23,16 @@ export interface CompraResumen {
   id_compra: number;
   fecha_compra: string;
   folio_factura: string;
-  total: number;
+  total: number | string;
   estatus: string;
   nombre_proveedor: string;
   rfc_proveedor: string;
 }
 
 export interface DetalleCompraDb {
-  cantidad: number;
-  descripcion_producto: string;
-  codigo_producto: string;
-  costo_unitario: number;
-  importe: number;
+  cantidad: number | string;
+  descripcion: string;
+  codigo: string;
+  costo_unitario: number | string;
+  importe: number | string;
 }

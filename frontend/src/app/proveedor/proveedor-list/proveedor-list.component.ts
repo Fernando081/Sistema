@@ -1,10 +1,10 @@
 // frontend/src/app/proveedor/proveedor-list/proveedor-list.component.ts (REEMPLAZAR)
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,9 +16,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProveedorService } from '../../services/proveedor.service'; // CAMBIO
 import { Proveedor } from '../proveedor.interface'; // CAMBIO
 import { ProveedorDialogComponent } from '../proveedor-dialog/proveedor-dialog.component'; // CAMBIO
-import { finalize } from 'rxjs';
+import { RemoteDirectory } from '../../shared/remote-directory';
+import { localDate } from '../../shared/document-download';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ConfirmService } from '../../shared/confirm.service';
+
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-proveedor-list', // CAMBIO
@@ -32,76 +35,38 @@ import { ConfirmService } from '../../shared/confirm.service';
   templateUrl: './proveedor-list.component.html',
   styleUrls: ['./proveedor-list.component.css']
 })
-export class ProveedorListComponent implements OnInit {
+export class ProveedorListComponent implements OnInit, OnDestroy {
   
   displayedColumns: string[] = ['idProveedor', 'rfc', 'razonSocial', 'codigoPostal', 'acciones']; // CAMBIO
-  dataSource = new MatTableDataSource<Proveedor>(); // CAMBIO
-  isLoading = true;
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  readonly directory: RemoteDirectory<Proveedor>;
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  get dataSource() { return this.directory.dataSource; }
+  get isLoading() { return this.directory.loading(); }
+  get totalItems() { return this.directory.total(); }
 
   constructor(
     private proveedorService: ProveedorService, // CAMBIO
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
     private confirm: ConfirmService,
-  ) {}
+  ) {
+    this.directory = new RemoteDirectory(query => this.proveedorService.getPage(query), message => this.mostrarNotificacion(message));
+  }
 
   ngOnInit(): void {
-    this.cargarProveedores(); // CAMBIO
+    this.directory.connectUrl(this.route, this.router);
+    this.directory.start();
   }
-
-  cargarProveedores(): void { // CAMBIO
-    this.isLoading = true;
-    this.proveedorService.getProveedores() // CAMBIO
-      .pipe(finalize(() => this.isLoading = false))
-      .subscribe({
-        next: (data) => {
-          // Mapeamos de PascalCase (DB) a camelCase (Angular)
-          const camelCaseData: Proveedor[] = data.map(prov => ({
-            idProveedor: prov['IdProveedor'],
-            rfc: prov['RFC'],
-            razonSocial: prov['RazonSocial'],
-            pais: prov['Pais'],
-            idEstado: prov['IdEstado'],
-            idMunicipio: prov['IdMunicipio'],
-            ciudad: prov['Ciudad'],
-            colonia: prov['Colonia'],
-            calle: prov['Calle'],
-            codigoPostal: prov['CodigoPostal'],
-            numeroExterior: prov['NumeroExterior'],
-            numeroInterior: prov['NumeroInterior'],
-            referencia: prov['Referencia'],
-            idMetodoDePago: prov['IdMetodoDePago'],
-            idUsoCFDI: prov['IdUsoCFDI'],
-            idFormaPago: prov['IdFormaPago'],
-            idRegimenFiscal: prov['IdRegimenFiscal']
-          }));
-          this.dataSource.data = camelCaseData;
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-        },
-        error: (err) => {
-          this.mostrarNotificacion('Error al cargar proveedores: ' + (err.error?.message || err.message));
-        }
-      });
+  ngOnDestroy(): void { this.directory.dispose(); }
+  cargarProveedores(): void { this.directory.reload(); }
+  applyFilter(event: Event): void {
+    const input = event.target;
+    if (input instanceof HTMLInputElement) this.directory.setTerm(input.value);
   }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-    
-    this.dataSource.filterPredicate = (data: Proveedor, filter: string) => { // CAMBIO
-      return data.razonSocial.toLowerCase().includes(filter) || 
-             data.rfc.toLowerCase().includes(filter);
-    };
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+  exportar(): void {
+    this.directory.export(query => this.proveedorService.exportCsv(query), 'proveedores' + '_' + localDate() + '.csv');
   }
-
   abrirDialogo(proveedor?: Proveedor): void { // CAMBIO
     const dialogRef = this.dialog.open(ProveedorDialogComponent, { // CAMBIO
       width: '600px',

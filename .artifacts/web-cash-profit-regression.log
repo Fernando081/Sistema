@@ -1,0 +1,23 @@
+OK: Monedas separadas; cliente/rutas directas y pedido sin duplicar; global/cancelados/sin vínculo fuera del importe
+OK: Notas con impuestos y devoluciones en tres fracciones conservan centavos; venta neta excluye impuestos
+OK: REP canónico una vez pese a dos copias; cancelación local/fiscal excluida; Pagada sin pago no inventa cobro
+OK: Totales mayores que Number.MAX_SAFE_INTEGER viajan como cadenas decimales con centavos exactos
+OK: Código de tres letras no reconocido y XXX quedan sin desglose; no se presume MXN ni cambio de moneda
+OK: Nota activa con moneda/cliente/estado incongruente deja neto desconocido, no cero ni subtotal parcial
+OK: Devolución sin conciliación de encabezado/detalle y mezcla histórica nota/devolución no fabrican neto
+OK: REP/compatibilidad incoherentes, detalle duplicado y cancelación cambian cobertura/cobros sin inferir por saldo
+OK: Saldos NaN y encabezados inconsistentes quedan desconocidos; un indicador no rellena otro
+OK: Costo congelado original tras NC/fracciones devueltas; no costo actual de NC ni cobros confundidos con utilidad
+OK: Producto repetido con snapshots diferentes: promedio ponderado histórico y una reducción por cantidad devuelta
+OK: Venta por debajo del costo conserva pérdida/margen negativos sin recortarlos a cero
+OK: Devolución completa con neto/costo/utilidad cero conserva margen indefinido por falta de base positiva
+OK: Snapshot NULL/NaN/negativo deja total desconocido; costo cero explícito válido y ventas/cobros independientes
+OK: Detalle NC desconocido/excesivo/incompatible impide rentabilidad; cancelaciones local/fiscal revierten su ajuste
+OK: Costo local no convertido a USD; MXN con factor ausente/inconsistente conserva costos no comparables
+OK: Encabezado no conciliado o cantidad cero no fabrican utilidad ni causan división por cero
+OK: Costo neto redondeado por documento y margen sobre sumas; costo + utilidad reconcilian al neto exacto
+OK: Costo/margen enormes calculados en numeric sin límite artificial de 30 dígitos ni error de desbordamiento
+OK: Un snapshot READ ONLY/REPEATABLE READ/plazo5s; tablas intactas, contactos/IDs omitidos y periodo vacío sin monedas inventadas
+OK: Login bcrypt/PostgreSQL y JWT/guards reales: ADMIN200/no-store, anónimo401, USER403, campos extra400 y revocación401
+OK: Sólo el esquema propio eliminado; servidor y conexiones cerrados
+Medición financiera aislada: 22/22 grupos aprobados. Evidencia: .artifacts/web-profit-db.json

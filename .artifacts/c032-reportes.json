@@ -1,0 +1,26 @@
+{
+  "phase": "C03.2",
+  "startedAt": "2026-10-22T05:35:48.942Z",
+  "checks": [
+    "HTTP/SQL: configuración cerrada, validación cruzada, UUID/huella, caché privada, operador403 y ACL incluso entre administradores",
+    "Callback cron real y exclusión PostgreSQL entre instancias; diarios/semanales, sin retroactividad y un resultado por periodo",
+    "Snapshot reutiliza conteos completos de C03.1, conserva corte/filtros y no cambia al modificar el origen; sin datos de contacto o listas recortadas",
+    "Suspensión y reanudación versionadas, corte nuevo sin completar periodos anteriores, día semanal y siguiente diario",
+    "Fallo real registra resultado Error sin snapshot ni SQL; job/avisos existentes detectan fallo/recuperación sin repetir ese periodo",
+    "El ejecutor no genera para propietario sin rol actual autorizado y la consulta pierde acceso al revocar autoridad",
+    "Revocación del permiso efectivo bloquea consulta y generación aunque el propietario siga siendo ADMIN",
+    "Configuración/historial conservados con guardas ALWAYS y auditoría humana de configuración separada del cron sin autor humano inventado",
+    "Revocación durante espera de bloqueo real impide el control y revalida cuenta/version después de esperar",
+    "Lecturas no ejecutan reportes y paginación conserva totales/IDs sin duplicar",
+    "Angular real light: páginas, formulario semanal, suspensión/reanudación, recarga, snapshots/error y enlace C03.1; Axe/reflujo 1280px",
+    "Angular real dark: páginas, formulario semanal, suspensión/reanudación, recarga, snapshots/error y enlace C03.1; Axe/reflujo 390px"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "externalDeliveryEnabled": false,
+  "passed": true,
+  "completedAt": "2026-10-22T05:36:25.504Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular C03.2"
+}

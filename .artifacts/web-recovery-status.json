@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-12T02:49:33.523Z",
+  "scope": "Observación local sin mutar publicaciones; no autoriza recuperación, publicación o lanzamiento",
+  "coordinationClear": true,
+  "status": "ready",
+  "publication": {
+    "state": "absent"
+  },
+  "recovery": {
+    "state": "absent"
+  },
+  "maintenance": {
+    "state": "absent"
+  },
+  "resumption": {
+    "state": "absent"
+  },
+  "finalization": {
+    "state": "absent"
+  },
+  "archives": {
+    "checked": 0,
+    "complete": 0,
+    "acknowledged": 0,
+    "pending": []
+  },
+  "reconciliations": {
+    "completed": [],
+    "pending": [],
+    "aborted": []
+  },
+  "maintenanceReviews": {
+    "completed": [],
+    "pending": [],
+    "aborted": []
+  },
+  "resumptions": {
+    "completed": [],
+    "pending": [],
+    "aborted": []
+  },
+  "resumptionReviews": {
+    "completed": [],
+    "pending": [],
+    "aborted": []
+  },
+  "closureResumptions": {
+    "completed": [],
+    "pending": []
+  },
+  "reconciliationAborts": {
+    "completed": [],
+    "pending": []
+  },
+  "resumptionContinuations": {
+    "completed": [],
+    "pending": []
+  },
+  "resumptionAborts": {
+    "completed": [],
+    "pending": []
+  },
+  "closureAborts": {
+    "completed": [],
+    "pending": []
+  },
+  "reconciliationAbortContinuations": {
+    "completed": [],
+    "pending": []
+  },
+  "resumptionAbortContinuations": {
+    "completed": [],
+    "pending": []
+  },
+  "closureAbortContinuations": {
+    "completed": [],
+    "pending": []
+  },
+  "abortContinuationFinalizations": {
+    "completed": [],
+    "pending": []
+  }
+}

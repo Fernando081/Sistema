@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "drillId": "8e7c4c2d-5c4b-40d6-8db2-4f19eb9c04e3",
+  "generatedAt": "2026-10-11T23:34:26.024Z",
+  "status": "not-completed",
+  "stage": "backup-selection",
+  "scope": "Simulacro de la vista previa instalada sobre copias temporales y runtime actual. No interviene en dist, ERP/BD, captación ni versiones; no certifica aceptación comercial, hosting o recuperación ante pérdida del disco.",
+  "nodeVersion": "24.19.0",
+  "commercialAccepted": false,
+  "versionedRecoveryVerified": false,
+  "sourceUnchanged": false,
+  "temporaryCopiesRemoved": false,
+  "totalMs": 0.51
+}

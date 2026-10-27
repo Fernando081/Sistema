@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-10-02T19:07:39.028Z",
+  "counts": {
+    "cliente": 6,
+    "proveedor": 2,
+    "producto": 7,
+    "factura": 66,
+    "cotizacion": 23,
+    "compra": 16
+  },
+  "fixtureRowsPerDomain": 20000,
+  "fixtureVolumeCoversCurrentCounts": true,
+  "limitations": [
+    "Lectura agregada de tamaños actuales; no contiene registros ni credenciales.",
+    "No calibra distribución de consultas, simultaneidad real ni SLA."
+  ]
+}

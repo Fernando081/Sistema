@@ -1,0 +1,46 @@
+{
+  "phase": "O01.1",
+  "checkedAt": "2026-10-22T05:44:22.059Z",
+  "checksums": {
+    "111_almacen_escaneo_picking.sql": true,
+    "112_crm_reportes_reintentos.sql": true
+  },
+  "sourceRows": {
+    "crm_reporte_reintento": 0,
+    "crm_reporte_intento_evento": 0,
+    "crm_reporte_recuperacion": 0
+  },
+  "remainingCopies": 0,
+  "guard": "A",
+  "http": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/reportes-programados",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm/reportes-programados",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4300/api/v1/crm/reportes-programados",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503
+    },
+    {
+      "url": "http://127.0.0.1:4600/",
+      "status": 200
+    }
+  ],
+  "passed": true
+}

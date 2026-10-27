@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-10-02T17:32:50.125Z",
+  "node": "24.19.0",
+  "concurrentCallers": 8,
+  "singlePaymentEffect": true,
+  "canonicalPayloadAndUuid": true,
+  "changedAmountAndInvoice409": true,
+  "rollbackPaymentBalanceAndCash": true,
+  "retryAfterRollback": true,
+  "competingOverpayment400": true,
+  "paidInvoiceRetry": true,
+  "final": {
+    "balance": 0,
+    "payments": 4,
+    "cashIncrease": 100
+  },
+  "idleTransactions": 0,
+  "limitations": [
+    "Servicios TypeORM/PostgreSQL reales; no HTTP, UI ni carga prolongada.",
+    "requestId opcional por compatibilidad: llamadas sin clave no adquieren idempotencia.",
+    "No cubre REP, pagos a proveedores ni ventas; no caída física de PostgreSQL."
+  ]
+}

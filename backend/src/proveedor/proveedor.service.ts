@@ -7,12 +7,22 @@ import { Proveedor } from './proveedor.entity';
 import { CreateProveedorDto, UpdateProveedorDto } from './proveedor.dto';
 import { queryRows } from '../common/database/typed-query';
 
+import { DirectoryQueryDto, directoryPage, directoryCsv } from '../common/directory-query';
+
 @Injectable()
 export class ProveedorService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
   async findAll(): Promise<Proveedor[]> {
     return queryRows<Proveedor>(this.dataSource, 'SELECT * FROM fn_get_proveedores()');
+  }
+
+  findPage(query: DirectoryQueryDto) {
+    return directoryPage<Record<string, unknown>>(this.dataSource, 'proveedor', query);
+  }
+
+  exportCsv(query: DirectoryQueryDto) {
+    return directoryCsv(this.dataSource, 'proveedor', query);
   }
 
   async findOne(idProveedor: number): Promise<Proveedor> {

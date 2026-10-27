@@ -1,0 +1,109 @@
+
+> test:account-sessions
+> node backend/verify-account-sessions.js --backup=.backups/2026-10-20T00-06-11-003Z/database.dump
+
+OK: Respaldo restaurado; check/migrate solo en copia, AppModule completo con guards, fiscal mock y cron detenido
+{"type":"http_request","requestId":"24daa85f-22dc-4f4c-8b30-9e4b11c2dff9","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":130.72,"idUser":null}
+{"type":"http_request","requestId":"8e7f1ae6-2fed-45c3-8e06-a83ce0cdc0a8","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":64.68,"idUser":null}
+{"type":"http_request","requestId":"658ce459-ff62-4e52-aad4-d94bfa1eac89","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":1.66,"idUser":null}
+{"type":"http_request","requestId":"cd1aabd8-858c-4bef-b232-f5d1184878e8","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":4.18,"idUser":null}
+{"type":"http_request","requestId":"cf131f49-2c22-44b5-9f73-639c3039c906","method":"GET","path":"/api/v1/auth/sessions","statusCode":401,"durationMs":2.7,"idUser":null}
+{"type":"http_request","requestId":"f018b7b0-fdd9-4b4b-9222-f8afdd4ed4ff","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":5.27,"idUser":2}
+{"type":"http_request","requestId":"014a56c7-05cb-4d3f-ba9b-d532fd65ece5","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":4.32,"idUser":2}
+{"type":"http_request","requestId":"ecc1e4a2-a258-46d8-9698-05ba74363a9e","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":6.85,"idUser":3}
+OK: Login HTTP bcrypt/JWT crea sesiones distintas; lista privada aislada, sesión actual correcta y metadata reducida sin tokens/IP/User-Agent completo
+{"type":"http_request","requestId":"ab6b8c75-2740-451c-8513-6ce712cd5983","method":"POST","path":"/api/v1/auth/sessions/e1435e16-f9c8-44c8-8eae-e7afb5670ee4/revoke","statusCode":404,"durationMs":6.92,"idUser":2}
+{"type":"http_request","requestId":"5eb19fdb-6070-463e-bbc2-ed965428690c","method":"POST","path":"/api/v1/auth/sessions/74ea4407-e2f0-42c7-8a0a-e71699f3dfc0/revoke","statusCode":404,"durationMs":4.75,"idUser":2}
+{"type":"http_request","requestId":"21301a42-e705-4227-9e8b-7ca3aa3e4948","method":"POST","path":"/api/v1/auth/sessions/invalid/revoke","statusCode":400,"durationMs":3.55,"idUser":2}
+{"type":"http_request","requestId":"811d24b4-9500-474a-b920-c3c128694cc7","method":"POST","path":"/api/v1/auth/sessions/64a2a27a-bfe8-4905-bb2b-897474defb39/revoke","statusCode":201,"durationMs":5.69,"idUser":2}
+{"type":"http_request","requestId":"1c831f75-8139-44d4-a0c6-39c7be2933da","method":"POST","path":"/api/v1/auth/sessions/64a2a27a-bfe8-4905-bb2b-897474defb39/revoke","statusCode":201,"durationMs":5.1,"idUser":2}
+{"type":"http_request","requestId":"ba541568-ac1b-4bc4-b00e-2f89401b0e58","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.94,"idUser":null}
+{"type":"http_request","requestId":"ad00908e-7641-4f39-88e3-511e611bbc9f","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":2.81,"idUser":2}
+{"type":"http_request","requestId":"66644fae-2ed9-44ca-88c4-2d3735d426cc","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":4.12,"idUser":3}
+OK: Cierre individual idempotente; sesión ajena404/UUID inválido400 y JWT revocado401 sin cerrar otras cuentas o sesiones
+{"type":"http_request","requestId":"e4d3b975-401c-4d80-a748-dbd5d526ffc2","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":4.55,"idUser":2}
+{"type":"http_request","requestId":"6048737c-44af-447c-8c83-425df867b243","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":3.19,"idUser":2}
+{"type":"http_request","requestId":"30679294-10e8-443a-ab53-e58a3c74b86a","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":8.47,"idUser":2}
+OK: Actividad aproximada actualiza tras un minuto y evita escribir en cada solicitud
+{"type":"http_request","requestId":"9629e082-9b84-402e-b277-a835a9237d84","method":"POST","path":"/api/v1/auth/sessions/B3007AC0-C8AB-433A-8EC9-D00AAB02EC86/revoke","statusCode":201,"durationMs":3.72,"idUser":2}
+{"type":"http_request","requestId":"76cbd3df-bd16-4cfc-99ec-62b583c18796","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":3.21,"idUser":null}
+{"type":"http_request","requestId":"42a1e89b-27a0-4e02-a6b4-4f3227d07b58","method":"POST","path":"/api/v1/auth/logout","statusCode":201,"durationMs":3.65,"idUser":2}
+{"type":"http_request","requestId":"ae6ea2e3-d136-4184-8a7a-6e8bdad308c3","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":3.16,"idUser":null}
+{"type":"http_request","requestId":"5691589b-091f-4e33-9047-c4370d4a6cb1","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":2.43,"idUser":2}
+{"type":"http_request","requestId":"dbfd851a-e8df-432f-b5fa-9fdedd1e36fd","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.27,"idUser":null}
+OK: Logout normal cierra solo su sesión; vencimiento en PostgreSQL rechaza JWT todavía no vencido
+{"type":"http_request","requestId":"9f4c5348-d9c0-4ac1-aefa-b3db7a265184","method":"POST","path":"/api/v1/auth/logout-all","statusCode":201,"durationMs":10.06,"idUser":2}
+{"type":"http_request","requestId":"44975dfd-f1f1-42df-9b0d-b7d58d35ad12","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.04,"idUser":null}
+{"type":"http_request","requestId":"1a7dd25d-f66c-40e5-9d23-fdcdd224f3c1","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":2.98,"idUser":3}
+{"type":"http_request","requestId":"aae2a87e-2e95-4c40-a01b-aa642ee376d7","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":2.36,"idUser":2}
+OK: Cerrar todas incrementa versión y revoca registros de la cuenta; nuevo login funciona y otra cuenta sigue activa
+{"type":"http_request","requestId":"90eef54b-8b8a-4849-b609-9b5f662b5313","method":"POST","path":"/api/v1/auth/access-profiles","statusCode":201,"durationMs":17,"idUser":4}
+{"type":"http_request","requestId":"08faa089-1b24-4183-ae46-c9ec37875731","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":8.33,"idUser":4}
+{"type":"http_request","requestId":"e4db2d88-23c0-4c30-b7e5-82339fbe485d","method":"PUT","path":"/api/v1/auth/users/2/access-profile","statusCode":200,"durationMs":12.41,"idUser":4}
+{"type":"http_request","requestId":"0c6415c0-3bb2-4bf1-97f3-e7ff8035164d","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.59,"idUser":null}
+{"type":"http_request","requestId":"c52fd065-a4d0-488a-a3de-73b851fc3454","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":4.39,"idUser":2}
+{"type":"http_request","requestId":"8500fb93-a454-447a-ac7a-5dc7ebaa7f4f","method":"PATCH","path":"/api/v1/auth/users/2","statusCode":200,"durationMs":17.05,"idUser":4}
+{"type":"http_request","requestId":"7d4d8ce4-5719-4389-9714-a923ea6b140c","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.13,"idUser":null}
+{"type":"http_request","requestId":"ba3dd2ab-2b19-4b36-ac7a-a15702af362c","method":"PATCH","path":"/api/v1/auth/users/2","statusCode":200,"durationMs":8.45,"idUser":4}
+{"type":"http_request","requestId":"49ecb33e-92bc-413a-a494-0bd871307f83","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.09,"idUser":null}
+OK: Cambios S01 de perfil y desactivación siguen invalidando sesiones; versiones anteriores no aparecen como activas
+{"type":"http_request","requestId":"170b883b-ad44-41b4-95ff-30542aa14bc9","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":4.69,"idUser":null}
+{"type":"http_request","requestId":"8b170874-f312-411f-b906-1349177261b7","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":5.76,"idUser":2}
+OK: Veinticuatro logins concurrentes respetan límite20 y revocan accesos antiguos en servidor
+OK: Limpieza al login elimina solo sesiones propias vencidas con antigüedad mayor30 días
+{"type":"http_request","requestId":"046612d2-049e-4596-adaa-3f59ab5d5c98","method":"GET","path":"/api/v1/auth/browser-state","statusCode":401,"durationMs":0.77,"idUser":null}
+{"type":"http_request","requestId":"7454a2f6-b1b6-4f2f-8225-4351cddc881a","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":69.3,"idUser":null}
+{"type":"http_request","requestId":"d1f78c40-1e14-4527-a68d-e0a8bce55a8a","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":10.81,"idUser":2}
+{"type":"http_request","requestId":"1b8ceebf-7c94-45db-a108-c827fa45cff5","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":13.68,"idUser":2}
+{"type":"http_request","requestId":"ed168a00-ac03-4592-b0e9-9f2f5adb0958","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":14.79,"idUser":2}
+{"type":"http_request","requestId":"9bf28a40-540e-43e1-85ea-d8f01f46fa9d","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":14.31,"idUser":2}
+{"type":"http_request","requestId":"fb4c1acb-940f-4522-9f82-c21c0f49f0ea","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":106.55,"idUser":2}
+{"type":"http_request","requestId":"68c2f383-60e1-48db-83fa-fd471d1afd12","method":"GET","path":"/api/v1/auth/browser-state","statusCode":401,"durationMs":0.94,"idUser":null}
+{"type":"http_request","requestId":"5b633184-541c-4392-ab1c-caa0de48c187","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":67.32,"idUser":null}
+{"type":"http_request","requestId":"a80dd672-8421-405e-9a65-a5c4fa6f8009","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":21.16,"idUser":2}
+{"type":"http_request","requestId":"de4e6e45-fd6c-4e66-b315-a5102cb7534a","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":9.31,"idUser":2}
+{"type":"http_request","requestId":"7a4afa8d-98ac-48f1-9601-b8a2c842d4f6","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":7.94,"idUser":2}
+{"type":"http_request","requestId":"624491f4-3ffe-4209-b9ae-2d3387a0b1c8","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":8.5,"idUser":2}
+{"type":"http_request","requestId":"d7e7c7af-3dd8-4042-9d72-592a1f6ae6fa","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":13.82,"idUser":2}
+{"type":"http_request","requestId":"4ec0d4c0-980c-4bd6-8cd7-f8383cd09b47","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.29,"idUser":2}
+{"type":"http_request","requestId":"6cf8f06c-933d-41c0-a972-7861a477145c","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":11.49,"idUser":2}
+{"type":"http_request","requestId":"4dcbabc4-08e0-4e41-a90a-82e7870a6c2e","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":15.02,"idUser":2}
+{"type":"http_request","requestId":"06e3b186-ea64-4f5b-80ea-ea87ef170b07","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":13.53,"idUser":2}
+{"type":"http_request","requestId":"caf40804-4d63-4cf2-ac6a-8960a7d9c7e0","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":12.2,"idUser":2}
+{"type":"http_request","requestId":"6f689979-3b21-4243-9f67-4a2f75cc4bb3","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":131.86,"idUser":2}
+{"type":"http_request","requestId":"568ab379-1490-40e7-9508-ac97a2be362d","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":4.93,"idUser":2}
+{"type":"http_request","requestId":"71f2e1ac-eea0-4911-87ff-aab5cf0a595a","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":31.93,"idUser":2}
+{"type":"http_request","requestId":"2c23ed40-d546-426d-897b-3b5c5b201261","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":34.44,"idUser":2}
+{"type":"http_request","requestId":"f67ba3c5-d446-4cd7-97e6-f9bb32590dfb","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":33.4,"idUser":2}
+{"type":"http_request","requestId":"fc45fc2d-0aef-4c71-9ce2-f52596b9c0cb","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":37.4,"idUser":2}
+{"type":"http_request","requestId":"dbf31a1d-1c1b-4f94-a142-110ebc7ae2a2","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":77.06,"idUser":2}
+{"type":"http_request","requestId":"91e86fae-b1ed-4710-8c32-31663f04e16a","method":"GET","path":"/api/v1/auth/browser-state","statusCode":403,"durationMs":1.97,"idUser":2}
+{"type":"http_request","requestId":"37279cba-5915-41f2-846f-6f6746fefba2","method":"GET","path":"/api/v1/auth/browser-state","statusCode":403,"durationMs":1.74,"idUser":2}
+{"type":"http_request","requestId":"ccc7436d-2059-4a1f-a759-025096c1a406","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":3.44,"idUser":2}
+{"type":"http_request","requestId":"b991c05e-9185-4dad-a38f-68c43b48334c","method":"POST","path":"/api/v1/auth/logout","statusCode":403,"durationMs":0.77,"idUser":null}
+{"type":"http_request","requestId":"777b47cd-7952-4eff-a6e0-9ccf2a638c03","method":"POST","path":"/api/v1/auth/logout","statusCode":403,"durationMs":0.4,"idUser":null}
+{"type":"http_request","requestId":"b569c3ed-3b54-412b-93b5-acd4123be167","method":"POST","path":"/api/v1/auth/logout","statusCode":403,"durationMs":0.58,"idUser":null}
+{"type":"http_request","requestId":"0576a50c-6dd6-44ec-b84e-f2fb9b4275b1","method":"POST","path":"/api/v1/auth/logout","statusCode":403,"durationMs":0.4,"idUser":null}
+{"type":"http_request","requestId":"629ce7d7-b8dc-40ca-ba76-25d33a5322d5","method":"POST","path":"/api/v1/auth/logout","statusCode":403,"durationMs":0.57,"idUser":null}
+{"type":"http_request","requestId":"b8293975-bc8a-4b6a-ae69-a237a83b54df","method":"POST","path":"/api/v1/auth/login","statusCode":403,"durationMs":0.87,"idUser":null}
+{"type":"http_request","requestId":"e2914e80-7316-4a91-b0e3-a29bff97fee8","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":0.4,"idUser":null}
+{"type":"http_request","requestId":"56e54d05-5a7e-48d6-9340-d1998d54b093","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":0.54,"idUser":null}
+{"type":"http_request","requestId":"12c0b61c-66d4-42b3-82ab-d9eb633d1e20","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":1.58,"idUser":2}
+{"type":"http_request","requestId":"77f7a868-a3e1-48ef-8c4d-14dcc0b1075c","method":"OPTIONS","path":"/api/v1/auth/sessions","statusCode":204,"durationMs":0.37,"idUser":null}
+OK: S02.2: cookie HttpOnly/Strict, sin JWT en JS/respuesta/Storage, restauración, CSRF/origen/cabecera, CORS externo y cookie ambigua rechazados
+{"type":"http_request","requestId":"496f39b7-b4f2-420f-a698-f1af5757131e","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":3.96,"idUser":2}
+{"type":"http_request","requestId":"60f031b3-1ef5-4774-bf1d-72402bd80369","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":4.51,"idUser":2}
+OK: Dos navegadores con login real y Angular producción: sesiones correctas, claro1280/oscuro390 sin desbordamiento ni infracciones axe en panel
+{"type":"http_request","requestId":"759d40dc-5ca2-41b3-85e9-82142400d70d","method":"POST","path":"/api/v1/auth/sessions/7c182c8e-0cb2-42c5-87e8-db933bd4982c/revoke","statusCode":201,"durationMs":4.86,"idUser":2}
+{"type":"http_request","requestId":"18f0a6be-9575-4266-bd16-2339bcaa0796","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":3.42,"idUser":2}
+{"type":"http_request","requestId":"3e7d1d4a-1272-4225-a92b-b363e224813d","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":3.13,"idUser":2}
+{"type":"http_request","requestId":"3cc79c82-81df-49aa-b11a-e99e12544e0f","method":"POST","path":"/api/v1/auth/sessions/9150d53f-fb77-4efc-86bc-3e4e886bdd4c/revoke","statusCode":201,"durationMs":3.98,"idUser":2}
+{"type":"http_request","requestId":"eac3b0a2-09d3-4e32-b3fa-e5f0e04792c5","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":5.51,"idUser":2}
+{"type":"http_request","requestId":"7b96063f-d79d-44de-962f-6c8bb53904f1","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":1.75,"idUser":null}
+{"type":"http_request","requestId":"2bef874e-af2a-48cc-b896-fada75f307b8","method":"POST","path":"/api/v1/auth/logout-all","statusCode":201,"durationMs":7.85,"idUser":2}
+OK: UI real cierra sesión actual móvil, otra sesión y todas las sesiones; confirmaciones, redirección y revocación SQL comprobadas
+{"type":"http_request","requestId":"efd4a0d1-e725-43a6-8ca8-6ec8511322e6","method":"POST","path":"/api/v1/auth/password","statusCode":201,"durationMs":126.6,"idUser":2}
+{"type":"http_request","requestId":"d7536242-a163-4d0c-9aa0-83f74d86726b","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":1.56,"idUser":null}
+{"type":"http_request","requestId":"14db726f-86c5-4112-b6b5-9ad326f6cf4f","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":1.46,"idUser":null}
+{"type":"http_request","requestId":"da9989dd-d0a6-40de-af53-c2cf3cb45a0f","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":2.16,"idUser":2}
+OK: Cambio de contraseña revoca sesiones previas y exige nueva contraseña para crear una sesión

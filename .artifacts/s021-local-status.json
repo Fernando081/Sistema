@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-19T18:49:02.113Z",
+  "passed": true,
+  "checks": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/auth/sessions",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/auth/access-profiles",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/perfil",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4600/catalogo",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4600/solicitar",
+      "status": 503,
+      "passed": true
+    },
+    {
+      "name": "095 registrada; tabla sin tokens/IP/User-Agent completo y permisos S01 conservados",
+      "passed": true
+    }
+  ]
+}

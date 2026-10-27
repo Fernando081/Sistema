@@ -1,0 +1,6 @@
+
+> db:check
+> node backend/run-migrations.js --check
+
+Verificada (se revertirá): 111_almacen_escaneo_picking.sql
+Verificación terminada: cambios de esquema revertidos.

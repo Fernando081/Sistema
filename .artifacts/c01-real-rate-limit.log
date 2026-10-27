@@ -1,0 +1,105 @@
+
+> test:campaign-consent
+> node backend/verify-campaign-consent.js --backup=.backups/2026-10-21T01-07-00-316Z/database.dump
+
+{"type":"http_request","requestId":"05235418-9730-4086-a41b-cb5a58da5a46","method":"POST","path":"/api/v1/crm/oportunidades","statusCode":201,"durationMs":26.07,"idUser":2}
+{"type":"http_request","requestId":"f5f5e57b-5e27-4930-be8a-adf2dd1d2608","method":"POST","path":"/api/v1/crm/oportunidades","statusCode":201,"durationMs":8.65,"idUser":2}
+{"type":"http_request","requestId":"55641f97-8931-474d-90f7-d812b4c56850","method":"POST","path":"/api/v1/crm/oportunidades","statusCode":201,"durationMs":4.81,"idUser":2}
+{"type":"http_request","requestId":"d3623cbc-d446-4cdc-b534-0aa11e8a56dd","method":"POST","path":"/api/v1/cliente/8/contactos","statusCode":201,"durationMs":8.87,"idUser":2}
+{"type":"http_request","requestId":"4a0c8497-7d9b-4c8a-8e8d-82d7c1793373","method":"POST","path":"/api/v1/cliente/8/contactos","statusCode":201,"durationMs":4.26,"idUser":2}
+{"type":"http_request","requestId":"ed49c269-792f-44f5-bc33-7cade0b71343","method":"POST","path":"/api/v1/cliente/8/contactos","statusCode":201,"durationMs":3.74,"idUser":2}
+{"type":"http_request","requestId":"8f23d3aa-8601-4ecb-82af-0afe52892774","method":"POST","path":"/api/v1/cliente/8/contactos","statusCode":201,"durationMs":6.36,"idUser":2}
+{"type":"http_request","requestId":"c775b28b-3948-455a-a373-a9c401012547","method":"POST","path":"/api/v1/cliente/8/contactos","statusCode":201,"durationMs":8.71,"idUser":2}
+{"type":"http_request","requestId":"da129d0b-b460-4a9b-8b51-9186504a43d5","method":"POST","path":"/api/v1/cliente/9/contactos","statusCode":201,"durationMs":5.56,"idUser":2}
+{"type":"http_request","requestId":"a8ea8e4c-3b0f-486f-bafc-3662ddc7f3a3","method":"POST","path":"/api/v1/crm/segmentos","statusCode":201,"durationMs":12.8,"idUser":2}
+{"type":"http_request","requestId":"9ac6f2df-e714-473d-b7a1-2a15ccf55c8b","method":"POST","path":"/api/v1/crm/plantillas","statusCode":201,"durationMs":5.15,"idUser":2}
+{"type":"http_request","requestId":"3d712281-3a42-48aa-80f5-51019f598043","method":"POST","path":"/api/v1/crm/campanas","statusCode":201,"durationMs":5.84,"idUser":2}
+{"type":"http_request","requestId":"5a4ffdcb-0c9f-43db-8b7d-14aeea71baa2","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":401,"durationMs":1.79,"idUser":null}
+{"type":"http_request","requestId":"68e9d558-724c-451d-b9fc-a69f20011524","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":403,"durationMs":6.86,"idUser":3}
+{"type":"http_request","requestId":"333ea1b2-d61e-43c8-a1ef-50b38e5af01c","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":403,"durationMs":4.04,"idUser":3}
+{"type":"http_request","requestId":"871d373e-508c-4bc5-848f-1f82ebfba0d6","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":400,"durationMs":5.44,"idUser":2}
+{"type":"http_request","requestId":"75fab089-654a-4d7a-b088-0e75f49348fd","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":400,"durationMs":2.87,"idUser":2}
+{"type":"http_request","requestId":"899df995-a683-438b-bc2f-c46d96742935","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":200,"durationMs":22.55,"idUser":2}
+{"type":"http_request","requestId":"34c45aa2-c7e2-46a3-9e4e-ae91d1056d1b","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":6.08,"idUser":2}
+OK: 106 sin consentimiento implícito; permiso independiente401/403, DTO/tipos cerrados/no idCliente inyectado, clientes sin contactos y destinos inválidos excluidos
+{"type":"http_request","requestId":"220ed566-0290-4a2b-87e4-092602d02f78","method":"GET","path":"/api/v1/crm/segmentos","statusCode":200,"durationMs":4.11,"idUser":2}
+{"type":"http_request","requestId":"d8f24d66-460a-47f5-acd3-7fedef1f47ac","method":"GET","path":"/api/v1/crm/segmentos","statusCode":200,"durationMs":3.32,"idUser":2}
+{"type":"http_request","requestId":"d0686b65-480e-4207-8eac-6fa607d631ba","method":"GET","path":"/api/v1/crm/segmentos","statusCode":200,"durationMs":2.56,"idUser":2}
+{"type":"http_request","requestId":"597e8536-773d-40f7-b933-92be8ee481d1","method":"GET","path":"/api/v1/crm/segmentos","statusCode":200,"durationMs":2.31,"idUser":2}
+{"type":"http_request","requestId":"7ff8c88f-64fe-4491-bd3a-933b0ca68340","method":"GET","path":"/api/v1/crm/segmentos","statusCode":200,"durationMs":4.98,"idUser":2}
+{"type":"http_request","requestId":"f1ae6295-2350-4eff-903b-efbeeb095008","method":"GET","path":"/api/v1/crm/segmentos","statusCode":200,"durationMs":2.47,"idUser":2}
+OK: Segmentación compartida: canceladas/pendientes/notas de crédito no reinician inactividad; ingresos Timbrada/Pagada sí, con corte exacto de fecha Tampico
+{"type":"http_request","requestId":"d8297d06-5514-4002-b075-e46b9cd69032","method":"POST","path":"/api/v1/clientes/8/consentimiento-comercial/1","statusCode":201,"durationMs":9.44,"idUser":2}
+{"type":"http_request","requestId":"1277a94a-bd05-488d-8208-04f2bf08a865","method":"POST","path":"/api/v1/clientes/8/consentimiento-comercial/1","statusCode":201,"durationMs":5.55,"idUser":2}
+{"type":"http_request","requestId":"f22e21a6-57a1-48ba-8c3b-88bd548e8917","method":"POST","path":"/api/v1/clientes/8/consentimiento-comercial/1","statusCode":409,"durationMs":4.04,"idUser":2}
+{"type":"http_request","requestId":"e648f567-9524-4ce8-b37b-c227cfaa7ad7","method":"POST","path":"/api/v1/clientes/8/consentimiento-comercial/1","statusCode":400,"durationMs":3.08,"idUser":2}
+{"type":"http_request","requestId":"0aa5344f-605b-4e5c-81b5-31acefb75d36","method":"POST","path":"/api/v1/clientes/8/consentimiento-comercial/1","statusCode":400,"durationMs":2.98,"idUser":2}
+{"type":"http_request","requestId":"afa7e769-b534-4593-ac89-2525fe5174bb","method":"POST","path":"/api/v1/clientes/9/consentimiento-comercial/1","statusCode":404,"durationMs":13.08,"idUser":2}
+{"type":"http_request","requestId":"10372fdc-1a58-48ea-a875-3b740b17c1c9","method":"POST","path":"/api/v1/clientes/8/consentimiento-comercial/1","statusCode":400,"durationMs":5.38,"idUser":2}
+{"type":"http_request","requestId":"8dad0d0f-e942-41f2-9136-e535b2df0f75","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":200,"durationMs":17.19,"idUser":2}
+{"type":"http_request","requestId":"088b6549-56f6-468d-b9b3-8208a4f6e681","method":"GET","path":"/api/v1/crm/segmentos","statusCode":200,"durationMs":2.68,"idUser":2}
+OK: Autorización declarada/versionada e idempotente; sin campos de destino libres, fecha futura rechazada, contacto ajeno404; vigencia real vencida, deduplicación y conteo de segmento consistente
+{"type":"http_request","requestId":"89b26405-6bbc-4a85-b86f-04a50a1c9628","method":"POST","path":"/api/v1/crm/campanas-locales/1/preparar","statusCode":201,"durationMs":12.49,"idUser":2}
+{"type":"http_request","requestId":"85b97134-d332-48d9-9704-c00c649208d1","method":"POST","path":"/api/v1/crm/campanas-locales/1/preparar","statusCode":201,"durationMs":6.82,"idUser":2}
+OK: Preparación local conservada/idempotente con huella y referencias técnicas; campaña sigue Borrador y no crea comunicaciones ni duplica datos de contacto
+{"type":"http_request","requestId":"d0fa86b6-d732-4441-931c-b15ff202c5fd","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":200,"durationMs":7.02,"idUser":2}
+{"type":"http_request","requestId":"f13b8b86-96b5-4d00-8a49-7720000c8496","method":"DELETE","path":"/api/v1/cliente/9/contactos/6","statusCode":200,"durationMs":2.45,"idUser":2}
+OK: Baja global por destino/canal aun fuera del segmento; invalida preparación, reintento no la resucita, autorización antigua rechazada y eliminar contacto no quita la baja
+OK: Cambio de dirección bloquea formulario viejo; dos decisiones concurrentes no sobrescriben versiones; preparación concurrente única y plantilla modificada invalida huella
+{"type":"http_request","requestId":"9727b10c-e941-4f10-b4db-8ff892b7a004","method":"POST","path":"/api/v1/crm/campanas","statusCode":201,"durationMs":6.83,"idUser":2}
+{"type":"http_request","requestId":"37da3af3-4acf-4b60-a19c-a1baa2114b17","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":6.8,"idUser":2}
+OK: Límite1000 sin lista parcial, borrador sin segmento/plantilla bloqueado y búsqueda literal/paginación privada
+OK: Historial append-only/ALWAYS y auditoría nominal sin destinos duplicados; fallo de auditoría revierte la decisión completa
+OK: Personal revocado mientras espera bloqueo no registra decisiones; preparación no consume inventario, factura ni crea envíos
+{"type":"http_request","requestId":"b2a34797-1d91-43a7-aec5-85069cf27b64","method":"POST","path":"/api/v1/cliente/8/contactos","statusCode":201,"durationMs":17.96,"idUser":2}
+{"type":"http_request","requestId":"2546253a-a2dd-4cc1-89ba-b45a146fbaa1","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":57.61,"idUser":null}
+{"type":"http_request","requestId":"a0fcb879-cdab-40ce-a255-47e71fd4a8c2","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":76.94,"idUser":2}
+{"type":"http_request","requestId":"137348fb-c6ce-43e0-8e58-45d930130ca0","method":"GET","path":"/api/v1/cliente/8/360","statusCode":200,"durationMs":190.53,"idUser":2}
+{"type":"http_request","requestId":"c558544b-7206-4483-965a-67b07db27e65","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":30.5,"idUser":2}
+{"type":"http_request","requestId":"21fd2110-7347-409c-9d7c-c98c2d79b89b","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":10.71,"idUser":2}
+{"type":"http_request","requestId":"93f4dbab-729e-480a-9cad-6564a66776df","method":"POST","path":"/api/v1/clientes/8/consentimiento-comercial/1008","statusCode":201,"durationMs":30.21,"idUser":2}
+{"type":"http_request","requestId":"5dde45cd-da6f-4d7b-8a8c-e3e321cf70e7","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":6.1,"idUser":2}
+{"type":"http_request","requestId":"7f6bc8be-17d8-457a-921f-abf60b5af048","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.84,"idUser":2}
+{"type":"http_request","requestId":"3c0ba22e-6d5b-4c4f-9333-704882f0948f","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":61.93,"idUser":2}
+{"type":"http_request","requestId":"4a4d906e-73cd-4e1f-8ad7-7a4b6fe094b7","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":200,"durationMs":50.15,"idUser":2}
+{"type":"http_request","requestId":"21bc953e-c3e6-4115-99c7-e5ce2b767b0c","method":"POST","path":"/api/v1/crm/campanas-locales/1/preparar","statusCode":201,"durationMs":63.01,"idUser":2}
+{"type":"http_request","requestId":"e614c9af-13e4-48e7-a0d9-be2cc86c11b6","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":200,"durationMs":9.25,"idUser":2}
+{"type":"http_request","requestId":"614698ed-a9db-46eb-a35d-c955d740ffab","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.55,"idUser":2}
+{"type":"http_request","requestId":"43c5e33c-4de9-4df9-b86d-642db8679a2f","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":200,"durationMs":22.77,"idUser":2}
+{"type":"http_request","requestId":"2107a3f2-2d39-4e64-b5ed-34969fbdc110","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":94.6,"idUser":2}
+{"type":"http_request","requestId":"057369bf-29f4-4d56-ad96-9ab8d1f87b6d","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.97,"idUser":2}
+{"type":"http_request","requestId":"fb260054-d56f-4082-9f9d-c32aff9a778b","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":23.74,"idUser":2}
+{"type":"http_request","requestId":"322cc96e-6392-48d3-84b2-50594fe71213","method":"GET","path":"/api/v1/cliente/8/360","statusCode":200,"durationMs":19.13,"idUser":2}
+{"type":"http_request","requestId":"254db604-533a-4ac8-b52c-110b974a9fca","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":25.14,"idUser":2}
+{"type":"http_request","requestId":"d236d414-1674-4c6e-9311-41e066bb125c","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":6.76,"idUser":2}
+{"type":"http_request","requestId":"c8ecfcf8-d423-4ee7-8473-4d1c8de536eb","method":"POST","path":"/api/v1/clientes/8/consentimiento-comercial/1008","statusCode":201,"durationMs":24.22,"idUser":2}
+{"type":"http_request","requestId":"eb5ab925-6ced-46cb-91ad-2b4b2d2ee765","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":5.83,"idUser":2}
+{"type":"http_request","requestId":"2958f09b-aa34-4f2e-821b-747685d2f9b5","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial/historial","statusCode":200,"durationMs":7.66,"idUser":2}
+{"type":"http_request","requestId":"25018752-2e1e-4d3a-92c2-f791b14960ed","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.83,"idUser":2}
+{"type":"http_request","requestId":"8d2f7bb0-87de-4689-8248-e01495fe1658","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":68.85,"idUser":2}
+{"type":"http_request","requestId":"1b87251b-7b7f-4824-8f8b-6e3d96523547","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":200,"durationMs":51.05,"idUser":2}
+{"type":"http_request","requestId":"b40c9dd5-0967-4667-aac4-685b33a8669d","method":"POST","path":"/api/v1/cliente/8/contactos","statusCode":201,"durationMs":8.56,"idUser":2}
+{"type":"http_request","requestId":"dadd614e-a7dc-452a-a355-a98d17374d58","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":62.92,"idUser":null}
+{"type":"http_request","requestId":"e835b530-ee33-4b57-aaf3-ea80dfcee37a","method":"GET","path":"/api/v1/cliente/8/360","statusCode":200,"durationMs":9.98,"idUser":2}
+{"type":"http_request","requestId":"4405d18d-7a95-490e-8115-6d2d79cc77d4","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":60.01,"idUser":2}
+{"type":"http_request","requestId":"bfbec30c-b1db-4c87-ac09-5c130579f1b4","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":7.21,"idUser":2}
+{"type":"http_request","requestId":"a83c101d-ff8a-467d-a65d-7c18eb7f26c2","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":6.61,"idUser":2}
+{"type":"http_request","requestId":"566f9cd6-3ac1-4878-82e7-4d2ccd45c1cd","method":"POST","path":"/api/v1/clientes/8/consentimiento-comercial/1009","statusCode":201,"durationMs":13.64,"idUser":2}
+{"type":"http_request","requestId":"3957bab6-4020-4e58-b6b6-5ebffe250976","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":7.05,"idUser":2}
+{"type":"http_request","requestId":"de6dfaaf-c7d4-4bec-ab26-b88ae8871834","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.71,"idUser":2}
+{"type":"http_request","requestId":"88cdc686-2338-4529-afd9-3e32fc1532fd","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":21.93,"idUser":2}
+{"type":"http_request","requestId":"fb1dc70e-4d33-490a-823e-3579ac7711ab","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":200,"durationMs":10.56,"idUser":2}
+{"type":"http_request","requestId":"7a50d513-a7f4-493b-aab4-6335d03f7cae","method":"POST","path":"/api/v1/crm/campanas-locales/1/preparar","statusCode":201,"durationMs":14.42,"idUser":2}
+{"type":"http_request","requestId":"ef87d04b-bf88-40ee-bfa9-9754ff752450","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":200,"durationMs":8.77,"idUser":2}
+{"type":"http_request","requestId":"7ab25acd-cd7e-4aea-b850-b21bff241ff8","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.63,"idUser":2}
+{"type":"http_request","requestId":"aaf603e7-f991-44a4-9daf-5036203e4756","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":15.37,"idUser":2}
+{"type":"http_request","requestId":"c85e747a-2645-40ba-a93e-7448ab3901ad","method":"GET","path":"/api/v1/crm/campanas-locales/1/destinatarios","statusCode":200,"durationMs":9.32,"idUser":2}
+{"type":"http_request","requestId":"9e7dc2a9-cf2c-4463-8d95-d2bd8ecc6c0c","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.95,"idUser":2}
+{"type":"http_request","requestId":"cec6e85e-6db8-44bc-9e37-69650c4dc325","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":19.13,"idUser":2}
+{"type":"http_request","requestId":"55201256-b3fa-4a7d-bfe1-273e00bf89d4","method":"GET","path":"/api/v1/cliente/8/360","statusCode":200,"durationMs":11.58,"idUser":2}
+{"type":"http_request","requestId":"05994ef6-757e-4c6f-8d13-ac879063ff8a","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":7.94,"idUser":2}
+{"type":"http_request","requestId":"6f56bd1e-e9ed-4ef9-8ac8-e19d134aec48","method":"GET","path":"/api/v1/clientes/8/consentimiento-comercial","statusCode":200,"durationMs":7.8,"idUser":2}
+{"type":"http_request","requestId":"309ed63c-f793-40d0-9818-d8c809c422ac","method":"POST","path":"/api/v1/clientes/8/consentimiento-comercial/1009","statusCode":429,"durationMs":1.81,"idUser":null}
+Falló aceptación C01: Error     at captureRawStack (C:\Sistema\node_modules\playwright-core\lib\coreBundle.js:8588:17)
+    at callMatcherAsStep (C:\Sistema\node_modules\playwright\lib\matchers\expect.js:13310:57)
+    at Object.toBeVisible (C:\Sistema\node_modules\playwright\lib\matchers\expect.js:13302:23) Etapa en .artifacts/c01-consentimiento.json; sin secretos.

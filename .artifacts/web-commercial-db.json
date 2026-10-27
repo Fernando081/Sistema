@@ -1,0 +1,125 @@
+{
+  "phase": "WEB05.2b",
+  "source": "isolated-test-fixtures",
+  "node": "24.19.0",
+  "generatedAt": "2026-10-19T19:39:46.216Z",
+  "checks": [
+    {
+      "name": "Cliente explícito, idempotencia, versión y acceso ADMIN/responsable; cliente inexistente y otro usuario rechazados",
+      "passed": true
+    },
+    {
+      "name": "Cotizaciones del cliente, caracteres literales, confirmación de origen, vínculo único y reintentos concurrentes sin duplicar historial",
+      "passed": true
+    },
+    {
+      "name": "Dos oportunidades compiten por una cotización: sólo un vínculo puede quedar activo",
+      "passed": true
+    },
+    {
+      "name": "FK compuestas impiden cambiar cliente por API/SQL mientras haya cotizaciones vinculadas",
+      "passed": true
+    },
+    {
+      "name": "Cadena directa/pedido, ventas parciales sin duplicar, cancelación local/fiscal, cliente/relaciones/estado inválidos, NC y ventas sin vínculo",
+      "passed": true
+    },
+    {
+      "name": "Retiro idempotente trazado; reintento antiguo no restaura vínculo; facturas permanecen intactas y métricas se recalculan",
+      "passed": true
+    },
+    {
+      "name": "Cambio de cliente permitido después de retirar todos los vínculos, con historial",
+      "passed": true
+    },
+    {
+      "name": "HTTP con login/bcrypt/JWT reales: anónimo/revocado401, tercero404, ADMIN/responsable200 no-store, DTO/confirmación400 y PUT válido200",
+      "passed": true
+    },
+    {
+      "name": "Esquema propio eliminado y servidor/conexiones cerrados",
+      "passed": true
+    }
+  ],
+  "cleaned": true,
+  "measured": {
+    "generatedAt": "2026-10-19T19:39:42.830Z",
+    "finance": {
+      "currencies": [],
+      "coverage": {
+        "documentosVinculados": 3,
+        "documentosFinancieros": 3,
+        "globalesExcluidas": 0,
+        "monedaDesconocida": 3,
+        "importesInconsistentes": 3,
+        "notasCanceladasExcluidas": 0,
+        "repsCanceladosExcluidos": 0,
+        "pagosRepCompatibilidadOmitidos": 0
+      }
+    },
+    "commercial": {
+      "cotizacionesVinculadas": 2,
+      "solicitudesConCotizacion": 1,
+      "solicitudesConVenta": 1,
+      "documentosVentaVigentes": 3,
+      "documentosCancelados": 2,
+      "documentosInconsistentes": 4
+    },
+    "totals": {
+      "recibidas": 2,
+      "pendientes": 0,
+      "revisadasSinOportunidad": 0,
+      "descartadas": 0,
+      "oportunidades": 2,
+      "abiertasCrm": 2,
+      "ganadasCrm": 0,
+      "perdidasCrm": 0,
+      "vigentes": 2,
+      "vencidas": 0,
+      "purgadas": 0,
+      "piezasVigentes": 2,
+      "piezasSnapshot": 0,
+      "sinPiezas": 0
+    },
+    "daily": [
+      {
+        "fecha": "2026-10-10",
+        "recibidas": 2,
+        "oportunidades": 2
+      },
+      {
+        "fecha": "2026-10-11",
+        "recibidas": 0,
+        "oportunidades": 0
+      }
+    ],
+    "references": [
+      {
+        "code": "OEM-FIXTURE",
+        "brand": "",
+        "solicitudes": 2,
+        "cantidad": 2
+      }
+    ],
+    "source": "crm-local",
+    "period": {
+      "desde": "2026-10-10",
+      "hasta": "2026-10-11",
+      "timezone": "America/Mexico_City",
+      "days": 2
+    },
+    "conversionPct": 100,
+    "unmeasured": [
+      "vistas",
+      "busquedas",
+      "clicsCotizacion",
+      "clicsWhatsApp",
+      "busquedasSinResultado",
+      "ventasSinVinculo",
+      "flujoIntegral"
+    ]
+  },
+  "limits": [
+    "Esquema mínimo, no AppModule/cron/carga masiva ni aceptación comercial o PAC real."
+  ]
+}

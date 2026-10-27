@@ -32,3 +32,5 @@
     display: block;
   }
 }
+
+.mobile-client-card .mt-2{flex-wrap:wrap}

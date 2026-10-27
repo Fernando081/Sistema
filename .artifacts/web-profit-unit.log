@@ -1,0 +1,17 @@
+
+> backend@0.0.1 test
+> jest --runInBand crm
+
+PASS src/crm/web-lead-bridge.controller.spec.ts (5.475 s)
+PASS src/crm/crm-web-metrics.service.spec.ts
+PASS src/crm/crm-solicitudes-web.controller.spec.ts
+PASS src/crm/crm.module.spec.ts
+PASS src/crm/crm.service.spec.ts
+PASS src/crm/crm-solicitudes-web-maintenance.service.spec.ts
+PASS src/crm/web-lead-bridge.config.spec.ts
+
+Test Suites: 7 passed, 7 total
+Tests:       40 passed, 40 total
+Snapshots:   0 total
+Time:        11.487 s
+Ran all test suites matching /crm/i.

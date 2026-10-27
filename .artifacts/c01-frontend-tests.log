@@ -1,0 +1,208 @@
+
+> test:frontend
+> npm --workspace frontend test -- --watch=false --browsers=ChromeHeadless
+
+
+> frontend@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless
+
+> Building...
+√ Building...
+Initial chunk files                                                 | Names                                                            |  Raw size
+spec-app-producto-producto-dialog-producto-dialog.component.spec.js | spec-app-producto-producto-dialog-producto-dialog.component.spec |   2.02 MB | 
+chunk-FQHPTVTB.js                                                   | -                                                                |   1.13 MB | 
+chunk-HCHDRGZD.js                                                   | -                                                                |   1.09 MB | 
+polyfills.js                                                        | polyfills                                                        |   1.02 MB | 
+spec-app-venta-factura-global-factura-global.component.spec.js      | spec-app-venta-factura-global-factura-global.component.spec      | 309.20 kB | 
+chunk-OD2SONQH.js                                                   | -                                                                | 265.35 kB | 
+chunk-Y3KSHJNN.js                                                   | -                                                                | 216.87 kB | 
+chunk-J54H42IY.js                                                   | -                                                                | 187.45 kB | 
+chunk-2XFH2NGV.js                                                   | -                                                                | 177.67 kB | 
+chunk-CN3BIC3G.js                                                   | -                                                                | 172.13 kB | 
+chunk-FU36JXQA.js                                                   | -                                                                | 144.86 kB | 
+chunk-ACJE25BM.js                                                   | -                                                                | 137.98 kB | 
+chunk-MMDRW2BD.js                                                   | -                                                                | 121.46 kB | 
+chunk-6ZJMAIR7.js                                                   | -                                                                |  97.75 kB | 
+chunk-GAN3MKAA.js                                                   | -                                                                |  69.49 kB | 
+jasmine-cleanup-1.js                                                | jasmine-cleanup-1                                                |  67.13 kB | 
+chunk-IE6IHPPZ.js                                                   | -                                                                |  66.88 kB | 
+styles.css                                                          | styles                                                           |  61.09 kB | 
+chunk-D57VSKXS.js                                                   | -                                                                |  60.69 kB | 
+chunk-DTPVRMCF.js                                                   | -                                                                |  60.04 kB | 
+spec-app-pago-cuentas-por-pagar-cuentas-por-pagar.component.spec.js | spec-app-pago-cuentas-por-pagar-cuentas-por-pagar.component.spec |  50.80 kB | 
+chunk-VHTLJCZX.js                                                   | -                                                                |  45.52 kB | 
+chunk-YOKUJ4FT.js                                                   | -                                                                |  41.65 kB | 
+chunk-JA5KBDUX.js                                                   | -                                                                |  40.54 kB | 
+chunk-7AQZBFAN.js                                                   | -                                                                |  38.25 kB | 
+spec-app-rep-rep-create-rep-create.component.spec.js                | spec-app-rep-rep-create-rep-create.component.spec                |  36.10 kB | 
+chunk-Y24UUTNE.js                                                   | -                                                                |  34.92 kB | 
+chunk-7OAUNQ56.js                                                   | -                                                                |  33.11 kB | 
+chunk-3MQWPF7K.js                                                   | -                                                                |  29.30 kB | 
+chunk-IM4YWTQK.js                                                   | -                                                                |  29.03 kB | 
+chunk-FJGU3TBL.js                                                   | -                                                                |  28.43 kB | 
+spec-app-portal-portal-cliente.component.spec.js                    | spec-app-portal-portal-cliente.component.spec                    |  25.06 kB | 
+chunk-DG47FKKR.js                                                   | -                                                                |  22.71 kB | 
+test_main.js                                                        | test_main                                                        |  22.27 kB | 
+chunk-ALONETVO.js                                                   | -                                                                |  19.70 kB | 
+chunk-USNKJT64.js                                                   | -                                                                |  16.16 kB | 
+chunk-Z5GFBNLH.js                                                   | -                                                                |  13.18 kB | 
+spec-app-shared-remote-directory.spec.js                            | spec-app-shared-remote-directory.spec                            |  12.86 kB | 
+spec-app-pedido-pedido-detail-dialog.component.spec.js              | spec-app-pedido-pedido-detail-dialog.component.spec              |  12.63 kB | 
+spec-app-producto-web-catalog-quality.component.spec.js             | spec-app-producto-web-catalog-quality.component.spec             |  11.46 kB | 
+chunk-33SIXIF3.js                                                   | -                                                                |   9.81 kB | 
+spec-app-producto-web-product-editor.component.spec.js              | spec-app-producto-web-product-editor.component.spec              |   9.26 kB | 
+chunk-VJEFYGCY.js                                                   | -                                                                |   7.28 kB | 
+chunk-6HGV3EWC.js                                                   | -                                                                |   6.71 kB | 
+spec-app-producto-web-batch-editor.component.spec.js                | spec-app-producto-web-batch-editor.component.spec                |   6.63 kB | 
+chunk-BGR3SROY.js                                                   | -                                                                |   6.62 kB | 
+chunk-XAECAUJO.js                                                   | -                                                                |   6.38 kB | 
+spec-app-auth-auth.service.spec.js                                  | spec-app-auth-auth.service.spec                                  |   6.17 kB | 
+spec-app-auth-error.interceptor.spec.js                             | spec-app-auth-error.interceptor.spec                             |   6.01 kB | 
+chunk-EXLD6CSJ.js                                                   | -                                                                |   5.79 kB | 
+spec-app-compra-compra-detalle-compra-detalle.component.spec.js     | spec-app-compra-compra-detalle-compra-detalle.component.spec     |   5.53 kB | 
+spec-app-pedido-entrega-dialog.component.spec.js                    | spec-app-pedido-entrega-dialog.component.spec                    |   5.10 kB | 
+chunk-P36TNXCR.js                                                   | -                                                                |   4.59 kB | 
+spec-app-auth-password-recovery.service.spec.js                     | spec-app-auth-password-recovery.service.spec                     |   4.51 kB | 
+spec-app-services-productos-compras.spec.js                         | spec-app-services-productos-compras.spec                         |   3.48 kB | 
+spec-app-services-ventas-cotizaciones.spec.js                       | spec-app-services-ventas-cotizaciones.spec                       |   3.36 kB | 
+chunk-RQT7GUVD.js                                                   | -                                                                |   2.99 kB | 
+spec-app-auth-auth.interceptor.spec.js                              | spec-app-auth-auth.interceptor.spec                              |   2.93 kB | 
+spec-app-services-proveedores-categorias.spec.js                    | spec-app-services-proveedores-categorias.spec                    |   2.75 kB | 
+spec-app-reportes-auditoria-audit-diff.spec.js                      | spec-app-reportes-auditoria-audit-diff.spec                      |   2.72 kB | 
+chunk-U2YSIWZB.js                                                   | -                                                                |   2.63 kB | 
+chunk-HT6XKXHS.js                                                   | -                                                                |   2.49 kB | 
+chunk-6YJVAZW3.js                                                   | -                                                                |   2.43 kB | 
+chunk-IYKCB6GZ.js                                                   | -                                                                |   1.97 kB | 
+spec-app-services-catalogos.service.spec.js                         | spec-app-services-catalogos.service.spec                         |   1.77 kB | 
+chunk-VYKVAKZP.js                                                   | -                                                                |   1.69 kB | 
+chunk-HOABKWIM.js                                                   | -                                                                |   1.52 kB | 
+spec-app-services-pago.service.spec.js                              | spec-app-services-pago.service.spec                              |   1.44 kB | 
+spec-app-shared-api-url.spec.js                                     | spec-app-shared-api-url.spec                                     |   1.24 kB | 
+spec-app-auth-mfa-receipt.service.spec.js                           | spec-app-auth-mfa-receipt.service.spec                           |   1.18 kB | 
+chunk-6MHLQI5S.js                                                   | -                                                                |   1.17 kB | 
+spec-app-shared-financial-request-intent.spec.js                    | spec-app-shared-financial-request-intent.spec                    |   1.17 kB | 
+chunk-ODXGFSBJ.js                                                   | -                                                                | 949 bytes | 
+chunk-XGVKTJXO.js                                                   | -                                                                | 926 bytes | 
+chunk-ZLUYHGMF.js                                                   | -                                                                | 917 bytes | 
+chunk-L5H5QIFV.js                                                   | -                                                                | 821 bytes | 
+spec-app-services-proveedor.spec.js                                 | spec-app-services-proveedor.spec                                 | 764 bytes | 
+spec-app-services-categoria.spec.js                                 | spec-app-services-categoria.spec                                 | 764 bytes | 
+spec-app-services-producto.spec.js                                  | spec-app-services-producto.spec                                  | 754 bytes | 
+spec-app-services-cliente.spec.js                                   | spec-app-services-cliente.spec                                   | 744 bytes | 
+spec-app-shared-document-download.spec.js                           | spec-app-shared-document-download.spec                           | 712 bytes | 
+chunk-ZDJPOPFK.js                                                   | -                                                                | 479 bytes | 
+chunk-I6KPYPMT.js                                                   | -                                                                | 462 bytes | 
+jasmine-cleanup-0.js                                                | jasmine-cleanup-0                                                | 397 bytes | 
+
+                                                                    | Initial total                                                    |   8.17 MB
+
+Lazy chunk files                                                    | Names                                                            |  Raw size
+chunk-HWHX4YKU.js                                                   | entrega-dialog-component                                         | 720 bytes | 
+
+Application bundle generation complete. [6.834 seconds] - 2026-10-21T01:19:14.537Z
+
+20 10 2026 19:19:15.285:INFO [karma-server]: Karma v6.4.4 server started at http://localhost:9876/
+20 10 2026 19:19:15.287:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+20 10 2026 19:19:15.312:INFO [launcher]: Starting browser ChromeHeadless
+20 10 2026 19:19:16.835:INFO [Chrome Headless 122.0.6261.129 (Windows 10)]: Connected on socket b304rcPz45IgekgJAAAA with id 79407620
+Chrome Headless 122.0.6261.129 (Windows 10): Executed 0 of 95[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 1 of 95[32m SUCCESS[39m (0 secs / 0.014 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 2 of 95[32m SUCCESS[39m (0 secs / 0.018 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 3 of 95[32m SUCCESS[39m (0 secs / 0.019 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 4 of 95[32m SUCCESS[39m (0 secs / 0.02 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 5 of 95[32m SUCCESS[39m (0 secs / 0.021 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 6 of 95[32m SUCCESS[39m (0 secs / 0.021 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 7 of 95[32m SUCCESS[39m (0 secs / 0.027 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 8 of 95[32m SUCCESS[39m (0 secs / 0.031 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 9 of 95[32m SUCCESS[39m (0 secs / 0.034 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 10 of 95[32m SUCCESS[39m (0 secs / 0.107 secs)
+[1A[2KWARN: [36m'Spec 'Editor web no exporta borrador ni cambios sin guardar' has no expectations.'[39m
+Chrome Headless 122.0.6261.129 (Windows 10): Executed 10 of 95[32m SUCCESS[39m (0 secs / 0.107 secs)
+WARN: 'Spec 'Editor web no exporta borrador ni cambios sin guardar' has no expectations.'
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 11 of 95[32m SUCCESS[39m (0 secs / 0.114 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 12 of 95[32m SUCCESS[39m (0 secs / 0.121 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 13 of 95[32m SUCCESS[39m (0 secs / 0.127 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 14 of 95[32m SUCCESS[39m (0 secs / 0.136 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 15 of 95[32m SUCCESS[39m (0 secs / 0.143 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 16 of 95[32m SUCCESS[39m (0 secs / 0.153 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 17 of 95[32m SUCCESS[39m (0 secs / 0.167 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 18 of 95[32m SUCCESS[39m (0 secs / 0.175 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 19 of 95[32m SUCCESS[39m (0 secs / 0.182 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 20 of 95[32m SUCCESS[39m (0 secs / 0.187 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 21 of 95[32m SUCCESS[39m (0 secs / 0.193 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 22 of 95[32m SUCCESS[39m (0 secs / 0.197 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 23 of 95[32m SUCCESS[39m (0 secs / 0.241 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 24 of 95[32m SUCCESS[39m (0 secs / 0.286 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 25 of 95[32m SUCCESS[39m (0 secs / 0.294 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 26 of 95[32m SUCCESS[39m (0 secs / 0.295 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 27 of 95[32m SUCCESS[39m (0 secs / 0.297 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 28 of 95[32m SUCCESS[39m (0 secs / 0.298 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 29 of 95[32m SUCCESS[39m (0 secs / 0.3 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 30 of 95[32m SUCCESS[39m (0 secs / 0.302 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 31 of 95[32m SUCCESS[39m (0 secs / 0.304 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 32 of 95[32m SUCCESS[39m (0 secs / 0.307 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 33 of 95[32m SUCCESS[39m (0 secs / 0.31 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 34 of 95[32m SUCCESS[39m (0 secs / 0.312 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 35 of 95[32m SUCCESS[39m (0 secs / 0.315 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 36 of 95[32m SUCCESS[39m (0 secs / 0.319 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 37 of 95[32m SUCCESS[39m (0 secs / 0.322 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 38 of 95[32m SUCCESS[39m (0 secs / 0.325 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 39 of 95[32m SUCCESS[39m (0 secs / 0.326 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 40 of 95[32m SUCCESS[39m (0 secs / 0.327 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 41 of 95[32m SUCCESS[39m (0 secs / 0.329 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 42 of 95[32m SUCCESS[39m (0 secs / 0.717 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 43 of 95[32m SUCCESS[39m (0 secs / 0.719 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 44 of 95[32m SUCCESS[39m (0 secs / 0.721 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 45 of 95[32m SUCCESS[39m (0 secs / 0.723 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 46 of 95[32m SUCCESS[39m (0 secs / 0.725 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 47 of 95[32m SUCCESS[39m (0 secs / 0.727 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 48 of 95[32m SUCCESS[39m (0 secs / 0.729 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 49 of 95[32m SUCCESS[39m (0 secs / 0.731 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 50 of 95[32m SUCCESS[39m (0 secs / 0.733 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 51 of 95[32m SUCCESS[39m (0 secs / 0.735 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 52 of 95[32m SUCCESS[39m (0 secs / 0.736 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 53 of 95[32m SUCCESS[39m (0 secs / 0.737 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 54 of 95[32m SUCCESS[39m (0 secs / 0.738 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 55 of 95[32m SUCCESS[39m (0 secs / 0.739 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 56 of 95[32m SUCCESS[39m (0 secs / 0.741 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 57 of 95[32m SUCCESS[39m (0 secs / 0.743 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 58 of 95[32m SUCCESS[39m (0 secs / 0.745 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 59 of 95[32m SUCCESS[39m (0 secs / 0.746 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 60 of 95[32m SUCCESS[39m (0 secs / 0.747 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 61 of 95[32m SUCCESS[39m (0 secs / 0.749 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 62 of 95[32m SUCCESS[39m (0 secs / 0.75 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 63 of 95[32m SUCCESS[39m (0 secs / 0.751 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 64 of 95[32m SUCCESS[39m (0 secs / 0.752 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 65 of 95[32m SUCCESS[39m (0 secs / 0.753 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 66 of 95[32m SUCCESS[39m (0 secs / 0.754 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 67 of 95[32m SUCCESS[39m (0 secs / 0.754 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 68 of 95[32m SUCCESS[39m (0 secs / 0.754 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 69 of 95[32m SUCCESS[39m (0 secs / 0.756 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 70 of 95[32m SUCCESS[39m (0 secs / 0.757 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 71 of 95[32m SUCCESS[39m (0 secs / 0.758 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 72 of 95[32m SUCCESS[39m (0 secs / 0.758 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 73 of 95[32m SUCCESS[39m (0 secs / 0.76 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 74 of 95[32m SUCCESS[39m (0 secs / 0.761 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 75 of 95[32m SUCCESS[39m (0 secs / 0.761 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 76 of 95[32m SUCCESS[39m (0 secs / 0.763 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 77 of 95[32m SUCCESS[39m (0 secs / 0.765 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 78 of 95[32m SUCCESS[39m (0 secs / 0.766 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 79 of 95[32m SUCCESS[39m (0 secs / 0.767 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 80 of 95[32m SUCCESS[39m (0 secs / 0.769 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 81 of 95[32m SUCCESS[39m (0 secs / 0.771 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 82 of 95[32m SUCCESS[39m (0 secs / 0.772 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 83 of 95[32m SUCCESS[39m (0 secs / 0.773 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 84 of 95[32m SUCCESS[39m (0 secs / 0.774 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 85 of 95[32m SUCCESS[39m (0 secs / 0.775 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 86 of 95[32m SUCCESS[39m (0 secs / 0.776 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 87 of 95[32m SUCCESS[39m (0 secs / 0.777 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 88 of 95[32m SUCCESS[39m (0 secs / 0.778 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 89 of 95[32m SUCCESS[39m (0 secs / 0.779 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 90 of 95[32m SUCCESS[39m (0 secs / 0.78 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 91 of 95[32m SUCCESS[39m (0 secs / 0.782 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 92 of 95[32m SUCCESS[39m (0 secs / 0.782 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 93 of 95[32m SUCCESS[39m (0 secs / 0.783 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 94 of 95[32m SUCCESS[39m (0 secs / 0.784 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 95 of 95[32m SUCCESS[39m (0 secs / 0.785 secs)
+[1A[2KChrome Headless 122.0.6261.129 (Windows 10): Executed 95 of 95[32m SUCCESS[39m (0.852 secs / 0.785 secs)
+[32mTOTAL: 95 SUCCESS[39m

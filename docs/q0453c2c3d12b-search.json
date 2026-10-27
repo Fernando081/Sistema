@@ -1,0 +1,1757 @@
+{
+  "generatedAt": "2026-10-05T18:56:44.409Z",
+  "postgresSettings": {
+    "version": "18.2",
+    "autovacuum": "on"
+  },
+  "profile": {
+    "name": "soak",
+    "readers": 8,
+    "readerPauseMs": 2000,
+    "businessPauseMs": 3000,
+    "financialPauseMs": 30000,
+    "sqlPauseMs": 60,
+    "duration": 600
+  },
+  "phase": "Q04.5.3c2c3d12b",
+  "financialHttpResults": [
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    }
+  ],
+  "transactionAgeScope": {
+    "client": "client backend: aplicación, escritor SQL y conexiones de medición; no exclusivamente HTTP",
+    "auxiliary": "backend_type distinto de client backend; incluye autovacuum",
+    "autovacuum": "autovacuum worker; subconjunto de auxiliares",
+    "peaks": "Máximos independientes muestreados cada 500 ms; no se suman ni equivalen a duración de solicitudes"
+  },
+  "transactionAgeContract": {
+    "mixedBackendTypes": true,
+    "otherDatabaseExcluded": true,
+    "emptyGroupsZero": true
+  },
+  "node": "24.19.0",
+  "fixturesPerDomain": 1000,
+  "poolMax": 10,
+  "secondsPerGroup": 600,
+  "relational": true,
+  "separateGenerator": true,
+  "schedulerJobs": 2,
+  "preflight": {
+    "throttler429": true,
+    "notificationJobExecuted": true,
+    "unauthorized401": true,
+    "invalidLimit400": true,
+    "invalidDate400": true,
+    "csvSixDomains": true
+  },
+  "groups": [
+    {
+      "financialClientMemory": {
+        "scope": "Cliente financiero/documental persistente separado; incluye fetch, Blob y una conexión PostgreSQL de verificación. No sumar picos independientes.",
+        "samples": 5693,
+        "elapsedMs": 605452.0936,
+        "quarterSamples": 1423,
+        "comparison": {
+          "rss": {
+            "firstMean": 450112695.49964863,
+            "lastMean": 901756463.1342235,
+            "deltaBytes": 451643767.63457483,
+            "peak": 1082925056
+          },
+          "heapUsed": {
+            "firstMean": 12090260.728039354,
+            "lastMean": 14933619.761068165,
+            "deltaBytes": 2843359.033028811,
+            "peak": 19773512
+          },
+          "heapTotal": {
+            "firstMean": 20027079.690794095,
+            "lastMean": 27517702.29655657,
+            "deltaBytes": 7490622.605762474,
+            "peak": 32903168
+          },
+          "external": {
+            "firstMean": 27218008.679550245,
+            "lastMean": 27954105.769501053,
+            "deltaBytes": 736097.0899508074,
+            "peak": 151199839
+          },
+          "arrayBuffers": {
+            "firstMean": 376706762.4371047,
+            "lastMean": 2156012207.192551,
+            "deltaBytes": 1779305444.7554464,
+            "peak": 2569294345
+          }
+        },
+        "windows": [
+          {
+            "minute": 0,
+            "samples": 572,
+            "means": {
+              "rss": 265414118.93706295,
+              "heapUsed": 11140310.461538462,
+              "heapTotal": 17702274.685314685,
+              "external": 19468770.04895105,
+              "arrayBuffers": 196109001.24125874
+            },
+            "peaks": {
+              "rss": 407801856,
+              "heapUsed": 15317448,
+              "heapTotal": 30662656,
+              "external": 109254962,
+              "arrayBuffers": 335816580
+            }
+          },
+          {
+            "minute": 1,
+            "samples": 568,
+            "means": {
+              "rss": 515580430.42253524,
+              "heapUsed": 12457332.647887323,
+              "heapTotal": 20597168.676056337,
+              "external": 32292997.561619718,
+              "arrayBuffers": 440514028.2799296
+            },
+            "peaks": {
+              "rss": 686682112,
+              "heapUsed": 15221472,
+              "heapTotal": 25563136,
+              "external": 98765014,
+              "arrayBuffers": 608447110
+            }
+          },
+          {
+            "minute": 2,
+            "samples": 559,
+            "means": {
+              "rss": 728142527.4275492,
+              "heapUsed": 14257163.119856887,
+              "heapTotal": 24841419.33452594,
+              "external": 37890737.72808587,
+              "arrayBuffers": 673646304.1842576
+            },
+            "peaks": {
+              "rss": 838258688,
+              "heapUsed": 16724712,
+              "heapTotal": 32116736,
+              "external": 119859152,
+              "arrayBuffers": 881079939
+            }
+          },
+          {
+            "minute": 3,
+            "samples": 555,
+            "means": {
+              "rss": 843015221.5063063,
+              "heapUsed": 15325605.90990991,
+              "heapTotal": 30908039.610810813,
+              "external": 19796009.347747747,
+              "arrayBuffers": 896820983.4504504
+            },
+            "peaks": {
+              "rss": 1020141568,
+              "heapUsed": 19773512,
+              "heapTotal": 31854592,
+              "external": 130226836,
+              "arrayBuffers": 1059340665
+            }
+          },
+          {
+            "minute": 4,
+            "samples": 555,
+            "means": {
+              "rss": 848627479.5243243,
+              "heapUsed": 15302859.0990991,
+              "heapTotal": 26549836.56936937,
+              "external": 10615474.136936937,
+              "arrayBuffers": 1117420915.0486486
+            },
+            "peaks": {
+              "rss": 1016426496,
+              "heapUsed": 18075296,
+              "heapTotal": 30019584,
+              "external": 140712774,
+              "arrayBuffers": 1290024421
+            }
+          },
+          {
+            "minute": 5,
+            "samples": 561,
+            "means": {
+              "rss": 897656813.7468805,
+              "heapUsed": 14263618.780748663,
+              "heapTotal": 21631910.559714794,
+              "external": 6539316.47771836,
+              "arrayBuffers": 1339773524.9928699
+            },
+            "peaks": {
+              "rss": 1082925056,
+              "heapUsed": 17903120,
+              "heapTotal": 26611712,
+              "external": 151199839,
+              "arrayBuffers": 1562654953
+            }
+          },
+          {
+            "minute": 6,
+            "samples": 565,
+            "means": {
+              "rss": 895464185.2035398,
+              "heapUsed": 14598824.396460177,
+              "heapTotal": 24982707.42654867,
+              "external": 5451067.330973451,
+              "arrayBuffers": 1573842237.5168142
+            },
+            "peaks": {
+              "rss": 1020018688,
+              "heapUsed": 16386128,
+              "heapTotal": 29233152,
+              "external": 130226840,
+              "arrayBuffers": 1719942054
+            }
+          },
+          {
+            "minute": 7,
+            "samples": 567,
+            "means": {
+              "rss": 928100655.4074074,
+              "heapUsed": 14013882.906525573,
+              "heapTotal": 21893120,
+              "external": 22198595.902998235,
+              "arrayBuffers": 1836654489.9012346
+            },
+            "peaks": {
+              "rss": 1054564352,
+              "heapUsed": 17422552,
+              "heapTotal": 26873856,
+              "external": 109255141,
+              "arrayBuffers": 2003061234
+            }
+          },
+          {
+            "minute": 8,
+            "samples": 570,
+            "means": {
+              "rss": 910396455.522807,
+              "heapUsed": 14327262.175438596,
+              "heapTotal": 29468621.698245615,
+              "external": 21585119.242105264,
+              "arrayBuffers": 2066528963.154386
+            },
+            "peaks": {
+              "rss": 1070788608,
+              "heapUsed": 19518200,
+              "heapTotal": 32903168,
+              "external": 119969278,
+              "arrayBuffers": 2233744217
+            }
+          },
+          {
+            "minute": 9,
+            "samples": 568,
+            "means": {
+              "rss": 900273123.1549295,
+              "heapUsed": 16006285.056338029,
+              "heapTotal": 27370914.253521126,
+              "external": 29329611.0721831,
+              "arrayBuffers": 2305756211.755282
+            },
+            "peaks": {
+              "rss": 1010319360,
+              "heapUsed": 18186672,
+              "heapTotal": 28971008,
+              "external": 130226840,
+              "arrayBuffers": 2569294345
+            }
+          },
+          {
+            "minute": 10,
+            "samples": 53,
+            "means": {
+              "rss": 818434511.6981132,
+              "heapUsed": 15863133.886792453,
+              "heapTotal": 25825280,
+              "external": 4455678.471698113,
+              "arrayBuffers": 2454009013.4716983
+            },
+            "peaks": {
+              "rss": 835661824,
+              "heapUsed": 15893960,
+              "heapTotal": 25825280,
+              "external": 4455703,
+              "arrayBuffers": 2454009038
+            }
+          }
+        ]
+      },
+      "processScope": "Padre: AppModule, monitor, escritor SQL y cliente HTTP de almacén/pagos; cliente financiero/documental y lectores separados. No es servidor puro.",
+      "business": {
+        "transfers": 382,
+        "assembled": 191,
+        "disassembled": 191,
+        "payments": 191,
+        "replays": 59
+      },
+      "financialCycles": 18,
+      "businessIntegrity": {
+        "stockPhysicalAligned": true,
+        "stockRestored": true,
+        "paymentBalanceCashAligned": true
+      },
+      "postgresProcesses": {
+        "samples": 113,
+        "availableSamples": 113,
+        "unavailableSamples": 0,
+        "workingSetSumPeakBytes": 555483136,
+        "cpuMillisecondsDelta": 55375,
+        "readTransferBytesDelta": 12985401,
+        "writeTransferBytesDelta": 292069836,
+        "maxDeadTuples": 5964,
+        "maxLiveTuples": 301747,
+        "autovacuumCountPeak": 83
+      },
+      "walBytesClusterWide": 145449648,
+      "readers": 8,
+      "generatorResources": {
+        "rssPeak": 73297920,
+        "heapPeak": 18121800,
+        "cpuMicroseconds": {
+          "user": 4703000,
+          "system": 859000
+        },
+        "eventLoopP95Ms": 34.865151
+      },
+      "readWindows": [
+        {
+          "minute": 0,
+          "requests": 232,
+          "p95": 53.78029999999853
+        },
+        {
+          "minute": 1,
+          "requests": 233,
+          "p95": 52.8408999999956
+        },
+        {
+          "minute": 2,
+          "requests": 239,
+          "p95": 61.588099999993574
+        },
+        {
+          "minute": 3,
+          "requests": 233,
+          "p95": 43.55329999999958
+        },
+        {
+          "minute": 4,
+          "requests": 239,
+          "p95": 41.251499999983935
+        },
+        {
+          "minute": 5,
+          "requests": 233,
+          "p95": 46.32490000000689
+        },
+        {
+          "minute": 6,
+          "requests": 239,
+          "p95": 41.81540000002133
+        },
+        {
+          "minute": 7,
+          "requests": 234,
+          "p95": 47.07699999999022
+        },
+        {
+          "minute": 8,
+          "requests": 239,
+          "p95": 40.98869999998715
+        },
+        {
+          "minute": 9,
+          "requests": 239,
+          "p95": 37.92550000001211
+        },
+        {
+          "minute": 10,
+          "requests": 8,
+          "p95": 20.41980000003241
+        }
+      ],
+      "postgres": {
+        "peak": {
+          "samples": 1182,
+          "connections": 13,
+          "active": 5,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 0.971235,
+          "clientConnections": 13,
+          "auxiliaryConnections": 1,
+          "maxClientTransactionAgeSeconds": 0.305241,
+          "maxAuxiliaryTransactionAgeSeconds": 0.971236,
+          "maxAutovacuumTransactionAgeSeconds": 0.971236
+        },
+        "countersDelta": {
+          "xact_commit": 26281,
+          "xact_rollback": 342,
+          "blks_read": 77,
+          "blks_hit": 3026559,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 2368,
+      "writerCommits": 8251,
+      "elapsedMs": 606939.7479,
+      "rps": 3.9015404876566993,
+      "p50": 23.831600000004983,
+      "p95": 46.820300000021234,
+      "max": 173.8623999999836,
+      "rssPeak": 294662144,
+      "heapPeak": 114143776,
+      "poolConnectionsPeak": 10,
+      "poolWaitingPeak": 0,
+      "memoryDiagnostic": {
+        "scope": "Padre: AppModule, monitor, escritor SQL y cliente HTTP de almacén/pagos; cliente financiero/documental y lectores separados. No es servidor puro.",
+        "samples": 5790,
+        "elapsedMs": 606931.4118,
+        "quarterSamples": 1447,
+        "comparison": {
+          "rss": {
+            "firstMean": 168629749.73876986,
+            "lastMean": 252703136.1105736,
+            "deltaBytes": 84073386.37180373,
+            "peak": 294662144
+          },
+          "heapUsed": {
+            "firstMean": 62715400.59709744,
+            "lastMean": 78832880.82377332,
+            "deltaBytes": 16117480.226675883,
+            "peak": 114143776
+          },
+          "heapTotal": {
+            "firstMean": 118019652.99792674,
+            "lastMean": 191759646.60677263,
+            "deltaBytes": 73739993.60884589,
+            "peak": 194744320
+          },
+          "external": {
+            "firstMean": 6221624.304077402,
+            "lastMean": 21090129.572218385,
+            "deltaBytes": 14868505.268140983,
+            "peak": 89282476
+          },
+          "arrayBuffers": {
+            "firstMean": 1927947.1534208707,
+            "lastMean": 16900658.64478231,
+            "deltaBytes": 14972711.491361437,
+            "peak": 85118695
+          }
+        },
+        "windows": [
+          {
+            "minute": 0,
+            "samples": 578,
+            "means": {
+              "rss": 145303679.5570934,
+              "heapUsed": 57533624.332179934,
+              "heapTotal": 84998073.13494809,
+              "external": 6026645.153979239,
+              "arrayBuffers": 1670983.3996539793
+            },
+            "peaks": {
+              "rss": 269209600,
+              "heapUsed": 82133768,
+              "heapTotal": 128475136,
+              "external": 89282476,
+              "arrayBuffers": 85118695
+            }
+          },
+          {
+            "minute": 1,
+            "samples": 577,
+            "means": {
+              "rss": 179099296.610052,
+              "heapUsed": 65039741.04679376,
+              "heapTotal": 121814223.63951473,
+              "external": 6210300.6152513,
+              "arrayBuffers": 1909002.377816291
+            },
+            "peaks": {
+              "rss": 225611776,
+              "heapUsed": 79485040,
+              "heapTotal": 126324736,
+              "external": 67811254,
+              "arrayBuffers": 43705217
+            }
+          },
+          {
+            "minute": 2,
+            "samples": 567,
+            "means": {
+              "rss": 202545112.2680776,
+              "heapUsed": 73330158.70194003,
+              "heapTotal": 182320913.6084656,
+              "external": 6611177.726631394,
+              "arrayBuffers": 2455325.668430335
+            },
+            "peaks": {
+              "rss": 250560512,
+              "heapUsed": 105248168,
+              "heapTotal": 191860736,
+              "external": 48070417,
+              "arrayBuffers": 43914270
+            }
+          },
+          {
+            "minute": 3,
+            "samples": 561,
+            "means": {
+              "rss": 231324673.82531193,
+              "heapUsed": 79237843.2228164,
+              "heapTotal": 189564522.78074867,
+              "external": 6948597.877005348,
+              "arrayBuffers": 2741647.8680926915
+            },
+            "peaks": {
+              "rss": 271015936,
+              "heapUsed": 105871136,
+              "heapTotal": 192122880,
+              "external": 46901995,
+              "arrayBuffers": 42746232
+            }
+          },
+          {
+            "minute": 4,
+            "samples": 563,
+            "means": {
+              "rss": 238130898.07460037,
+              "heapUsed": 78248208.29840142,
+              "heapTotal": 190154239.09058616,
+              "external": 6835061.586145649,
+              "arrayBuffers": 2642040.6873889877
+            },
+            "peaks": {
+              "rss": 273076224,
+              "heapUsed": 106139872,
+              "heapTotal": 192909312,
+              "external": 48036756,
+              "arrayBuffers": 43880417
+            }
+          },
+          {
+            "minute": 5,
+            "samples": 572,
+            "means": {
+              "rss": 236117335.72027972,
+              "heapUsed": 76770164.65734266,
+              "heapTotal": 190464315.07692307,
+              "external": 6816177.323426574,
+              "arrayBuffers": 2623743.951048951
+            },
+            "peaks": {
+              "rss": 273707008,
+              "heapUsed": 114143776,
+              "heapTotal": 193433600,
+              "external": 47958078,
+              "arrayBuffers": 43802123
+            }
+          },
+          {
+            "minute": 6,
+            "samples": 573,
+            "means": {
+              "rss": 230652429.40314135,
+              "heapUsed": 80415220.06282723,
+              "heapTotal": 190647919.6928447,
+              "external": 6877434.408376964,
+              "arrayBuffers": 2685069.7766143107
+            },
+            "peaks": {
+              "rss": 267153408,
+              "heapUsed": 106499376,
+              "heapTotal": 193695744,
+              "external": 46916248,
+              "arrayBuffers": 42760485
+            }
+          },
+          {
+            "minute": 7,
+            "samples": 578,
+            "means": {
+              "rss": 242695447.91695502,
+              "heapUsed": 79857184.4982699,
+              "heapTotal": 191233495.25259516,
+              "external": 14928999.581314879,
+              "arrayBuffers": 10736882.671280276
+            },
+            "peaks": {
+              "rss": 272470016,
+              "heapUsed": 107131808,
+              "heapTotal": 194482176,
+              "external": 48037552,
+              "arrayBuffers": 43881597
+            }
+          },
+          {
+            "minute": 8,
+            "samples": 577,
+            "means": {
+              "rss": 254856307.35528597,
+              "heapUsed": 77650124.96360485,
+              "heapTotal": 191971136.33275563,
+              "external": 22698117.16811092,
+              "arrayBuffers": 18542337.863084923
+            },
+            "peaks": {
+              "rss": 293646336,
+              "heapUsed": 107342648,
+              "heapTotal": 194744320,
+              "external": 69007233,
+              "arrayBuffers": 64850894
+            }
+          },
+          {
+            "minute": 9,
+            "samples": 577,
+            "means": {
+              "rss": 249647941.65684575,
+              "heapUsed": 79255642.50953206,
+              "heapTotal": 191786681.4558059,
+              "external": 18757173.289428078,
+              "arrayBuffers": 14516894.554592721
+            },
+            "peaks": {
+              "rss": 294662144,
+              "heapUsed": 107465392,
+              "heapTotal": 194744320,
+              "external": 69664300,
+              "arrayBuffers": 65507961
+            }
+          },
+          {
+            "minute": 10,
+            "samples": 67,
+            "means": {
+              "rss": 240137231.2835821,
+              "heapUsed": 77386347.94029851,
+              "heapTotal": 191860736,
+              "external": 6232231.626865672,
+              "arrayBuffers": 2076468.6268656717
+            },
+            "peaks": {
+              "rss": 240193536,
+              "heapUsed": 79691776,
+              "heapTotal": 191860736,
+              "external": 6371106,
+              "arrayBuffers": 2215343
+            }
+          }
+        ]
+      },
+      "cpuMicroseconds": {
+        "user": 50297000,
+        "system": 16141000
+      },
+      "eventLoopP95Ms": 34.439167,
+      "eventLoopMaxMs": 82.313215,
+      "idleTransactions": 0,
+      "cases": {
+        "proveedor:%": 103,
+        "proveedor:": 101,
+        "cliente:": 97,
+        "proveedor:Q04HTTPONLY": 104,
+        "cliente:%": 99,
+        "proveedor:Q04TARGET": 102,
+        "cliente:Q04HTTPONLY": 100,
+        "cliente:Q04TARGET": 98,
+        "producto:": 103,
+        "producto:Q04TARGET": 102,
+        "producto:%": 101,
+        "producto:Q04HTTPONLY": 100,
+        "cotizacion:": 99,
+        "cotizacion:Q04TARGET": 98,
+        "cotizacion:%": 97,
+        "cotizacion:Q04HTTPONLY": 96,
+        "compra:": 96,
+        "compra:Q04TARGET": 96,
+        "compra:%": 96,
+        "compra:Q04HTTPONLY": 96,
+        "venta:": 96,
+        "venta:Q04TARGET": 96,
+        "venta:%": 96,
+        "venta:Q04HTTPONLY": 96
+      },
+      "errors": 0,
+      "objectives": {
+        "scope": "Objetivos provisionales de regresión local; no SLA productivo ni certificación de fuga de memoria",
+        "goals": {
+          "readP95Ms": 500,
+          "eventLoopP95Ms": 100,
+          "rssGrowthBytes": 134217728
+        },
+        "firstRssMean": 168629749.73876986,
+        "lastRssMean": 252703136.1105736,
+        "rssGrowthBytes": 84073386.37180373,
+        "samples": 5790,
+        "checks": {
+          "readP95": true,
+          "eventLoopP95": true,
+          "rssGrowth": true,
+          "readsAndWrites": true,
+          "integrity": true
+        },
+        "passed": true
+      }
+    }
+  ],
+  "limitations": [
+    "Documentos proveedor por HTTP: XML de prueba ingresado por JSON y PDF multipart, hashes/bytes/MIME/disposición y rechazos. PDF mínimo sintético: no certifica renderizado, estructura completa, antivirus ni autenticidad fiscal del XML.",
+    "Ocho solicitudes concurrentes por operación de proveedor; UUID mayúscula, contenido/operación distinta 409 y rollback tras efectos financieros. Registros anteriores sin huella se rechazan. No prueba caída física ni todas las carreras entre operaciones con claves distintas.",
+    "Seis proyecciones reales; transferencias/kits/cobros por HTTP y mutación SQL de nombres para carreras total/página. Modalidad financiera indicada por financialHttpResults; escritores de caja coordinados. Imágenes como metadatos, no archivos.",
+    "Carga cerrada, caché caliente y ventanas de 600 segundos y 1000 registros por dominio: no certificación de capacidad máxima, SLA ni soak de horas.",
+    "Cliente financiero/documental y lectores separados; padre incluye servidor, monitor, escritor SQL y cliente de almacen/pagos. Una conexion PG adicional del cliente; pool de aplicacion sin ajuste, maximo 10. No es servidor puro. No sumar picos independientes ni inferir causalidad entre ventanas."
+  ]
+}

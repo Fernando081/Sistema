@@ -4,15 +4,16 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  access_token: string;
-  token_type: 'Bearer';
-  expires_in: number;
+  profile: {idUser:number;username:string;role:'admin'|'user';isActive:boolean};
+  expiresAt: number;
 }
 
-export interface DecodedToken {
-  sub?: string;
-  role?: string;
-  idUser?: number;
-  iat?: number;
-  exp?: number;
+export interface MfaChallenge {mfaRequired:true;challenge:string;expiresIn:number}
+export type LoginResult=LoginResponse|MfaChallenge;
+
+export interface SessionIdentity {
+  sub: string;
+  role: 'admin'|'user';
+  idUser: number;
+  exp: number;
 }

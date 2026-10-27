@@ -18,9 +18,11 @@
       </mat-card-header>
 
       <mat-card-content>
+        <a *ngIf="canEdit" mat-stroked-button routerLink="/catalogo-web" class="mb-4">Preparar catálogo web</a>
+        <button mat-stroked-button type="button" [disabled]="isExporting" (click)="exportar()" class="mb-4"><mat-icon>download</mat-icon>Exportar CSV filtrado</button>
         <mat-form-field appearance="outline" class="w-full mb-4" matTooltip="La búsqueda ahora es global en el servidor.">
           <mat-label>Buscar producto</mat-label>
-          <input matInput (keyup)="applyFilter($event)" placeholder="Buscar por código, descripción, categoría o marca..." #input>
+          <input matInput (input)="applyFilter($event)" [value]="directory.term()" placeholder="Buscar por código, descripción, categoría, marca, OEM o aplicación..." #input>
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
 
@@ -30,7 +32,7 @@
         </div>
 
         <div class="overflow-auto" [hidden]="isLoading">
-          <table mat-table [dataSource]="dataSource" matSort class="w-full">
+          <table mat-table [dataSource]="dataSource" matSort [matSortActive]="directory.query().sortBy === 'id' ? '' : directory.query().sortBy" [matSortDirection]="directory.query().sortOrder" matSortDisableClear (matSortChange)="directory.sort($event)" class="w-full">
             <!-- (Todas tus columnas <ng-container> de producto van aquí) -->
 
             <ng-container matColumnDef="imagen_url">
@@ -108,7 +110,7 @@
 
         <mat-paginator 
           [length]="totalItems"
-          [pageSize]="10"
+          [pageSize]="directory.query().limit" [pageIndex]="directory.query().page - 1" (page)="directory.page($event)"
           [pageSizeOptions]="[10, 25, 50]"
           showFirstLastButtons
           aria-label="Seleccionar página de productos">

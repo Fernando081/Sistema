@@ -1,0 +1,100 @@
+{
+  "passed": true,
+  "checkedAt": "2026-10-21T06:28:29.934Z",
+  "sqlReadOnly": true,
+  "tables": {
+    "crm_secuencia_modelo": 0,
+    "crm_secuencia": 0,
+    "crm_secuencia_evento": 0
+  },
+  "checks": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm/secuencias",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm/campanas",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/portal",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4600/catalogo",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/secuencias",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/secuencias/modelos",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/secuencias/clientes",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/secuencias",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "107 aplicada y checksum coincide",
+      "passed": true
+    },
+    {
+      "name": "crm_secuencia_modelo sin fixtures en origen",
+      "passed": true
+    },
+    {
+      "name": "crm_secuencia sin fixtures en origen",
+      "passed": true
+    },
+    {
+      "name": "crm_secuencia_evento sin fixtures en origen",
+      "passed": true
+    },
+    {
+      "name": "Tareas existentes no inscritas automáticamente",
+      "passed": true
+    },
+    {
+      "name": "Permiso ADMIN inicial",
+      "passed": true
+    },
+    {
+      "name": "Conservación ALWAYS",
+      "passed": true
+    }
+  ]
+}

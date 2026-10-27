@@ -1,0 +1,142 @@
+{
+  "generatedAt": "2026-10-01T22:04:15.507Z",
+  "node": "24.19.0",
+  "comparisons": 88,
+  "plans": 50,
+  "indexBuildMs": 620.6158999999998,
+  "indexedWriteMs": 10.616299999999683,
+  "indexBytes": 2285568,
+  "metrics": [
+    {
+      "term": "Q04TARGET",
+      "before": {
+        "medianMs": 16.122,
+        "samplesMs": [
+          15.333,
+          16.052,
+          16.122,
+          18.014,
+          21.4
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 0.17,
+        "samplesMs": [
+          0.153,
+          0.163,
+          0.17,
+          0.229,
+          0.256
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "term": "Proveedor",
+      "before": {
+        "medianMs": 17.728,
+        "samplesMs": [
+          15.107,
+          15.425,
+          17.728,
+          21.096,
+          21.388
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 76.504,
+        "samplesMs": [
+          61.111,
+          64.813,
+          76.504,
+          82.536,
+          82.751
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "term": "RFC1000",
+      "before": {
+        "medianMs": 22.018,
+        "samplesMs": [
+          16.863,
+          17.331,
+          22.018,
+          22.193,
+          22.935
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 0.477,
+        "samplesMs": [
+          0.4,
+          0.434,
+          0.477,
+          0.49,
+          0.522
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "term": "F1000",
+      "before": {
+        "medianMs": 18.918,
+        "samplesMs": [
+          15.505,
+          17.515,
+          18.918,
+          18.952,
+          30.137
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 0.11,
+        "samplesMs": [
+          0.107,
+          0.11,
+          0.11,
+          0.114,
+          0.173
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "term": "F1000 Q04TARGET",
+      "before": {
+        "medianMs": 17.121,
+        "samplesMs": [
+          14.861,
+          15.582,
+          17.121,
+          19.14,
+          24.488
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 16.275,
+        "samplesMs": [
+          14.211,
+          15.234,
+          16.275,
+          16.843,
+          18.158
+        ],
+        "indexUsed": false
+      }
+    }
+  ],
+  "limitations": [
+    "Prototipo temporal, sin integración en endpoints ni migración.",
+    "Términos con espacios y cortos conservan consulta anterior.",
+    "Proveedor indexado produce candidatos extra que elimina filtro final.",
+    "Sin concurrencia, validación CSV de servicios ni SLA; costos de escritura son una muestra."
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "passed": true,
+  "checkedAt": "2026-10-21T14:51:25.700Z",
+  "sqlReadOnly": true,
+  "tables": {
+    "crm_etapa_evento": 0,
+    "crm_secuencia_regla": 0,
+    "crm_secuencia_aplicacion": 0
+  },
+  "checks": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm/reglas-secuencias",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm/secuencias",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4600/catalogo",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/reglas-secuencias",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/reglas-secuencias/00000000-0000-4000-8000-000000000001/eventos",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/reglas-secuencias/00000000-0000-4000-8000-000000000001/historial",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/reglas-secuencias",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "107_crm_secuencias_internas.sql aplicada/checksum",
+      "passed": true
+    },
+    {
+      "name": "108_crm_secuencias_control.sql aplicada/checksum",
+      "passed": true
+    },
+    {
+      "name": "109_crm_secuencias_reglas.sql aplicada/checksum",
+      "passed": true
+    },
+    {
+      "name": "crm_etapa_evento registros observados",
+      "rows": 0,
+      "passed": true
+    },
+    {
+      "name": "crm_secuencia_regla registros observados",
+      "rows": 0,
+      "passed": true
+    },
+    {
+      "name": "crm_secuencia_aplicacion registros observados",
+      "rows": 0,
+      "passed": true
+    },
+    {
+      "name": "Tres guardas ALWAYS",
+      "passed": true
+    },
+    {
+      "name": "Captura de eventos instalada sin backfill",
+      "passed": true
+    }
+  ]
+}

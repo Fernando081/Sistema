@@ -1,0 +1,99 @@
+<section class="quality" aria-label="Calidad del catálogo web" [attr.aria-busy]="loading()">
+  <header>
+    <div>
+      <h1>Preparar catálogo web</h1>
+      <p>
+        Revisión administrativa de productos reales. Ningún producto se publica desde esta lista.
+      </p>
+    </div>
+    <a mat-stroked-button routerLink="/producto">Volver a productos</a>
+  </header>
+  <p class="notice">
+    Los pendientes son indicadores de preparación, no una certificación. Verifica fotografías,
+    derechos, datos técnicos y compatibilidad antes de aprobar un lote. Los posibles duplicados no
+    se eliminan automáticamente.
+  </p>
+  <app-web-batch-editor #batchEditor />
+  <form (ngSubmit)="search()" class="filters">
+    <label
+      >Buscar código, descripción, marca o categoría<input
+        name="term"
+        [(ngModel)]="term"
+        maxlength="100"
+        [disabled]="loading()"
+    /></label>
+    <label
+      >Estado<select name="estado" [(ngModel)]="estado" [disabled]="loading()">
+        <option value="todos">Todos</option>
+        <option value="sin_ficha">Sin ficha</option>
+        <option value="borrador">Borrador</option>
+        <option value="listo">Lista</option>
+        <option value="retirado">Retirada</option>
+      </select></label
+    >
+    <label
+      >Revisión<select name="revision" [(ngModel)]="revision" [disabled]="loading()">
+        <option value="todos">Todas</option>
+        <option value="con_pendientes">Con pendientes</option>
+        <option value="sin_pendientes">Sin faltantes automáticos</option>
+      </select></label
+    >
+    <button mat-flat-button type="submit" [disabled]="loading()">Buscar</button>
+  </form>
+  <p role="status" *ngIf="loading()">Cargando revisión…</p>
+  <p role="alert" *ngIf="error()">
+    {{ error() }} <button mat-stroked-button type="button" (click)="load()">Reintentar</button>
+  </p>
+  <p role="status" *ngIf="!loading() && !error()">
+    {{ total() }} productos encontrados · Página {{ page }}
+  </p>
+  <p *ngIf="!loading() && !error() && !rows().length">No hay productos para estos filtros.</p>
+  <div class="cards">
+    <article *ngFor="let row of rows()">
+      <h2>{{ row.codigo || 'Sin código' }} · {{ row.nombre }}</h2>
+      <p>{{ row.marca || 'Marca pendiente' }} · {{ row.categoria || 'Categoría pendiente' }}</p>
+      <p>
+        <strong>Estado: {{ row.estado }}</strong>
+      </p>
+      <p *ngIf="+row.duplicados > 1">
+        Posible duplicado: {{ row.duplicados }} productos comparten código normalizado y marca.
+      </p>
+      <h3>Revisión pendiente</h3>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="batchEditor.select(row.id)"
+        [disabled]="batchEditor.busy() || row.estado !== 'listo'"
+      >
+        Agregar al lote
+      </button>
+      <ul>
+        <li *ngFor="let issue of row.pendientes">{{ issue }}</li>
+      </ul>
+      <p *ngIf="!row.pendientes.length">
+        Sin faltantes automáticos. Requiere revisión final del propietario.
+      </p>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="edit(row)"
+        [disabled]="loading()"
+        [attr.aria-label]="'Revisar ficha ' + (row.codigo || row.id)"
+      >
+        Revisar ficha
+      </button>
+    </article>
+  </div>
+  <nav aria-label="Páginas de revisión" class="pagination">
+    <button mat-stroked-button type="button" [disabled]="loading() || page <= 1" (click)="next(-1)">
+      Anterior</button
+    ><button
+      mat-stroked-button
+      type="button"
+      [disabled]="loading() || page * limit >= total()"
+      (click)="next(1)"
+    >
+      Siguiente
+    </button>
+  </nav>
+</section>

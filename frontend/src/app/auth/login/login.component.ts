@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,6 +21,7 @@ import { AuthService } from '../auth.service';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    RouterLink,
   ],
   templateUrl: './login.component.html',
 })
@@ -28,6 +29,8 @@ export class LoginComponent {
   private readonly fb = inject(FormBuilder);
 
   isSaving = signal(false);
+  readonly challenge=signal<string|null>(null);
+  readonly codeForm=this.fb.nonNullable.group({code:['',[Validators.required,Validators.pattern(/^(?:\d{6}|[a-fA-F0-9]{8}(?:-?[a-fA-F0-9]{8}){3})$/)]]});
 
   form = this.fb.nonNullable.group({
     username: ['', [Validators.required]],
@@ -49,13 +52,27 @@ export class LoginComponent {
     this.authService.login(this.form.getRawValue()).pipe(
       finalize(() => this.isSaving.set(false))
     ).subscribe({
-      next: () => {
-        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-        const safeReturn = returnUrl?.startsWith('/') && !returnUrl.startsWith('//') && !returnUrl.startsWith('/login');
-        const home = this.authService.getDecodedToken()?.role === 'admin' ? '/dashboard' : '/venta';
-        this.router.navigateByUrl(safeReturn ? returnUrl! : home);
+      next: result => {
+        this.form.controls.password.reset();
+        if('mfaRequired' in result){this.challenge.set(result.challenge);return;}
+        this.enter();
       },
       error: () => {},
     });
+  }
+
+  verify():void{
+    const challenge=this.challenge();if(!challenge||this.isSaving()||this.codeForm.invalid)return;
+    this.isSaving.set(true);
+    this.authService.completeMfa(challenge,this.codeForm.getRawValue().code).pipe(finalize(()=>this.isSaving.set(false))).subscribe({
+      next:()=>{this.codeForm.reset();this.challenge.set(null);this.enter();},error:()=>this.codeForm.reset(),
+    });
+  }
+  restart():void{if(this.isSaving())return;this.challenge.set(null);this.codeForm.reset();this.authService.clearSession();}
+  private enter():void{
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        const safeReturn = returnUrl?.startsWith('/') && !returnUrl.startsWith('//') && !returnUrl.startsWith('/login');
+        const home = this.authService.getSessionIdentity()?.role === 'admin' ? '/dashboard' : '/venta';
+        this.router.navigateByUrl(safeReturn ? returnUrl! : home);
   }
 }

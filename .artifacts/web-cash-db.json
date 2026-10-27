@@ -1,0 +1,303 @@
+{
+  "phase": "WEB05.2e",
+  "source": "isolated-test-fixtures",
+  "generatedAt": "2026-10-12T17:24:53.124Z",
+  "node": "24.19.0",
+  "checks": [
+    {
+      "name": "Monedas separadas; cliente/rutas directas y pedido sin duplicar; global/cancelados/sin vínculo fuera del importe",
+      "passed": true
+    },
+    {
+      "name": "Notas con impuestos y devoluciones en tres fracciones conservan centavos; venta neta excluye impuestos",
+      "passed": true
+    },
+    {
+      "name": "REP canónico una vez pese a dos copias; cancelación local/fiscal excluida; Pagada sin pago no inventa cobro",
+      "passed": true
+    },
+    {
+      "name": "Totales mayores que Number.MAX_SAFE_INTEGER viajan como cadenas decimales con centavos exactos",
+      "passed": true
+    },
+    {
+      "name": "Código de tres letras no reconocido y XXX quedan sin desglose; no se presume MXN ni cambio de moneda",
+      "passed": true
+    },
+    {
+      "name": "Nota activa con moneda/cliente/estado incongruente deja neto desconocido, no cero ni subtotal parcial",
+      "passed": true
+    },
+    {
+      "name": "Devolución sin conciliación de encabezado/detalle y mezcla histórica nota/devolución no fabrican neto",
+      "passed": true
+    },
+    {
+      "name": "REP/compatibilidad incoherentes, detalle duplicado y cancelación cambian cobertura/cobros sin inferir por saldo",
+      "passed": true
+    },
+    {
+      "name": "Saldos NaN y encabezados inconsistentes quedan desconocidos; un indicador no rellena otro",
+      "passed": true
+    },
+    {
+      "name": "Saldo a favor generado separado: no reduce cobros ni se presenta como saldo disponible del cliente",
+      "passed": true
+    },
+    {
+      "name": "Nota y devolución usan gastos explícitos una vez; REP canónico y dos espejos no duplican cobros; centavos 3.87/3.86/3.87 exactos",
+      "passed": true
+    },
+    {
+      "name": "Devolución histórica en efectivo sin vínculo deja total desconocido pese a existir un gasto del mismo importe",
+      "passed": true
+    },
+    {
+      "name": "Gasto anulado, NaN, negativo, importe, método o categoría incongruentes no fabrican salida de efectivo",
+      "passed": true
+    },
+    {
+      "name": "Gasto reutilizado por otro documento, incluso cancelado y fuera de la cohorte, queda no conciliado",
+      "passed": true
+    },
+    {
+      "name": "Cancelación local o fiscal de la nota excluye su reembolso; no descuenta el gasto huérfano por descripción",
+      "passed": true
+    },
+    {
+      "name": "Método histórico desconocido, saldo a favor con gasto o detalle de devolución inválido conservan desconocidos explícitos",
+      "passed": true
+    },
+    {
+      "name": "Gastos sin moneda propia sólo comparables MXN/factor1; USD conserva cobro bruto, sin conversión supuesta",
+      "passed": true
+    },
+    {
+      "name": "Pagada sin historial y espejo REP incongruente no prueban cobro neto; gastos comprobados mantienen su indicador independiente",
+      "passed": true
+    },
+    {
+      "name": "Documento y reembolso cero comprobados no exigen gasto ficticio ni se confunden con información desconocida",
+      "passed": true
+    },
+    {
+      "name": "Cobro neto superior a Number.MAX_SAFE_INTEGER conserva todos sus centavos como cadena decimal",
+      "passed": true
+    },
+    {
+      "name": "Un snapshot READ ONLY/REPEATABLE READ/plazo5s; tablas intactas, contactos/IDs omitidos y periodo vacío sin monedas inventadas",
+      "passed": true
+    },
+    {
+      "name": "Login bcrypt/PostgreSQL y JWT/guards reales: ADMIN200/no-store, anónimo401, USER403, campos extra400 y revocación401",
+      "passed": true
+    },
+    {
+      "name": "Sólo el esquema propio eliminado; servidor y conexiones cerrados",
+      "passed": true
+    }
+  ],
+  "cleaned": true,
+  "readonlyChecks": 70,
+  "sourceUnchanged": true,
+  "report": {
+    "generatedAt": "2026-10-12T17:24:51.663Z",
+    "finance": {
+      "currencies": [
+        {
+          "moneda": "MXN",
+          "documentos": 2,
+          "profit": {
+            "baseCosto": "snapshot-local-MXN",
+            "costoVentaNeto": null,
+            "utilidadBruta": null,
+            "margenBrutoPct": null,
+            "documentosConRentabilidad": 0,
+            "documentosRentabilidadDesconocida": 2,
+            "documentosSinCostoValido": 2,
+            "documentosMonedaCostoNoComparable": 0,
+            "documentosDetalleNoConciliado": 1
+          },
+          "cash": {
+            "baseMonetaria": "registros-locales-MXN",
+            "reembolsosEfectivo": null,
+            "saldoAFavorGenerado": null,
+            "cobrosNetosRegistrados": null,
+            "documentosConCobroNeto": 0,
+            "documentosCobroNetoDesconocido": 2,
+            "documentosReembolsoDesconocido": 1,
+            "reembolsosSinGastoVinculado": 0,
+            "gastosNoConciliados": 0,
+            "documentosPagosNoConciliados": 1,
+            "documentosMonedaNoComparable": 0
+          },
+          "importeDocumentado": "127.60",
+          "ventasNetasSinImpuestos": "80.00",
+          "notasCredito": "23.20",
+          "devoluciones": "11.60",
+          "cobrosRegistrados": "70.00",
+          "saldoRegistrado": "46.00",
+          "documentosNetoDesconocido": 0,
+          "documentosCobroDesconocido": 0,
+          "documentosSaldoDesconocido": 0,
+          "documentosSinPagos": 1,
+          "documentosSaldoNoConciliado": 1
+        },
+        {
+          "moneda": "USD",
+          "documentos": 1,
+          "profit": {
+            "baseCosto": "snapshot-local-MXN",
+            "costoVentaNeto": null,
+            "utilidadBruta": null,
+            "margenBrutoPct": null,
+            "documentosConRentabilidad": 0,
+            "documentosRentabilidadDesconocida": 1,
+            "documentosSinCostoValido": 1,
+            "documentosMonedaCostoNoComparable": 1,
+            "documentosDetalleNoConciliado": 1
+          },
+          "cash": {
+            "baseMonetaria": "registros-locales-MXN",
+            "reembolsosEfectivo": null,
+            "saldoAFavorGenerado": null,
+            "cobrosNetosRegistrados": null,
+            "documentosConCobroNeto": 0,
+            "documentosCobroNetoDesconocido": 1,
+            "documentosReembolsoDesconocido": 0,
+            "reembolsosSinGastoVinculado": 0,
+            "gastosNoConciliados": 0,
+            "documentosPagosNoConciliados": 0,
+            "documentosMonedaNoComparable": 1
+          },
+          "importeDocumentado": "58.00",
+          "ventasNetasSinImpuestos": "50.00",
+          "notasCredito": "0.00",
+          "devoluciones": "0.00",
+          "cobrosRegistrados": "7.10",
+          "saldoRegistrado": "50.90",
+          "documentosNetoDesconocido": 0,
+          "documentosCobroDesconocido": 0,
+          "documentosSaldoDesconocido": 0,
+          "documentosSinPagos": 0,
+          "documentosSaldoNoConciliado": 0
+        }
+      ],
+      "coverage": {
+        "documentosVinculados": 5,
+        "documentosFinancieros": 4,
+        "globalesExcluidas": 1,
+        "monedaDesconocida": 1,
+        "importesInconsistentes": 0,
+        "notasCanceladasExcluidas": 2,
+        "repsCanceladosExcluidos": 2,
+        "pagosRepCompatibilidadOmitidos": 4
+      }
+    },
+    "commercial": {
+      "cotizacionesVinculadas": 1,
+      "solicitudesConCotizacion": 1,
+      "solicitudesConVenta": 1,
+      "documentosVentaVigentes": 5,
+      "documentosCancelados": 2,
+      "documentosInconsistentes": 1
+    },
+    "totals": {
+      "recibidas": 1,
+      "pendientes": 0,
+      "revisadasSinOportunidad": 0,
+      "descartadas": 0,
+      "oportunidades": 1,
+      "abiertasCrm": 1,
+      "ganadasCrm": 0,
+      "perdidasCrm": 0,
+      "vigentes": 1,
+      "vencidas": 0,
+      "purgadas": 0,
+      "piezasVigentes": 1,
+      "piezasSnapshot": 0,
+      "sinPiezas": 0
+    },
+    "daily": [
+      {
+        "fecha": "2026-10-10",
+        "recibidas": 1,
+        "oportunidades": 1
+      },
+      {
+        "fecha": "2026-10-11",
+        "recibidas": 0,
+        "oportunidades": 0
+      }
+    ],
+    "references": [
+      {
+        "code": "OEM-FIXTURE",
+        "brand": "",
+        "solicitudes": 1,
+        "cantidad": 1
+      }
+    ],
+    "source": "crm-local",
+    "period": {
+      "desde": "2026-10-10",
+      "hasta": "2026-10-11",
+      "timezone": "America/Mexico_City",
+      "days": 2
+    },
+    "conversionPct": 100,
+    "unmeasured": [
+      "vistas",
+      "busquedas",
+      "clicsCotizacion",
+      "clicsWhatsApp",
+      "busquedasSinResultado",
+      "ventasSinVinculo",
+      "flujoIntegral"
+    ]
+  },
+  "cashExamples": {
+    "creditOnly": {
+      "baseMonetaria": "registros-locales-MXN",
+      "reembolsosEfectivo": "0.00",
+      "saldoAFavorGenerado": "34.80",
+      "cobrosNetosRegistrados": "81.60",
+      "documentosConCobroNeto": 2,
+      "documentosCobroNetoDesconocido": 0,
+      "documentosReembolsoDesconocido": 0,
+      "reembolsosSinGastoVinculado": 0,
+      "gastosNoConciliados": 0,
+      "documentosPagosNoConciliados": 0,
+      "documentosMonedaNoComparable": 0
+    },
+    "cashAndCredit": {
+      "baseMonetaria": "registros-locales-MXN",
+      "reembolsosEfectivo": "27.07",
+      "saldoAFavorGenerado": "7.73",
+      "cobrosNetosRegistrados": "54.53",
+      "documentosConCobroNeto": 2,
+      "documentosCobroNetoDesconocido": 0,
+      "documentosReembolsoDesconocido": 0,
+      "reembolsosSinGastoVinculado": 0,
+      "gastosNoConciliados": 0,
+      "documentosPagosNoConciliados": 0,
+      "documentosMonedaNoComparable": 0
+    },
+    "largeNet": {
+      "baseMonetaria": "registros-locales-MXN",
+      "reembolsosEfectivo": "27.07",
+      "saldoAFavorGenerado": "7.73",
+      "cobrosNetosRegistrados": "10000000000000054.52",
+      "documentosConCobroNeto": 4,
+      "documentosCobroNetoDesconocido": 0,
+      "documentosReembolsoDesconocido": 0,
+      "reembolsosSinGastoVinculado": 0,
+      "gastosNoConciliados": 0,
+      "documentosPagosNoConciliados": 0,
+      "documentosMonedaNoComparable": 0
+    }
+  },
+  "limits": [
+    "Esquema mínimo propio; no AppModule completo, carga masiva, bancos, flujo integral o resultados comerciales reales. Costos y reembolsos comparables sólo MXN/factor1."
+  ]
+}

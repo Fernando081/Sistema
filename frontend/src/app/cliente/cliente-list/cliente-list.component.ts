@@ -1,11 +1,11 @@
 // frontend/src/app/cliente/cliente-list/cliente-list.component.ts
 
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import anime from 'animejs';
 import { CommonModule } from '@angular/common';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -17,7 +17,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ClienteService } from '../../services/cliente.service';
 import { Cliente } from '../cliente.interface';
 import { ClienteDialogComponent } from '../cliente-dialog/cliente-dialog.component';
-import { finalize } from 'rxjs';
+import { RemoteDirectory } from '../../shared/remote-directory';
+import { localDate } from '../../shared/document-download';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmService } from '../../shared/confirm.service';
@@ -35,66 +36,40 @@ import { ClienteUnidadesDialogComponent } from '../cliente-unidades-dialog/clien
   templateUrl: './cliente-list.component.html',
   styleUrls: ['./cliente-list.component.css']
 })
-export class ClienteListComponent implements OnInit {
+export class ClienteListComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private routeFilter = '';
+
   
   // ¡CAMBIO! Volvemos a usar camelCase (minúsculas)
   displayedColumns: string[] = ['idCliente', 'rfc', 'razonSocial', 'codigoPostal', 'saldoAFavor', 'acciones'];
-  dataSource = new MatTableDataSource<Cliente>();
-  isLoading = true;
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  readonly directory: RemoteDirectory<Cliente>;
+  get dataSource() { return this.directory.dataSource; }
+  get isLoading() { return this.directory.loading(); }
+  get totalItems() { return this.directory.total(); }
 
   constructor(
     private clienteService: ClienteService,
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
     private confirm: ConfirmService,
-  ) {}
+  ) {
+    this.directory = new RemoteDirectory(query => this.clienteService.getPage(query), message => this.mostrarNotificacion(message));
+  }
 
   ngOnInit(): void {
-    this.routeFilter = (this.route.snapshot.queryParamMap.get('q') || '').trim().toLowerCase();
-    this.cargarClientes();
+    this.directory.connectUrl(this.route, this.router);
+    this.directory.start();
   }
-
-  cargarClientes(): void {
-    this.isLoading = true;
-    this.clienteService.getClientes()
-      .pipe(finalize(() => this.isLoading = false))
-      .subscribe({
-        next: (data) => {
-          this.dataSource.data = data;
-          if (this.routeFilter) {
-            this.dataSource.filterPredicate = (item, filter) => item.razonSocial.toLowerCase().includes(filter) || item.rfc.toLowerCase().includes(filter);
-            this.dataSource.filter = this.routeFilter;
-          }
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-          setTimeout(() => this.animarEntradaTabla(), 0);
-        },
-        error: (err) => {
-          this.mostrarNotificacion('Error al cargar clientes: ' + (err.error?.message || err.message));
-        }
-      });
+  ngOnDestroy(): void { this.directory.dispose(); }
+  cargarClientes(): void { this.directory.reload(); }
+  applyFilter(event: Event): void {
+    const input = event.target;
+    if (input instanceof HTMLInputElement) this.directory.setTerm(input.value);
   }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-    
-    this.dataSource.filterPredicate = (data: Cliente, filter: string) => {
-      return data.razonSocial.toLowerCase().includes(filter) || 
-             data.rfc.toLowerCase().includes(filter);
-    };
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+  exportar(): void {
+    this.directory.export(query => this.clienteService.exportCsv(query), 'clientes' + '_' + localDate() + '.csv');
   }
-
   abrirDialogo(cliente?: Cliente): void {
     const dialogRef = this.dialog.open(ClienteDialogComponent, {
       width: '600px',
@@ -115,6 +90,16 @@ export class ClienteListComponent implements OnInit {
       data: { idCliente: cliente.idCliente, razonSocial: cliente.razonSocial },
       disableClose: true,
     });
+  }
+
+  async administrarPortal(cliente:Cliente):Promise<void>{
+    const {PortalAccessDialogComponent}=await import('../../portal/portal-access-dialog.component');
+    this.dialog.open(PortalAccessDialogComponent,{width:'760px',maxWidth:'96vw',data:{idCliente:cliente.idCliente,razonSocial:cliente.razonSocial},disableClose:true});
+  }
+
+  async documentosPortal(cliente:Cliente):Promise<void>{
+    const {PortalPublicationsDialogComponent}=await import('../../portal/portal-publications-dialog.component');
+    this.dialog.open(PortalPublicationsDialogComponent,{width:'820px',maxWidth:'96vw',data:{idCliente:cliente.idCliente,razonSocial:cliente.razonSocial},disableClose:true});
   }
 
   verCliente360(cliente: Cliente): void {

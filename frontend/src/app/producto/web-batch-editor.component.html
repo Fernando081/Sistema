@@ -1,0 +1,188 @@
+<section aria-label="Revisión de lotes" [attr.aria-busy]="busy()">
+  <h2>Revisar y aprobar lote web</h2>
+  <p>
+    Selecciona hasta 25 fichas listas. La aprobación registra el manifiesto exacto; la activación se
+    realiza por separado.
+  </p>
+  <label
+    >IDs de productos, separados por comas<input
+      [(ngModel)]="ids"
+      (ngModelChange)="changed(); members.set([])"
+      [disabled]="busy()"
+  /></label>
+  <button type="button" (click)="prepare()" [disabled]="busy()">Preparar lote</button>
+  <div *ngIf="members().length">
+    <p>
+      Fichas seleccionadas:
+      <span *ngFor="let member of members()"
+        >{{ member.productId }} (versión {{ member.version }}) ·
+      </span>
+    </p>
+    <label
+      >Manifiesto completo para revisión<textarea
+        [(ngModel)]="raw"
+        (ngModelChange)="parseVisual()"
+        maxlength="200000"
+        rows="14"
+        [disabled]="busy()"
+      ></textarea>
+    </label>
+    <p>
+      Verifica marcas, aplicaciones y referencias de todas las fichas. Agrega únicamente metadatos
+      de PNG autorizados y alternativas dentro del lote. El servidor valida el contrato; no verifica
+      derechos ni compatibilidad mecánica.
+    </p>
+    <label
+      ><input type="checkbox" [(ngModel)]="confirmed" [disabled]="busy()" /> Confirmo la revisión de
+      todas las fichas, imágenes y alternativas del lote</label
+    >
+    <p role="alert" *ngIf="visualError()">{{ visualError() }}</p>
+    <article *ngFor="let product of products()">
+      <h3>{{ product.code }} · {{ product.title }}</h3>
+      <p>URL: /productos/{{ product.slug }}</p>
+      <label
+        >Seleccionar PNG para {{ product.code
+        }}<input
+          type="file"
+          accept="image/png,.png"
+          (change)="imageSelected($event, product)"
+          [disabled]="busy()"
+      /></label>
+      <div *ngFor="let image of product.images">
+        <img
+          *ngIf="preview(product, image) as url"
+          [src]="url"
+          [alt]="image.alt || 'Vista previa pendiente de descripción'"
+          width="200"
+        />
+        <p>{{ image.file }} · {{ image.width }} × {{ image.height }} · {{ image.sha256 }}</p>
+        <label
+          >Texto alternativo de {{ image.file
+          }}<input
+            [(ngModel)]="image.alt"
+            (ngModelChange)="syncVisual()"
+            maxlength="300"
+            [disabled]="busy()"
+        /></label>
+        <label
+          ><input
+            type="checkbox"
+            [(ngModel)]="image.authorized"
+            (ngModelChange)="syncVisual()"
+            [disabled]="busy()"
+          />
+          Confirmo derechos de {{ image.file }}</label
+        >
+        <button type="button" (click)="removeImage(product, image)" [disabled]="busy()">
+          Quitar {{ image.file }}
+        </button>
+        <button
+          type="button"
+          (click)="generateVariants(product, image)"
+          [disabled]="busy() || !preview(product, image) || !!image.variants?.length"
+        >
+          Generar variantes de {{ image.file }}
+        </button>
+        <label
+          >Agregar variante de {{ image.file
+          }}<input
+            type="file"
+            accept="image/png,.png"
+            (change)="imageSelected($event, product, image)"
+            [disabled]="busy() || (image.variants?.length || 0) >= 3"
+        /></label>
+        <div *ngFor="let variant of image.variants">
+          <img
+            *ngIf="preview(product, variant) as url"
+            [src]="url"
+            [alt]="variant.alt || 'Variante pendiente de descripción'"
+            width="160"
+          />
+          <p>{{ variant.file }} · {{ variant.width }} × {{ variant.height }}</p>
+          <label
+            >Texto alternativo de {{ variant.file
+            }}<input
+              [(ngModel)]="variant.alt"
+              (ngModelChange)="syncVisual()"
+              maxlength="200"
+              [disabled]="busy()"
+          /></label>
+          <label
+            ><input
+              type="checkbox"
+              [(ngModel)]="variant.authorized"
+              (ngModelChange)="syncVisual()"
+              [disabled]="busy()"
+            />
+            Confirmo derechos de {{ variant.file }}</label
+          >
+          <button
+            type="button"
+            (click)="downloadImage(product, variant)"
+            [disabled]="busy() || !preview(product, variant)"
+          >
+            Descargar {{ variant.file }}
+          </button>
+          <button
+            type="button"
+            (click)="removeVariant(product, image, variant)"
+            [disabled]="busy()"
+          >
+            Quitar {{ variant.file }}
+          </button>
+        </div>
+      </div>
+      <fieldset>
+        <legend>Alternativas de {{ product.code }}</legend>
+        <ng-container *ngFor="let target of products()">
+          <label *ngIf="target.slug !== product.slug"
+            ><input
+              type="checkbox"
+              [ngModel]="product.alternatives?.includes(target.slug) || false"
+              (ngModelChange)="alternative(product, target.slug, $event)"
+              [disabled]="busy()"
+            />
+            {{ target.code }} · {{ target.title }}</label
+          >
+        </ng-container>
+      </fieldset>
+    </article>
+    <button type="button" (click)="approve()" [disabled]="busy() || !confirmed || !visualReady()">
+      Aprobar y descargar lote
+    </button>
+  </div>
+  <h3>Administrar recibo de lote</h3>
+  <label
+    >Número de recibo<input
+      inputmode="numeric"
+      [(ngModel)]="receipt"
+      (ngModelChange)="changed()"
+      [disabled]="busy()"
+  /></label>
+  <button type="button" (click)="consult()" [disabled]="busy()">Consultar vigencia del lote</button>
+  <div *ngIf="status() as current">
+    <p>
+      Estado:
+      {{ current.revoked ? 'Revocado' : current.active ? 'Vigente al consultar' : 'No vigente' }} ·
+      {{ current.productCount }} productos
+    </p>
+    <p>SHA-256: {{ current.sha256 }}</p>
+    <label
+      ><input
+        type="checkbox"
+        [(ngModel)]="revokeConfirmed"
+        [disabled]="busy() || current.revoked"
+      />
+      Confirmo revocar este recibo de lote</label
+    >
+    <button
+      type="button"
+      (click)="revoke()"
+      [disabled]="busy() || current.revoked || !revokeConfirmed"
+    >
+      Revocar lote
+    </button>
+  </div>
+  <p>Revocar no retira automáticamente versiones ya activas.</p>
+  <p role="status">{{ message() }}</p>
+</section>

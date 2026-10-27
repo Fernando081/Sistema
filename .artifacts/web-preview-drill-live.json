@@ -1,0 +1,71 @@
+{
+  "generatedAt": "2026-10-11T23:43:45.979Z",
+  "scope": "HTTP local sin credenciales, captación, aceptación comercial o escritura de negocio",
+  "passed": 9,
+  "total": 9,
+  "probes": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/",
+      "expected": 200,
+      "status": 200,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4300/login",
+      "expected": 200,
+      "status": 200,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "expected": 200,
+      "status": 200,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/solicitar",
+      "expected": 503,
+      "status": 503,
+      "passed": true
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:3100/api/v1/web-lead-bridge/check",
+      "expected": 503,
+      "status": 503,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/preview-recovery-drill.mjs",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/check-saved-backup.mjs",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/.artifacts/web-preview-drill.json",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/.backups/web-preview-ae108fa3-dc0e-4e72-ad35-f3163fff18f8.json",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    }
+  ]
+}

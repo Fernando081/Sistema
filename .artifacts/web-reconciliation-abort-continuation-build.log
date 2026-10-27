@@ -1,0 +1,5 @@
+
+> build:web-publica
+> node public-web/build.mjs
+
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.

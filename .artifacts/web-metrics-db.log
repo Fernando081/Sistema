@@ -1,0 +1,17 @@
+
+> test:web-metrics-db
+> npm --workspace backend run build && node backend/verify-web-metrics.js
+
+
+> backend@0.0.1 build
+> nest build
+
+OK: Cohorte inclusiva en zona local, estados, 33.33%, diarios, marcas distintas y solicitudes únicas
+OK: Piezas vigentes/snapshot tras vencimiento y purga; contactos e identificadores privados omitidos
+OK: Periodo vacío conserva días cero y conversión indefinida
+OK: Fechas imposibles, orden, exceso de periodo e inyección rechazados
+OK: Login PostgreSQL/bcrypt/JWT y guards reales: anónimo401, USER403, firma/revocación401, DTO400 y ADMIN200 no-store
+OK: Lecturas REPEATABLE READ READ ONLY y plazo SQL5s comprobados; solicitudes/oportunidades/snapshots sin cambios
+OK: Cantidades fuera de contrato y listas antiguas malformadas se omiten sin fallar la consulta
+OK: Esquema desechable propio eliminado y conexiones/servidor cerrados
+Medición web aislada: 8/8 grupos aprobados. Evidencia: .artifacts/web-metrics-db.json

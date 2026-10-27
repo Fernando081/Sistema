@@ -1,0 +1,14 @@
+{
+  "phase": "C02.1",
+  "startedAt": "2026-10-21T06:19:23.391Z",
+  "checks": [
+    "HTTP real401/403, DTO cerrado con pasos1–8/plazos0–720 y consultas privadas; sin inscripción por migración",
+    "Modelos conservados e idempotentes; búsqueda literal de cliente; inicio concurrente crea exactamente una tarea y rechaza duplicado activo"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "externalDeliveryEnabled": false,
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "fixtures"
+}

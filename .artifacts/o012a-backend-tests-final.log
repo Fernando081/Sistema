@@ -1,0 +1,173 @@
+
+> test
+> npm --workspace backend test -- --runInBand && npm --workspace backend run test:e2e -- --runInBand
+
+
+> backend@0.0.1 test
+> jest --runInBand
+
+PASS src/pedido/pedido.module.spec.ts
+PASS src/venta/salida-documentos.spec.ts
+[Nest] 27824  - 22/10/2026, 9:51:38 a.m.     LOG [AuthService] User registered successfully: username=nuevo-admin, role=admin, idUser=1
+[Nest] 27824  - 22/10/2026, 9:51:38 a.m.     LOG [AuthService] User registered successfully: username=nuevo-por-defecto, role=user, idUser=1
+[Nest] 27824  - 22/10/2026, 9:51:38 a.m.     LOG [AuthService] User registered successfully: username=usuario-con-log, role=user, idUser=1
+[Nest] 27824  - 22/10/2026, 9:51:39 a.m.   ERROR [AuthService] Invalid password hash: storedHash is null, undefined, empty, or not a string
+[Nest] 27824  - 22/10/2026, 9:51:39 a.m.   ERROR [AuthService] No se pudo validar autenticación contra la base de datos.
+PASS src/auth/auth.service.spec.ts
+PASS src/crm/crm.module.spec.ts
+PASS src/auth/password-recovery.service.spec.ts
+PASS src/crm/crm-solicitudes-web.controller.spec.ts
+PASS src/crm/web-lead-bridge.controller.spec.ts
+PASS src/finanzas/finanzas.module.spec.ts
+PASS src/cuentas-proveedor/cuentas-proveedor.module.spec.ts
+PASS src/cotizacion/cotizacion.integridad.spec.ts
+PASS src/venta/venta.module.spec.ts
+PASS src/cliente/cliente.service.spec.ts
+PASS src/producto/producto-list.spec.ts
+PASS src/venta/venta.integridad.spec.ts
+PASS src/pago/pago.module.spec.ts
+PASS src/cotizacion/documentos-inexistentes.spec.ts
+PASS src/pago/pago.integridad.spec.ts
+PASS src/crm/crm-secuencias.spec.ts
+PASS src/crm/crm.service.spec.ts
+PASS src/finanzas/finanzas.service.spec.ts
+PASS src/web-catalog/web-catalog.spec.ts
+PASS src/pago/pago.service.spec.ts
+PASS src/fiscal/fiscal-xml.builder.spec.ts
+PASS src/auth/permissions.guard.spec.ts
+PASS src/crm/crm-web-metrics.service.spec.ts
+PASS src/web-catalog/web-catalog-export.spec.ts
+PASS src/compra/compra.service.spec.ts
+PASS src/dashboard/dashboard.service.spec.ts
+[Nest] 27824  - 22/10/2026, 9:51:49 a.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 27824  - 22/10/2026, 9:51:49 a.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 27824  - 22/10/2026, 9:51:49 a.m.     LOG [DashboardService] Refresco de vistas completado con éxito.
+[Nest] 27824  - 22/10/2026, 9:51:49 a.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 27824  - 22/10/2026, 9:51:49 a.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+[Nest] 27824  - 22/10/2026, 9:51:49 a.m.     LOG [DashboardService] Refresco de vistas completado con éxito.
+[Nest] 27824  - 22/10/2026, 9:51:49 a.m.     LOG [DashboardService] Iniciando refresco de vistas materializadas (02:00 AM)...
+PASS src/almacen/almacen.service.spec.ts
+PASS src/pago-proveedor/pago-proveedor.service.spec.ts
+PASS src/pedido/pedido.service.spec.ts
+PASS src/crm/crm-solicitudes-web-maintenance.service.spec.ts
+PASS src/notification/notification.service.spec.ts
+PASS src/cuentas-proveedor/cuentas-proveedor.service.spec.ts
+PASS src/abastecimiento/abastecimiento.service.spec.ts
+PASS src/crm/crm-bandeja.spec.ts
+PASS src/venta/factura-query.spec.ts
+PASS src/auth/mfa-crypto.spec.ts
+PASS src/crm/crm-secuencia-reglas.spec.ts
+PASS src/cotizacion/cotizacion-version-policy.spec.ts
+PASS src/caja/caja.service.spec.ts
+PASS src/compra/compra-search.spec.ts
+PASS src/auth/auth-session.store.spec.ts
+PASS src/almacen/almacen-movil.spec.ts
+PASS src/crm/unidad-piezas.dto.spec.ts
+PASS src/common/directory-query.spec.ts
+PASS src/common/document-search.spec.ts
+PASS src/comercial/commercial-policy.spec.ts
+PASS src/compra/compra-query.spec.ts
+PASS src/crm/crm-reportes.spec.ts
+PASS src/web-catalog/web-catalog-batch.spec.ts
+PASS src/cotizacion/cotizacion-query.spec.ts
+PASS src/app.controller.spec.ts
+PASS src/crm/web-lead-bridge.config.spec.ts
+PASS src/auth/browser-auth.spec.ts
+PASS src/cuentas-proveedor/supplier-json.spec.ts
+PASS src/portal/portal-transport.spec.ts
+PASS src/finanzas/bank-statement.parser.spec.ts
+PASS src/common/scheduled-job.spec.ts
+PASS src/db-ssl.util.spec.ts
+PASS src/fiscal/fiscal.config.spec.ts
+PASS src/fiscal/providers/mock-fiscal.provider.spec.ts
+PASS src/common/database/read-snapshot.spec.ts
+PASS src/common/scheduled-job-alerts.spec.ts
+PASS src/upload/image-validation.spec.ts
+PASS src/crm/campana-consentimiento-policy.spec.ts
+PASS src/auth/audit-actor.spec.ts
+
+Test Suites: 67 passed, 67 total
+Tests:       399 passed, 399 total
+Snapshots:   0 total
+Time:        18.894 s, estimated 19 s
+Ran all test suites.
+
+> backend@0.0.1 test:e2e
+> jest --config ./test/jest-e2e.json --runInBand
+
+PASS test/auth.e2e-spec.ts
+  ● Console
+
+    console.log
+      {"type":"http_request","requestId":"a6b2df9d-b87d-4883-8346-6dee2c0ea1fb","method":"GET","path":"/api/v1/protected","statusCode":401,"durationMs":4.41,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"cc2fdb43-e331-4a57-af31-4c7e10f23d83","method":"POST","path":"/api/v1/auth/register","statusCode":401,"durationMs":9.61,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"a26163b4-27b8-477f-b27e-5a62f03b2337","method":"POST","path":"/api/v1/auth/login","statusCode":400,"durationMs":3.51,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"fed45535-5021-4259-aa05-27c52f96298a","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":55.43,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"e5e97361-48d3-4cad-a9cc-182321ff8667","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":1.31,"idUser":1}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"ce5940b7-cd3f-4d9f-a76a-a8375a8ee0f2","method":"GET","path":"/api/v1/protected/admin","statusCode":403,"durationMs":1.11,"idUser":1}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"f0255fd7-ff35-420d-a7ed-3b71bf4357a2","method":"POST","path":"/api/v1/auth/logout","statusCode":201,"durationMs":0.72,"idUser":1}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"4838ada0-8582-44ad-8bf4-5c61b03f8969","method":"GET","path":"/api/v1/protected","statusCode":401,"durationMs":0.62,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"20e5f721-8df7-43dd-b216-effa5ea2b063","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":54.8,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"330c905c-3ff2-4088-b491-6be3ae92e42e","method":"GET","path":"/api/v1/protected","statusCode":401,"durationMs":0.57,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"c1688b05-a9ab-4404-b0ff-b1f058a8a535","method":"POST","path":"/api/v1/auth/login","statusCode":401,"durationMs":0.72,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"22043067-e773-4905-95cf-3c25d31b8143","method":"POST","path":"/api/v1/auth/login","statusCode":401,"durationMs":0.92,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"451861cb-a838-472b-a58c-8d2e4fb92977","method":"POST","path":"/api/v1/auth/login","statusCode":429,"durationMs":0.83,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+PASS test/web-catalog.e2e-spec.ts
+PASS test/scheduled-jobs.e2e-spec.ts
+
+Test Suites: 3 passed, 3 total
+Tests:       19 passed, 19 total
+Snapshots:   0 total
+Time:        2.823 s, estimated 3 s
+Ran all test suites.

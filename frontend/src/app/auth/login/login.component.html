@@ -6,12 +6,21 @@
     <p class="relative text-sm text-slate-400">ERP + CRM para servicio pesado diésel</p>
   </section>
   <section class="flex items-center justify-center p-5 md:p-10">
-  <mat-card class="w-full max-w-md p-7 md:p-9 !shadow-xl erp-static-card">
-    <div class="lg:hidden flex items-center gap-3 mb-7"><div class="w-11 h-11 shrink-0 rounded-xl bg-[#0f2742] text-white grid place-items-center text-xs font-black">RTT</div><div class="leading-tight text-[var(--wrap-text-title)]"><strong class="block whitespace-nowrap text-base">Refacciones y Tractorepuestos</strong><strong class="block whitespace-nowrap text-base">Tampico</strong></div></div>
-    <p class="text-[#a76809] uppercase tracking-widest text-xs font-bold mb-2">Bienvenido</p>
+  <mat-card class="w-full max-w-md p-5 md:p-9 !shadow-xl erp-static-card">
+    <div class="lg:hidden flex items-center gap-3 mb-7"><div class="w-11 h-11 shrink-0 rounded-xl bg-[#0f2742] text-white grid place-items-center text-xs font-black">RTT</div><div class="leading-tight text-[var(--wrap-text-title)]"><strong class="block whitespace-nowrap text-sm">Refacciones y Tractorepuestos</strong><strong class="block whitespace-nowrap text-sm">Tampico</strong></div></div>
+    <p class="text-[#955b06] dark:text-amber-300 uppercase tracking-widest text-xs font-bold mb-2">Bienvenido</p>
     <h2 class="text-3xl font-extrabold mb-2 text-[var(--wrap-text-title)]">Iniciar sesión</h2>
     <p class="text-[var(--wrap-text-muted)] mb-7">Accede a tu espacio de trabajo.</p>
 
+    @if(challenge()) {
+      <form [formGroup]="codeForm" (ngSubmit)="verify()" class="flex flex-col gap-4">
+        <h3 class="text-xl font-semibold text-[var(--wrap-text-title)]">Verificación en dos pasos</h3>
+        <p class="text-[var(--wrap-text-muted)]">Escribe el código de 6 dígitos de tu aplicación autenticadora o uno de tus códigos de respaldo. Este intento vence en 5 minutos.</p>
+        <mat-form-field appearance="outline"><mat-label>Código de verificación o respaldo</mat-label><input matInput formControlName="code" autocomplete="one-time-code" maxlength="35" spellcheck="false" autocapitalize="off" /></mat-form-field>
+        <button mat-flat-button type="submit" [disabled]="isSaving() || codeForm.invalid">{{isSaving() ? 'Verificando…' : 'Verificar e ingresar'}}</button>
+        <button mat-button type="button" [disabled]="isSaving()" (click)="restart()">Volver al inicio de sesión</button>
+      </form>
+    } @else {
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
       <mat-form-field appearance="outline">
         <mat-label>Usuario</mat-label>
@@ -31,6 +40,8 @@
         </span>
       </button>
     </form>
+    }
+    <a mat-button routerLink="/login/recuperar" class="mt-4">Olvidé mi contraseña</a>
   </mat-card>
   </section>
 </main>

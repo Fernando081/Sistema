@@ -36,6 +36,7 @@ async function verify() {
     const options = { env, windowsHide: true, stdio: 'pipe', timeout: 180000, cwd: path.resolve(__dirname, '..') };
     execFileSync(findPgTool('pg_restore'), ['--exit-on-error','--no-owner','--no-acl','--dbname',name,dump],options);
     console.log('Respaldo restaurado en base aislada.');
+    process.stdout.write(execFileSync(process.execPath,[path.join(__dirname,'run-migrations.js'),'--check'],options));
     process.stdout.write(execFileSync(process.execPath,[path.join(__dirname,'run-migrations.js')],options));
     db = new DataSource({ type:'postgres', ...(env.DATABASE_URL ? {url:env.DATABASE_URL} : {host:base.host,port:base.port,username:base.user,password:base.password,database:name}), ssl:base.ssl,synchronize:false,entities:[] });
     await db.initialize();

@@ -1,0 +1,74 @@
+{
+  "status": "inspected-read-only",
+  "transactionReadOnly": "on",
+  "profiles": 0,
+  "candidates": [
+    {
+      "id": 3,
+      "code": "CD40020W50",
+      "title": "CHEVRON DELO 400 20W50",
+      "brand": "Chevron",
+      "category": "Aceite",
+      "images": [
+        {
+          "name": "images-1772840415729-130789096.png",
+          "bytes": 605618,
+          "format": "png",
+          "width": 609,
+          "height": 826
+        },
+        {
+          "name": "images-1772840480109-212789815.jpg",
+          "bytes": 149629,
+          "format": "other"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "code": "HM212049",
+      "title": "balero timken",
+      "brand": "Timken",
+      "category": "Balero",
+      "images": [
+        {
+          "name": "images-1773038443840-818716693.jpeg",
+          "bytes": 7297,
+          "format": "other"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "code": "4300123",
+      "title": "engrane fuller",
+      "brand": "eaton",
+      "category": "Engrane",
+      "images": []
+    },
+    {
+      "id": 5,
+      "code": "8pk123",
+      "title": "banda gates",
+      "brand": "Gates",
+      "category": "Bandas",
+      "images": []
+    },
+    {
+      "id": 6,
+      "code": "MX20W50",
+      "title": "MEXLUB 20W50 CUBETA",
+      "brand": "MEXLUB",
+      "category": "Aceite",
+      "images": []
+    },
+    {
+      "id": 10,
+      "code": "SKF212049",
+      "title": "BALERO SKF",
+      "brand": "SKF",
+      "category": "Bandas",
+      "images": []
+    }
+  ]
+}

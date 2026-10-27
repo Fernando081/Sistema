@@ -1,0 +1,140 @@
+{
+  "phase": "WEB05.2a",
+  "source": "isolated-test-fixtures",
+  "generatedAt": "2026-10-19T19:39:46.201Z",
+  "node": "24.19.0",
+  "checks": [
+    {
+      "name": "Cohorte inclusiva en zona local, estados, 33.33%, diarios, marcas distintas y solicitudes únicas",
+      "passed": true
+    },
+    {
+      "name": "Piezas vigentes/snapshot tras vencimiento y purga; contactos e identificadores privados omitidos",
+      "passed": true
+    },
+    {
+      "name": "Periodo vacío conserva días cero y conversión indefinida",
+      "passed": true
+    },
+    {
+      "name": "Fechas imposibles, orden, exceso de periodo e inyección rechazados",
+      "passed": true
+    },
+    {
+      "name": "Login PostgreSQL/bcrypt/JWT y guards reales: anónimo401, USER403, firma/revocación401, DTO400 y ADMIN200 no-store",
+      "passed": true
+    },
+    {
+      "name": "Lecturas REPEATABLE READ READ ONLY y plazo SQL5s comprobados; solicitudes/oportunidades/snapshots sin cambios",
+      "passed": true
+    },
+    {
+      "name": "Cantidades fuera de contrato y listas antiguas malformadas se omiten sin fallar la consulta",
+      "passed": true
+    },
+    {
+      "name": "Esquema desechable propio eliminado y conexiones/servidor cerrados",
+      "passed": true
+    }
+  ],
+  "readonlyChecks": 5,
+  "sourceUnchanged": true,
+  "cleaned": true,
+  "report": {
+    "generatedAt": "2026-10-19T19:39:42.714Z",
+    "finance": {
+      "currencies": [],
+      "coverage": {
+        "documentosVinculados": 0,
+        "documentosFinancieros": 0,
+        "globalesExcluidas": 0,
+        "monedaDesconocida": 0,
+        "importesInconsistentes": 0,
+        "notasCanceladasExcluidas": 0,
+        "repsCanceladosExcluidos": 0,
+        "pagosRepCompatibilidadOmitidos": 0
+      }
+    },
+    "commercial": {
+      "cotizacionesVinculadas": 0,
+      "solicitudesConCotizacion": 0,
+      "solicitudesConVenta": 0,
+      "documentosVentaVigentes": 0,
+      "documentosCancelados": 0,
+      "documentosInconsistentes": 0
+    },
+    "totals": {
+      "recibidas": 6,
+      "pendientes": 2,
+      "revisadasSinOportunidad": 1,
+      "descartadas": 1,
+      "oportunidades": 2,
+      "abiertasCrm": 0,
+      "ganadasCrm": 1,
+      "perdidasCrm": 1,
+      "vigentes": 3,
+      "vencidas": 2,
+      "purgadas": 1,
+      "piezasVigentes": 3,
+      "piezasSnapshot": 2,
+      "sinPiezas": 1
+    },
+    "daily": [
+      {
+        "fecha": "2026-10-01",
+        "recibidas": 2,
+        "oportunidades": 0
+      },
+      {
+        "fecha": "2026-10-02",
+        "recibidas": 1,
+        "oportunidades": 1
+      },
+      {
+        "fecha": "2026-10-03",
+        "recibidas": 3,
+        "oportunidades": 1
+      }
+    ],
+    "references": [
+      {
+        "code": "OEM-A",
+        "brand": "Timken",
+        "solicitudes": 3,
+        "cantidad": 11
+      },
+      {
+        "code": "OEM-B",
+        "brand": "SKF",
+        "solicitudes": 2,
+        "cantidad": 5
+      },
+      {
+        "code": "OEM-A",
+        "brand": "Other",
+        "solicitudes": 1,
+        "cantidad": 3
+      }
+    ],
+    "source": "crm-local",
+    "period": {
+      "desde": "2026-10-01",
+      "hasta": "2026-10-03",
+      "timezone": "America/Mexico_City",
+      "days": 3
+    },
+    "conversionPct": 33.33,
+    "unmeasured": [
+      "vistas",
+      "busquedas",
+      "clicsCotizacion",
+      "clicsWhatsApp",
+      "busquedasSinResultado",
+      "ventasSinVinculo",
+      "flujoIntegral"
+    ]
+  },
+  "limits": [
+    "Esquema mínimo; no AppModule completo, cron, carga masiva o métricas comerciales reales."
+  ]
+}

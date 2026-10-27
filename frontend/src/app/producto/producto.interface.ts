@@ -12,14 +12,14 @@ export interface ProductoAlternativa {
 export interface Producto {
   idProducto: number;
   codigo: string;
-  idUnidad: number;
-  idObjetoImpuesto: number;
+  idUnidad: number | null;
+  idObjetoImpuesto: number | null;
   descripcion: string;
   precioUnitario: number;
-  idCategoria: number;
+  idCategoria: number | null;
   ubicacion: string;
-  idClaveProdOServ: number;
-  idClaveUnidad: number;
+  idClaveProdOServ: number | null;
+  idClaveUnidad: number | null;
   marca: string;
   
   // --- CAMPOS VIRTUALES (JOINS) ---

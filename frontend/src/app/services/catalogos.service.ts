@@ -1,3 +1,4 @@
+import { ClaveProdServRow, ClaveUnidadRow, EstadoRow, FormaPagoRow, MetodoPagoRow, MunicipioRow, RegimenFiscalRow, UsoCfdiRow } from './catalogos-api.types';
 // frontend/src/app/services/catalogos.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -34,50 +35,50 @@ export class CatalogosService {
   // --- 2. MÉTODOS PARA PROVEEDORES/CLIENTES (Los que se borraron) ---
 
   getRegimenesFiscales(): Observable<RegimenFiscal[]> {
-    return this.http.get<any[]>(`${API_URL}/regimen-fiscal`).pipe(
+    return this.http.get<RegimenFiscalRow[]>(`${API_URL}/regimen-fiscal`).pipe(
       map(data => data.map(item => ({
         idRegimenFiscal: item.IdRegimenFiscal,
-        clave: item.Clave,
+        clave: item.Clave ?? '',
         nombre: item.Nombre
       })))
     );
   }
 
   getFormasPago(): Observable<FormaPago[]> {
-    return this.http.get<any[]>(`${API_URL}/forma-pago`).pipe(
+    return this.http.get<FormaPagoRow[]>(`${API_URL}/forma-pago`).pipe(
       map(data => data.map(item => ({
         idFormaPago: item.IdFormaPago,
-        clave: item.Clave,
+        clave: item.Clave ?? '',
         nombre: item.Nombre
       })))
     );
   }
 
   getMetodosPago(): Observable<MetodoPago[]> {
-    return this.http.get<any[]>(`${API_URL}/metodo-pago`).pipe(
+    return this.http.get<MetodoPagoRow[]>(`${API_URL}/metodo-pago`).pipe(
       map(data => data.map(item => ({
         idMetodoDePago: item.IdMetodoDePago,
-        clave: item.Clave,
+        clave: item.Clave ?? '',
         nombre: item.Nombre
       })))
     );
   }
 
   getUsosCFDI(): Observable<UsoCFDI[]> {
-    return this.http.get<any[]>(`${API_URL}/uso-cfdi`).pipe(
+    return this.http.get<UsoCfdiRow[]>(`${API_URL}/uso-cfdi`).pipe(
       map(data => data.map(item => ({
         idUsoCFDI: item.IdUsoCFDI,
-        clave: item.Clave,
+        clave: item.Clave ?? '',
         nombre: item.Nombre
       })))
     );
   }
 
   getEstados(): Observable<Estado[]> {
-    return this.http.get<any[]>(`${API_URL}/estado`).pipe(
+    return this.http.get<EstadoRow[]>(`${API_URL}/estado`).pipe(
       map(data => data.map(item => ({
         idEstado: item.IdEstado,
-        clave: item.Clave,
+        clave: item.Clave ?? '',
         nombre: item.Nombre
       })))
     );
@@ -86,7 +87,7 @@ export class CatalogosService {
   // --- 3. MÉTODOS PARA PRODUCTOS (Los nuevos) ---
 
   getUnidades(): Observable<Unidad[]> {
-    return this.http.get<any[]>(`${API_URL}/unidad`).pipe(
+    return this.http.get<Unidad[]>(`${API_URL}/unidad`).pipe(
       map(data => data.map(item => ({
         // CORRECCIÓN: TypeORM devuelve 'idUnidad' (minúscula), no 'IdUnidad'
         idUnidad: item.idUnidad, 
@@ -99,7 +100,7 @@ export class CatalogosService {
   }
 
   getObjetosImpuesto(): Observable<ObjetoImpuesto[]> {
-    return this.http.get<any[]>(`${API_URL}/objeto-impuesto`).pipe(
+    return this.http.get<ObjetoImpuesto[]>(`${API_URL}/objeto-impuesto`).pipe(
       map(data => data.map(item => ({
         // CORRECCIÓN: Todo en minúsculas (camelCase)
         idObjetoImpuesto: item.idObjetoImpuesto,
@@ -114,10 +115,10 @@ export class CatalogosService {
   buscarClaveProdServ(termino: string): Observable<ClaveProdServ[]> {
     if (!termino || termino.trim().length < 3) return of([]);
     
-    return this.http.get<any[]>(`${API_URL}/clave-prod-serv/buscar`, { params: { q: termino } }).pipe(
+    return this.http.get<ClaveProdServRow[]>(`${API_URL}/clave-prod-serv/buscar`, { params: { q: termino } }).pipe(
         map(data => data.map(item => ({
             idClaveProdOServ: item.IdClaveProdOServ,
-            clave: item.Clave,
+            clave: item.Clave ?? '',
             descripcion: item.Descripcion
         })))
     );
@@ -126,10 +127,10 @@ export class CatalogosService {
   buscarClaveUnidad(termino: string): Observable<ClaveUnidad[]> {
     if (!termino || termino.trim().length < 2) return of([]);
 
-    return this.http.get<any[]>(`${API_URL}/clave-unidad/buscar`, { params: { q: termino } }).pipe(
+    return this.http.get<ClaveUnidadRow[]>(`${API_URL}/clave-unidad/buscar`, { params: { q: termino } }).pipe(
         map(data => data.map(item => ({
             idClaveUnidad: item.IdClaveUnidad,
-            clave: item.Clave,
+            clave: item.Clave ?? '',
             descripcion: item.Descripcion
         })))
     );
@@ -137,12 +138,12 @@ export class CatalogosService {
 
   // NUEVO: Obtener municipios filtrados por la clave del estado (ej. 'TAM')
   getMunicipiosPorEstado(claveEstado: string): Observable<Municipio[]> {
-    return this.http.get<any[]>(`${API_URL}/municipio/por-estado/${claveEstado}`).pipe(
+    return this.http.get<MunicipioRow[]>(`${API_URL}/municipio/por-estado/${claveEstado}`).pipe(
       map(data => data.map(item => ({
         idMunicipio: item.IdMunicipio,
-        clave: item.Clave,
+        clave: item.Clave ?? '',
         nombre: item.Nombre,
-        claveEstado: item.ClaveEstado
+        claveEstado: item.ClaveEstado ?? claveEstado
       })))
     );
   }

@@ -1,0 +1,32 @@
+
+> test:web-cash-db
+> npm --workspace backend run build && node backend/verify-web-financial.js --cash
+
+
+> backend@0.0.1 build
+> nest build
+
+OK: Monedas separadas; cliente/rutas directas y pedido sin duplicar; global/cancelados/sin vínculo fuera del importe
+OK: Notas con impuestos y devoluciones en tres fracciones conservan centavos; venta neta excluye impuestos
+OK: REP canónico una vez pese a dos copias; cancelación local/fiscal excluida; Pagada sin pago no inventa cobro
+OK: Totales mayores que Number.MAX_SAFE_INTEGER viajan como cadenas decimales con centavos exactos
+OK: Código de tres letras no reconocido y XXX quedan sin desglose; no se presume MXN ni cambio de moneda
+OK: Nota activa con moneda/cliente/estado incongruente deja neto desconocido, no cero ni subtotal parcial
+OK: Devolución sin conciliación de encabezado/detalle y mezcla histórica nota/devolución no fabrican neto
+OK: REP/compatibilidad incoherentes, detalle duplicado y cancelación cambian cobertura/cobros sin inferir por saldo
+OK: Saldos NaN y encabezados inconsistentes quedan desconocidos; un indicador no rellena otro
+OK: Saldo a favor generado separado: no reduce cobros ni se presenta como saldo disponible del cliente
+OK: Nota y devolución usan gastos explícitos una vez; REP canónico y dos espejos no duplican cobros; centavos 3.87/3.86/3.87 exactos
+OK: Devolución histórica en efectivo sin vínculo deja total desconocido pese a existir un gasto del mismo importe
+OK: Gasto anulado, NaN, negativo, importe, método o categoría incongruentes no fabrican salida de efectivo
+OK: Gasto reutilizado por otro documento, incluso cancelado y fuera de la cohorte, queda no conciliado
+OK: Cancelación local o fiscal de la nota excluye su reembolso; no descuenta el gasto huérfano por descripción
+OK: Método histórico desconocido, saldo a favor con gasto o detalle de devolución inválido conservan desconocidos explícitos
+OK: Gastos sin moneda propia sólo comparables MXN/factor1; USD conserva cobro bruto, sin conversión supuesta
+OK: Pagada sin historial y espejo REP incongruente no prueban cobro neto; gastos comprobados mantienen su indicador independiente
+OK: Documento y reembolso cero comprobados no exigen gasto ficticio ni se confunden con información desconocida
+OK: Cobro neto superior a Number.MAX_SAFE_INTEGER conserva todos sus centavos como cadena decimal
+OK: Un snapshot READ ONLY/REPEATABLE READ/plazo5s; tablas intactas, contactos/IDs omitidos y periodo vacío sin monedas inventadas
+OK: Login bcrypt/PostgreSQL y JWT/guards reales: ADMIN200/no-store, anónimo401, USER403, campos extra400 y revocación401
+OK: Sólo el esquema propio eliminado; servidor y conexiones cerrados
+Medición financiera aislada: 23/23 grupos aprobados. Evidencia: .artifacts/web-cash-db.json

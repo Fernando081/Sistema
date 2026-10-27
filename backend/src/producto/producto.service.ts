@@ -6,7 +6,8 @@ import { DataSource } from 'typeorm';
 import { Producto } from './producto.entity';
 import { CreateAplicacionDto, CreateNumeroParteDto, CreateProductoDto, UpdateProductoDto, SmartRestockItem, PrediccionDemandaItem, CreateCotizacionProvDto } from './producto.dto';
 import { APP_CONSTANTS } from '../common/constants/app.constants';
-import { queryRows } from '../common/database/typed-query';
+import { csvDocument } from '../common/csv';
+import { queryRows, readSnapshot } from '../common/database/typed-query';
 
 export interface ProductoDbRow {
   IdProducto: number;
@@ -41,15 +42,80 @@ interface CotizacionProveedorIdRow { id_cotizacion_prov: number; }
 export interface NumeroParteIdRow { idNumero: number; }
 export interface AplicacionIdRow { idAplicacion: number; }
 
+export const PRODUCT_SOURCE = `(SELECT p."IdProducto",p."Codigo",p."IdUnidad",p."IdObjetoImpuesto",p."Descripcion",
+  p."PrecioUnitario",p."IdCategoria",p."Ubicacion",p."IdClaveProdOServ",p."IdClaveUnidad",p."Marca",
+  p."ObjetoImpuesto",p."TasaIVA",p."AplicaRetencionISR",p."AplicaRetencionIVA",p."Existencia",
+  c."Descripcion" AS "CategoriaNombre",cps."Clave" AS "ClaveProdServ",cps."Descripcion"::text AS "DescripcionProdServ",
+  cu."Clave" AS "ClaveUnidadSat",cu."Descripcion"::text AS "DescripcionUnidadSat",
+  COALESCE((SELECT jsonb_agg(pe."IdProductoEquivalente") FROM producto_equivalente pe
+    WHERE pe."IdProducto"=p."IdProducto"),'[]'::jsonb) AS "EquivalentesJSON",p."imagenes"
+  FROM producto p LEFT JOIN categoria c ON p."IdCategoria"=c."IdCategoria"
+  LEFT JOIN claveproductooservicio cps ON p."IdClaveProdOServ"=cps."IdClaveProdOServ"
+  LEFT JOIN claveunidad cu ON p."IdClaveUnidad"=cu."IdClaveUnidad")`;
+
+export const PRODUCT_LITERAL_FROM = `
+      FROM ${PRODUCT_SOURCE} fp
+      WHERE $1 = ''
+         OR COALESCE(fp."Codigo", '') ILIKE '%' || $2 || '%'
+         OR COALESCE(fp."Descripcion", '') ILIKE '%' || $2 || '%'
+         OR COALESCE(fp."Marca", '') ILIKE '%' || $2 || '%'
+         OR COALESCE(fp."CategoriaNombre", '') ILIKE '%' || $2 || '%'
+         OR EXISTS (
+           SELECT 1 FROM producto_numero_parte np
+            WHERE np.id_producto = fp."IdProducto"
+              AND regexp_replace($1, '[^[:alnum:]]', '', 'g') <> ''
+              AND np.numero_normalizado LIKE '%' || lower(regexp_replace($1, '[^[:alnum:]]', '', 'g')) || '%'
+         )
+         OR EXISTS (
+           SELECT 1 FROM producto_aplicacion pa
+            WHERE pa.id_producto = fp."IdProducto"
+              AND concat_ws(' ', pa.fabricante_equipo, pa.modelo, pa.motor, pa.restricciones) ILIKE '%' || $2 || '%'
+         )`;
+
+export const PRODUCT_MATCH_SOURCE = `SELECT p."IdProducto" AS id FROM producto p
+ WHERE COALESCE(p."Codigo",'') ILIKE '%'||$2||'%' OR COALESCE(p."Descripcion",'') ILIKE '%'||$2||'%' OR COALESCE(p."Marca",'') ILIKE '%'||$2||'%'
+ UNION SELECT p."IdProducto" AS id FROM producto p JOIN categoria c ON p."IdCategoria"=c."IdCategoria" WHERE COALESCE(c."Descripcion",'') ILIKE '%'||$2||'%'
+ UNION SELECT np.id_producto AS id FROM producto_numero_parte np JOIN producto p ON p."IdProducto"=np.id_producto WHERE regexp_replace($1, '[^[:alnum:]]', '', 'g') <> '' AND np.numero_normalizado LIKE '%'||lower(regexp_replace($1,'[^[:alnum:]]','','g'))||'%'
+ UNION SELECT pa.id_producto AS id FROM producto_aplicacion pa JOIN producto p ON p."IdProducto"=pa.id_producto
+ WHERE public.product_application_text(ARRAY[pa.fabricante_equipo::text,pa.modelo::text,pa.motor::text,pa.restricciones::text]) ILIKE '%'||$2||'%'`;
+export const PRODUCT_INDEXED_FROM = `FROM ${PRODUCT_SOURCE} fp JOIN (${PRODUCT_MATCH_SOURCE}) hits ON hits.id=fp."IdProducto"`;
+
 @Injectable()
 export class ProductoService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
   async findAll(page: number = 1, limit: number = 10, sort?: string, order?: string, term: string = ''): Promise<ProductoPage> {
-    const safePage = Math.max(1, page);
-    const safeLimit = Math.min(Math.max(1, limit), 100);
-    const offset = (safePage - 1) * safeLimit;
+    return readSnapshot(this.dataSource, async source => {
+      const safePage = Math.max(1, page);
+      const safeLimit = Math.min(Math.max(1, limit), 100);
+      const offset = (safePage - 1) * safeLimit;
 
+      const { filterSql, orderClause, parameters } = this.listQuery(sort, order, term);
+      const totalResult = await queryRows<CountRow>(source, `SELECT COUNT(*) as count ${filterSql}`, parameters);
+      const dataResult = await queryRows<ProductoDbRow>(source,
+          `SELECT fp.*, COALESCE(res.cantidad,0) AS "Reservada",
+            GREATEST(fp."Existencia"-COALESCE(res.cantidad,0),0) AS "Disponible"
+            FROM (SELECT fp.* ${filterSql}${orderClause} LIMIT $3 OFFSET $4) fp
+            LEFT JOIN LATERAL (
+              SELECT sum(r.cantidad-r.cantidad_liberada) cantidad FROM reserva_inventario r
+              WHERE r.id_producto=fp."IdProducto" AND r.estado IN ('Activa','Surtida')
+            ) res ON true ${orderClause}`,
+          [...parameters, safeLimit, offset],
+        );
+
+      const total = Number(totalResult[0].count);
+      const totalPages = Math.ceil(total / safeLimit);
+
+      return {
+        data: dataResult,
+        total,
+        page: safePage,
+        totalPages,
+      };
+    });
+  }
+
+  private listQuery(sort: string | undefined, order: string | undefined, term: string) {
     const sortMap: Record<string, string> = {
       codigo: '"Codigo"',
       descripcion: '"Descripcion"',
@@ -61,49 +127,21 @@ export class ProductoService {
     };
 
     let orderClause = ' ORDER BY "IdProducto" DESC';
-    if (sort && sortMap[sort]) {
+    if (sort && Object.hasOwn(sortMap, sort)) {
       const direction = order?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
       orderClause = ` ORDER BY ${sortMap[sort]} ${direction}, "IdProducto" DESC`;
     }
 
-    const filterSql = `
-      FROM fn_get_productos(NULL, NULL, '') fp
-      WHERE $1 = ''
-         OR COALESCE(fp."Codigo", '') ILIKE '%' || $1 || '%'
-         OR COALESCE(fp."Descripcion", '') ILIKE '%' || $1 || '%'
-         OR COALESCE(fp."Marca", '') ILIKE '%' || $1 || '%'
-         OR EXISTS (
-           SELECT 1 FROM producto_numero_parte np
-            WHERE np.id_producto = fp."IdProducto"
-              AND np.numero_normalizado LIKE '%' || lower(regexp_replace($1, '[^[:alnum:]]', '', 'g')) || '%'
-         )
-         OR EXISTS (
-           SELECT 1 FROM producto_aplicacion pa
-            WHERE pa.id_producto = fp."IdProducto"
-              AND concat_ws(' ', pa.fabricante_equipo, pa.modelo, pa.motor, pa.restricciones) ILIKE '%' || $1 || '%'
-         )`;
-    const [totalResult, dataResult] = await Promise.all([
-      queryRows<CountRow>(this.dataSource, `SELECT COUNT(*) as count ${filterSql}`, [term.trim()]),
-      queryRows<ProductoDbRow>(this.dataSource,
-        `SELECT fp.*,
-          COALESCE((SELECT sum(r.cantidad-r.cantidad_liberada) FROM reserva_inventario r
-            WHERE r.id_producto=fp."IdProducto" AND r.estado IN ('Activa','Surtida')),0) AS "Reservada",
-          GREATEST(fp."Existencia"-COALESCE((SELECT sum(r.cantidad-r.cantidad_liberada) FROM reserva_inventario r
-            WHERE r.id_producto=fp."IdProducto" AND r.estado IN ('Activa','Surtida')),0),0) AS "Disponible"
-          ${filterSql}${orderClause} LIMIT $2 OFFSET $3`,
-        [term.trim(), safeLimit, offset],
-      ),
-    ]);
+    const filterSql = /[\p{L}\p{N}]{3}/u.test(term.trim()) ? PRODUCT_INDEXED_FROM : PRODUCT_LITERAL_FROM;
+    const escapedTerm = term.trim().replace(/[\\%_]/g, value => '\\' + value);
+    return { filterSql, orderClause, parameters: [term.trim(), escapedTerm] };
+  }
 
-    const total = Number(totalResult[0].count);
-    const totalPages = Math.ceil(total / safeLimit);
-
-    return {
-      data: dataResult,
-      total,
-      page: safePage,
-      totalPages,
-    };
+  async exportCsv(sort?: string, order?: string, term = ''): Promise<string> {
+    const { filterSql, orderClause, parameters } = this.listQuery(sort, order, term);
+    const rows = await queryRows<ProductoDbRow>(this.dataSource, `SELECT fp.* ${filterSql}${orderClause} LIMIT 5001`, parameters);
+    if (rows.length > 5000) throw new BadRequestException('La exportación supera 5000 registros. Reduce la búsqueda y vuelve a exportar.');
+    return csvDocument(['IdProducto', 'Codigo', 'Descripcion', 'CategoriaNombre', 'Marca', 'Ubicacion', 'PrecioUnitario', 'Existencia'], rows);
   }
 
   async findOne(idProducto: number): Promise<ProductoDbRow> {

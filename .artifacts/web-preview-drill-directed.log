@@ -1,0 +1,32 @@
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ respaldo restaura bytes y HTTP, rechaza manipulación/traversal y no sobrescribe (615.0032ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ simulacro usa el respaldo guardado, detecta pérdida en copia y conserva fuente/bytes (1147.9261ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ un respaldo anterior no se aplica cuando la vista previa actual ya cambió (377.1042ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ publicación activa o guarda/evidencia inválida exige revisión y se conserva (394.9253ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ hash incorrecto, traversal y contenido manipulado fallan antes del simulacro (325.8704ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ nombres de ruta que cambiarían el origen HTTP se rechazan antes de abrir el servidor (420.5261ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ no inspecciona como instalación una unión de directorio a otra ubicación (318.1059ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ lector compartido limita tamaño y rechaza archivos no regulares (406.6356ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ campos no verificados del archivo no filtran contenido privado al reporte (996.8445ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ cambio concurrente en fuente o respaldo impide confirmar éxito y no se revierte (1951.3269ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ HTTP incorrecto nunca produce éxito ni conserva cuerpos privados en el reporte (964.8076ms)
+✔ respaldo guardado rechaza traversal, hash distinto y formato inválido (16.8668ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7467.8638

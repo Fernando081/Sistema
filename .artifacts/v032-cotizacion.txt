@@ -1,0 +1,13 @@
+Refacciones y Tractorepuestos Tampico
+Cotización 24 · revisión 1
+COPIA DOCUMENTAL PARA CLIENTE - NO ES CFDI
+Cliente: Portal 0
+Fecha: 2026-10-21T00:33:35.587270Z
+Vencimiento registrado: 2026-11-05T00:33:35.587270Z
+Descripción Cantidad Precio MXN Importe MXN
+Propuesta portal 0 1.000000 100.000000 100.00
+Subtotal: 100.00 · Impuestos: 0.00 · Retenciones: 0.00 · Total: 100.00 MXN
+Propuesta versionada conservada. La consulta/descarga no acepta ni reserva mercancía. Huella del snapshot:
+14e8bc01c6a99fdcb814d2e93d86667e066fe1851c3511937a8282e0ee69355a
+Copia de datos conservados en el ERP. No acredita pago, identidad, firma avanzada ni aceptación comercial. No incluye anexos
+privados del expediente.

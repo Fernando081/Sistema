@@ -13,3 +13,8 @@ uploads/
 *.tsbuildinfo
 frontend/playwright-report/
 frontend/test-results/
+
+public-web/dist/
+public-web/test-results/
+public-web/playwright-report/
+public-web/capture-profile.local.json

@@ -22,7 +22,14 @@ test('crea, reserva, surte, entrega y factura un pedido desde la interfaz', asyn
   await expect(page.getByText(/Principal · GENERAL/)).toBeVisible();
 
   await page.getByRole('button', { name: 'Registrar entrega' }).click();
-  await page.locator('mat-dialog-container').filter({ hasText: 'El pedido quedará marcado como entregado' }).getByRole('button', { name: 'Registrar entrega', exact: true }).click();
+  const delivery=page.getByRole('dialog').last();
+  await delivery.getByLabel('Nombre de quien recibe',{exact:true}).fill('Encargado de patio');
+  await delivery.getByLabel('Si no hay firma ni foto, explica el motivo',{exact:true}).fill('Recepción de prueba en mostrador sin cámara');
+  await delivery.getByRole('checkbox').check();
+  await delivery.getByRole('button',{name:'Registrar entrega y conservar evidencias',exact:true}).click();
+  await expect(delivery.getByRole('heading',{name:'Entrega registrada',exact:true})).toBeVisible();
+  await expect(delivery.getByText('Encargado de patio',{exact:true})).toBeVisible();
+  await delivery.getByRole('button',{name:'Cerrar',exact:true}).click();
   await expect(page.getByText('Entregado', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Facturar pedido' }).click();
   await page.locator('mat-dialog-container').filter({ hasText: 'Se generará la venta con los datos fiscales' }).getByRole('button', { name: 'Generar factura' }).click();

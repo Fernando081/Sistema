@@ -1,0 +1,33 @@
+
+> frontend@0.0.0 test:e2e
+> playwright test tests/crm-commercial.spec.ts tests/web-metrics.spec.ts tests/web-inbox.spec.ts
+
+[WebServer] (node:20532) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:20532) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 18 tests using 1 worker
+
+(node:32496) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium] › tests\crm-commercial.spec.ts:6:7 › Origen comercial: cliente, confirmación, reintento y retiro light (11.7s)
+  ok  2 [chromium] › tests\crm-commercial.spec.ts:89:7 › Origen comercial: error, búsqueda vacía y recuperación light (2.3s)
+  ok  3 [chromium] › tests\crm-commercial.spec.ts:6:7 › Origen comercial: cliente, confirmación, reintento y retiro dark (6.6s)
+  ok  4 [chromium] › tests\crm-commercial.spec.ts:89:7 › Origen comercial: error, búsqueda vacía y recuperación dark (2.2s)
+  ok  5 [chromium] › tests\web-inbox.spec.ts:5:7 › Puente privado: error y transición sin secretos light (2.2s)
+  ok  6 [chromium] › tests\web-inbox.spec.ts:5:7 › Puente privado: error y transición sin secretos dark (2.2s)
+  ok  7 [chromium] › tests\web-inbox.spec.ts:34:7 › Resolución conservadora: decisión incierta, reintento e historial light (2.6s)
+  ok  8 [chromium] › tests\web-inbox.spec.ts:34:7 › Resolución conservadora: decisión incierta, reintento e historial dark (2.5s)
+  ok  9 [chromium] › tests\web-inbox.spec.ts:111:5 › Ficha muestra piezas originales de consulta web (988ms)
+  ok 10 [chromium] › tests\web-inbox.spec.ts:129:7 › Bandeja web: error, revisión y vacío light (2.0s)
+  ok 11 [chromium] › tests\web-inbox.spec.ts:129:7 › Bandeja web: error, revisión y vacío dark (2.0s)
+  ok 12 [chromium] › tests\web-inbox.spec.ts:161:5 › Conversión conserva vínculo y retira acciones de modificación (1.3s)
+  ok 13 [chromium] › tests\web-inbox.spec.ts:194:7 › Comprobación privada de recepción: estados y errores light (2.4s)
+  ok 14 [chromium] › tests\web-inbox.spec.ts:194:7 › Comprobación privada de recepción: estados y errores dark (2.6s)
+  ok 15 [chromium] › tests\web-metrics.spec.ts:26:7 › Medición web: periodo, cohortes, referencias y accesibilidad light (2.4s)
+  ok 16 [chromium] › tests\web-metrics.spec.ts:70:7 › Medición web: validación, fallo, carga bloqueada y vacío light (2.4s)
+  ok 17 [chromium] › tests\web-metrics.spec.ts:26:7 › Medición web: periodo, cohortes, referencias y accesibilidad dark (2.3s)
+  ok 18 [chromium] › tests\web-metrics.spec.ts:70:7 › Medición web: validación, fallo, carga bloqueada y vacío dark (2.2s)
+
+  18 passed (1.8m)

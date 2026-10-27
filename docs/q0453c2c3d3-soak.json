@@ -1,0 +1,520 @@
+{
+  "generatedAt": "2026-10-02T20:16:51.102Z",
+  "postgresSettings": {
+    "version": "18.2",
+    "autovacuum": "on"
+  },
+  "profile": {
+    "name": "soak",
+    "readers": 8,
+    "readerPauseMs": 2000,
+    "businessPauseMs": 3000,
+    "financialPauseMs": 30000,
+    "sqlPauseMs": 60,
+    "duration": 600
+  },
+  "phase": "Q04.5.3c2c3d3",
+  "financialHttpResults": [
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    }
+  ],
+  "transactionAgeScope": {
+    "client": "client backend: aplicación, escritor SQL y conexiones de medición; no exclusivamente HTTP",
+    "auxiliary": "backend_type distinto de client backend; incluye autovacuum",
+    "autovacuum": "autovacuum worker; subconjunto de auxiliares",
+    "peaks": "Máximos independientes muestreados cada 500 ms; no se suman ni equivalen a duración de solicitudes"
+  },
+  "transactionAgeContract": {
+    "mixedBackendTypes": true,
+    "otherDatabaseExcluded": true,
+    "emptyGroupsZero": true
+  },
+  "node": "24.19.0",
+  "fixturesPerDomain": 20000,
+  "poolMax": 10,
+  "secondsPerGroup": 600,
+  "relational": true,
+  "separateGenerator": true,
+  "schedulerJobs": 2,
+  "preflight": {
+    "throttler429": true,
+    "notificationJobExecuted": true,
+    "unauthorized401": true,
+    "invalidLimit400": true,
+    "invalidDate400": true,
+    "csvSixDomains": true
+  },
+  "groups": [
+    {
+      "business": {
+        "transfers": 390,
+        "assembled": 195,
+        "disassembled": 195,
+        "payments": 195,
+        "replays": 59
+      },
+      "financialCycles": 19,
+      "businessIntegrity": {
+        "stockPhysicalAligned": true,
+        "stockRestored": true,
+        "paymentBalanceCashAligned": true
+      },
+      "postgresProcesses": {
+        "samples": 112,
+        "availableSamples": 112,
+        "unavailableSamples": 0,
+        "workingSetSumPeakBytes": 701464576,
+        "cpuMillisecondsDelta": 67765.625,
+        "readTransferBytesDelta": 2834432,
+        "writeTransferBytesDelta": 351846400,
+        "maxDeadTuples": 22755,
+        "maxLiveTuples": 828175,
+        "autovacuumCountPeak": 28
+      },
+      "walBytesClusterWide": 136610768,
+      "readers": 8,
+      "generatorResources": {
+        "rssPeak": 70545408,
+        "heapPeak": 17922432,
+        "cpuMicroseconds": {
+          "user": 5578000,
+          "system": 1625000
+        },
+        "eventLoopP95Ms": 34.865151
+      },
+      "readWindows": [
+        {
+          "minute": 0,
+          "requests": 232,
+          "p95": 79.88799999999901
+        },
+        {
+          "minute": 1,
+          "requests": 232,
+          "p95": 66.53179999999702
+        },
+        {
+          "minute": 2,
+          "requests": 240,
+          "p95": 73.32099999999627
+        },
+        {
+          "minute": 3,
+          "requests": 232,
+          "p95": 82.93660000001546
+        },
+        {
+          "minute": 4,
+          "requests": 239,
+          "p95": 74.96549999999115
+        },
+        {
+          "minute": 5,
+          "requests": 233,
+          "p95": 60.39239999995334
+        },
+        {
+          "minute": 6,
+          "requests": 238,
+          "p95": 56.25219999998808
+        },
+        {
+          "minute": 7,
+          "requests": 234,
+          "p95": 59.77169999998296
+        },
+        {
+          "minute": 8,
+          "requests": 239,
+          "p95": 63.87880000000587
+        },
+        {
+          "minute": 9,
+          "requests": 233,
+          "p95": 58.695300000021234
+        },
+        {
+          "minute": 10,
+          "requests": 8,
+          "p95": 80.2398000000976
+        }
+      ],
+      "postgres": {
+        "peak": {
+          "samples": 1182,
+          "connections": 11,
+          "active": 4,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 17.102733,
+          "clientConnections": 10,
+          "auxiliaryConnections": 1,
+          "maxClientTransactionAgeSeconds": 0.322089,
+          "maxAuxiliaryTransactionAgeSeconds": 17.102738,
+          "maxAutovacuumTransactionAgeSeconds": 17.102739
+        },
+        "countersDelta": {
+          "xact_commit": 18339,
+          "xact_rollback": 76,
+          "blks_read": 45916,
+          "blks_hit": 7396676,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 2360,
+      "writerCommits": 8230,
+      "elapsedMs": 604178.0678,
+      "rps": 3.9061331845319924,
+      "p50": 25.258399999991525,
+      "p95": 68.25620000000345,
+      "max": 257.1863000000012,
+      "rssPeak": 220725248,
+      "heapPeak": 107933824,
+      "poolConnectionsPeak": 8,
+      "poolWaitingPeak": 0,
+      "cpuMicroseconds": {
+        "user": 25015000,
+        "system": 11766000
+      },
+      "eventLoopP95Ms": 34.373631,
+      "eventLoopMaxMs": 212.729855,
+      "idleTransactions": 0,
+      "cases": {
+        "cliente:": 97,
+        "cliente:Q04TARGET": 98,
+        "proveedor:": 101,
+        "cliente:Q04HTTPONLY": 100,
+        "proveedor:Q04TARGET": 102,
+        "cliente:%": 99,
+        "proveedor:Q04HTTPONLY": 103,
+        "proveedor:%": 103,
+        "producto:": 102,
+        "producto:Q04TARGET": 101,
+        "producto:%": 100,
+        "producto:Q04HTTPONLY": 99,
+        "cotizacion:": 98,
+        "cotizacion:Q04TARGET": 97,
+        "cotizacion:%": 96,
+        "cotizacion:Q04HTTPONLY": 96,
+        "compra:": 96,
+        "compra:Q04TARGET": 96,
+        "compra:%": 96,
+        "compra:Q04HTTPONLY": 96,
+        "venta:": 96,
+        "venta:Q04TARGET": 96,
+        "venta:%": 96,
+        "venta:Q04HTTPONLY": 96
+      },
+      "errors": 0,
+      "objectives": {
+        "scope": "Objetivos provisionales de regresión local; no SLA productivo ni certificación de fuga de memoria",
+        "goals": {
+          "readP95Ms": 500,
+          "eventLoopP95Ms": 100,
+          "rssGrowthBytes": 134217728
+        },
+        "firstRssMean": 156307258.63687152,
+        "lastRssMean": 216275699.1284916,
+        "rssGrowthBytes": 59968440.49162009,
+        "samples": 5731,
+        "checks": {
+          "readP95": true,
+          "eventLoopP95": true,
+          "rssGrowth": true,
+          "readsAndWrites": true,
+          "integrity": true
+        },
+        "passed": true
+      }
+    }
+  ],
+  "limitations": [
+    "AppModule completo; compra/venta PPD/REP/pedido facturado/orden y recepción por HTTP, fiscal mock. No sustituye regresión integral de NC, reversos ni cuentas proveedor.",
+    "Seis proyecciones reales; transferencias/kits/cobros por HTTP y mutación SQL de nombres para carreras total/página. Modalidad financiera indicada por financialHttpResults; escritores de caja coordinados. Imágenes como metadatos, no archivos.",
+    "Carga cerrada, caché caliente y ventanas de 600 segundos y 20000 registros por dominio: no certificación de capacidad máxima, SLA ni soak de horas.",
+    "CPU/memoria/event loop del padre incluyen servidor, escritor y monitor; generador en hijo separado. PostgreSQL: actividad, tuplas/autovacuum y CPU/working set/transferencia de procesos asociados a la copia muestreados con CIM Windows. Working sets sumados incluyen páginas compartidas; I/O de proceso incluye red y no equivale a disco. WAL global del cluster incluye otras bases; estadísticas pueden retrasarse. Pool de aplicación sin ajuste, observado máximo 10."
+  ]
+}

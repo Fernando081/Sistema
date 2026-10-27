@@ -1,0 +1,107 @@
+{
+  "generatedAt": "2026-10-03T19:22:03.122Z",
+  "phase": "Q04.5.3c2c3d10",
+  "sources": [
+    "q0453c2c3d9-memory-diagnostic.json",
+    "q0453c2c3d10-separated.json"
+  ],
+  "secondsPerGroup": 600,
+  "fixturesPerDomain": 20000,
+  "mixedParent": {
+    "rss": {
+      "firstMean": 220964600.9281768,
+      "lastMean": 335800353.9447514,
+      "deltaBytes": 114835753.01657459,
+      "peak": 427872256
+    },
+    "heapUsed": {
+      "firstMean": 66398960.12707182,
+      "lastMean": 83012549.55248618,
+      "deltaBytes": 16613589.425414361,
+      "peak": 113842784
+    },
+    "heapTotal": {
+      "firstMean": 121179574.45303868,
+      "lastMean": 200586981.12707183,
+      "deltaBytes": 79407406.67403315,
+      "peak": 200773632
+    },
+    "external": {
+      "firstMean": 25371848.618784532,
+      "lastMean": 26210786.075276244,
+      "deltaBytes": 838937.4564917125,
+      "peak": 111629830
+    },
+    "arrayBuffers": {
+      "firstMean": 49448246.69198895,
+      "lastMean": 191372390.0441989,
+      "deltaBytes": 141924143.35220996,
+      "peak": 284148403
+    }
+  },
+  "separatedParent": {
+    "rss": {
+      "firstMean": 167338806.61570534,
+      "lastMean": 233965748.7477415,
+      "deltaBytes": 66626942.13203615,
+      "peak": 256581632
+    },
+    "heapUsed": {
+      "firstMean": 64610613.503822096,
+      "lastMean": 81568204.19735928,
+      "deltaBytes": 16957590.693537183,
+      "peak": 115098688
+    },
+    "heapTotal": {
+      "firstMean": 118569445.31480195,
+      "lastMean": 198788150.79360667,
+      "deltaBytes": 80218705.47880472,
+      "peak": 198938624
+    },
+    "external": {
+      "firstMean": 5690953.186240445,
+      "lastMean": 6763983.186240445,
+      "deltaBytes": 1073030,
+      "peak": 27346326
+    },
+    "arrayBuffers": {
+      "firstMean": 1533193.298123697,
+      "lastMean": 2602200.9409312024,
+      "deltaBytes": 1069007.6428075053,
+      "peak": 23189603
+    }
+  },
+  "financialClient": {
+    "rss": {
+      "firstMean": 118824515.15937941,
+      "lastMean": 139357075.6784203,
+      "deltaBytes": 20532560.519040897,
+      "peak": 209567744
+    },
+    "heapUsed": {
+      "firstMean": 13027866.273624824,
+      "lastMean": 14197230.465444287,
+      "deltaBytes": 1169364.191819463,
+      "peak": 18146240
+    },
+    "heapTotal": {
+      "firstMean": 23387533.17912553,
+      "lastMean": 25172323.294781383,
+      "deltaBytes": 1784790.1156558543,
+      "peak": 31068160
+    },
+    "external": {
+      "firstMean": 22068151.144569818,
+      "lastMean": 18686852.216502115,
+      "deltaBytes": -3381298.928067703,
+      "peak": 88416574
+    },
+    "arrayBuffers": {
+      "firstMean": 45473724.43229901,
+      "lastMean": 181524426.09661496,
+      "deltaBytes": 136050701.66431594,
+      "peak": 220630239
+    }
+  },
+  "scope": "Ventanas distintas: comparacion descriptiva, sin prueba causal ni certificacion de fuga. Padre separado aun contiene monitor y cliente de almacen/pagos. Picos independientes no se suman. Muestreo sin GC forzado."
+}

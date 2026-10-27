@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { CrmDocumentosComponent } from './crm-documentos.component';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -25,7 +26,7 @@ export interface CrmOportunidadPrefill {
 @Component({
   selector: 'app-crm-oportunidad-dialog', standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule],
+    MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, CrmDocumentosComponent],
   templateUrl: './crm-oportunidad-dialog.component.html',
 })
 export class CrmOportunidadDialogComponent implements OnInit {
@@ -38,7 +39,26 @@ export class CrmOportunidadDialogComponent implements OnInit {
   readonly data = inject<Oportunidad | CrmOportunidadPrefill | null>(MAT_DIALOG_DATA);
   private readonly existingItem = this.data && 'idOportunidad' in this.data ? this.data : null;
   readonly item = signal<Oportunidad | null>(this.existingItem);
+  readonly webConsulta = signal<{ requestId: string; piezas: {code:string;brand?:string;quantity:number;application?:string}[] } | null>(null);
+  readonly webError = signal(false);
+  readonly webLoading = signal(false);
+  cargarConsultaWeb() {
+    const id = this.item()?.idOportunidad;
+    if (!id) return;
+    this.webError.set(false); this.webLoading.set(true);
+    this.crm.getConsultaWeb(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: value => { this.webConsulta.set(value); this.webLoading.set(false); },
+      error: () => { this.webConsulta.set(null); this.webLoading.set(false); this.webError.set(true); },
+    });
+  }
   readonly busy = signal(false);
+  documentsWorking(value: boolean) {
+    this.busy.set(value);
+    if (value) this.form.disable({ emitEvent: false }); else this.form.enable({ emitEvent: false });
+  }
+  documentsChanged() {
+    this.changed = true; this.form.disable({ emitEvent: false }); this.recargar();
+  }
   readonly loadFailed = signal(false);
   readonly error = signal('');
   readonly historial = signal<Seguimiento[]>([]);
@@ -72,6 +92,7 @@ export class CrmOportunidadDialogComponent implements OnInit {
     motor: ['', Validators.maxLength(120)], notas: ['', Validators.maxLength(1000)],
   });
   ngOnInit() {
+    this.cargarConsultaWeb();
     if (this.existingItem) {
       this.recargar();
       return;
@@ -91,7 +112,7 @@ export class CrmOportunidadDialogComponent implements OnInit {
     if (!id || this.busy()) return;
     this.busy.set(true); this.error.set('');
     forkJoin({ item: this.crm.getOportunidad(id), history: this.crm.getSeguimientos(id), unidades: this.crm.getUnidades(id) })
-      .pipe(finalize(() => this.busy.set(false)), takeUntilDestroyed(this.destroyRef)).subscribe({
+      .pipe(finalize(() => { this.busy.set(false); this.form.enable({ emitEvent: false }); }), takeUntilDestroyed(this.destroyRef)).subscribe({
         next: result => {
           this.loadFailed.set(false); this.setItem(result.item); this.historial.set(result.history.data);
           this.unidades.set(result.unidades);

@@ -15,19 +15,34 @@ export interface PagoProveedorDto {
   notas?: string;
 }
 
+export interface LegacySupplierDebt {
+  id_compra: number;
+  id_proveedor: number;
+  folio_factura_proveedor: string | null;
+  fecha_compra: string;
+  total: string | number;
+  saldo_pendiente: string | number;
+  proveedor_nombre: string;
+}
+
+export interface SupplierPaymentResult {
+  message: string;
+  idPago: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PagoProveedorService {
   constructor(private http: HttpClient) {}
 
-  registrar(dto: PagoProveedorDto): Observable<any> {
-    return this.http.post(API_URL, dto);
+  registrar(dto: PagoProveedorDto): Observable<SupplierPaymentResult> {
+    return this.http.post<SupplierPaymentResult>(API_URL, dto);
   }
 
-  getDeuda(idProveedor: number): Observable<any[]> {
-    return this.http.get<any[]>(`${API_URL}/deuda/${idProveedor}`);
+  getDeuda(idProveedor: number): Observable<LegacySupplierDebt[]> {
+    return this.http.get<LegacySupplierDebt[]>(`${API_URL}/deuda/${idProveedor}`);
   }
 
-  getAllDeuda(): Observable<any[]> {
-    return this.http.get<any[]>(`${API_URL}/deuda`);
+  getAllDeuda(): Observable<LegacySupplierDebt[]> {
+    return this.http.get<LegacySupplierDebt[]>(`${API_URL}/deuda`);
   }
 }

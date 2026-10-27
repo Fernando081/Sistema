@@ -7,6 +7,8 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Cliente, CreateClienteDto, UpdateClienteDto } from '../cliente/cliente.interface';
 
+import type { DirectoryQuery, DirectoryPage } from '../shared/remote-directory';
+
 export interface ClienteContacto { idContacto: number; nombre: string; cargo?: string | null; telefono?: string | null; email?: string | null; canalPreferido: string; esPrincipal: boolean; notas?: string | null; }
 export interface ClienteUnidad360 { idUnidad: number; vin?: string | null; esn?: string | null; numeroEconomico?: string | null; marca?: string | null; modelo?: string | null; anio?: number | null; motor?: string | null; transmision?: string | null; diferencial?: string | null; placas?: string | null; notas?: string | null; }
 export interface ClienteCotizacion360 { idCotizacion: number; folio: number; estatus: string; total: number; idUnidad?: number | null; }
@@ -63,6 +65,14 @@ export class ClienteService {
     );
   }
 
+  getPage(query: DirectoryQuery): Observable<DirectoryPage<Cliente>> {
+    return this.http.get<DirectoryPage<ClienteApiResponse>>(`${this.apiUrl}/pagina`, { params: { ...query } }).pipe(
+      map(page => ({ ...page, data: page.data.map(row => this.toCliente(row)) })),
+    );
+  }
+  exportCsv(query: DirectoryQuery): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/exportar`, { params: { ...query }, responseType: 'blob' });
+  }
   getClienteById(id: number): Observable<Cliente> {
     return this.http.get<ClienteApiResponse>(`${this.apiUrl}/${id}`).pipe(
       map((cliente) => this.toCliente(cliente)),

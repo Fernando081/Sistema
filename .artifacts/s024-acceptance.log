@@ -1,0 +1,55 @@
+
+> test:password-recovery
+> node backend/verify-password-recovery.js --backup=.backups/2026-10-19T23-41-37-020Z/database.dump
+
+OK: Respaldo restaurado,097 check/migrate solo en copia; AppModule completo, fiscal mock y cron detenido
+{"type":"http_request","requestId":"f00b7aac-d67d-4d28-9336-097225e3fbbc","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":401,"durationMs":5.96,"idUser":null}
+{"type":"http_request","requestId":"f389a8e0-829a-4b7d-8bd1-ee6784cf7c9f","method":"POST","path":"/api/v1/auth/password-recovery/setup","statusCode":401,"durationMs":11.72,"idUser":null}
+{"type":"http_request","requestId":"cbe37a62-8061-4edd-bca5-146603d3584c","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":11.68,"idUser":2}
+{"type":"http_request","requestId":"e1fd4649-678a-4dd4-a354-3523177e3f75","method":"POST","path":"/api/v1/auth/password-recovery/complete","statusCode":400,"durationMs":73.23,"idUser":null}
+{"type":"http_request","requestId":"5381cc2e-a8f6-4c0c-8dd3-9af0715024b1","method":"POST","path":"/api/v1/auth/password-recovery/complete","statusCode":400,"durationMs":60.4,"idUser":null}
+OK: Estado privado sin secretos, inscripción exige sesión/contraseña y recuperación desconocida/incorrecta responde igual sin modificar cuenta
+{"type":"http_request","requestId":"b1fe5a45-9ef7-446a-8246-05d03e139eef","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":68,"idUser":null}
+{"type":"http_request","requestId":"16f3493e-eecd-4841-bf03-b7481c3a314b","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":118.6,"idUser":2}
+{"type":"http_request","requestId":"d175c363-7901-4200-802b-1c9f00ed9ba7","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":87.51,"idUser":2}
+{"type":"http_request","requestId":"b2ca7d4d-6aef-4b24-88e8-2ba959837793","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":92.26,"idUser":2}
+{"type":"http_request","requestId":"200747a8-7139-4169-b7ba-f80df32356e3","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":96.94,"idUser":2}
+{"type":"http_request","requestId":"f0277fe1-f3ed-440e-aeeb-4cd440fabe95","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":168.52,"idUser":2}
+{"type":"http_request","requestId":"1974a0b0-edce-4f8b-b977-e41ee3bb4365","method":"POST","path":"/api/v1/auth/password-recovery/setup","statusCode":201,"durationMs":73.34,"idUser":2}
+{"type":"http_request","requestId":"71a2f270-a355-4185-91af-45af0f9c41bd","method":"POST","path":"/api/v1/auth/password-recovery/confirm","statusCode":201,"durationMs":20.88,"idUser":2}
+{"type":"http_request","requestId":"1d990fc9-d2f6-4178-8d64-9791c529e2c2","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":4.24,"idUser":2}
+{"type":"http_request","requestId":"b99fee00-720f-4c3e-bb34-8a2bdf4ecbb6","method":"POST","path":"/api/v1/auth/password-recovery/complete","statusCode":403,"durationMs":1.37,"idUser":null}
+OK: Inscripción por formulario real, pendiente10min/confirmación/rotación sin perder clave anterior, hash sin plaintext y CSRF rechazado
+{"type":"http_request","requestId":"c91762e4-d073-407a-95ce-b23ed17fba55","method":"POST","path":"/api/v1/auth/password-recovery/complete","statusCode":201,"durationMs":75.16,"idUser":null}
+{"type":"http_request","requestId":"70b5e886-0d2b-454b-9220-ec09a0ff0353","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.28,"idUser":null}
+{"type":"http_request","requestId":"ce7b71c2-8ab1-4b71-9243-bfa6e55a36b7","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":63.66,"idUser":null}
+{"type":"http_request","requestId":"8c9be5e3-c893-4971-922f-6edd7fec0dc3","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":7.78,"idUser":2}
+{"type":"http_request","requestId":"3a4012dc-2147-4bb5-ad3d-5e129b4410c6","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":15.3,"idUser":2}
+{"type":"http_request","requestId":"cdc0a6db-ed20-4f73-82a7-ee2a46025b26","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":13.06,"idUser":2}
+{"type":"http_request","requestId":"e65530bf-811f-4026-8aa5-1b5faf855cd3","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":14.53,"idUser":2}
+OK: Recuperación pública real consume clave/pendientes, cambia bcrypt, revoca sesiones/cookie y contraseña anterior, sin login automático
+{"type":"http_request","requestId":"a076db4a-b009-417a-b1fb-2ca54baaabc6","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":147.6,"idUser":2}
+OK: Caducidad/inactividad/credencial/sesión/retirada, fallo SQL final revierte contraseña/clave/sesiones y dos resets concurrentes solo consumen una vez
+{"type":"http_request","requestId":"8dd65b16-db9c-4d70-b123-ecb3fd907bdb","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":61.39,"idUser":null}
+{"type":"http_request","requestId":"8a1bccc2-e95f-408a-af41-08f67f74dd2f","method":"POST","path":"/api/v1/auth/mfa/login","statusCode":201,"durationMs":17.41,"idUser":null}
+{"type":"http_request","requestId":"c6e8c120-5c8c-4cdf-bca9-85a48aaa2ef0","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":14.89,"idUser":4}
+{"type":"http_request","requestId":"08f13527-ea03-4fba-88f0-70048a64d2ff","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":15.73,"idUser":4}
+{"type":"http_request","requestId":"70b777e2-4173-4d37-9f51-9edff5151a4b","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":16.86,"idUser":4}
+{"type":"http_request","requestId":"6bd19d8c-0c3c-442e-ba3e-ff9aed16d3d3","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":26.76,"idUser":4}
+{"type":"http_request","requestId":"e3a6cab1-1437-4113-a3a9-7ac15c6ce629","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":186.96,"idUser":4}
+{"type":"http_request","requestId":"038d88a1-2922-49b2-8230-97aaa49cf437","method":"POST","path":"/api/v1/auth/password-recovery/setup","statusCode":201,"durationMs":66.27,"idUser":4}
+{"type":"http_request","requestId":"bb52546a-3428-446d-ad6f-122552b49384","method":"POST","path":"/api/v1/auth/password-recovery/confirm","statusCode":201,"durationMs":10.15,"idUser":4}
+{"type":"http_request","requestId":"c2db92e0-a9fc-40ce-a6e8-2885cb990a99","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":3.83,"idUser":4}
+OK: Inscripción con MFA exige reautenticación; clave offline no sustituye factor; cinco fallos persisten/bloquean sin consumir clave ni respaldo válido
+{"type":"http_request","requestId":"55f44540-c9ca-4c92-90a2-4e0e09729c63","method":"POST","path":"/api/v1/auth/password-recovery/complete","statusCode":201,"durationMs":85.46,"idUser":null}
+{"type":"http_request","requestId":"08a6ad84-6b97-4d37-a571-38b83bfdd33b","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.64,"idUser":null}
+{"type":"http_request","requestId":"f9fd392f-2ab9-4a8a-9555-0dbf1dede5e6","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":79.56,"idUser":null}
+{"type":"http_request","requestId":"505543e7-ca48-489a-9aad-edc0a30008fe","method":"POST","path":"/api/v1/auth/mfa/login","statusCode":201,"durationMs":23.98,"idUser":null}
+OK: Reset MFA real consume solo un respaldo, mantiene autenticador/MFA y obliga login completo; notificación interna sin secretos
+{"type":"http_request","requestId":"19dc011d-10e0-43a5-9f0c-c117de19c7dd","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":43.2,"idUser":4}
+{"type":"http_request","requestId":"a3f1df50-e3ae-4ead-a540-67e7a103951f","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":44.89,"idUser":4}
+{"type":"http_request","requestId":"33fa77e9-c814-497c-ae1a-e5861dc95df8","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":54.93,"idUser":4}
+{"type":"http_request","requestId":"86ed9382-348a-4ede-81c5-0e6789eb6a5c","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":45.5,"idUser":4}
+{"type":"http_request","requestId":"f8a555f5-7304-4008-9826-69ce79e1fe91","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":184.78,"idUser":4}
+{"type":"http_request","requestId":"fc23b146-2d51-4bed-b4ac-94bfae52393f","method":"POST","path":"/api/v1/auth/password-recovery/complete","statusCode":429,"durationMs":2.74,"idUser":null}
+OK: Claro1280/oscuro390, formularios/panel/axe y sin desbordamiento, secretos fuera de Web Storage y límite HTTP real de cinco intentos

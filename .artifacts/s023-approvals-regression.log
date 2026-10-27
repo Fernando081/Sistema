@@ -1,0 +1,3 @@
+Web pública: 14 páginas; máximo HTML+CSS 23201 bytes; JavaScript cliente 0 bytes.
+Web pública: 14 páginas; máximo HTML+CSS 23201 bytes; JavaScript cliente 0 bytes.
+SQL/HTTP/publicación aislados: login bcrypt/JWT/TypeORM reales, firma/usuario/sesión revocados, aprobación, medios, puntero y rollback SQL verificados con credenciales temporales.

@@ -1,0 +1,387 @@
+{
+  "generatedAt": "2026-10-12T02:34:45.046Z",
+  "runId": "4385d3f4-0dbb-4ae3-9344-dcffaecc5710",
+  "origin": "http://127.0.0.1:4600",
+  "javaScriptClientEnabled": false,
+  "commercialAccepted": false,
+  "passed": 94,
+  "total": 94,
+  "checks": [
+    {
+      "name": "catalog-http-390",
+      "passed": true
+    },
+    {
+      "name": "test-context-390",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-chevron-cd40020w50-3-390",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-timken-hm212049-4-390",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-eaton-4300123-2-390",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-gates-8pk123-5-390",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-mexlub-mx20w50-6-390",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-skf-skf212049-10-390",
+      "passed": true
+    },
+    {
+      "name": "catalog-reflow-390",
+      "passed": true
+    },
+    {
+      "name": "product-http-chevron-cd40020w50-3-390",
+      "passed": true
+    },
+    {
+      "name": "original-code-chevron-cd40020w50-3-390",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-chevron-cd40020w50-3-390",
+      "passed": true
+    },
+    {
+      "name": "product-image-chevron-cd40020w50-3-390",
+      "passed": true
+    },
+    {
+      "name": "image-zoom-chevron-cd40020w50-3-390",
+      "passed": true
+    },
+    {
+      "name": "image-zoom-close-chevron-cd40020w50-3-390",
+      "passed": true
+    },
+    {
+      "name": "exact-search-chevron-cd40020w50-3-390",
+      "passed": true
+    },
+    {
+      "name": "product-http-timken-hm212049-4-390",
+      "passed": true
+    },
+    {
+      "name": "original-code-timken-hm212049-4-390",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-timken-hm212049-4-390",
+      "passed": true
+    },
+    {
+      "name": "product-image-timken-hm212049-4-390",
+      "passed": true
+    },
+    {
+      "name": "image-zoom-timken-hm212049-4-390",
+      "passed": true
+    },
+    {
+      "name": "image-zoom-close-timken-hm212049-4-390",
+      "passed": true
+    },
+    {
+      "name": "exact-search-timken-hm212049-4-390",
+      "passed": true
+    },
+    {
+      "name": "product-http-eaton-4300123-2-390",
+      "passed": true
+    },
+    {
+      "name": "original-code-eaton-4300123-2-390",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-eaton-4300123-2-390",
+      "passed": true
+    },
+    {
+      "name": "missing-image-eaton-4300123-2-390",
+      "passed": true
+    },
+    {
+      "name": "exact-search-eaton-4300123-2-390",
+      "passed": true
+    },
+    {
+      "name": "product-http-gates-8pk123-5-390",
+      "passed": true
+    },
+    {
+      "name": "original-code-gates-8pk123-5-390",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-gates-8pk123-5-390",
+      "passed": true
+    },
+    {
+      "name": "missing-image-gates-8pk123-5-390",
+      "passed": true
+    },
+    {
+      "name": "exact-search-gates-8pk123-5-390",
+      "passed": true
+    },
+    {
+      "name": "product-http-mexlub-mx20w50-6-390",
+      "passed": true
+    },
+    {
+      "name": "original-code-mexlub-mx20w50-6-390",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-mexlub-mx20w50-6-390",
+      "passed": true
+    },
+    {
+      "name": "missing-image-mexlub-mx20w50-6-390",
+      "passed": true
+    },
+    {
+      "name": "exact-search-mexlub-mx20w50-6-390",
+      "passed": true
+    },
+    {
+      "name": "product-http-skf-skf212049-10-390",
+      "passed": true
+    },
+    {
+      "name": "original-code-skf-skf212049-10-390",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-skf-skf212049-10-390",
+      "passed": true
+    },
+    {
+      "name": "missing-image-skf-skf212049-10-390",
+      "passed": true
+    },
+    {
+      "name": "exact-search-skf-skf212049-10-390",
+      "passed": true
+    },
+    {
+      "name": "no-client-scripts-390",
+      "passed": true
+    },
+    {
+      "name": "axe-/catalogo-390",
+      "passed": true
+    },
+    {
+      "name": "axe-/productos/chevron-cd40020w50-3-390",
+      "passed": true
+    },
+    {
+      "name": "axe-/productos/timken-hm212049-4-390",
+      "passed": true
+    },
+    {
+      "name": "catalog-http-1440",
+      "passed": true
+    },
+    {
+      "name": "test-context-1440",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-chevron-cd40020w50-3-1440",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-timken-hm212049-4-1440",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-eaton-4300123-2-1440",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-gates-8pk123-5-1440",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-mexlub-mx20w50-6-1440",
+      "passed": true
+    },
+    {
+      "name": "catalog-link-skf-skf212049-10-1440",
+      "passed": true
+    },
+    {
+      "name": "catalog-reflow-1440",
+      "passed": true
+    },
+    {
+      "name": "product-http-chevron-cd40020w50-3-1440",
+      "passed": true
+    },
+    {
+      "name": "original-code-chevron-cd40020w50-3-1440",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-chevron-cd40020w50-3-1440",
+      "passed": true
+    },
+    {
+      "name": "product-image-chevron-cd40020w50-3-1440",
+      "passed": true
+    },
+    {
+      "name": "image-zoom-chevron-cd40020w50-3-1440",
+      "passed": true
+    },
+    {
+      "name": "image-zoom-close-chevron-cd40020w50-3-1440",
+      "passed": true
+    },
+    {
+      "name": "exact-search-chevron-cd40020w50-3-1440",
+      "passed": true
+    },
+    {
+      "name": "product-http-timken-hm212049-4-1440",
+      "passed": true
+    },
+    {
+      "name": "original-code-timken-hm212049-4-1440",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-timken-hm212049-4-1440",
+      "passed": true
+    },
+    {
+      "name": "product-image-timken-hm212049-4-1440",
+      "passed": true
+    },
+    {
+      "name": "image-zoom-timken-hm212049-4-1440",
+      "passed": true
+    },
+    {
+      "name": "image-zoom-close-timken-hm212049-4-1440",
+      "passed": true
+    },
+    {
+      "name": "exact-search-timken-hm212049-4-1440",
+      "passed": true
+    },
+    {
+      "name": "product-http-eaton-4300123-2-1440",
+      "passed": true
+    },
+    {
+      "name": "original-code-eaton-4300123-2-1440",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-eaton-4300123-2-1440",
+      "passed": true
+    },
+    {
+      "name": "missing-image-eaton-4300123-2-1440",
+      "passed": true
+    },
+    {
+      "name": "exact-search-eaton-4300123-2-1440",
+      "passed": true
+    },
+    {
+      "name": "product-http-gates-8pk123-5-1440",
+      "passed": true
+    },
+    {
+      "name": "original-code-gates-8pk123-5-1440",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-gates-8pk123-5-1440",
+      "passed": true
+    },
+    {
+      "name": "missing-image-gates-8pk123-5-1440",
+      "passed": true
+    },
+    {
+      "name": "exact-search-gates-8pk123-5-1440",
+      "passed": true
+    },
+    {
+      "name": "product-http-mexlub-mx20w50-6-1440",
+      "passed": true
+    },
+    {
+      "name": "original-code-mexlub-mx20w50-6-1440",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-mexlub-mx20w50-6-1440",
+      "passed": true
+    },
+    {
+      "name": "missing-image-mexlub-mx20w50-6-1440",
+      "passed": true
+    },
+    {
+      "name": "exact-search-mexlub-mx20w50-6-1440",
+      "passed": true
+    },
+    {
+      "name": "product-http-skf-skf212049-10-1440",
+      "passed": true
+    },
+    {
+      "name": "original-code-skf-skf212049-10-1440",
+      "passed": true
+    },
+    {
+      "name": "product-reflow-skf-skf212049-10-1440",
+      "passed": true
+    },
+    {
+      "name": "missing-image-skf-skf212049-10-1440",
+      "passed": true
+    },
+    {
+      "name": "exact-search-skf-skf212049-10-1440",
+      "passed": true
+    },
+    {
+      "name": "no-client-scripts-1440",
+      "passed": true
+    },
+    {
+      "name": "axe-/catalogo-1440",
+      "passed": true
+    },
+    {
+      "name": "axe-/productos/chevron-cd40020w50-3-1440",
+      "passed": true
+    },
+    {
+      "name": "axe-/productos/timken-hm212049-4-1440",
+      "passed": true
+    }
+  ]
+}

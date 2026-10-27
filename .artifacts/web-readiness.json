@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "status": "pending",
+  "scope": "Preparación local de archivos fuente; no certifica versión activa ni lanzamiento",
+  "publicProducts": 0,
+  "checks": [
+    {
+      "id": "WEB03.1-lote",
+      "passed": false,
+      "detail": "0 fichas publicables en archivo fuente; aprobación del contrato no prueba aceptación comercial"
+    },
+    {
+      "id": "WEB03.1-fotos",
+      "passed": false,
+      "detail": "0 fichas publicables sin fotografía autorizada"
+    },
+    {
+      "id": "WEB03.3-canales",
+      "passed": true,
+      "detail": "WhatsApp o correo confirmado para consulta contextual"
+    },
+    {
+      "id": "WEB04.1-dominio",
+      "passed": false,
+      "detail": "Origen HTTPS confirmado en configuración; no verifica DNS ni propiedad"
+    },
+    {
+      "id": "WEB04.2-aceptacion",
+      "passed": false,
+      "detail": "Requiere revisión del lote comercial según docs/WEB_ACEPTACION_LOTE.md; no automatizada"
+    },
+    {
+      "id": "WEB04.1-operacion",
+      "passed": false,
+      "detail": "Requiere evidencia de hosting/HTTPS, protección de staging, caché/retiro y recuperación; no automatizada"
+    },
+    {
+      "id": "WEB04.3-validacion",
+      "passed": false,
+      "detail": "Requiere validación externa de dominio/SEO y decisión de lanzamiento; no automatizada"
+    }
+  ],
+  "pending": [
+    "WEB03.1-lote",
+    "WEB03.1-fotos",
+    "WEB04.1-dominio",
+    "WEB04.2-aceptacion",
+    "WEB04.1-operacion",
+    "WEB04.3-validacion"
+  ],
+  "local": {
+    "auditErrors": 0,
+    "auditWarnings": [],
+    "maxInitialBytes": 23093,
+    "clientJavaScriptBytes": 0,
+    "maxInitialAssetBytes": 321828,
+    "imageBudgetScope": "HTML+CSS sin comprimir y unión de fuentes de imágenes no lazy, incluyendo candidatos srcset; sin caché. No mide velocidad ni imágenes lazy que el navegador pueda cargar al iniciar."
+  },
+  "generatedAt": "2026-10-11T23:45:57.208Z"
+}

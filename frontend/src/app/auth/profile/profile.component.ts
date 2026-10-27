@@ -7,22 +7,28 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService, AuthUser } from '../auth.service';
+import { SessionsComponent } from './sessions.component';
+import { MfaComponent } from './mfa.component';
+import { PasswordRecoveryComponent } from './password-recovery.component';
 
 @Component({
   selector: 'app-profile', standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSnackBarModule],
+  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSnackBarModule, SessionsComponent, MfaComponent, PasswordRecoveryComponent],
   template: `
-    <section class="max-w-xl space-y-5">
+    <section class="max-w-xl space-y-5 text-[var(--wrap-text-title)]">
       <h1 class="text-2xl font-semibold">Mi cuenta</h1>
       @if (profile(); as user) { <p>{{user.username}} · {{user.role === 'admin' ? 'Administrador' : 'Operador'}}</p> }
       <form [formGroup]="form" (ngSubmit)="save()" class="bg-white dark:bg-slate-900 p-5 rounded-xl flex flex-col gap-3">
-        <h2 class="text-lg font-medium">Cambiar contraseña</h2>
+        <h2 class="text-lg font-medium text-[var(--wrap-text-title)]">Cambiar contraseña</h2>
         <mat-form-field><mat-label>Contraseña actual</mat-label><input matInput type="password" formControlName="currentPassword" autocomplete="current-password"></mat-form-field>
         <mat-form-field><mat-label>Nueva contraseña</mat-label><input matInput type="password" formControlName="newPassword" autocomplete="new-password"><mat-hint>Mínimo 10 caracteres.</mat-hint></mat-form-field>
         <mat-form-field><mat-label>Repetir nueva contraseña</mat-label><input matInput type="password" formControlName="confirmation" autocomplete="new-password"></mat-form-field>
         <p class="text-sm text-slate-500">Al guardar se cerrarán tus sesiones y podrás entrar con la nueva contraseña.</p>
         <button mat-flat-button type="submit" [disabled]="form.invalid || busy()">{{busy() ? 'Guardando…' : 'Actualizar contraseña'}}</button>
       </form>
+      <app-account-mfa />
+      <app-password-recovery-settings />
+      <app-account-sessions />
     </section>`,
 })
 export class ProfileComponent implements OnInit {

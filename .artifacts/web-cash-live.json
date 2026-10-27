@@ -1,0 +1,196 @@
+{
+  "phase": "WEB05.2e",
+  "source": "current-development-database",
+  "generatedAt": "2026-10-12T17:56:03.914Z",
+  "node": "24.19.0",
+  "probes": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:3100/api/v1/crm/solicitudes-web/metricas?desde=2026-10-01&hasta=2026-10-11",
+      "expected": 401,
+      "status": 401
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:3100/api/v1/crm/oportunidades/1/documentos-comerciales",
+      "expected": 401,
+      "status": 401
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4300/login",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4600/catalogo",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/solicitar",
+      "expected": 503,
+      "status": 503
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4600/solicitar",
+      "expected": 503,
+      "status": 503
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:3100/api/v1/web-lead-bridge",
+      "expected": 503,
+      "status": 503
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:3100/api/v1/crm/solicitudes-web/metricas?desde=2026-10-01&hasta=2026-10-11",
+      "expected": 200,
+      "status": 200
+    }
+  ],
+  "authenticated": true,
+  "ui": {
+    "actualLogin": true,
+    "apiMocked": false,
+    "injectedJwt": false,
+    "width": 390,
+    "theme": "dark",
+    "reflow": true
+  },
+  "metrics": {
+    "generatedAt": "2026-10-12T17:55:59.262Z",
+    "finance": {
+      "currencies": [],
+      "coverage": {
+        "documentosVinculados": 0,
+        "documentosFinancieros": 0,
+        "globalesExcluidas": 0,
+        "monedaDesconocida": 0,
+        "importesInconsistentes": 0,
+        "notasCanceladasExcluidas": 0,
+        "repsCanceladosExcluidos": 0,
+        "pagosRepCompatibilidadOmitidos": 0
+      }
+    },
+    "commercial": {
+      "cotizacionesVinculadas": 0,
+      "solicitudesConCotizacion": 0,
+      "solicitudesConVenta": 0,
+      "documentosVentaVigentes": 0,
+      "documentosCancelados": 0,
+      "documentosInconsistentes": 0
+    },
+    "totals": {
+      "recibidas": 0,
+      "pendientes": 0,
+      "revisadasSinOportunidad": 0,
+      "descartadas": 0,
+      "oportunidades": 0,
+      "abiertasCrm": 0,
+      "ganadasCrm": 0,
+      "perdidasCrm": 0,
+      "vigentes": 0,
+      "vencidas": 0,
+      "purgadas": 0,
+      "piezasVigentes": 0,
+      "piezasSnapshot": 0,
+      "sinPiezas": 0
+    },
+    "daily": [
+      {
+        "fecha": "2026-10-01",
+        "recibidas": 0,
+        "oportunidades": 0
+      },
+      {
+        "fecha": "2026-10-02",
+        "recibidas": 0,
+        "oportunidades": 0
+      },
+      {
+        "fecha": "2026-10-03",
+        "recibidas": 0,
+        "oportunidades": 0
+      },
+      {
+        "fecha": "2026-10-04",
+        "recibidas": 0,
+        "oportunidades": 0
+      },
+      {
+        "fecha": "2026-10-05",
+        "recibidas": 0,
+        "oportunidades": 0
+      },
+      {
+        "fecha": "2026-10-06",
+        "recibidas": 0,
+        "oportunidades": 0
+      },
+      {
+        "fecha": "2026-10-07",
+        "recibidas": 0,
+        "oportunidades": 0
+      },
+      {
+        "fecha": "2026-10-08",
+        "recibidas": 0,
+        "oportunidades": 0
+      },
+      {
+        "fecha": "2026-10-09",
+        "recibidas": 0,
+        "oportunidades": 0
+      },
+      {
+        "fecha": "2026-10-10",
+        "recibidas": 0,
+        "oportunidades": 0
+      },
+      {
+        "fecha": "2026-10-11",
+        "recibidas": 0,
+        "oportunidades": 0
+      }
+    ],
+    "references": [],
+    "source": "crm-local",
+    "period": {
+      "desde": "2026-10-01",
+      "hasta": "2026-10-11",
+      "timezone": "America/Mexico_City",
+      "days": 11
+    },
+    "conversionPct": null,
+    "unmeasured": [
+      "vistas",
+      "busquedas",
+      "clicsCotizacion",
+      "clicsWhatsApp",
+      "busquedasSinResultado",
+      "ventasSinVinculo",
+      "flujoIntegral"
+    ]
+  },
+  "captureEnabled": false,
+  "limits": [
+    "La base de desarrollo conserva datos de prueba; no aceptación o conversiones comerciales reales."
+  ]
+}

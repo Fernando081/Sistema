@@ -1,0 +1,157 @@
+{
+  "generatedAt": "2026-10-03T22:43:56.127Z",
+  "phase": "Q04.5.3c2c3d11",
+  "status": "failed",
+  "injectedGeneratorFailure": true,
+  "injectedFinancialClientFailure": false,
+  "failure": "Generador falló: sin detalle; copia requiere limpieza",
+  "injectedCoverageFailure": false,
+  "injectedObjectiveFailure": false,
+  "secondsPerGroup": 40,
+  "fixtureCount": 1000,
+  "profile": {
+    "name": "soak",
+    "readers": 8,
+    "readerPauseMs": 2000,
+    "businessPauseMs": 3000,
+    "financialPauseMs": 30000,
+    "sqlPauseMs": 60,
+    "duration": 600
+  },
+  "groups": [
+    {
+      "elapsedMs": 5493.450000000001,
+      "requests": 0,
+      "writerCommits": 8,
+      "financialCycles": 1,
+      "business": {
+        "transfers": 2,
+        "assembled": 1,
+        "disassembled": 1,
+        "payments": 1,
+        "replays": 2
+      },
+      "memoryDiagnostic": {
+        "scope": "Padre: AppModule, monitor, escritor SQL y cliente de almacen/pagos; lectores y cliente financiero/documental separados.",
+        "samples": 54,
+        "elapsedMs": 5493.059699999998,
+        "quarterSamples": 13,
+        "comparison": {
+          "rss": {
+            "firstMean": 171458875.07692307,
+            "lastMean": 199580120.6153846,
+            "deltaBytes": 28121245.538461536,
+            "peak": 208142336
+          },
+          "heapUsed": {
+            "firstMean": 75350742.15384616,
+            "lastMean": 71069279.38461539,
+            "deltaBytes": -4281462.769230768,
+            "peak": 89274472
+          },
+          "heapTotal": {
+            "firstMean": 123776708.92307693,
+            "lastMean": 133337088,
+            "deltaBytes": 9560379.076923072,
+            "peak": 133337088
+          },
+          "external": {
+            "firstMean": 5289695.769230769,
+            "lastMean": 16247596,
+            "deltaBytes": 10957900.230769232,
+            "peak": 27084966
+          },
+          "arrayBuffers": {
+            "firstMean": 1127195.076923077,
+            "lastMean": 12084967,
+            "deltaBytes": 10957771.923076924,
+            "peak": 22921185
+          }
+        },
+        "windows": [
+          {
+            "minute": 0,
+            "samples": 54,
+            "means": {
+              "rss": 189161244.44444445,
+              "heapUsed": 73549814.96296297,
+              "heapTotal": 130162460.44444445,
+              "external": 11260994.277777778,
+              "arrayBuffers": 7098261.055555556
+            },
+            "peaks": {
+              "rss": 208142336,
+              "heapUsed": 89274472,
+              "heapTotal": 133337088,
+              "external": 27084966,
+              "arrayBuffers": 22921185
+            }
+          }
+        ]
+      },
+      "financialClientMemory": {
+        "scope": "Cliente financiero/documental persistente separado; incluye fetch, Blob y una conexión PostgreSQL de verificación. No sumar picos independientes.",
+        "samples": 35,
+        "elapsedMs": 3458.0846,
+        "quarterSamples": 8,
+        "comparison": {
+          "rss": {
+            "firstMean": 63135744,
+            "lastMean": 103045120,
+            "deltaBytes": 39909376,
+            "peak": 125014016
+          },
+          "heapUsed": {
+            "firstMean": 10009224,
+            "lastMean": 13342550,
+            "deltaBytes": 3333326,
+            "peak": 15874544
+          },
+          "heapTotal": {
+            "firstMean": 15622144,
+            "lastMean": 28663808,
+            "deltaBytes": 13041664,
+            "peak": 30662656
+          },
+          "external": {
+            "firstMean": 3615353.125,
+            "lastMean": 25408324,
+            "deltaBytes": 21792970.875,
+            "peak": 46340970
+          },
+          "arrayBuffers": {
+            "firstMean": 194258.5,
+            "lastMean": 30458046.625,
+            "deltaBytes": 30263788.125,
+            "peak": 52701373
+          }
+        },
+        "windows": [
+          {
+            "minute": 0,
+            "samples": 35,
+            "means": {
+              "rss": 75535857.37142856,
+              "heapUsed": 12565745.6,
+              "heapTotal": 21644902.4,
+              "external": 9006447.942857143,
+              "arrayBuffers": 7151569.628571428
+            },
+            "peaks": {
+              "rss": 125014016,
+              "heapUsed": 15874544,
+              "heapTotal": 30662656,
+              "external": 46340970,
+              "arrayBuffers": 52701373
+            }
+          }
+        ]
+      },
+      "errors": 1,
+      "incomplete": true,
+      "readerResultAvailable": false,
+      "failure": "Generador falló: sin detalle; copia requiere limpieza"
+    }
+  ],
+  "scope": "Diagnóstico fallido publicado después de eliminar la copia; no reemplaza evidencia exitosa ni certifica rendimiento"
+}

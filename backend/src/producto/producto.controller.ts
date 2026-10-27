@@ -10,11 +10,13 @@ import {
   Delete,
   Query,
   DefaultValuePipe,
+  StreamableFile,
 } from '@nestjs/common';
 import { ProductoService } from './producto.service';
 import { AjustarInventarioDto, CreateAplicacionDto, CreateNumeroParteDto, CreateProductoDto, UpdateProductoDto, CreateCotizacionProvDto } from './producto.dto';
 import { Roles } from '../auth/roles.decorator';
 import { RolUsuario } from '../common/enums/app.enums';
+import { ProductoExportDto } from './producto-export.dto';
 @Controller('producto') // Endpoint: /api/v1/producto
 export class ProductoController {
   constructor(private readonly productoService: ProductoService) {}
@@ -34,6 +36,14 @@ export class ProductoController {
     @Query('term') term?: string,
   ) {
     return this.productoService.findAll(page, limit, sort, order, term);
+  }
+
+  @Get('exportar')
+  async exportCsv(@Query() query: ProductoExportDto) {
+    const csv = await this.productoService.exportCsv(query.sort, query.order, query.term);
+    return new StreamableFile(Buffer.from(csv, 'utf8'), {
+      type: 'text/csv; charset=utf-8', disposition: 'attachment; filename="productos.csv"',
+    });
   }
 
   @Get('smart-restock')

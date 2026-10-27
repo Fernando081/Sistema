@@ -1,0 +1,657 @@
+{
+  "generatedAt": "2026-10-01T20:44:48.797Z",
+  "node": "24.19.0",
+  "fixtureRows": 20005,
+  "repetitions": 5,
+  "equivalenceCases": 39,
+  "isolation": "Base efimera nueva con datos sinteticos; extension e indice solo en esa base; eliminada al terminar.",
+  "limitations": [
+    "Sin concurrencia ni SLA.",
+    "Tiempos de escritura son una muestra de 1000 filas; incluyen columna generada.",
+    "Documento sintetico valida concatenacion/literalidad; aun no integra los seis dominios ni relaciones/OEM."
+  ],
+  "writeCosts": {
+    "insertWithoutIndexMs": 16.9858999999999,
+    "insertWithIndexMs": 40.74389999999994,
+    "updateWithoutIndexMs": 13.232299999999896,
+    "updateWithIndexMs": 42.903299999999945,
+    "indexBuildMs": 154.76350000000002,
+    "pendingCleanupMs": 24.504699999999957,
+    "index_bytes": 2793472,
+    "total_bytes": 6471680
+  },
+  "rows": [
+    {
+      "scenario": "Q04TARGET",
+      "before": {
+        "medianMs": 8.862,
+        "samplesMs": [
+          8.577,
+          8.597,
+          8.862,
+          9.679,
+          9.804
+        ],
+        "rows": 20,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.042,
+        "samplesMs": [
+          0.037,
+          0.04,
+          0.042,
+          0.045,
+          0.06
+        ],
+        "rows": 20,
+        "nodes": {
+          "Sort": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "Cliente",
+      "before": {
+        "medianMs": 12.171,
+        "samplesMs": [
+          11.848,
+          11.989,
+          12.171,
+          12.241,
+          13.423
+        ],
+        "rows": 19981,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 3.509,
+        "samplesMs": [
+          3.411,
+          3.446,
+          3.509,
+          3.642,
+          3.828
+        ],
+        "rows": 19981,
+        "nodes": {
+          "Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "VIN1000",
+      "before": {
+        "medianMs": 9.122,
+        "samplesMs": [
+          8.725,
+          9.085,
+          9.122,
+          9.256,
+          11.299
+        ],
+        "rows": 10,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.122,
+        "samplesMs": [
+          0.103,
+          0.107,
+          0.122,
+          0.125,
+          0.164
+        ],
+        "rows": 10,
+        "nodes": {
+          "Sort": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "ESN1000",
+      "before": {
+        "medianMs": 9.159,
+        "samplesMs": [
+          8.905,
+          9.087,
+          9.159,
+          9.323,
+          9.434
+        ],
+        "rows": 11,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.129,
+        "samplesMs": [
+          0.127,
+          0.127,
+          0.129,
+          0.132,
+          0.157
+        ],
+        "rows": 11,
+        "nodes": {
+          "Sort": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "RFC20005 CLIENTE",
+      "before": {
+        "medianMs": 9.009,
+        "samplesMs": [
+          8.643,
+          8.666,
+          9.009,
+          9.217,
+          10.514
+        ],
+        "rows": 0,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.736,
+        "samplesMs": [
+          0.655,
+          0.717,
+          0.736,
+          0.829,
+          0.983
+        ],
+        "rows": 0,
+        "nodes": {
+          "Sort": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "CLIENTE VIN",
+      "before": {
+        "medianMs": 11.496,
+        "samplesMs": [
+          10.221,
+          10.693,
+          11.496,
+          12.723,
+          15.025
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 4.89,
+        "samplesMs": [
+          4.63,
+          4.763,
+          4.89,
+          6.512,
+          7.74
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "A B",
+      "before": {
+        "medianMs": 9.743,
+        "samplesMs": [
+          9.654,
+          9.692,
+          9.743,
+          9.894,
+          10.28
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.019,
+        "samplesMs": [
+          0.013,
+          0.016,
+          0.019,
+          0.02,
+          0.028
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "A  B",
+      "before": {
+        "medianMs": 9.294,
+        "samplesMs": [
+          9.163,
+          9.262,
+          9.294,
+          9.392,
+          9.951
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.026,
+        "samplesMs": [
+          0.02,
+          0.02,
+          0.026,
+          0.03,
+          0.032
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "%",
+      "before": {
+        "medianMs": 10.736,
+        "samplesMs": [
+          9.592,
+          9.601,
+          10.736,
+          13.164,
+          15.295
+        ],
+        "rows": 21,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 1.954,
+        "samplesMs": [
+          1.781,
+          1.891,
+          1.954,
+          2.032,
+          2.151
+        ],
+        "rows": 21,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "_",
+      "before": {
+        "medianMs": 10.011,
+        "samplesMs": [
+          9.02,
+          9.773,
+          10.011,
+          10.093,
+          11.731
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 2.261,
+        "samplesMs": [
+          2.082,
+          2.125,
+          2.261,
+          2.592,
+          2.852
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "\\",
+      "before": {
+        "medianMs": 9.543,
+        "samplesMs": [
+          9.091,
+          9.418,
+          9.543,
+          10.283,
+          12.22
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 1.985,
+        "samplesMs": [
+          1.859,
+          1.902,
+          1.985,
+          2.071,
+          2.116
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "ÁRBOL",
+      "before": {
+        "medianMs": 9.451,
+        "samplesMs": [
+          9.339,
+          9.342,
+          9.451,
+          9.724,
+          10.223
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.017,
+        "samplesMs": [
+          0.013,
+          0.014,
+          0.017,
+          0.021,
+          0.031
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "ñ",
+      "before": {
+        "medianMs": 10.577,
+        "samplesMs": [
+          9.996,
+          10.562,
+          10.577,
+          10.801,
+          11.386
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 1.72,
+        "samplesMs": [
+          1.659,
+          1.681,
+          1.72,
+          1.809,
+          1.95
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "İ",
+      "before": {
+        "medianMs": 11.059,
+        "samplesMs": [
+          10.401,
+          10.455,
+          11.059,
+          12.184,
+          12.225
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 1.905,
+        "samplesMs": [
+          1.669,
+          1.889,
+          1.905,
+          1.927,
+          1.938
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "ß",
+      "before": {
+        "medianMs": 13.157,
+        "samplesMs": [
+          11.331,
+          11.896,
+          13.157,
+          13.598,
+          13.91
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 1.916,
+        "samplesMs": [
+          1.864,
+          1.889,
+          1.916,
+          1.937,
+          1.944
+        ],
+        "rows": 1,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "I",
+      "before": {
+        "medianMs": 12.024,
+        "samplesMs": [
+          11.812,
+          12.003,
+          12.024,
+          12.052,
+          12.554
+        ],
+        "rows": 20000,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 4.657,
+        "samplesMs": [
+          3.578,
+          4.235,
+          4.657,
+          4.684,
+          5.038
+        ],
+        "rows": 20000,
+        "nodes": {
+          "Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "a",
+      "before": {
+        "medianMs": 9.105,
+        "samplesMs": [
+          8.713,
+          8.916,
+          9.105,
+          9.162,
+          9.212
+        ],
+        "rows": 23,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 2.215,
+        "samplesMs": [
+          2.192,
+          2.198,
+          2.215,
+          2.27,
+          3.058
+        ],
+        "rows": 23,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "(vacio)",
+      "before": {
+        "medianMs": 10.983,
+        "samplesMs": [
+          10.752,
+          10.774,
+          10.983,
+          11.154,
+          12.01
+        ],
+        "rows": 20005,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 3.917,
+        "samplesMs": [
+          3.171,
+          3.517,
+          3.917,
+          4.034,
+          4.878
+        ],
+        "rows": 20005,
+        "nodes": {
+          "Index Scan": 1
+        }
+      }
+    },
+    {
+      "scenario": "%_'\\",
+      "before": {
+        "medianMs": 9.785,
+        "samplesMs": [
+          8.769,
+          8.819,
+          9.785,
+          9.888,
+          10.982
+        ],
+        "rows": 0,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 2.238,
+        "samplesMs": [
+          2.047,
+          2.057,
+          2.238,
+          2.808,
+          3.075
+        ],
+        "rows": 0,
+        "nodes": {
+          "Sort": 1,
+          "Seq Scan": 1
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+<section class="approval-policy" aria-labelledby="approval-policy-title">
+  <header><div><h2 id="approval-policy-title">Reglas y límites de aprobación</h2>
+    <p>Topes del total con impuestos en MXN y tipo de cambio 1. Un campo vacío significa sin límite; cero solo permite total cero.</p></div>
+    <button mat-stroked-button type="button" (click)="load()" [disabled]="loading()||busy()">Actualizar reglas</button></header>
+  <p>La separación de solicitante y aprobador está desactivada inicialmente. Actívala cuando haya otro administrador habilitado. Configurar estas reglas requiere su permiso específico.</p>
+  @if(loading()){<p role="status">Consultando reglas…</p>}
+  @if(error()){<p role="alert" class="notice">{{error()}} El borrador se conserva; ante un conflicto copia tus cambios y actualiza las reglas.</p>}
+  @if(message()){<p role="status">{{message()}}</p>}
+  @if(data();as policy){
+    <div class="rule-list">@for(row of policy.reglas;track row.operacion+row.tipo){
+      <article><h3>{{row.operacion==='Cotizacion'?'Cotización':row.operacion}} · {{row.tipo}}</h3>
+        <p>Tope: {{row.montoMaximo===null?'Sin límite':(row.montoMaximo|currency:'MXN')}} · Vigencia máxima {{row.vigenciaMaximaHoras}} h</p>
+        <p>{{row.requiereDistinto?'Aprobador distinto obligatorio':'Permite que el solicitante apruebe si es administrador habilitado'}} · Versión {{row.version}}</p>
+        <button mat-stroked-button type="button" (click)="edit(row)" [disabled]="busy()||loading()" [attr.aria-label]="'Editar regla '+row.operacion+' '+row.tipo">Editar regla</button>
+      </article>
+    }</div>
+    @if(selected();as selectedRule){<section class="editor" aria-labelledby="edit-rule-title">
+      <h3 id="edit-rule-title">Editar {{selectedRule.operacion}} · {{selectedRule.tipo}}</h3>
+      <p>Cambiar la regla invalida para uso posterior las aprobaciones de versiones anteriores de esta combinación.</p>
+      <form [formGroup]="rule" (ngSubmit)="saveRule()">
+        <mat-form-field><mat-label>Tope de la regla MXN</mat-label><input matInput type="number" step="0.01" min="0" formControlName="montoMaximo"><mat-hint>Vacío: sin límite</mat-hint></mat-form-field>
+        <mat-form-field><mat-label>Vigencia máxima en horas</mat-label><input matInput type="number" min="1" max="720" formControlName="vigenciaMaximaHoras"></mat-form-field>
+        <mat-checkbox formControlName="requiereDistinto">Exigir aprobador distinto al solicitante</mat-checkbox>
+        <mat-form-field><mat-label>Motivo del cambio de regla</mat-label><textarea matInput formControlName="motivo" maxlength="1000"></textarea></mat-form-field>
+        <div class="actions"><button mat-button type="button" [disabled]="busy()" (click)="this.selected.set(null)">Cancelar edición</button><button mat-flat-button [disabled]="rule.invalid||busy()||loading()">Guardar regla</button></div>
+      </form>
+    </section>}
+    <section class="editor" aria-labelledby="authority-title"><h3 id="authority-title">Límite por aprobador y operación</h3>
+      <p>Se aplica el menor tope entre regla y aprobador. Sin registro, el aprobador no tiene tope individual adicional. Un límite no concede rol ni permiso para aprobar.</p>
+      <form [formGroup]="authority" (ngSubmit)="saveAuthority()">
+        <mat-form-field><mat-label>Administrador aprobador</mat-label><mat-select formControlName="idUsuario" (selectionChange)="selectAuthority()">
+          @for(user of policy.aprobadores;track user.idUsuario){<mat-option [value]="user.idUsuario">{{user.usuario}}{{!user.activo?' · inactivo':!user.habilitado?' · sin permiso de aprobación':''}}</mat-option>}
+        </mat-select></mat-form-field>
+        <mat-form-field><mat-label>Operación del aprobador</mat-label><mat-select formControlName="operacion" (selectionChange)="selectAuthority()">@for(operation of operations;track operation){<mat-option [value]="operation">{{operation}}</mat-option>}</mat-select></mat-form-field>
+        <mat-form-field><mat-label>Tope del aprobador MXN</mat-label><input matInput type="number" min="0" step="0.01" formControlName="montoMaximo"><mat-hint>Vacío: sin límite individual</mat-hint></mat-form-field>
+        <mat-form-field><mat-label>Motivo del límite</mat-label><textarea matInput formControlName="motivo" maxlength="1000"></textarea></mat-form-field>
+        <button mat-flat-button [disabled]="authority.invalid||busy()||loading()">Guardar límite</button>
+      </form>
+      @for(limit of policy.limites;track limit.idUsuario+limit.operacion){<p>{{limit.usuario}} · {{limit.operacion}}: {{limit.montoMaximo===null?'Sin límite individual':(limit.montoMaximo|currency:'MXN')}} · versión {{limit.version}}</p>}
+    </section>
+  }
+</section>

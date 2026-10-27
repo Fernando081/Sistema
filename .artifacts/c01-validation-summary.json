@@ -1,0 +1,32 @@
+{
+  "phase": "C01.1",
+  "date": "2026-10-20",
+  "realAcceptanceGroups": 10,
+  "realAcceptancePassed": true,
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "backendTests": 288,
+  "backendSuites": 61,
+  "httpTests": 19,
+  "httpSuites": 3,
+  "frontendTests": 95,
+  "generalUiPassed": 79,
+  "generalUiApiMocked": true,
+  "localReadOnlyChecks": 18,
+  "newTables": {
+    "crm_consentimiento_comercial": 0,
+    "crm_campana_preparacion": 0
+  },
+  "initialBundleKB": 485.25,
+  "initialWarningBudgetKB": 500,
+  "migration": "106_crm_consentimiento_campanas.sql",
+  "preBackup": ".backups/2026-10-21T01-07-00-316Z/database.dump",
+  "restoredPostBackup": ".backups/2026-10-21T01-19-26-197Z/database.dump",
+  "remaining": "C01.2 operativo/canales/ejecucion y metricas reales",
+  "nextLocal": "C02",
+  "externalMessagesSent": false,
+  "initialFailedReports": [
+    "c01-consentimiento-first.json",
+    "c01-consentimiento-rate-limit.json"
+  ]
+}

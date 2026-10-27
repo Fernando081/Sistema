@@ -1,0 +1,245 @@
+{
+  "generatedAt": "2026-10-02T17:06:18.425Z",
+  "node": "24.19.0",
+  "fixturesPerDomain": 2000,
+  "poolMax": 4,
+  "secondsPerGroup": 30,
+  "relational": true,
+  "separateGenerator": true,
+  "preflight": {
+    "unauthorized401": true,
+    "invalidLimit400": true,
+    "invalidDate400": true,
+    "csvSixDomains": true
+  },
+  "groups": [
+    {
+      "readers": 1,
+      "generatorResources": {
+        "rssPeak": 113651712,
+        "heapPeak": 37544488,
+        "cpuMicroseconds": {
+          "user": 2062000,
+          "system": 531000
+        },
+        "eventLoopP95Ms": 31.424511
+      },
+      "postgres": {
+        "peak": {
+          "samples": 60,
+          "connections": 3,
+          "active": 3,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 0.518034
+        },
+        "countersDelta": {
+          "xact_commit": 4517,
+          "xact_rollback": 0,
+          "blks_read": 9,
+          "blks_hit": 1164281,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 1820,
+      "writerCommits": 788,
+      "elapsedMs": 30374.8111,
+      "rps": 59.918068099524746,
+      "p50": 16.416199999999662,
+      "p95": 27.704999999999927,
+      "max": 56.21719999999982,
+      "rssPeak": 189648896,
+      "heapPeak": 97853776,
+      "poolConnectionsPeak": 1,
+      "poolWaitingPeak": 0,
+      "cpuMicroseconds": {
+        "user": 5547000,
+        "system": 1610000
+      },
+      "eventLoopP95Ms": 30.556159,
+      "eventLoopMaxMs": 35.291135,
+      "idleTransactions": 0,
+      "cases": {
+        "cliente:": 76,
+        "cliente:Q04TARGET": 76,
+        "cliente:%": 76,
+        "cliente:Q04HTTPONLY": 76,
+        "proveedor:": 76,
+        "proveedor:Q04TARGET": 76,
+        "proveedor:%": 76,
+        "proveedor:Q04HTTPONLY": 76,
+        "producto:": 76,
+        "producto:Q04TARGET": 76,
+        "producto:%": 76,
+        "producto:Q04HTTPONLY": 76,
+        "cotizacion:": 76,
+        "cotizacion:Q04TARGET": 76,
+        "cotizacion:%": 76,
+        "cotizacion:Q04HTTPONLY": 76,
+        "compra:": 76,
+        "compra:Q04TARGET": 76,
+        "compra:%": 76,
+        "compra:Q04HTTPONLY": 76,
+        "venta:": 75,
+        "venta:Q04TARGET": 75,
+        "venta:%": 75,
+        "venta:Q04HTTPONLY": 75
+      },
+      "errors": 0
+    },
+    {
+      "readers": 4,
+      "generatorResources": {
+        "rssPeak": 228532224,
+        "heapPeak": 95704016,
+        "cpuMicroseconds": {
+          "user": 8516000,
+          "system": 1453000
+        },
+        "eventLoopP95Ms": 23.052287
+      },
+      "postgres": {
+        "peak": {
+          "samples": 60,
+          "connections": 5,
+          "active": 4,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 0.010419
+        },
+        "countersDelta": {
+          "xact_commit": 31545,
+          "xact_rollback": 0,
+          "blks_read": 0,
+          "blks_hit": 9097765,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 15597,
+      "writerCommits": 896,
+      "elapsedMs": 30096.112899999993,
+      "rps": 518.2396827066663,
+      "p50": 7.004000000000815,
+      "p95": 13.682700000001205,
+      "max": 80.27019999999999,
+      "rssPeak": 251252736,
+      "heapPeak": 118277088,
+      "poolConnectionsPeak": 4,
+      "poolWaitingPeak": 0,
+      "cpuMicroseconds": {
+        "user": 15187000,
+        "system": 4453000
+      },
+      "eventLoopP95Ms": 20.758527,
+      "eventLoopMaxMs": 30.687231,
+      "idleTransactions": 0,
+      "cases": {
+        "cliente:": 649,
+        "cliente:Q04TARGET": 650,
+        "cliente:%": 651,
+        "cliente:Q04HTTPONLY": 652,
+        "proveedor:": 651,
+        "proveedor:Q04TARGET": 651,
+        "proveedor:%": 651,
+        "proveedor:Q04HTTPONLY": 651,
+        "producto:": 651,
+        "producto:Q04TARGET": 651,
+        "producto:%": 651,
+        "producto:Q04HTTPONLY": 651,
+        "cotizacion:": 651,
+        "cotizacion:Q04TARGET": 650,
+        "cotizacion:%": 649,
+        "cotizacion:Q04HTTPONLY": 649,
+        "compra:": 649,
+        "compra:Q04TARGET": 649,
+        "compra:%": 649,
+        "compra:Q04HTTPONLY": 649,
+        "venta:": 648,
+        "venta:Q04TARGET": 648,
+        "venta:%": 648,
+        "venta:Q04HTTPONLY": 648
+      },
+      "errors": 0
+    },
+    {
+      "readers": 8,
+      "generatorResources": {
+        "rssPeak": 232583168,
+        "heapPeak": 98039296,
+        "cpuMicroseconds": {
+          "user": 10750000,
+          "system": 1453000
+        },
+        "eventLoopP95Ms": 22.527999
+      },
+      "postgres": {
+        "peak": {
+          "samples": 61,
+          "connections": 6,
+          "active": 4,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 0.151427
+        },
+        "countersDelta": {
+          "xact_commit": 44104,
+          "xact_rollback": 0,
+          "blks_read": 0,
+          "blks_hit": 12101724,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 21729,
+      "writerCommits": 867,
+      "elapsedMs": 30591.2503,
+      "rps": 710.3011412384149,
+      "p50": 10.023099999998522,
+      "p95": 19.237299999999777,
+      "max": 45.9998999999998,
+      "rssPeak": 254398464,
+      "heapPeak": 130587456,
+      "poolConnectionsPeak": 4,
+      "poolWaitingPeak": 4,
+      "cpuMicroseconds": {
+        "user": 18266000,
+        "system": 5437000
+      },
+      "eventLoopP95Ms": 20.791295,
+      "eventLoopMaxMs": 34.766847,
+      "idleTransactions": 0,
+      "cases": {
+        "cliente:": 903,
+        "proveedor:": 907,
+        "cliente:Q04TARGET": 904,
+        "cliente:%": 905,
+        "cliente:Q04HTTPONLY": 906,
+        "proveedor:Q04TARGET": 908,
+        "proveedor:%": 909,
+        "proveedor:Q04HTTPONLY": 909,
+        "producto:": 909,
+        "producto:Q04TARGET": 909,
+        "producto:%": 909,
+        "producto:Q04HTTPONLY": 908,
+        "cotizacion:": 907,
+        "cotizacion:Q04TARGET": 907,
+        "cotizacion:%": 907,
+        "cotizacion:Q04HTTPONLY": 905,
+        "compra:": 903,
+        "compra:Q04TARGET": 902,
+        "compra:%": 902,
+        "compra:Q04HTTPONLY": 902,
+        "venta:": 902,
+        "venta:Q04TARGET": 902,
+        "venta:%": 902,
+        "venta:Q04HTTPONLY": 902
+      },
+      "errors": 0
+    }
+  ],
+  "limitations": [
+    "Servidor Nest de prueba con controladores/servicios reales y JWT; no AppModule, scheduler, integraciones ni ThrottlerGuard.",
+    "Proyecciones reales y restricciones restauradas; nombres/descripciones por SQL, no flujos financieros; imágenes verificadas como metadatos, no archivos.",
+    "Carga cerrada, caché caliente y ventanas de 30 segundos: no certificación de capacidad máxima, SLA ni soak prolongado.",
+    "CPU/memoria/event loop del padre incluyen servidor, escritor y monitor; generador en hijo separado. PostgreSQL: contadores/actividad, no CPU/RSS del SO; estadísticas acumuladas pueden retrasarse. Pool 4 solo de prueba."
+  ]
+}

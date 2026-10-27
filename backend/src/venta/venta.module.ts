@@ -7,10 +7,26 @@ import { TicketService } from './ticket.service';
 import { AuthModule } from '../auth/auth.module';
 import { FiscalModule } from '../fiscal/fiscal.module';
 
+import { RegistroVentaService } from './registro-venta.service';
+import { ConsultasVentaService } from './consultas-venta.service';
+import { DocumentosVentaService } from './documentos-venta.service';
+import { ReversionVentaService } from './reversion-venta.service';
+import { FacturaGlobalService } from './factura-global.service';
+import { SalidaDocumentosService } from './salida-documentos.service';
+import { SalidaDocumentosController } from './salida-documentos.controller';
 @Module({
   imports: [AuthModule, FiscalModule],
-  providers: [VentaService, TicketService],
-  controllers: [VentaController, FacturaController],
+  providers: [
+    VentaService,
+    TicketService,
+    RegistroVentaService,
+    ConsultasVentaService,
+    DocumentosVentaService,
+    ReversionVentaService,
+    FacturaGlobalService,
+    SalidaDocumentosService,
+  ],
+  controllers: [VentaController, FacturaController, SalidaDocumentosController],
   exports: [VentaService],
 })
 export class VentaModule {}

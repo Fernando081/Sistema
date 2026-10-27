@@ -1,4 +1,4 @@
-<header class="crm-header"><div><h2>Relaciones comerciales</h2><p>Oportunidades, agenda, unidades del cliente y demanda no atendida.</p></div><div><button mat-stroked-button (click)="cargar()"><mat-icon>refresh</mat-icon>Actualizar</button><button mat-flat-button (click)="editar()"><mat-icon>add_business</mat-icon>Nueva oportunidad</button></div></header>
+<header class="crm-header"><div><h2>Relaciones comerciales</h2><p>Oportunidades, agenda, unidades del cliente y demanda no atendida.</p></div><div><a mat-stroked-button routerLink="/crm/bandeja">Bandeja comercial</a><button mat-stroked-button (click)="cargar()"><mat-icon>refresh</mat-icon>Actualizar</button><button mat-flat-button (click)="editar()"><mat-icon>add_business</mat-icon>Nueva oportunidad</button></div></header>
 
 @if (resumen(); as r) {
   <section class="crm-metrics" aria-label="Resumen comercial">
@@ -9,7 +9,7 @@
   </section>
 }
 
-<mat-tab-group animationDuration="180ms">
+<mat-tab-group animationDuration="180ms" [selectedIndex]="selectedTab()" (selectedIndexChange)="selectedTab.set($event)">
   <mat-tab label="Oportunidades y agenda">
     <div class="crm-controls">
       <form [formGroup]="filtros" class="crm-filters" (ngSubmit)="$event.preventDefault()"><mat-form-field class="search-field" subscriptSizing="dynamic"><mat-label>Buscar empresa, contacto, teléfono, VIN o ESN</mat-label><input matInput formControlName="q"><mat-icon matSuffix>search</mat-icon></mat-form-field><mat-form-field subscriptSizing="dynamic"><mat-label>Etapa</mat-label><mat-select formControlName="etapa"><mat-option value="">Todas</mat-option>@for(etapa of etapas;track etapa){<mat-option [value]="etapa">{{etapa}}</mat-option>}</mat-select></mat-form-field><mat-form-field subscriptSizing="dynamic"><mat-label>Agenda</mat-label><mat-select formControlName="agenda"><mat-option value="todas">Todas</mat-option><mat-option value="vencidas">Vencidas</mat-option><mat-option value="hoy">Para hoy</mat-option><mat-option value="sin-fecha">Sin siguiente acción</mat-option></mat-select></mat-form-field></form>
@@ -58,4 +58,5 @@
     <mat-paginator [length]="totalPerdidas()" [pageIndex]="pagePerdidas" [pageSize]="pageSizePerdidas" [pageSizeOptions]="[10,25,50]" (page)="paginarPerdidas($event)" aria-label="Páginas de ventas perdidas"></mat-paginator>
   </mat-tab>
   <mat-tab label="Operación CRM"><app-crm-operativo /></mat-tab>
+  @if (adminWeb) { <mat-tab label="Solicitudes web"><ng-template matTabContent><app-crm-solicitudes-web /></ng-template></mat-tab> }
 </mat-tab-group>

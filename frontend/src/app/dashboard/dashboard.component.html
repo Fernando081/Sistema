@@ -1,3 +1,39 @@
+<section class="dashboard-freshness" aria-label="Actualización de las métricas" aria-live="polite">
+  @if (refreshStatus(); as status) {
+    <strong>{{ status.overdue ? 'Métricas pendientes de actualización' : (status.freshness === 'current' ? 'Refresco diario al día' : 'Sin refresco diario confirmado') }}</strong>
+    <span>Último refresco exitoso: {{ status.lastSuccessAt ? (status.lastSuccessAt | date:'dd/MM/yyyy HH:mm':'-0600') + ' · hora de México' : 'Sin registro' }}.</span>
+    <small>Vistas analíticas: actualización diaria a las 02:00, hora de México. No representa información en tiempo real.</small>
+    @if (status.lastRun?.status === 'failed') { <span>El último intento falló.</span> }
+    @if (status.lastRun?.status === 'running') { <span>Hay una ejecución sin cierre confirmado.</span> }
+    <details><summary>Últimas ejecuciones ({{ status.recentRuns.length }})</summary>
+      <ul>@for (run of status.recentRuns; track run.id) {
+        <li>{{ run.startedAt | date:'dd/MM/yyyy HH:mm':'-0600' }} · {{ run.status === 'success' ? 'Completada' : (run.status === 'failed' ? 'Fallida' : 'Sin cierre confirmado') }}</li>
+      } @empty { <li>Sin ejecuciones registradas.</li> }</ul>
+    </details>
+  } @else {
+    <span>{{ refreshStatus() === undefined ? 'Consultando actualización de métricas…' : 'No se pudo verificar la actualización de las métricas.' }}</span>
+  }
+  <details #automaticProcesses class="scheduled-jobs"><summary>Procesos automáticos</summary>
+    @if (scheduledJobs(); as jobs) {
+      @for (job of jobs; track job.name) {
+        <section [attr.aria-label]="job.name === 'operational_alerts' ? 'Generación de alertas' : job.name === 'crm_reports' ? 'Reportes comerciales' : 'Revisión de frescura'">
+          <strong>{{ job.name === 'operational_alerts' ? 'Generación de alertas' : job.name === 'crm_reports' ? 'Reportes comerciales' : 'Revisión de frescura' }}</strong>
+          <p>{{ job.overdue ? 'Sin éxito para la ejecución esperada' : (job.lastSuccessAt ? 'Ejecución reciente registrada' : 'Sin éxito registrado') }}.</p>
+          <p>Último éxito: {{ job.lastSuccessAt ? (job.lastSuccessAt | date:'dd/MM/yyyy HH:mm':'-0600') + ' · hora de México' : 'Sin registro' }}.</p>
+          @if (job.lastRun?.status === 'failed') { <p>El último intento falló.</p> }
+          @if (job.lastRun?.status === 'running') { <p>Hay un intento sin cierre confirmado.</p> }
+          <details><summary>Historial ({{ job.recentRuns.length }})</summary><ul>
+            @for (run of job.recentRuns; track run.id) { <li>{{ run.startedAt | date:'dd/MM/yyyy HH:mm':'-0600' }} · {{ run.status === 'success' ? 'Completada' : (run.status === 'failed' ? 'Fallida' : 'Sin cierre confirmado') }}</li> }
+            @empty { <li>Sin ejecuciones registradas.</li> }
+          </ul></details>
+        </section>
+      } @empty { <p>Sin procesos registrados.</p> }
+      <small>Se ejecutan cada diez minutos. Los fallos o atrasos generan avisos internos para administradores.
+        Leer un aviso no confirma recuperación: se requiere un éxito posterior y el proceso al día.
+        El estado del cron no incluye la revisión al abrir notificaciones.</small>
+    } @else { <p>{{ scheduledJobs() === undefined ? 'Consultando procesos…' : 'No se pudo verificar el estado de los procesos.' }}</p> }
+  </details>
+</section>
 @if (loadError()) {
   <div role="alert" class="erp-error-state"><mat-icon>cloud_off</mat-icon><div><strong>No se pudo cargar el centro de operación</strong><p>Revisa la conexión y vuelve a abrir esta página.</p></div></div>
 } @else if (dashboardData(); as data) {
@@ -37,18 +73,18 @@
   <details class="advanced-analysis">
     <summary><span><mat-icon>analytics</mat-icon><span><strong>Análisis avanzado</strong><small>Inventario, clientes, rentabilidad y operación</small></span></span><mat-icon>expand_more</mat-icon></summary>
     <div class="advanced-metrics">
-      <div><span>Nivel de surtido</span><strong>{{ tasaCumplimientoAnimado() | number:'1.1-1' }}%</strong><small>Pedidos que se pudieron surtir</small></div>
-      <div><span>Margen bruto</span><strong>{{ margenUtilidadBrutaAnimado() | number:'1.1-1' }}%</strong><small>Rentabilidad antes de gastos</small></div>
-      <div><span>Rotación de inventario</span><strong>{{ tasaRotacionInventarioAnimado() | number:'1.1-2' }}</strong><small>Veces que gira la existencia</small></div>
-      <div><span>Rentabilidad del inventario</span><strong>{{ retornoInversionInventarioAnimado() | number:'1.1-2' }}</strong><small>GMROI</small></div>
-      <div><span>Días para pagar proveedores</span><strong>{{ diasCuentasPorPagarAnimado() | number:'1.0-0' }}</strong><small>DPO</small></div>
-      <div><span>Conversión de cotizaciones</span><strong>{{ tasaConversionCotizacionesAnimado() | number:'1.1-1' }}%</strong><small>Cotizaciones convertidas en venta</small></div>
+      <div><span>Nivel de surtido</span><strong>{{ data.operaciones.tasa_cumplimiento == null ? 'No disponible' : ((tasaCumplimientoAnimado() | number:'1.1-1') + '%') }}</strong><small>Unidades surtidas / solicitadas · pedidos de los últimos 90 días</small></div>
+      <div><span>Margen bruto</span><strong>{{ data.ventas.margen_utilidad_bruta == null ? 'No disponible' : ((margenUtilidadBrutaAnimado() | number:'1.1-1') + '%') }}</strong><small>Después de devoluciones y notas · costos históricos conocidos</small></div>
+      <div><span>Rotación anualizada (estimada)</span><strong>{{ data.inventario.tasa_rotacion_inventario == null ? 'No disponible' : (tasaRotacionInventarioAnimado() | number:'1.1-2') }}</strong><small>Venta de 90 días anualizada / stock actual</small></div>
+      <div><span>Rentabilidad del inventario</span><strong>{{ dashboardData()?.inventario?.retorno_inversion_inventario == null ? 'No disponible' : (retornoInversionInventarioAnimado() | number:'1.1-2') }}</strong><small>GMROI de 90 días · {{ data.inventario.gmroi_dias_historial || 0 }}/90 capturas diarias; requiere costos completos</small></div>
+      <div><span>Plazo efectivo de pago</span><strong>{{ data.clientes.dias_cuentas_por_pagar == null ? 'No disponible' : (diasCuentasPorPagarAnimado() | number:'1.1-1') }}</strong><small>Días ponderados por monto · pagos vigentes de los últimos 90 días</small></div>
+      <div><span>Conversión de cotizaciones</span><strong>{{ data.operaciones.tasa_conversion_cotizaciones == null ? 'No disponible' : ((tasaConversionCotizacionesAnimado() | number:'1.1-1') + '%') }}</strong><small>Cotizaciones de los últimos 90 días con factura de ingreso vigente</small></div>
     </div>
     @defer (on viewport) {
       <div class="chart-grid secondary">
         <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Venta por categoría</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartVentasPorCategoria" [theme]="theme() ? 'dark' : 'light'" class="chart" role="img" aria-label="Categorías con mayor y menor venta"></div></mat-card-content></mat-card>
         <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Actividad por hora y día</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartComportamientoHoraDia" [theme]="theme() ? 'dark' : 'light'" class="chart" role="img" aria-label="Mapa de actividad de ventas por hora y día"></div></mat-card-content></mat-card>
-        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Rentabilidad por marca o proveedor</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartRentabilidad" [theme]="theme() ? 'dark' : 'light'" class="chart" role="img" aria-label="Participación de rentabilidad por marca o proveedor"></div></mat-card-content></mat-card>
+        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Utilidad bruta por marca</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartRentabilidad" [theme]="theme() ? 'dark' : 'light'" class="chart" role="img" aria-label="Utilidad por marca con costos históricos conocidos"></div></mat-card-content></mat-card>
       </div>
     } @placeholder {<div class="chart-skeleton"><span></span><span></span><span></span></div>}
   </details>

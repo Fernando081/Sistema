@@ -1,0 +1,21 @@
+
+> test:web-financial-db
+> npm --workspace backend run build && node backend/verify-web-financial.js
+
+
+> backend@0.0.1 build
+> nest build
+
+OK: Monedas separadas; cliente/rutas directas y pedido sin duplicar; global/cancelados/sin vínculo fuera del importe
+OK: Notas con impuestos y devoluciones en tres fracciones conservan centavos; venta neta excluye impuestos
+OK: REP canónico una vez pese a dos copias; cancelación local/fiscal excluida; Pagada sin pago no inventa cobro
+OK: Totales mayores que Number.MAX_SAFE_INTEGER viajan como cadenas decimales con centavos exactos
+OK: Código de tres letras no reconocido y XXX quedan sin desglose; no se presume MXN ni cambio de moneda
+OK: Nota activa con moneda/cliente/estado incongruente deja neto desconocido, no cero ni subtotal parcial
+OK: Devolución sin conciliación de encabezado/detalle y mezcla histórica nota/devolución no fabrican neto
+OK: REP/compatibilidad incoherentes, detalle duplicado y cancelación cambian cobertura/cobros sin inferir por saldo
+OK: Saldos NaN y encabezados inconsistentes quedan desconocidos; un indicador no rellena otro
+OK: Un snapshot READ ONLY/REPEATABLE READ/plazo5s; tablas intactas, contactos/IDs omitidos y periodo vacío sin monedas inventadas
+OK: Login bcrypt/PostgreSQL y JWT/guards reales: ADMIN200/no-store, anónimo401, USER403, campos extra400 y revocación401
+OK: Sólo el esquema propio eliminado; servidor y conexiones cerrados
+Medición financiera aislada: 12/12 grupos aprobados. Evidencia: .artifacts/web-financial-db.json

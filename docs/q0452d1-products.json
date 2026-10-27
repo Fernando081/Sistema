@@ -1,0 +1,88 @@
+{
+  "generatedAt": "2026-10-01T21:20:27.251Z",
+  "node": "24.19.0",
+  "realComparisons": 60,
+  "totalComparisons": 120,
+  "metrics": [
+    {
+      "operation": "conteo",
+      "variant": "legacy",
+      "medianMs": 0.279,
+      "samplesMs": [
+        0.167,
+        0.22,
+        0.279,
+        0.303,
+        0.337
+      ],
+      "nodes": {
+        "Aggregate": 1,
+        "Function Scan": 1
+      }
+    },
+    {
+      "operation": "conteo",
+      "variant": "direct",
+      "medianMs": 0.052,
+      "samplesMs": [
+        0.036,
+        0.04,
+        0.052,
+        0.056,
+        0.06
+      ],
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      }
+    },
+    {
+      "operation": "pagina",
+      "variant": "legacy",
+      "medianMs": 0.241,
+      "samplesMs": [
+        0.209,
+        0.238,
+        0.241,
+        0.243,
+        0.355
+      ],
+      "nodes": {
+        "Nested Loop": 1,
+        "Limit": 1,
+        "Sort": 1,
+        "Function Scan": 1,
+        "Aggregate": 1,
+        "Index Scan": 1
+      }
+    },
+    {
+      "operation": "pagina",
+      "variant": "direct",
+      "medianMs": 0.187,
+      "samplesMs": [
+        0.14,
+        0.165,
+        0.187,
+        0.214,
+        0.299
+      ],
+      "nodes": {
+        "Nested Loop": 4,
+        "Limit": 1,
+        "Result": 1,
+        "Sort": 1,
+        "Seq Scan": 3,
+        "Materialize": 1,
+        "Index Scan": 3,
+        "Aggregate": 2
+      }
+    }
+  ],
+  "limitations": [
+    "Comparacion real READ ONLY y fixtures temporales con ROLLBACK.",
+    "Cinco muestras en base actual; sin concurrencia ni SLA.",
+    "Valida datos de imagen/SAT/equivalentes; no sustituye inspeccion visual de archivos.",
+    "Sin indices nuevos de OEM/aplicaciones en este bloque."
+  ]
+}

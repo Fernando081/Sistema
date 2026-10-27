@@ -1,3 +1,8 @@
+import { ContabilidadService } from './contabilidad.service';
+import { ConciliacionService } from './conciliacion.service';
+import { TesoreriaService } from './tesoreria.service';
+import { TransferenciasCierresService } from './transferencias-cierres.service';
+import { CorteFinancieroService } from './corte-financiero.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FinanzasService } from './finanzas.service';
@@ -9,7 +14,14 @@ import { AuthModule } from '../auth/auth.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Gasto, Saldo]), AuthModule],
   controllers: [FinanzasController],
-  providers: [FinanzasService],
+  providers: [
+    FinanzasService,
+    ContabilidadService,
+    ConciliacionService,
+    TesoreriaService,
+    TransferenciasCierresService,
+    CorteFinancieroService,
+  ],
   exports: [FinanzasService],
 })
 export class FinanzasModule {}

@@ -1,0 +1,7 @@
+ }finally{
+  const cleanup=await Promise.allSettled([browser?.close(),app?.close(),writer?.end(),server?.listening?new Promise(resolve=>{server.close(resolve);server.closeAllConnections?.();}):undefined]);
+  if(created&&/^verify_outbox_[a-f0-9]{16}$/.test(database)){await control.query('SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname=$1 AND pid<>pg_backend_pid()',[database]);await control.query('DROP DATABASE "'+database+'"');report.copyRemoved=(await control.query('SELECT 1 FROM pg_database WHERE datname=$1',[database])).rowCount===0;}
+  await control.end();for(const[k,v]of Object.entries(saved)){if(v===undefined)delete process.env[k];else process.env[k]=v;}report.cleanupPassed=cleanup.every(r=>r.status==='fulfilled');report.lastStage=stage;fs.writeFileSync(path.join(root,'.artifacts/o012a-outbox.json'),JSON.stringify(report,null,2)+'\n');assert.ok(report.cleanupPassed);
+ }
+}
+main().catch(error=>{console.error('Falló aceptación O01.2a:',error instanceof assert.AssertionError?error.message:[error.name,error.code,error.constraint].filter(Boolean).join(' '),(error.stack||'').split('\n').filter(l=>/^\s+at /.test(l)).slice(0,3).join('\n'),'Etapa en .artifacts/o012a-outbox.json; sin secretos.');process.exitCode=1;});

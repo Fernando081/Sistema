@@ -1,0 +1,10 @@
+OK: Cliente explícito, idempotencia, versión y acceso ADMIN/responsable; cliente inexistente y otro usuario rechazados
+OK: Cotizaciones del cliente, caracteres literales, confirmación de origen, vínculo único y reintentos concurrentes sin duplicar historial
+OK: Dos oportunidades compiten por una cotización: sólo un vínculo puede quedar activo
+OK: FK compuestas impiden cambiar cliente por API/SQL mientras haya cotizaciones vinculadas
+OK: Cadena directa/pedido, ventas parciales sin duplicar, cancelación local/fiscal, cliente/relaciones/estado inválidos, NC y ventas sin vínculo
+OK: Retiro idempotente trazado; reintento antiguo no restaura vínculo; facturas permanecen intactas y métricas se recalculan
+OK: Cambio de cliente permitido después de retirar todos los vínculos, con historial
+OK: HTTP con login/bcrypt/JWT reales: anónimo/revocado401, tercero404, ADMIN/responsable200 no-store, DTO/confirmación400 y PUT válido200
+OK: Esquema propio eliminado y servidor/conexiones cerrados
+Trazabilidad comercial: 9/9 grupos aprobados. .artifacts/web-commercial-db.json

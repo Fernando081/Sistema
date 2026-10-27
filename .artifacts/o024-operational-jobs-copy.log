@@ -1,0 +1,6 @@
+
+> test:operational-jobs
+> node backend/scratch/verify-operational-jobs.js --backup=.backups/2026-10-12T17-16-23-784Z/database.dump
+
+Jobs: concurrencia PG, fallo/recuperacion, servicios reales, consulta manual, horario e historial aprobados.
+Copia de prueba eliminada; base operacional conservada.

@@ -1,0 +1,208 @@
+{
+  "generatedAt": "2026-10-02T19:57:36.597Z",
+  "postgresSettings": {
+    "version": "18.2",
+    "autovacuum": "on"
+  },
+  "profile": {
+    "name": "mostrador",
+    "readers": 4,
+    "readerPauseMs": 1500,
+    "businessPauseMs": 3000,
+    "financialPauseMs": 30000,
+    "sqlPauseMs": 60,
+    "duration": 120
+  },
+  "phase": "Q04.5.3c2c3d3",
+  "financialHttpResults": [
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    }
+  ],
+  "transactionAgeScope": {
+    "client": "client backend: aplicación, escritor SQL y conexiones de medición; no exclusivamente HTTP",
+    "auxiliary": "backend_type distinto de client backend; incluye autovacuum",
+    "autovacuum": "autovacuum worker; subconjunto de auxiliares",
+    "peaks": "Máximos independientes muestreados cada 500 ms; no se suman ni equivalen a duración de solicitudes"
+  },
+  "transactionAgeContract": {
+    "mixedBackendTypes": true,
+    "otherDatabaseExcluded": true,
+    "emptyGroupsZero": true
+  },
+  "node": "24.19.0",
+  "fixturesPerDomain": 1000,
+  "poolMax": 10,
+  "secondsPerGroup": 40,
+  "relational": true,
+  "separateGenerator": true,
+  "schedulerJobs": 2,
+  "preflight": {
+    "throttler429": true,
+    "notificationJobExecuted": true,
+    "unauthorized401": true,
+    "invalidLimit400": true,
+    "invalidDate400": true,
+    "csvSixDomains": true
+  },
+  "groups": [
+    {
+      "business": {
+        "transfers": 28,
+        "assembled": 14,
+        "disassembled": 14,
+        "payments": 14,
+        "replays": 5
+      },
+      "financialCycles": 2,
+      "businessIntegrity": {
+        "stockPhysicalAligned": true,
+        "stockRestored": true,
+        "paymentBalanceCashAligned": true
+      },
+      "postgresProcesses": {
+        "samples": 9,
+        "availableSamples": 9,
+        "unavailableSamples": 0,
+        "workingSetSumPeakBytes": 235618304,
+        "cpuMillisecondsDelta": 3500,
+        "readTransferBytesDelta": 188416,
+        "writeTransferBytesDelta": 20176896,
+        "maxDeadTuples": 2005,
+        "maxLiveTuples": 239229,
+        "autovacuumCountPeak": 13
+      },
+      "walBytesClusterWide": 10806680,
+      "readers": 4,
+      "generatorResources": {
+        "rssPeak": 63397888,
+        "heapPeak": 10853640,
+        "cpuMicroseconds": {
+          "user": 578000,
+          "system": 172000
+        },
+        "eventLoopP95Ms": 34.734079
+      },
+      "postgres": {
+        "peak": {
+          "samples": 82,
+          "connections": 7,
+          "active": 1,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 0.196527,
+          "clientConnections": 6,
+          "auxiliaryConnections": 1,
+          "maxClientTransactionAgeSeconds": 0.008159,
+          "maxAuxiliaryTransactionAgeSeconds": 0.196529,
+          "maxAutovacuumTransactionAgeSeconds": 0.196529
+        },
+        "countersDelta": {
+          "xact_commit": 1330,
+          "xact_rollback": 8,
+          "blks_read": 48,
+          "blks_hit": 221238,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 108,
+      "writerCommits": 575,
+      "elapsedMs": 44471.411400000005,
+      "rps": 2.428526475775401,
+      "p50": 25.03940000000148,
+      "p95": 60.891200000000026,
+      "max": 82.65420000000017,
+      "rssPeak": 173527040,
+      "heapPeak": 78870640,
+      "poolConnectionsPeak": 4,
+      "poolWaitingPeak": 0,
+      "cpuMicroseconds": {
+        "user": 2859000,
+        "system": 875000
+      },
+      "eventLoopP95Ms": 34.177023,
+      "eventLoopMaxMs": 163.053567,
+      "idleTransactions": 0,
+      "cases": {
+        "cliente:": 5,
+        "cliente:%": 7,
+        "cliente:Q04TARGET": 6,
+        "cliente:Q04HTTPONLY": 7,
+        "proveedor:": 6,
+        "proveedor:Q04TARGET": 5,
+        "proveedor:%": 4,
+        "proveedor:Q04HTTPONLY": 4,
+        "producto:": 4,
+        "producto:Q04TARGET": 4,
+        "producto:%": 4,
+        "producto:Q04HTTPONLY": 4,
+        "cotizacion:": 4,
+        "cotizacion:Q04TARGET": 4,
+        "cotizacion:%": 4,
+        "cotizacion:Q04HTTPONLY": 4,
+        "compra:": 4,
+        "compra:Q04TARGET": 4,
+        "compra:%": 4,
+        "compra:Q04HTTPONLY": 4,
+        "venta:": 4,
+        "venta:Q04TARGET": 4,
+        "venta:%": 4,
+        "venta:Q04HTTPONLY": 4
+      },
+      "errors": 0,
+      "objectives": {
+        "scope": "Objetivos provisionales de regresión local; no SLA productivo ni certificación de fuga de memoria",
+        "goals": {
+          "readP95Ms": 500,
+          "eventLoopP95Ms": 100,
+          "rssGrowthBytes": 134217728
+        },
+        "firstRssMean": 160679838.47619048,
+        "lastRssMean": 134020300.8,
+        "rssGrowthBytes": 0,
+        "samples": 421,
+        "checks": {
+          "readP95": true,
+          "eventLoopP95": true,
+          "rssGrowth": true,
+          "readsAndWrites": true,
+          "integrity": true
+        },
+        "passed": true
+      }
+    }
+  ],
+  "limitations": [
+    "AppModule completo; compra/venta PPD/REP/pedido facturado/orden y recepción por HTTP, fiscal mock. No sustituye regresión integral de NC, reversos ni cuentas proveedor.",
+    "Seis proyecciones reales; transferencias/kits/cobros por HTTP y mutación SQL de nombres para carreras total/página. Modalidad financiera indicada por financialHttpResults; escritores de caja coordinados. Imágenes como metadatos, no archivos.",
+    "Carga cerrada, caché caliente y ventanas de 40 segundos y 1000 registros por dominio: no certificación de capacidad máxima, SLA ni soak de horas.",
+    "CPU/memoria/event loop del padre incluyen servidor, escritor y monitor; generador en hijo separado. PostgreSQL: actividad, tuplas/autovacuum y CPU/working set/transferencia de procesos asociados a la copia muestreados con CIM Windows. Working sets sumados incluyen páginas compartidas; I/O de proceso incluye red y no equivale a disco. WAL global del cluster incluye otras bases; estadísticas pueden retrasarse. Pool de aplicación sin ajuste, observado máximo 10."
+  ]
+}

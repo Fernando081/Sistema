@@ -10,9 +10,10 @@
   </mat-card-header>
 
   <mat-card-content>
+    <button mat-stroked-button type="button" [disabled]="directory.exporting()" (click)="exportar()" class="mb-4"><mat-icon>download</mat-icon>Exportar CSV filtrado</button>
     <mat-form-field appearance="outline" class="w-full mb-4">
       <mat-label>Buscar proveedor</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por RFC, Razón Social..." #input>
+      <input matInput (input)="applyFilter($event)" [value]="directory.term()" placeholder="Nombre, RFC o código postal" #input>
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
@@ -22,7 +23,7 @@
     </div>
 
     <div class="overflow-auto" [hidden]="isLoading">
-      <table mat-table [dataSource]="dataSource" matSort class="w-full">
+      <table mat-table [dataSource]="dataSource" matSort [matSortActive]="directory.query().sortBy === 'id' ? 'idProveedor' : directory.query().sortBy" [matSortDirection]="directory.query().sortOrder" matSortDisableClear  (matSortChange)="directory.sort($event)" class="w-full">
 
         <ng-container matColumnDef="idProveedor">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
@@ -72,7 +73,7 @@
     </div>
 
     <mat-paginator 
-      [pageSize]="10"
+      [length]="totalItems" [pageSize]="directory.query().limit" [pageIndex]="directory.query().page - 1" (page)="directory.page($event)"
       [pageSizeOptions]="[10, 25, 50]"
       showFirstLastButtons
       aria-label="Seleccionar página de proveedores">

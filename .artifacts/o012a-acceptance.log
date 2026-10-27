@@ -1,0 +1,115 @@
+
+> test:document-outbox
+> node backend/verify-document-outbox.js --backup=.backups/2026-10-22T15-36-17-977Z/database.dump
+
+{"type":"http_request","requestId":"aaa55846-0f6b-4e9c-8355-b93c3b7992c3","method":"PUT","path":"/api/v1/comercial/clientes/8","statusCode":200,"durationMs":44.74,"idUser":2}
+{"type":"http_request","requestId":"e36147d6-228c-4260-ab46-625633657f0d","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":168.73,"idUser":2}
+{"type":"http_request","requestId":"366ac120-42d0-402f-b7c6-da5c40f8182d","method":"GET","path":"/api/v1/venta/107/preparar-correo","statusCode":401,"durationMs":2.51,"idUser":null}
+{"type":"http_request","requestId":"9eeaa311-9002-4af1-83db-ae093f69f21c","method":"GET","path":"/api/v1/venta/107/preparar-correo","statusCode":403,"durationMs":6.65,"idUser":3}
+{"type":"http_request","requestId":"41f5d844-dadb-45e1-b04f-8ef9ee084e9c","method":"GET","path":"/api/v1/venta/107/preparar-correo","statusCode":200,"durationMs":40.99,"idUser":2}
+{"type":"http_request","requestId":"e45148de-02a0-46f0-8383-d423e221f16d","method":"GET","path":"/api/v1/venta/107/preparar-correo","statusCode":200,"durationMs":15.79,"idUser":2}
+{"type":"http_request","requestId":"6b7b7af8-c3c0-4dbb-bf9f-241d6188c0cb","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":400,"durationMs":8.97,"idUser":2}
+{"type":"http_request","requestId":"2dd23bec-1600-46c7-a125-6033520317b4","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":400,"durationMs":8.3,"idUser":2}
+{"type":"http_request","requestId":"6489b4dd-09c4-43aa-a42c-1e26a8319ccb","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":400,"durationMs":5.51,"idUser":2}
+{"type":"http_request","requestId":"f825d5ca-0b64-4052-bf77-4a65405246e4","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":400,"durationMs":3.32,"idUser":2}
+{"type":"http_request","requestId":"deb630c3-c8a8-435b-9f68-2419489c1f02","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":400,"durationMs":3.61,"idUser":2}
+OK: Venta real y revisión pura: HTTP401/403, permiso nuevo, DTO cerrado/confirmación, sin función histórica con escrituras ni SMTP
+{"type":"http_request","requestId":"1b64aae8-eece-4dd7-8090-530f7224cdd4","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":201,"durationMs":85.7,"idUser":2}
+{"type":"http_request","requestId":"e15637f7-759a-473d-a0d3-6517107c26f5","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":201,"durationMs":5.72,"idUser":2}
+{"type":"http_request","requestId":"397c6e86-323c-4d64-aff2-2e0617227c10","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":409,"durationMs":5.42,"idUser":2}
+{"type":"http_request","requestId":"1295b9f0-967c-4a6f-9516-c240eef73005","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":14.6,"idUser":2}
+OK: Preparación atómica de metadatos/PDF/destinatario, UUID/huella y recibo idempotente sin duplicar
+{"type":"http_request","requestId":"8d174f14-a28b-4f0e-843c-c7e619495569","method":"GET","path":"/api/v1/venta/107/correos/52e594c4-ec00-48a0-9a6f-4aff09e42e08/pdf","statusCode":200,"durationMs":9.43,"idUser":2}
+{"type":"http_request","requestId":"51a3d84a-b2d3-4dec-9100-7773222729d3","method":"POST","path":"/api/v1/venta/107/correos/52e594c4-ec00-48a0-9a6f-4aff09e42e08/simular","statusCode":201,"durationMs":13.5,"idUser":2}
+{"type":"http_request","requestId":"d5da5482-12ea-4555-b012-e708ddca4161","method":"POST","path":"/api/v1/venta/107/correos/52e594c4-ec00-48a0-9a6f-4aff09e42e08/simular","statusCode":201,"durationMs":7.74,"idUser":2}
+{"type":"http_request","requestId":"f10456c0-0669-4b3b-ab78-3ad517f00c7a","method":"POST","path":"/api/v1/venta/107/correos/52e594c4-ec00-48a0-9a6f-4aff09e42e08/simular","statusCode":409,"durationMs":8.57,"idUser":2}
+{"type":"http_request","requestId":"4761d3db-8e98-4a32-a1e7-14a31d2e2d81","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":5.67,"idUser":2}
+OK: PDF privado byte a byte, simulación/recibo/cierre únicos; factura, stock e historial SMTP intactos
+{"type":"http_request","requestId":"8eacf015-a37e-45b8-929c-f77f5b1fd4c1","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":201,"durationMs":50.17,"idUser":2}
+{"type":"http_request","requestId":"c65e0898-5fac-4e16-b785-e2731890cbab","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":409,"durationMs":5.43,"idUser":2}
+{"type":"http_request","requestId":"184e7150-4f33-4d5c-8876-4bf43795ca05","method":"POST","path":"/api/v1/venta/107/correos/4693f175-b3b9-4445-846b-45370a4db140/simular","statusCode":201,"durationMs":13.51,"idUser":2}
+{"type":"http_request","requestId":"f99f8001-699b-474d-a7ae-729a6083f3d8","method":"GET","path":"/api/v1/venta/107/preparar-correo","statusCode":400,"durationMs":5.76,"idUser":2}
+{"type":"http_request","requestId":"78923907-1c8c-40bf-a533-9a15acdfdc4d","method":"GET","path":"/api/v1/venta/107/preparar-correo","statusCode":400,"durationMs":6.98,"idUser":2}
+{"type":"http_request","requestId":"e062cbc9-2181-40f3-8dd0-ab90d3aa335c","method":"GET","path":"/api/v1/venta/107/preparar-correo","statusCode":400,"durationMs":5.27,"idUser":2}
+{"type":"http_request","requestId":"042c7759-309e-4fe6-80ad-3f8ebfa6be3d","method":"GET","path":"/api/v1/venta/107/preparar-correo","statusCode":400,"durationMs":6.7,"idUser":2}
+OK: Cambio de destinatario invalida revisión y consumidor; correo vacío/múltiple/inyección rechazados, Obsoleto conservado
+{"type":"http_request","requestId":"ef565d28-131c-4ad6-9153-9c9a4136166b","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":201,"durationMs":38.9,"idUser":2}
+{"type":"http_request","requestId":"cc5cd7ea-7217-42a4-b524-9aaf3f6d8c2e","method":"POST","path":"/api/v1/venta/107/correos/54917ee9-f431-4379-81a8-17fd6fdd2277/simular","statusCode":201,"durationMs":14.34,"idUser":2}
+OK: Cambio real de concepto invalida la preparación sin recalcular o reemplazar su archivo conservado
+{"type":"http_request","requestId":"597fc9e5-0510-4e5e-8402-d95c46e5d19b","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":201,"durationMs":56.69,"idUser":2}
+{"type":"http_request","requestId":"df2c0b49-1368-4bb2-9810-9f58628c2ee6","method":"POST","path":"/api/v1/venta/107/correos/86b84229-da6d-4cf1-9a77-c0cf7fee1ea8/cancelar","statusCode":201,"durationMs":7.42,"idUser":2}
+{"type":"http_request","requestId":"11c6c316-686b-49dd-98a3-1c502e98244c","method":"POST","path":"/api/v1/venta/107/correos/86b84229-da6d-4cf1-9a77-c0cf7fee1ea8/cancelar","statusCode":201,"durationMs":6.79,"idUser":2}
+{"type":"http_request","requestId":"0acac45a-ad3b-4edc-a9d0-60ccbc253789","method":"POST","path":"/api/v1/venta/107/correos/86b84229-da6d-4cf1-9a77-c0cf7fee1ea8/simular","statusCode":409,"durationMs":6.13,"idUser":2}
+{"type":"http_request","requestId":"c0e614df-aa0c-49b0-a8a9-4ddf437a629a","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":201,"durationMs":38.31,"idUser":2}
+OK: Cancelación con motivo/confirmación, respuesta repetida y competencia de cierre conservan un solo resultado terminal
+{"type":"http_request","requestId":"2ebc7fd5-c44e-49a3-b42e-fda73e75047d","method":"GET","path":"/api/v1/venta/107/correos/52e594c4-ec00-48a0-9a6f-4aff09e42e08/pdf","statusCode":404,"durationMs":8.74,"idUser":3}
+{"type":"http_request","requestId":"32b41c40-053f-40ef-92b8-38606a77ac94","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":8.26,"idUser":3}
+{"type":"http_request","requestId":"0198fbdc-2bd8-4ae9-90d3-c25f8f0e35ae","method":"POST","path":"/api/v1/venta/107/correos/3ade0885-0003-465d-8f19-5da38ceb20d3/cancelar","statusCode":201,"durationMs":10.29,"idUser":2}
+{"type":"http_request","requestId":"b34d6111-97de-443c-8e62-2b2e15a7e715","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":63.37,"idUser":2}
+{"type":"http_request","requestId":"aaa42a13-a96d-4df3-9497-c8bc58364ab3","method":"GET","path":"/api/v1/venta/108/correos/52e594c4-ec00-48a0-9a6f-4aff09e42e08/pdf","statusCode":404,"durationMs":9.39,"idUser":2}
+{"type":"http_request","requestId":"dbcdf176-3639-4146-b2b6-11e919b6c67e","method":"POST","path":"/api/v1/venta/108/correos/52e594c4-ec00-48a0-9a6f-4aff09e42e08/simular","statusCode":404,"durationMs":4.32,"idUser":2}
+OK: Delegación USER limitada a sus solicitudes, ADMIN con consulta/control, factura ajena y acceso PDF aislados
+OK: Rollback real de preparación, guardas ALWAYS y auditoría nominal sin destinatario/cuerpo/bytes
+OK: Revocación de sesión mientras espera bloqueo de factura impide preparar; autoridad revalidada en transacción
+{"type":"http_request","requestId":"d0a16f45-7baf-4e96-a703-b13ee6c73449","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":9.89,"idUser":2}
+{"type":"http_request","requestId":"a35e8c88-6de7-438e-b2bd-19528c064786","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":6.95,"idUser":2}
+{"type":"http_request","requestId":"dfa432c6-d922-4ea5-82df-fc2044a02b7c","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":8.25,"idUser":2}
+{"type":"http_request","requestId":"8a02c992-eddc-4e90-843d-97b24cbef5b7","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":10.38,"idUser":2}
+{"type":"http_request","requestId":"f27800f1-cf40-4fa2-b59c-138a927ccf76","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":4.76,"idUser":2}
+{"type":"http_request","requestId":"aa75f8a3-474c-4dfc-b98d-b986f7be96ab","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":5.91,"idUser":2}
+{"type":"http_request","requestId":"c7f7568c-0270-4bbb-bd27-6ba435f711d8","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":8.19,"idUser":2}
+{"type":"http_request","requestId":"310bb5db-4645-4360-80a8-7e40b0257450","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":5.33,"idUser":2}
+{"type":"http_request","requestId":"6cca2fdb-82cc-4f3c-83ce-28d3d36a5988","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":7.08,"idUser":2}
+{"type":"http_request","requestId":"3f8e770c-d48e-4864-9929-8de6b7a26ff6","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":9.15,"idUser":2}
+{"type":"http_request","requestId":"85ffc175-09ac-42a9-a73a-b0dbe7154485","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":8.13,"idUser":2}
+{"type":"http_request","requestId":"a908afec-63e9-4c97-a52d-ce7c11a84b41","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":6.23,"idUser":2}
+{"type":"http_request","requestId":"c91b4c96-5afe-4238-afe9-efa04d78a24d","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":5.21,"idUser":2}
+{"type":"http_request","requestId":"1ec23f5b-afa1-4033-ad79-e454943fc68b","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":7.1,"idUser":2}
+{"type":"http_request","requestId":"37a93e4c-eac4-4b47-97cc-a39845032a0b","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":6.49,"idUser":2}
+{"type":"http_request","requestId":"97585a50-7651-48f7-911b-cce1d2e7f544","method":"POST","path":"/api/v1/venta/107/enviar-correo","statusCode":409,"durationMs":7.25,"idUser":2}
+{"type":"http_request","requestId":"f373205a-f904-4f19-882c-f75977dd65ca","method":"GET","path":"/api/v1/venta/107/correos","statusCode":200,"durationMs":6.15,"idUser":2}
+OK: Protección explícita de archivo en auditoría, cuota20 serializada y recibo original válido incluso tras llegar al límite
+{"type":"http_request","requestId":"c901b312-6a8d-46cb-bf77-e77957c3b3e7","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":31.41,"idUser":2}
+{"type":"http_request","requestId":"23cc46d5-7702-4e88-b94c-ae5adb1a7be3","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":66.58,"idUser":null}
+{"type":"http_request","requestId":"f32e4ecc-b8ba-44e9-a9d2-fb33aa72a1b2","method":"GET","path":"/api/v1/venta/109/correos","statusCode":200,"durationMs":9.18,"idUser":2}
+{"type":"http_request","requestId":"cf6cb5e5-a51f-492d-a1b6-5996c23ee15e","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":77.78,"idUser":2}
+{"type":"http_request","requestId":"e35ef07b-73b7-48fe-ae38-4917ab401459","method":"GET","path":"/api/v1/venta/109/preparar-correo","statusCode":200,"durationMs":10.87,"idUser":2}
+{"type":"http_request","requestId":"e5d4c718-bc07-4b44-9bf9-d7264a6c3d0f","method":"POST","path":"/api/v1/venta/109/enviar-correo","statusCode":201,"durationMs":35.75,"idUser":2}
+{"type":"http_request","requestId":"4e6c8b97-8612-4abb-ab16-3c75a46955b3","method":"POST","path":"/api/v1/venta/109/enviar-correo","statusCode":201,"durationMs":12.33,"idUser":2}
+{"type":"http_request","requestId":"86887623-a472-4e78-8979-f47f83a0a78a","method":"GET","path":"/api/v1/venta/109/correos","statusCode":200,"durationMs":7.91,"idUser":2}
+{"type":"http_request","requestId":"bc47a7d6-a4d4-4f2e-a4e9-39e6440514ee","method":"GET","path":"/api/v1/venta/109/correos/83e266cd-f927-43e3-943c-6d80cce939a4/pdf","statusCode":200,"durationMs":4.75,"idUser":2}
+{"type":"http_request","requestId":"5c6e9c5c-cc5b-4549-b05c-d04a72717c75","method":"POST","path":"/api/v1/venta/109/correos/83e266cd-f927-43e3-943c-6d80cce939a4/simular","statusCode":201,"durationMs":11.05,"idUser":2}
+{"type":"http_request","requestId":"192088dc-a861-4c08-adc1-12e2e7aefafa","method":"GET","path":"/api/v1/venta/109/correos","statusCode":200,"durationMs":5.02,"idUser":2}
+{"type":"http_request","requestId":"f9f94ad0-27f7-4afe-8b42-d4d06caba9cc","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":5.13,"idUser":2}
+{"type":"http_request","requestId":"c513b957-a95c-4d92-af92-de323e635601","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":27.02,"idUser":2}
+{"type":"http_request","requestId":"de0b75b5-bb16-49c2-a453-9f541336012b","method":"GET","path":"/api/v1/venta/109/correos","statusCode":200,"durationMs":9.87,"idUser":2}
+{"type":"http_request","requestId":"194b1112-7655-4431-8349-d59cd3b39104","method":"GET","path":"/api/v1/venta/109/preparar-correo","statusCode":200,"durationMs":6.3,"idUser":2}
+{"type":"http_request","requestId":"da845317-e29d-48ea-9a84-53e4935e6b3f","method":"POST","path":"/api/v1/venta/109/enviar-correo","statusCode":201,"durationMs":38.85,"idUser":2}
+{"type":"http_request","requestId":"85958ce0-7c8b-4339-9102-a202d5b7c765","method":"GET","path":"/api/v1/venta/109/correos","statusCode":200,"durationMs":8.17,"idUser":2}
+{"type":"http_request","requestId":"d18404d6-ab96-42b3-abc2-d2fd845b8200","method":"POST","path":"/api/v1/venta/109/correos/281d14c1-7a85-4b77-af24-38c0fe663fd5/cancelar","statusCode":201,"durationMs":8.99,"idUser":2}
+{"type":"http_request","requestId":"a2d93e2a-5e59-4bff-a929-7c7b4e5d6920","method":"GET","path":"/api/v1/venta/109/correos","statusCode":200,"durationMs":6.07,"idUser":2}
+{"type":"http_request","requestId":"2ec8e569-1454-4a13-a1f5-c7fe260f2446","method":"GET","path":"/api/v1/venta","statusCode":200,"durationMs":6.25,"idUser":2}
+{"type":"http_request","requestId":"3d1260a3-cb08-46e5-a7a2-d9e38f601002","method":"GET","path":"/api/v1/venta/109/correos","statusCode":200,"durationMs":11.56,"idUser":2}
+OK: Angular/SQL reales light: revisión/confirmación, respuesta perdida sin duplicar, PDF/simulación/cancelación/recarga y acceso desde Facturas; Axe/reflujo 1280px
+{"type":"http_request","requestId":"6bb9ec32-fdfc-422e-b8f1-321b226118bd","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":15.3,"idUser":2}
+{"type":"http_request","requestId":"ed40399c-2225-4821-af7c-fb9f7a74611f","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":65.02,"idUser":null}
+{"type":"http_request","requestId":"5f1cbd40-9ace-43cf-b464-255faa46144f","method":"GET","path":"/api/v1/venta/110/correos","statusCode":200,"durationMs":4.55,"idUser":2}
+{"type":"http_request","requestId":"73c64e77-f527-48e6-a56d-e5bd31d324e7","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":41.43,"idUser":2}
+{"type":"http_request","requestId":"08f1231b-44d9-4f34-8c05-63c7345421c8","method":"GET","path":"/api/v1/venta/110/preparar-correo","statusCode":200,"durationMs":13.99,"idUser":2}
+{"type":"http_request","requestId":"3cff8038-dee5-4f67-a04c-6f65236f1b7d","method":"POST","path":"/api/v1/venta/110/enviar-correo","statusCode":201,"durationMs":30.98,"idUser":2}
+{"type":"http_request","requestId":"e8ad7d8f-a4b1-48f2-af5f-a4f5ea9b4450","method":"GET","path":"/api/v1/venta/110/correos","statusCode":200,"durationMs":5.4,"idUser":2}
+{"type":"http_request","requestId":"9fbf2c23-87c2-40b7-a56d-51654d03cfc6","method":"GET","path":"/api/v1/venta/110/correos/aa2506ef-5358-40e6-b790-d02fb7f5feb6/pdf","statusCode":200,"durationMs":3.31,"idUser":2}
+{"type":"http_request","requestId":"085ae411-2bd6-473a-91f0-0270fbb3665f","method":"POST","path":"/api/v1/venta/110/correos/aa2506ef-5358-40e6-b790-d02fb7f5feb6/simular","statusCode":201,"durationMs":12.38,"idUser":2}
+{"type":"http_request","requestId":"4b1f6ddd-37eb-488a-b49c-fa843c2b7d7b","method":"GET","path":"/api/v1/venta/110/correos","statusCode":200,"durationMs":4.32,"idUser":2}
+{"type":"http_request","requestId":"29e8af4e-7698-451b-9609-fbe522b0cd95","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.78,"idUser":2}
+{"type":"http_request","requestId":"37697245-3609-4263-9932-d1341568c218","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":24.69,"idUser":2}
+{"type":"http_request","requestId":"3f4cab71-d0c7-46ec-810c-a14f591dc0d0","method":"GET","path":"/api/v1/venta/110/correos","statusCode":200,"durationMs":18.19,"idUser":2}
+{"type":"http_request","requestId":"4716c6ff-effe-49b0-885d-b79b741b2d39","method":"GET","path":"/api/v1/venta/110/preparar-correo","statusCode":200,"durationMs":15.39,"idUser":2}
+{"type":"http_request","requestId":"40afa177-7a4b-4866-8117-9236b318368c","method":"POST","path":"/api/v1/venta/110/enviar-correo","statusCode":201,"durationMs":33.61,"idUser":2}
+{"type":"http_request","requestId":"95df32fc-d5b8-4c8e-9af4-a3653b893ff4","method":"GET","path":"/api/v1/venta/110/correos","statusCode":200,"durationMs":4.56,"idUser":2}
+{"type":"http_request","requestId":"3b79514a-de6b-4d7c-9095-084a50124151","method":"POST","path":"/api/v1/venta/110/correos/be075139-dbb2-47f3-947a-a9b69bd9853f/cancelar","statusCode":201,"durationMs":6.98,"idUser":2}
+{"type":"http_request","requestId":"3417bd7f-1425-48d1-bb88-68dff6e9b7d8","method":"GET","path":"/api/v1/venta/110/correos","statusCode":200,"durationMs":3.86,"idUser":2}
+{"type":"http_request","requestId":"2450c085-8d8f-4df6-ae29-75d52a3150df","method":"GET","path":"/api/v1/venta","statusCode":200,"durationMs":7.18,"idUser":2}
+{"type":"http_request","requestId":"01d28db7-369b-45e7-8455-4b38b42e2b4b","method":"GET","path":"/api/v1/venta/110/correos","statusCode":200,"durationMs":7.83,"idUser":2}
+OK: Angular/SQL reales dark: revisión/confirmación, respuesta perdida sin duplicar, PDF/simulación/cancelación/recarga y acceso desde Facturas; Axe/reflujo 390px
+OK: Transporte SMTP vigilado: cero llamadas; sólo consumidor local sin aceptación ni entrega ficticias

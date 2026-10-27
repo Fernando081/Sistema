@@ -5,10 +5,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Request } from 'express';
+import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { IS_PUBLIC_KEY } from './public.decorator';
 import { JwtPayload } from './auth.types';
+import { AuthenticatedRequest, browserToken, clearBrowserCookie, requireBrowserRequest, requireBrowserTransport } from './browser-auth';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -27,15 +28,19 @@ export class JwtAuthGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest<Request & { user?: JwtPayload }>();
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest & { user?: JwtPayload }>();
     const authHeader = request.headers.authorization;
 
-    if (!authHeader?.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Token requerido');
+    const token=authHeader!==undefined?(authHeader.startsWith('Bearer ')?authHeader.slice(7):null):browserToken(request);
+    if(!token)throw new UnauthorizedException('Sesión requerida');
+    request.authTransport=authHeader!==undefined?'bearer':'cookie';
+    if(request.authTransport==='cookie')requireBrowserTransport(request);
+    if(request.authTransport==='cookie'&&!['GET','HEAD','OPTIONS'].includes(request.method))requireBrowserRequest(request);
+    try { request.user = await this.authService.authenticate(token); }
+    catch(error){
+      if(request.authTransport==='cookie'&&error instanceof UnauthorizedException)clearBrowserCookie(context.switchToHttp().getResponse<Response>());
+      throw error;
     }
-
-    const token = authHeader.slice(7);
-    request.user = await this.authService.authenticate(token);
     return true;
   }
 }

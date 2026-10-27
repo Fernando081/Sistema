@@ -23,6 +23,8 @@ export interface Garantia {
   responsable?: string;
   createdAt: string;
   fechaCompromiso: string;
+  idUnidad?: number | null;
+  idPieza?: number | null;
 }
 
 export interface CreateGarantia {

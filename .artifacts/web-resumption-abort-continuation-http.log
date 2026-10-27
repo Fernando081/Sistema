@@ -1,0 +1,5 @@
+
+> check:web-http
+> node public-web/check-http.mjs
+
+HTTP web: passed-local; 29/29. Reporte: .artifacts/web-http-check.json

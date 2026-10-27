@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-10-02T17:52:06.438Z",
+  "node": "24.19.0",
+  "concurrentCallers": 8,
+  "singleRepEffect": true,
+  "canonicalInvoiceOrderAndUuid": true,
+  "changedPayload409": true,
+  "atomicRollback": true,
+  "retryAfterRollback": true,
+  "fullyPaidReplay": true,
+  "final": {
+    "balance": 0,
+    "payments": 6,
+    "lines": 6,
+    "cashIncrease": 200
+  },
+  "idleTransactions": 0,
+  "limitations": [
+    "Servicios reales en base restaurada; no HTTP, PAC ni carga prolongada.",
+    "requestId opcional; formulario conserva clave solo durante su instancia."
+  ]
+}

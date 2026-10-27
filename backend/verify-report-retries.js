@@ -1,0 +1,55 @@
+/* O01.1: bandeja comercial, SQL/HTTP/Angular reales en copia restaurada propia. */
+require('reflect-metadata');
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http'),express=require('express');
+const {randomBytes}=require('node:crypto'),{execFileSync}=require('node:child_process'),{once}=require('node:events');
+const {Client}=require('pg'),{Test}=require('@nestjs/testing'),{DataSource}=require('typeorm'),{SchedulerRegistry}=require('@nestjs/schedule');
+const {chromium,expect}=require('@playwright/test'),AxeBuilder=require('@axe-core/playwright').default;
+const {databaseConfig}=require('./db-config'),{findPgTool,postgresEnvironment}=require('./backup');
+function preview(api,directory){const site=express();site.use('/api',(req,res)=>{const request=http.request(new URL(req.originalUrl,api),{method:req.method,headers:{...req.headers,host:new URL(api).host}},response=>{res.writeHead(response.statusCode,response.headers);response.pipe(res);});request.on('error',()=>{if(!res.headersSent)res.writeHead(502);res.end();});req.pipe(request);});site.use(express.static(directory));site.get(/.*/,(_req,res)=>res.sendFile(path.join(directory,'index.html')));return http.createServer(site);}
+async function main(){
+ const root=path.resolve(__dirname,'..');assert.equal(process.versions.node.split('.')[0],'24');
+ const arg=process.argv.find(a=>a.startsWith('--backup='));assert.ok(arg,'Falta respaldo local');const dump=fs.realpathSync(path.resolve(arg.slice(9)));assert.ok(dump.startsWith(fs.realpathSync(path.join(root,'.backups'))+path.sep));
+ const config=databaseConfig();assert.ok(['localhost','127.0.0.1','::1','[::1]'].includes(config.connectionString?new URL(config.connectionString).hostname:config.host));
+ const control=new Client(config),database='verify_retries_'+randomBytes(8).toString('hex'),url=new URL(config.connectionString||'postgresql://127.0.0.1');
+ if(!config.connectionString)Object.assign(url,{hostname:config.host,port:String(config.port),username:config.user,password:config.password});url.pathname='/'+database;
+ const keys=['DATABASE_URL','DB_NAME','NODE_ENV','JWT_SECRET','ALLOW_ENV_AUTH','FISCAL_MODE','WEB_LEAD_BRIDGE_ENABLED','WEB_INBOX_PURGE_ENABLED','CORS_ORIGINS','AUTH_MFA_ENCRYPTION_KEY'],saved=Object.fromEntries(keys.map(k=>[k,process.env[k]]));
+ const report={phase:'O01.1',startedAt:new Date().toISOString(),checks:[],isolatedDatabase:true,apiMocked:false,externalDeliveryEnabled:false};
+ const checked=name=>{report.checks.push(name);console.log('OK:',name);};let created=false,app,writer,browser,server,stage='restore';
+ await control.connect();try{
+  await control.query(`CREATE DATABASE "${database}" TEMPLATE template0`);created=true;
+  const child={env:{...postgresEnvironment(),DATABASE_URL:url.toString(),DB_NAME:database,PGDATABASE:database},windowsHide:true,stdio:'pipe',timeout:180000,cwd:__dirname};
+  execFileSync(findPgTool('pg_restore'),['--exit-on-error','--no-owner','--no-acl','--dbname',database,dump],child);
+  execFileSync(process.execPath,[path.join(__dirname,'run-migrations.js'),'--check'],child);execFileSync(process.execPath,[path.join(__dirname,'run-migrations.js')],child);
+  writer=new Client({connectionString:url.toString()});await writer.connect();assert.equal((await writer.query('SELECT current_database() name')).rows[0].name,database);
+  await writer.query('UPDATE auth_user SET is_active=false');
+  const {AuthService}=require('./dist/auth/auth.service'),password=randomBytes(24).toString('hex'),hash=await AuthService.hashPassword(password),names=['campaign_admin_','campaign_user_'].map(n=>n+randomBytes(4).toString('hex')),users=[];
+  for(const[i,name]of names.entries())users.push((await writer.query('INSERT INTO auth_user(username,password_hash,role,is_active,token_version)VALUES($1,$2,$3,true,0)RETURNING id_user',[name,hash,i?'user':'admin'])).rows[0].id_user);
+  Object.assign(process.env,{DATABASE_URL:url.toString(),DB_NAME:database,NODE_ENV:'test',JWT_SECRET:randomBytes(32).toString('hex'),AUTH_MFA_ENCRYPTION_KEY:randomBytes(32).toString('base64'),ALLOW_ENV_AUTH:'false',FISCAL_MODE:'mock',WEB_LEAD_BRIDGE_ENABLED:'false',WEB_INBOX_PURGE_ENABLED:'false'});
+  stage='AppModule';const module=await Test.createTestingModule({imports:[require('./dist/app.module').AppModule]}).compile();app=module.createNestApplication({logger:false});require('./dist/configure-app').configureApp(app);await app.init();for(const job of app.get(SchedulerRegistry).getCronJobs().values())job.stop();
+  const ds=app.get(DataSource);assert.equal((await ds.query('SELECT current_database() name'))[0].name,database);await app.listen(0,'127.0.0.1');const api=await app.getUrl(),auth=app.get(AuthService),tokens=await Promise.all(names.map(async n=>(await auth.login(n,password)).access_token)),actor=auth.verify(tokens[0]);
+
+  const call=async(route,status=200,method='GET',body,token=tokens[0])=>{const r=await fetch(api+'/api/v1/'+route,{method,headers:{...(token?{Authorization:'Bearer '+token}:{}),...(body?{'Content-Type':'application/json'}:{})},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(15000)});const data=await r.json();assert.equal(r.status,status,route+': HTTP'+r.status+' esperado'+status+(typeof data.message==='string'?' '+data.message:''));return{data,cache:r.headers.get('cache-control')};};
+
+  stage='SQL/HTTP O01.1';const fixture=await require('./verify-report-retries-cases').backend({app,writer,control,database,call,users,tokens,auth,actor,names,password,checked});
+  stage='Angular O01.1';server=preview(api,path.join(root,'frontend/dist/frontend/browser'));server.listen(0,'127.0.0.1');await once(server,'listening');const origin='http://127.0.0.1:'+server.address().port;process.env.CORS_ORIGINS=origin;browser=await chromium.launch();const errors=[];
+  for(const[theme,width]of[['light',1280],['dark',390]]){
+   const f=await fixture.makeError({legacy:true}),context=await browser.newContext({viewport:{width,height:1100},serviceWorkers:'block'}),page=await context.newPage();page.setDefaultTimeout(18000);page.on('pageerror',e=>errors.push(e.name));await page.addInitScript(t=>localStorage.setItem('theme',t),theme);
+   await page.goto(origin+'/login?returnUrl='+encodeURIComponent('/crm/reportes-programados?programa='+f.p));await page.getByLabel('Usuario',{exact:true}).fill(names[0]);await page.getByLabel('Contraseña',{exact:true}).fill(password);await page.getByRole('button',{name:'Entrar',exact:true}).click();await page.waitForURL('**/crm/reportes-programados**');await expect(page.getByText('Consultando o guardando…',{exact:true})).toBeHidden();
+   if(theme==='light')await page.route('**/resultados/*/reintentar',async route=>{assert.equal((await route.fetch()).status(),201);await route.abort();},{times:1});
+   const enqueue=async()=>{await page.getByRole('button',{name:'Preparar reintento',exact:true}).click();const d=page.getByRole('dialog').filter({has:page.getByRole('heading',{name:'Preparar reintento',exact:true})});await d.getByRole('button',{name:'Poner en cola',exact:true}).click();};
+   await enqueue();if(theme==='light'){await expect(page.getByRole('alert').filter({hasText:'No se pudo completar'})).toBeVisible();assert.equal((await writer.query('SELECT count(*)::int n FROM crm_reporte_reintento WHERE id_resultado=$1',[f.id])).rows[0].n,1);await enqueue();}
+   await expect(page.getByRole('heading',{name:'Recuperación: Pendiente',exact:true})).toBeVisible();await page.getByText('Ver bitácora de intentos',{exact:true}).click();await expect(page.getByText('Aún no inicia un intento.',{exact:true})).toBeVisible();
+   await page.getByRole('button',{name:'Cancelar reintento',exact:true}).click();let dialog=page.getByRole('dialog').filter({has:page.getByRole('heading',{name:'Cancelar reintento',exact:true})});await dialog.getByRole('button',{name:'Cancelar reintento',exact:true}).click();await expect(page.getByRole('heading',{name:'Recuperación: Cancelado',exact:true})).toBeVisible();await page.reload();await expect(page.getByRole('heading',{name:'Recuperación: Cancelado',exact:true})).toBeVisible();
+   const recovered=await fixture.makeError();await fixture.queue.processDue();await page.goto(origin+'/crm/reportes-programados?programa='+recovered.p);await expect(page.getByRole('heading',{name:'Resumen recuperado',exact:true})).toBeVisible();await expect(page.getByText('El error original permanece en el historial.',{exact:false})).toBeVisible();await page.getByText('Ver bitácora de intentos',{exact:true}).click();await expect(page.getByText(/Intento 1 · Generado/)).toBeVisible();
+   const axe=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();assert.equal(axe.violations.length,0,JSON.stringify(axe.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))));assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await page.getByRole('heading',{name:'Reportes comerciales programados',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:path.join(root,'.artifacts/o011-reportes-'+theme+'.png')});
+   await page.goto(origin+'/crm/reportes-programados?programa='+fixture.fail.p);await expect(page.getByRole('heading',{name:'Recuperación: Agotado',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Preparar reintento',exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:'Cancelar reintento',exact:true})).toHaveCount(0);
+   checked('Angular/SQL reales '+theme+': confirmación, cola/bitácora/cancelación/recarga, respuesta perdida idempotente, resumen recuperado con Error original y agotado; Axe/reflujo '+width+'px');await context.close();
+  }
+  assert.deepEqual(errors,[]);report.passed=true;report.completedAt=new Date().toISOString();
+ }finally{
+  const cleanup=await Promise.allSettled([browser?.close(),app?.close(),writer?.end(),server?.listening?new Promise(resolve=>{server.close(resolve);server.closeAllConnections?.();}):undefined]);
+  if(created&&/^verify_retries_[a-f0-9]{16}$/.test(database)){await control.query('SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname=$1 AND pid<>pg_backend_pid()',[database]);await control.query('DROP DATABASE "'+database+'"');report.copyRemoved=(await control.query('SELECT 1 FROM pg_database WHERE datname=$1',[database])).rowCount===0;}
+  await control.end();for(const[k,v]of Object.entries(saved)){if(v===undefined)delete process.env[k];else process.env[k]=v;}report.cleanupPassed=cleanup.every(r=>r.status==='fulfilled');report.lastStage=stage;fs.writeFileSync(path.join(root,'.artifacts/o011-reintentos.json'),JSON.stringify(report,null,2)+'\n');assert.ok(report.cleanupPassed);
+ }
+}
+main().catch(error=>{console.error('Falló aceptación O01.1:',error instanceof assert.AssertionError?error.message:[error.name,error.code,error.constraint].filter(Boolean).join(' '),(error.stack||'').split('\n').filter(l=>/^\s+at /.test(l)).slice(0,3).join('\n'),'Etapa en .artifacts/o011-reintentos.json; sin secretos.');process.exitCode=1;});

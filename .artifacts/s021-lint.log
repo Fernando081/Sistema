@@ -1,0 +1,4 @@
+
+> backend@0.0.1 lint
+> eslint "src/**/*.ts" "test/**/*.ts"
+

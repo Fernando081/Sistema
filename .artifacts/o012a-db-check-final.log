@@ -1,0 +1,6 @@
+
+> db:check
+> node backend/run-migrations.js --check
+
+Verificada (se revertirá): 113_salida_documentos_local.sql
+Verificación terminada: cambios de esquema revertidos.

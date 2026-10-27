@@ -1,0 +1,5 @@
+
+> db:check
+> node backend/run-migrations.js --check
+
+Verificación terminada: cambios de esquema revertidos.

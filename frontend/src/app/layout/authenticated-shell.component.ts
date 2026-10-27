@@ -13,7 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { catchError, debounceTime, distinctUntilChanged, filter, interval, map, of, shareReplay, startWith, switchMap, tap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
-import { DecodedToken } from '../auth/auth.interface';
+import { SessionIdentity } from '../auth/auth.interface';
 import { ThemeService } from '../services/theme.service';
 import { CrmService, GlobalSearchItem, GlobalSearchResult } from '../services/crm.service';
 import { AppNotification, NotificationService } from '../services/notification.service';
@@ -47,7 +47,7 @@ export class AuthenticatedShellComponent {
   @ViewChild('sidenav') sidenav?: MatSidenav;
   @ViewChild('globalSearchInput') globalSearchInput?: ElementRef<HTMLInputElement>;
 
-  user: DecodedToken | null = null;
+  user: SessionIdentity | null = null;
   readonly searchControl = new FormControl('', { nonNullable: true });
   readonly searchResults = signal<GlobalSearchResult | null>(null);
   readonly searching = signal(false);
@@ -66,11 +66,11 @@ export class AuthenticatedShellComponent {
     private readonly router: Router,
   ) {
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.user = this.authService.getDecodedToken();
+      this.user = this.authService.getSessionIdentity();
       this.currentPage.set(this.pageForUrl(this.router.url));
       if (this.sidenav?.mode === 'over') this.sidenav.close();
     });
-    this.user = this.authService.getDecodedToken();
+    this.user = this.authService.getSessionIdentity();
     this.currentPage.set(this.pageForUrl(this.router.url));
     this.searchControl.valueChanges.pipe(
       map(value => value.trim()), debounceTime(250), distinctUntilChanged(),
@@ -128,6 +128,7 @@ export class AuthenticatedShellComponent {
       ['/facturas/global', 'Factura global', 'Concentra las ventas de mostrador'],
       ['/facturas', 'Facturas', 'Historial, documentos y devoluciones'],
       ['/producto', 'Productos e inventario', 'Existencias, aplicaciones y números de parte'],
+      ['/catalogo-web', 'Catálogo web', 'Revisión de calidad y preparación de fichas comerciales'],
       ['/almacen', 'Almacén profesional', 'Ubicaciones, transferencias, conteos, lotes y series'],
       ['/operaciones/smart-restock', 'Reabastecimiento', 'Sugerencias basadas en demanda y existencias'],
       ['/abastecimiento', 'Abastecimiento', 'Solicitudes, órdenes y recepciones de mercancía'],

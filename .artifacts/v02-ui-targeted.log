@@ -1,0 +1,18 @@
+
+> frontend@0.0.0 test:e2e
+> playwright test tests/auth-navigation.spec.ts tests/pedido-operativo.spec.ts
+
+[WebServer] (node:32084) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:32084) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:19960) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [chromium] › tests\auth-navigation.spec.ts:6:5 › protege rutas privadas, inicia sesión y cierra la sesión (1.3s)
+  ok 2 [chromium] › tests\auth-navigation.spec.ts:16:5 › la búsqueda global conserva cliente, VIN y ESN (1.6s)
+  ok 3 [chromium] › tests\pedido-operativo.spec.ts:4:5 › crea, reserva, surte, entrega y factura un pedido desde la interfaz (4.0s)
+
+  3 passed (21.2s)

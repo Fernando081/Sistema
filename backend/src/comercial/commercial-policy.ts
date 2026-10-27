@@ -9,8 +9,11 @@ export interface CommercialPolicyLine {
 
 export interface CommercialPolicyInput {
   idCliente: number;
+  operacion?: 'Venta' | 'Pedido' | 'Cotizacion';
   lineas?: CommercialPolicyLine[];
   total?: number;
+  moneda?: string;
+  tipoCambio?: number;
   idMetodoPago?: number;
   idPedidoExcluido?: number;
   validarPrecios?: boolean;
@@ -40,18 +43,40 @@ async function claimAuthorization(
   tipo: 'Descuento' | 'Margen bajo' | 'Exceso credito',
   valor: number,
   idProducto?: number,
+  operacion: 'Venta' | 'Pedido' | 'Cotizacion' = 'Venta',
+  total?: number,
+  moneda = 'MXN',
+  tipoCambio = 1,
 ) {
+  if(!Number.isFinite(total)||Number(total)<0)throw new ConflictException('La autorización requiere el total calculado de la operación');
+  if(moneda!=='MXN'||tipoCambio!==1)throw new ConflictException('Las autorizaciones por monto requieren MXN y tipo de cambio 1');
+  // Configuración y decisión/consumo comparten este bloqueo hasta el commit.
+  await executor.query("SELECT pg_advisory_xact_lock_shared(hashtext('commercial-approvals'))");
+  // Los cambios de permiso/rol bloquean esta misma fila. La consulta posterior
+  // obtiene un snapshot nuevo después de esperar al administrador concurrente.
+  await executor.query(`SELECT u.id_user FROM auth_user u WHERE u.id_user IN
+    (SELECT id_autorizador FROM solicitud_autorizacion_comercial WHERE id_cliente=$1 AND tipo=$2 AND estado='Aprobada')
+    ORDER BY u.id_user FOR SHARE`,[idCliente,tipo]);
   const rows = await queryRows<{ id: number }>(executor, `
-    SELECT id_autorizacion AS id
-      FROM solicitud_autorizacion_comercial
-     WHERE id_cliente=$1 AND tipo=$2 AND estado='Aprobada'
-       AND (expires_at IS NULL OR expires_at>now())
-       AND ($3::int IS NULL OR id_producto=$3)
-       AND ($3::int IS NOT NULL OR id_producto IS NULL)
-       AND abs(valor_solicitado-$4)<=0.01
-     ORDER BY resolved_at,id_autorizacion
+    SELECT a.id_autorizacion AS id
+      FROM solicitud_autorizacion_comercial a
+      JOIN comercial_regla_aprobacion r ON r.operacion=$5 AND r.tipo=a.tipo
+      JOIN auth_user u ON u.id_user=a.id_autorizador AND u.role='admin' AND u.is_active
+      LEFT JOIN comercial_limite_aprobador l ON l.id_usuario=u.id_user AND l.operacion=$5
+     WHERE a.id_cliente=$1 AND a.tipo=$2 AND a.estado='Aprobada'
+       AND (a.expires_at IS NULL OR a.expires_at>now())
+       AND ($3::int IS NULL OR a.id_producto=$3)
+       AND ($3::int IS NOT NULL OR a.id_producto IS NULL)
+       AND abs(a.valor_solicitado-$4)<=0.01
+       AND fn_effective_permission(u.id_user,u.role,'credito.autorizar')
+       AND (r.monto_maximo IS NULL OR $6::numeric<=r.monto_maximo)
+       AND (l.monto_maximo IS NULL OR $6::numeric<=l.monto_maximo)
+       AND (NOT r.requiere_distinto OR (a.id_solicitante IS NOT NULL AND a.id_solicitante<>u.id_user))
+       AND ((a.operacion_destino=$5 AND a.monto_operacion >= $6::numeric AND a.regla_version=r.version)
+         OR (a.operacion_destino IS NULL AND r.version=1 AND NOT r.requiere_distinto))
+     ORDER BY a.resolved_at,a.id_autorizacion
      LIMIT 1
-     FOR UPDATE SKIP LOCKED`, [idCliente, tipo, idProducto ?? null, valor]);
+     FOR UPDATE OF a SKIP LOCKED FOR SHARE OF u`, [idCliente, tipo, idProducto ?? null, valor,operacion,total]);
   if (!rows.length) {
     const suffix = idProducto ? ` para el producto ${idProducto}` : '';
     throw new ConflictException(`La operación requiere una autorización vigente de ${tipo.toLowerCase()}${suffix}`);
@@ -117,9 +142,9 @@ export async function validateCommercialPolicy(
       const cost = Number(row.costo);
       const minimum = cost / (1 - Number(row.margenMinimo));
       if (price + 0.000001 < minimum) {
-        authorizationIds.push(await claimAuthorization(executor, input.idCliente, 'Margen bajo', price, row.idProducto));
+        authorizationIds.push(await claimAuthorization(executor, input.idCliente, 'Margen bajo', price, row.idProducto,input.operacion,input.total,input.moneda,input.tipoCambio));
       } else if (price + 0.000001 < suggested) {
-        authorizationIds.push(await claimAuthorization(executor, input.idCliente, 'Descuento', price, row.idProducto));
+        authorizationIds.push(await claimAuthorization(executor, input.idCliente, 'Descuento', price, row.idProducto,input.operacion,input.total,input.moneda,input.tipoCambio));
       }
     }
   }
@@ -128,7 +153,7 @@ export async function validateCommercialPolicy(
     const total = Number(input.total || 0);
     const available = Number(policy.limite) - Number(policy.deuda) - Number(policy.comprometido);
     if (total > available + 0.01) {
-      authorizationIds.push(await claimAuthorization(executor, input.idCliente, 'Exceso credito', total));
+      authorizationIds.push(await claimAuthorization(executor, input.idCliente, 'Exceso credito', total,undefined,input.operacion,total,input.moneda,input.tipoCambio));
     }
   }
   return [...new Set(authorizationIds)];
@@ -142,10 +167,10 @@ export async function consumeCommercialAuthorizations(
 ) {
   if (!ids.length) return;
   const result = await queryRows<{ id: number }>(executor, `
-    UPDATE solicitud_autorizacion_comercial
+    WITH changed AS (UPDATE solicitud_autorizacion_comercial
        SET estado='Utilizada',operacion_tipo=$2,operacion_id=$3,used_at=now()
      WHERE id_autorizacion=ANY($1::int[]) AND estado='Aprobada'
-     RETURNING id_autorizacion AS id`, [ids, operationType, operationId]);
+     RETURNING id_autorizacion AS id) SELECT id FROM changed`, [ids, operationType, operationId]);
   if (result.length !== ids.length) {
     throw new ConflictException('Una autorización comercial ya fue utilizada por otra operación');
   }

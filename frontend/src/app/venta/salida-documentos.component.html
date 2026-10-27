@@ -1,0 +1,19 @@
+<section class="campaign-page" aria-labelledby="outbox-title" [attr.aria-busy]="busy()">
+ <header class="heading"><div><h1 id="outbox-title">Salida de documentos</h1><p>@if(validId){Factura {{id}} · }Preparación y simulación local</p></div><a mat-stroked-button routerLink="/facturas">Volver a facturas</a></header>
+ <p class="notice"><strong>Envío externo desactivado.</strong> Preparado o Simulado no significa enviado, aceptado por un proveedor ni entregado. Este flujo no envía correos ni conecta al PAC.</p>
+ @if(error()){<p role="alert" class="notice">{{error()}}</p>}
+ @if(notice()){<p role="status" class="notice">{{notice()}}</p>}
+ @if(busy()){<p role="status">Consultando o guardando…</p>}
+ <section class="panel"><h2>Revisar antes de preparar</h2><p>El destinatario se toma del cliente registrado; no se admiten direcciones libres. Si falta o está equivocado, corrígelo en Clientes.</p><button mat-stroked-button (click)="review()" [disabled]="busy()||!validId">Revisar destinatario y documento</button>
+ @if(preview();as p){<p><strong>Destinatario:</strong> {{p.destinatario}}</p><p>{{p.asunto}}</p><p>Ambiente fiscal registrado: {{p.ambiente}}. La preparación conserva su clasificación; una simulación no valida un CFDI.</p><button mat-flat-button (click)="prepare()" [disabled]="busy()">Preparar solicitud local</button>}
+ </section>
+ <section class="panel"><div class="heading"><h2>Historial de solicitudes</h2><button mat-button (click)="load()" [disabled]="busy()">Actualizar historial</button></div>
+ <label for="outbox-reason">Motivo para cancelar una solicitud</label><textarea id="outbox-reason" [(ngModel)]="motivo" maxlength="300" rows="2"></textarea>
+ @for(s of data();track s.id){<article><h3>{{s.estado}} · {{date(s.creadaEn)}}</h3><p>{{s.destinatario}}</p><p>{{s.asunto}}</p><small>{{s.autor}} · {{s.ambiente}} · {{s.bytes|number}} bytes</small><small class="fingerprint">Huella PDF: {{s.pdfSha256}}</small>
+ @if(s.cerradaEn){<p>Cierre: {{date(s.cerradaEn)}} @if(s.motivo){ · {{s.motivo}}}</p>}
+ @if(s.estado==='Obsoleto'){<p>Cambió el documento o destinatario. Esta preparación no se puede procesar de nuevo.</p>}
+ <div class="actions"><button mat-stroked-button (click)="download(s)" [disabled]="busy()">Descargar PDF preparado</button>@if(s.estado==='Preparado'){<button mat-flat-button (click)="close(s)" [disabled]="busy()">Simular procesamiento</button><button mat-stroked-button (click)="close(s,true)" [disabled]="busy()||!motivo.trim()">Cancelar solicitud</button>}</div>
+ </article>}@empty{<p>Aún no hay solicitudes conservadas para esta factura.</p>}
+ <nav class="actions pagination" aria-label="Páginas de solicitudes"><button mat-stroked-button (click)="load(-1)" [disabled]="busy()||page<=1">Anterior</button><span>Página {{page}} · {{total}} solicitudes</span><button mat-stroked-button (click)="load(1)" [disabled]="busy()||page*20>=total">Siguiente</button></nav>
+ </section><small>Los archivos preparados son privados y se conservan aunque cambie su origen. Máximo20 preparaciones por factura y PDF de2MiB en esta fase. Revisa el historial después de recargar si una respuesta quedó incierta.</small>
+</section>

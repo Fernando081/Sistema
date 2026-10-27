@@ -3,6 +3,7 @@ import { JwtPayload } from '../auth/auth.types';
 import { VentaService } from '../venta/venta.service';
 import { CreatePedidoDto, CreatePedidoFromCotizacionDto, EntregarPedidoDto, FacturarPedidoDto, PedidoQueryDto, SurtirPedidoDto } from './pedido.dto';
 import { PedidoService } from './pedido.service';
+import { Permissions } from '../auth/permissions.decorator';
 
 @Controller('pedidos')
 export class PedidoController {
@@ -19,13 +20,13 @@ export class PedidoController {
     @Param('idCotizacion', ParseIntPipe) idCotizacion: number,
     @Body() dto: CreatePedidoFromCotizacionDto,
     @Req() req: { user: JwtPayload },
-  ) { return this.service.createFromQuote(idCotizacion, dto, req.user?.idUser); }
-  @Post() create(@Body() dto: CreatePedidoDto, @Req() req: { user: JwtPayload }) { return this.service.create(dto, req.user?.idUser); }
+  ) { return this.service.createFromQuote(idCotizacion, dto, req.user?.idUser, req.user); }
+  @Post() create(@Body() dto: CreatePedidoDto, @Req() req: { user: JwtPayload }) { return this.service.create(dto, req.user?.idUser, req.user); }
   @Post(':id/confirmar') confirm(@Param('id', ParseIntPipe) id: number, @Req() req: { user: JwtPayload }) { return this.service.confirm(id, req.user?.idUser); }
   @Post(':id/surtir') fulfill(@Param('id', ParseIntPipe) id: number, @Body() dto: SurtirPedidoDto, @Req() req: { user: JwtPayload }) { return this.service.fulfill(id, dto, req.user?.idUser); }
-  @Post(':id/entregar') deliver(@Param('id', ParseIntPipe) id: number, @Body() dto: EntregarPedidoDto, @Req() req: { user: JwtPayload }) { return this.service.deliver(id, dto, req.user?.idUser); }
+  @Post(':id/entregar') @Permissions('pedidos.entregas') deliver(@Param('id', ParseIntPipe) id: number, @Body() dto: EntregarPedidoDto, @Req() req: { user: JwtPayload }) { return this.service.deliver(id, dto, req.user?.idUser, req.user); }
   @Post(':id/facturar') async invoice(@Param('id', ParseIntPipe) id: number, @Body() dto: FacturarPedidoDto, @Req() req: { user: JwtPayload }) {
-    return this.ventaService.create(await this.service.prepareInvoice(id, dto), req.user?.idUser);
+    return this.ventaService.create(await this.service.prepareInvoice(id, dto), req.user?.idUser, req.user);
   }
   @Post(':id/cancelar') cancel(@Param('id', ParseIntPipe) id: number, @Req() req: { user: JwtPayload }) { return this.service.cancel(id, req.user?.idUser); }
 }

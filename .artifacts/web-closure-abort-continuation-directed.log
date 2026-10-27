@@ -1,0 +1,25 @@
+✔ veinticuatro combinaciones conservan recibos, fuentes residuales y cierre cancelado sin fabricar éxito (39472.3111ms)
+✔ fuentes presentes se cierran por revisión nueva independiente y replay conserva puntero posterior (11020.7654ms)
+✔ publicación residual mantiene recuperación ordinaria independiente en ambos tipos (3659.1458ms)
+✔ IDs nuevos distintos compiten por un único destino exclusivo por cancelación original (1709.1822ms)
+✔ revisión exige campos exactos, responsable acotado e IDs distintos de todos los originales (2949.0081ms)
+✔ puntero, historia, fuentes, archivos, recibos y trasplante invalidan revisión sin mutar (12812.1305ms)
+✔ finalización activa ajena inválida ausente sin vínculo y cancelaciones ambiguas requieren revisión (11847.5291ms)
+✔ seis cortes por tipo mantienen finalización y excluyen trece herramientas incluso con cinco controles ocupados (20174.2198ms)
+✔ recibo de cancelación v1 previo sigue reconocido si la nueva auditoría parcial pierde controles (3825.5364ms)
+✔ sustituciones durante archivo conservan controles y rechazan resultado (18452.729ms)
+✔ fallo al escribir auditoría mantiene cancelación v2 pendiente y finalización intacta (2846.9254ms)
+✔ rechazo de admisión anterior al intento de intención libera únicamente reserva propia intacta (2719.3946ms)
+✔ alteración posterior de archivo recibo vínculo origen o recibo de cierre invalida diagnóstico y replay (12304.4641ms)
+✔ dos auditorías completas del mismo recibo v1 son ambiguas sin invalidar cancelación histórica (3097.2043ms)
+✔ reserva todos los destinos dentro del límite600 y no trunca historial (18962.7161ms)
+✔ CLI observa sin mutar y reemplaza éxito anterior por resultado no confirmado sin valores privados (2964.8701ms)
+✔ cierre sucesor nuevamente interrumpido conserva cancelación v2 y continúa con su herramienta independiente (4546.4397ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 173509.0229

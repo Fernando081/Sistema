@@ -1,0 +1,15 @@
+[WebServer] (node:31280) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:31280) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:26168) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [chromium] › tests\crm-commercial.spec.ts:6:7 › Origen comercial: cliente, confirmación, reintento y retiro light (7.6s)
+  ok 2 [chromium] › tests\crm-commercial.spec.ts:89:7 › Origen comercial: error, búsqueda vacía y recuperación light (2.2s)
+  ok 3 [chromium] › tests\crm-commercial.spec.ts:6:7 › Origen comercial: cliente, confirmación, reintento y retiro dark (7.1s)
+  ok 4 [chromium] › tests\crm-commercial.spec.ts:89:7 › Origen comercial: error, búsqueda vacía y recuperación dark (2.2s)
+
+  4 passed (32.3s)

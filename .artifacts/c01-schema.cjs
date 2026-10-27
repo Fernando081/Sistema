@@ -1,0 +1,2 @@
+const {Client}=require('../node_modules/pg'),{databaseConfig}=require('../backend/db-config');
+(async()=>{const db=new Client(databaseConfig());await db.connect();try{console.log(JSON.stringify((await db.query("SELECT column_name,data_type,is_nullable,column_default FROM information_schema.columns WHERE table_name='factura' AND table_schema='public' ORDER BY ordinal_position")).rows));}finally{await db.end();}})().catch(e=>{console.error(e.name);process.exitCode=1;});

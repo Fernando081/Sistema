@@ -1,0 +1,6 @@
+
+> db:check
+> node backend/run-migrations.js --check
+
+Verificada (se revertirá): 109_crm_secuencias_reglas.sql
+Verificación terminada: cambios de esquema revertidos.

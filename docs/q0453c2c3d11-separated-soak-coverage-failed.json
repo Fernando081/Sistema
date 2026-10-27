@@ -1,0 +1,258 @@
+{
+  "generatedAt": "2026-10-03T22:48:24.975Z",
+  "phase": "Q04.5.3c2c3d11",
+  "status": "failed",
+  "injectedGeneratorFailure": false,
+  "injectedFinancialClientFailure": false,
+  "failure": "Cobertura de memoria por proceso incompleta",
+  "injectedCoverageFailure": true,
+  "injectedObjectiveFailure": false,
+  "secondsPerGroup": 40,
+  "fixtureCount": 1000,
+  "profile": {
+    "name": "soak",
+    "readers": 8,
+    "readerPauseMs": 2000,
+    "businessPauseMs": 3000,
+    "financialPauseMs": 30000,
+    "sqlPauseMs": 60,
+    "duration": 600
+  },
+  "groups": [
+    {
+      "financialClientMemory": {
+        "scope": "Cliente financiero/documental persistente separado; incluye fetch, Blob y una conexión PostgreSQL de verificación. No sumar picos independientes.",
+        "samples": 419,
+        "elapsedMs": 44473.7659,
+        "quarterSamples": 104,
+        "comparison": {
+          "rss": {
+            "firstMean": 95598985.84615384,
+            "lastMean": 86732878.76923077,
+            "deltaBytes": -8866107.076923072,
+            "peak": 125034496
+          },
+          "heapUsed": {
+            "firstMean": 14339110.23076923,
+            "lastMean": 12607992.307692308,
+            "deltaBytes": -1731117.923076922,
+            "peak": 15676288
+          },
+          "heapTotal": {
+            "firstMean": 26878227.692307692,
+            "lastMean": 20365627.076923076,
+            "deltaBytes": -6512600.615384616,
+            "peak": 31186944
+          },
+          "external": {
+            "firstMean": 20107397.03846154,
+            "lastMean": 4424347,
+            "deltaBytes": -15683050.03846154,
+            "peak": 46340970
+          },
+          "arrayBuffers": {
+            "firstMean": 23803614.53846154,
+            "lastMean": 17641139.644230768,
+            "deltaBytes": -6162474.894230772,
+            "peak": 52701373
+          }
+        },
+        "windows": []
+      },
+      "processScope": "Padre: AppModule, monitor, escritor SQL y cliente HTTP de almacén/pagos; cliente financiero/documental y lectores separados. No es servidor puro.",
+      "business": {
+        "transfers": 28,
+        "assembled": 14,
+        "disassembled": 14,
+        "payments": 14,
+        "replays": 5
+      },
+      "financialCycles": 2,
+      "businessIntegrity": {
+        "stockPhysicalAligned": true,
+        "stockRestored": true,
+        "paymentBalanceCashAligned": true
+      },
+      "postgresProcesses": {
+        "samples": 9,
+        "availableSamples": 9,
+        "unavailableSamples": 0,
+        "workingSetSumPeakBytes": 410472448,
+        "cpuMillisecondsDelta": 5218.75,
+        "readTransferBytesDelta": 1867374,
+        "writeTransferBytesDelta": 20571361,
+        "maxDeadTuples": 1580,
+        "maxLiveTuples": 239568,
+        "autovacuumCountPeak": 14
+      },
+      "walBytesClusterWide": 11164376,
+      "readers": 8,
+      "generatorResources": {
+        "rssPeak": 64040960,
+        "heapPeak": 11456960,
+        "cpuMicroseconds": {
+          "user": 687000,
+          "system": 157000
+        },
+        "eventLoopP95Ms": 35.061759
+      },
+      "readWindows": [
+        {
+          "minute": 0,
+          "requests": 160,
+          "p95": 62.125
+        }
+      ],
+      "postgres": {
+        "peak": {
+          "samples": 81,
+          "connections": 13,
+          "active": 2,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 0.292172,
+          "clientConnections": 12,
+          "auxiliaryConnections": 1,
+          "maxClientTransactionAgeSeconds": 0.023606,
+          "maxAuxiliaryTransactionAgeSeconds": 0.292173,
+          "maxAutovacuumTransactionAgeSeconds": 0.292173
+        },
+        "countersDelta": {
+          "xact_commit": 2096,
+          "xact_rollback": 35,
+          "blks_read": 81,
+          "blks_hit": 295406,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 160,
+      "writerCommits": 548,
+      "elapsedMs": 44503.05990000001,
+      "rps": 3.595258401546451,
+      "p50": 37.14909999999509,
+      "p95": 62.125,
+      "max": 85.5632000000005,
+      "rssPeak": 209125376,
+      "heapPeak": 87326112,
+      "poolConnectionsPeak": 9,
+      "poolWaitingPeak": 0,
+      "memoryDiagnostic": {
+        "scope": "Padre: AppModule, monitor, escritor SQL y cliente HTTP de almacén/pagos; cliente financiero/documental y lectores separados. No es servidor puro.",
+        "samples": 425,
+        "elapsedMs": 44499.2377,
+        "quarterSamples": 106,
+        "comparison": {
+          "rss": {
+            "firstMean": 160683954.71698114,
+            "lastMean": 150961557.73584905,
+            "deltaBytes": -9722396.98113209,
+            "peak": 209125376
+          },
+          "heapUsed": {
+            "firstMean": 67417027.09433962,
+            "lastMean": 59374607.54716981,
+            "deltaBytes": -8042419.547169812,
+            "peak": 87326112
+          },
+          "heapTotal": {
+            "firstMean": 99790191.09433962,
+            "lastMean": 91811994.56603773,
+            "deltaBytes": -7978196.528301895,
+            "peak": 133861376
+          },
+          "external": {
+            "firstMean": 8518465.594339622,
+            "lastMean": 5490317.226415094,
+            "deltaBytes": -3028148.367924528,
+            "peak": 27155696
+          },
+          "arrayBuffers": {
+            "firstMean": 4355780.820754717,
+            "lastMean": 1326544.2641509434,
+            "deltaBytes": -3029236.5566037735,
+            "peak": 22991915
+          }
+        },
+        "windows": [
+          {
+            "minute": 0,
+            "samples": 425,
+            "means": {
+              "rss": 144324236.95058823,
+              "heapUsed": 61575358.21176471,
+              "heapTotal": 84539473.92,
+              "external": 6092183.204705883,
+              "arrayBuffers": 1929237.8094117646
+            },
+            "peaks": {
+              "rss": 209125376,
+              "heapUsed": 87326112,
+              "heapTotal": 133861376,
+              "external": 27155696,
+              "arrayBuffers": 22991915
+            }
+          }
+        ]
+      },
+      "cpuMicroseconds": {
+        "user": 5390000,
+        "system": 1328000
+      },
+      "eventLoopP95Ms": 34.373631,
+      "eventLoopMaxMs": 79.233023,
+      "idleTransactions": 0,
+      "cases": {
+        "proveedor:%": 7,
+        "cliente:": 4,
+        "proveedor:": 5,
+        "proveedor:Q04HTTPONLY": 8,
+        "cliente:%": 4,
+        "proveedor:Q04TARGET": 6,
+        "cliente:Q04HTTPONLY": 4,
+        "cliente:Q04TARGET": 4,
+        "producto:": 8,
+        "producto:Q04TARGET": 8,
+        "producto:%": 8,
+        "producto:Q04HTTPONLY": 8,
+        "cotizacion:": 8,
+        "cotizacion:Q04TARGET": 8,
+        "cotizacion:%": 8,
+        "cotizacion:Q04HTTPONLY": 8,
+        "compra:": 8,
+        "compra:Q04TARGET": 8,
+        "compra:%": 8,
+        "compra:Q04HTTPONLY": 8,
+        "venta:": 7,
+        "venta:Q04TARGET": 6,
+        "venta:%": 5,
+        "venta:Q04HTTPONLY": 4
+      },
+      "errors": 0,
+      "processMemoryCoverage": {
+        "parent": {
+          "expectedMinutes": 1,
+          "checks": {
+            "duration": true,
+            "samples": true,
+            "everyMinuteCovered": true,
+            "finiteMetrics": true
+          },
+          "passed": true,
+          "scope": "Cobertura temporal de memoria por proceso; sin nuevo umbral de memoria del cliente ni prueba de fuga."
+        },
+        "financialClient": {
+          "expectedMinutes": 1,
+          "checks": {
+            "duration": true,
+            "samples": true,
+            "everyMinuteCovered": false,
+            "finiteMetrics": false
+          },
+          "passed": false,
+          "scope": "Cobertura temporal de memoria por proceso; sin nuevo umbral de memoria del cliente ni prueba de fuga."
+        }
+      }
+    }
+  ],
+  "scope": "Diagnóstico fallido publicado después de eliminar la copia; no reemplaza evidencia exitosa ni certifica rendimiento"
+}

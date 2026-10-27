@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 1,
+  "drillId": "20fc232e-54eb-4ce6-9d60-83051d776049",
+  "generatedAt": "2026-10-11T23:34:27.837Z",
+  "status": "verified-installed-preview",
+  "stage": "completed",
+  "scope": "Simulacro de la vista previa instalada sobre copias temporales y runtime actual. No interviene en dist, ERP/BD, captación ni versiones; no certifica aceptación comercial, hosting o recuperación ante pérdida del disco.",
+  "nodeVersion": "24.19.0",
+  "commercialAccepted": false,
+  "versionedRecoveryVerified": false,
+  "sourceUnchanged": true,
+  "temporaryCopiesRemoved": true,
+  "backup": {
+    "filename": "web-preview-ae108fa3-dc0e-4e72-ad35-f3163fff18f8.json",
+    "sha256": "1a8e288ac985752cad58dc3840e50253570898e6cdf3716bd5dcb89b6998b6ac",
+    "bytes": 477761,
+    "generatedAt": "2026-10-11T23:33:31.892Z",
+    "files": 20,
+    "contentSha256": "e060c87325e4976a112067aa729a77baf44c911e3ce32d8c6397cdd9cff9b5e5"
+  },
+  "sourceBefore": {
+    "coordination": "ready",
+    "mode": "unversioned-preview",
+    "directorySha256": "d1c03f4ddcc783ca2ded6e54dd6e79ab36ac8de3bd022455d26bb12658c2f7d7",
+    "evidenceSha256": "f7e2b8caf44197c0e44ceaaac3777d4de9c0ca6918e309d09139224121c71632",
+    "contentSha256": "e060c87325e4976a112067aa729a77baf44c911e3ce32d8c6397cdd9cff9b5e5"
+  },
+  "scenario": {
+    "kind": "missing-home-file-on-isolated-copy",
+    "failureDetected": true,
+    "missingFiles": 1
+  },
+  "restoreMs": 87.6,
+  "fileChecks": [
+    {
+      "name": "index.html",
+      "bytes": 3522,
+      "passed": true
+    },
+    {
+      "name": "catalogo/index.html",
+      "bytes": 2569,
+      "passed": true
+    },
+    {
+      "name": "categorias/index.html",
+      "bytes": 2531,
+      "passed": true
+    },
+    {
+      "name": "diseno/ficha/index.html",
+      "bytes": 3108,
+      "passed": true
+    },
+    {
+      "name": "diseno/categoria/index.html",
+      "bytes": 2567,
+      "passed": true
+    },
+    {
+      "name": "404/index.html",
+      "bytes": 2313,
+      "passed": true
+    },
+    {
+      "name": "nosotros/index.html",
+      "bytes": 2868,
+      "passed": true
+    },
+    {
+      "name": "marcas/index.html",
+      "bytes": 2479,
+      "passed": true
+    },
+    {
+      "name": "contacto/index.html",
+      "bytes": 5154,
+      "passed": true
+    },
+    {
+      "name": "consulta/index.html",
+      "bytes": 3518,
+      "passed": true
+    },
+    {
+      "name": "buscar/index.html",
+      "bytes": 3565,
+      "passed": true
+    },
+    {
+      "name": "assets/site.css",
+      "bytes": 17939,
+      "passed": true
+    },
+    {
+      "name": "assets/logo-rtt.jpg",
+      "bytes": 298735,
+      "passed": true
+    },
+    {
+      "name": "robots.txt",
+      "bytes": 26,
+      "passed": true
+    },
+    {
+      "name": "routes.json",
+      "bytes": 534,
+      "passed": true
+    },
+    {
+      "name": "search-catalog.json",
+      "bytes": 33,
+      "passed": true
+    },
+    {
+      "name": "inquiry-business.json",
+      "bytes": 740,
+      "passed": true
+    },
+    {
+      "name": "redirect-routes.json",
+      "bytes": 32,
+      "passed": true
+    },
+    {
+      "name": "budget-report.json",
+      "bytes": 4074,
+      "passed": true
+    },
+    {
+      "name": "content-audit.json",
+      "bytes": 183,
+      "passed": true
+    }
+  ],
+  "httpChecks": [
+    {
+      "path": "/",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3522,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/catalogo",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2569,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/categorias",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2531,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/diseno/ficha",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3108,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/diseno/categoria",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2567,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/404",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/nosotros",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2868,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/marcas",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2479,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/contacto",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5154,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/consulta",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3518,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/buscar",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3565,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/assets/site.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 17939,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/assets/logo-rtt.jpg",
+      "method": "GET",
+      "status": 200,
+      "bytes": 298735,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/robots.txt",
+      "method": "GET",
+      "status": 200,
+      "bytes": 26,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/",
+      "method": "HEAD",
+      "status": 200,
+      "bytes": 0,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/buscar?q=RTT-RECOVERY-DRILL",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3583,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/routes.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/search-catalog.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/inquiry-business.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/redirect-routes.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/budget-report.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/content-audit.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/current-release.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/approval.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/integrity.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/.env",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/preview-recovery-drill.mjs",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/__rtt_drill__/8c22f1ec-fbde-49d8-9f54-e14603200550",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/solicitar",
+      "method": "GET",
+      "status": 503,
+      "bytes": 2485,
+      "passed": true,
+      "failures": []
+    }
+  ],
+  "restoreAndHttpMs": 730.81,
+  "sourceAfter": {
+    "coordination": "ready",
+    "mode": "unversioned-preview",
+    "directorySha256": "d1c03f4ddcc783ca2ded6e54dd6e79ab36ac8de3bd022455d26bb12658c2f7d7",
+    "evidenceSha256": "f7e2b8caf44197c0e44ceaaac3777d4de9c0ca6918e309d09139224121c71632",
+    "contentSha256": "e060c87325e4976a112067aa729a77baf44c911e3ce32d8c6397cdd9cff9b5e5"
+  },
+  "totalMs": 1519.97
+}

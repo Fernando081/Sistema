@@ -1,0 +1,5 @@
+
+> check:runtime
+> node scripts/verify-runtime.js
+
+Runtime correcto: Node 24.19.0.

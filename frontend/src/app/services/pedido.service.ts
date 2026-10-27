@@ -8,6 +8,16 @@ export interface PedidoDetalle extends PedidoResumen { idCliente: number; idUnid
 export interface Backorder { idBackorder: number; idPedido: number; folio: number; cantidad: number; cantidadAsignada: number; prioridad: number; estado: string; createdAt: string; cliente: string; codigo: string; producto: string; }
 export interface ReservaVencida { idReserva: number; idPedido: number; folio: number; idProducto: number; codigo: string; producto: string; cantidad: number; expiresAt: string; cliente: string; }
 export interface Disponibilidad { existenciaFisica: number; reservada: number; disponible: number; }
+export interface EntregaSnapshot {
+ folio:number;cliente:string;recibidoPor:string;notas:string;motivoSinEvidencia:string;
+ ubicacion:{latitud:number;longitud:number;precision:number;fecha:string}|null;
+ archivos:Array<{tipo:'firma'|'foto';mime:string;bytes:number;sha256:string}>;
+}
+export interface EntregaEstado {
+ estado:string;version:number;
+ evidencia:{idEntrega:string;creadaEn:string;autor:string;sha256:string;snapshot:EntregaSnapshot}|null;
+ entregaAnterior:{recibidoPor:string|null;notas:string|null;fecha:string}|null;
+}
 export interface CreatePedido { requestId: string; idCliente: number; idUnidad?: number | null; notas?: string; partidas: Array<{ idProducto: number; cantidad: number; valorUnitario: number }>; }
 
 @Injectable({ providedIn: 'root' })
@@ -27,6 +37,10 @@ export class PedidoService {
   confirm(id: number) { return this.http.post<PedidoDetalle>(`${this.api}/${id}/confirmar`, {}); }
   fulfill(id: number, partidas: Array<{ idDetalle: number; cantidad: number }>) { return this.http.post<PedidoDetalle>(`${this.api}/${id}/surtir`, { partidas }); }
   deliver(id: number, recibidoPor = '') { return this.http.post<PedidoDetalle>(`${this.api}/${id}/entregar`, { recibidoPor }); }
+  delivery(id:number){return this.http.get<EntregaEstado>(`${this.api}/${id}/entrega`);}
+  evidenceDelivery(id:number,body:FormData){return this.http.post(`${this.api}/${id}/entrega/evidencia`,body);}
+  deliveryFile(id:number,kind:'firma'|'foto'){return this.http.get(`${this.api}/${id}/entrega/archivos/${kind}`,{responseType:'blob'});}
+  deliveryReceipt(id:number){return this.http.get(`${this.api}/${id}/entrega/comprobante`,{responseType:'blob'});}
   invoice(id: number) { return this.http.post<{ message: string; idFactura: number }>(`${this.api}/${id}/facturar`, { requestId: crypto.randomUUID() }); }
   cancel(id: number) { return this.http.post(`${this.api}/${id}/cancelar`, {}); }
   getBackorders() { return this.http.get<Backorder[]>(`${this.api}/backorders`); }

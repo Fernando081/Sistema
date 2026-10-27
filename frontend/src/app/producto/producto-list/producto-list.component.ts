@@ -1,14 +1,13 @@
 // frontend/src/app/producto/producto-list/producto-list.component.ts (MODIFICAR)
 
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, DestroyRef, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { productImageUrl } from '../../shared/api-url';
 import anime from 'animejs';
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -20,13 +19,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProductoService } from '../../services/producto.service';
 import { Producto } from '../producto.interface';
 import { ProductoDialogComponent } from '../producto-dialog/producto-dialog.component';
-import { finalize, Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
+import { RemoteDirectory } from '../../shared/remote-directory';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs'; // 1. Importar MatTabsModule
 import { CategoriaListComponent } from '../../categoria/categoria-list/categoria-list.component'; // 2. Importar CategoriaListComponent
 import { ProductoKardexComponent } from '../producto-kardex/producto-kardex.component';
 import { ProductoCotizacionesDialogComponent } from './producto-cotizaciones-dialog.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { localDate } from '../../shared/document-download';
 import { ConfirmService } from '../../shared/confirm.service';
 
 @Component({
@@ -38,132 +38,40 @@ import { ConfirmService } from '../../shared/confirm.service';
     MatButtonModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,
     MatProgressSpinnerModule, CurrencyPipe,
     MatTabsModule,
-    CategoriaListComponent
+    CategoriaListComponent, RouterLink
   ],
   templateUrl: './producto-list.component.html',
   styleUrls: ['./producto-list.component.css']
 })
-export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly canEdit = inject(AuthService).getDecodedToken()?.role === 'admin';
+export class ProductoListComponent implements OnInit, OnDestroy {
+  readonly canEdit = inject(AuthService).getSessionIdentity()?.role === 'admin';
   readonly productImageUrl = productImageUrl;
-  private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   
   displayedColumns: string[] = ['imagen_url', 'codigo', 'descripcion', 'categoriaNombre', 'marca', 'ubicacion', 'precioUnitario','existencia', 'acciones'];
-  dataSource = new MatTableDataSource<Producto>();
-  isLoading = true;
-  totalItems = 0;
-  activeFilter = '';
-  searchSubject = new Subject<string>();
-  private loadSubscription?: Subscription;
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  readonly directory: RemoteDirectory<Producto>;
+  get dataSource() { return this.directory.dataSource; }
+  get isLoading() { return this.directory.loading(); }
+  get totalItems() { return this.directory.total(); }
+  get isExporting() { return this.directory.exporting(); }
 
   constructor(
     private productoService: ProductoService,
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
     private confirm: ConfirmService,
-  ) {}
+  ) {
+    this.directory = new RemoteDirectory(query => this.productoService.getProductos(query.page, query.limit, query.sortBy === 'id' ? '' : query.sortBy, query.sortOrder, query.term),
+      message => this.mostrarNotificacion(message), ['codigo', 'descripcion', 'categoriaNombre', 'marca', 'ubicacion', 'precioUnitario', 'existencia']);
+  }
 
   ngOnInit(): void {
-    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
-      const term = params.get('q') || '';
-      if (term !== this.activeFilter) { this.activeFilter = term; this.cargarProductos(); }
-      else if (!this.dataSource.data.length) this.cargarProductos();
-    });
-
-    this.searchSubject.pipe(
-      debounceTime(400),
-      distinctUntilChanged(), takeUntilDestroyed(this.destroyRef)
-    ).subscribe(term => {
-      this.activeFilter = term;
-      if (this.paginator) {
-        this.paginator.pageIndex = 0;
-      }
-      this.cargarProductos();
-    });
+    this.directory.connectUrl(this.route, this.router);
+    this.directory.start();
   }
-
-  ngOnDestroy(): void {
-    this.loadSubscription?.unsubscribe();
-    this.searchSubject.complete();
-  }
-
-  ngAfterViewInit(): void {
-    if (this.sort) {
-      this.sort.sortChange.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-        if (this.paginator) {
-          this.paginator.pageIndex = 0;
-        }
-        this.cargarProductos();
-      });
-    }
-    if (this.paginator) {
-      this.paginator.page.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-        this.cargarProductos();
-      });
-    }
-  }
-
-  cargarProductos(): void {
-    this.loadSubscription?.unsubscribe();
-    this.isLoading = true;
-    const page = this.paginator ? this.paginator.pageIndex + 1 : 1;
-    const limit = this.paginator ? this.paginator.pageSize : 10;
-    const sort = this.sort ? this.sort.active : '';
-    const order = this.sort ? this.sort.direction : '';
-    
-    this.loadSubscription = this.productoService.getProductos(page, limit, sort, order, this.activeFilter)
-      .pipe(finalize(() => this.isLoading = false))
-      .subscribe({
-        next: (response) => {
-          const data = response.data || response;
-          this.totalItems = response.total || 0;
-          // Mapeo limpio sin duplicados
-          const camelCaseData: Producto[] = data.map((prod: any) => ({
-            idProducto: prod['IdProducto'],
-            codigo: prod['Codigo'],
-            idUnidad: prod['IdUnidad'],
-            idObjetoImpuesto: prod['IdObjetoImpuesto'],
-            descripcion: prod['Descripcion'],
-            precioUnitario: prod['PrecioUnitario'],
-            idCategoria: prod['IdCategoria'],
-            ubicacion: prod['Ubicacion'],
-            idClaveProdOServ: prod['IdClaveProdOServ'],
-            idClaveUnidad: prod['IdClaveUnidad'],
-            marca: prod['Marca'],
-            
-            // JOINS
-            categoriaNombre: prod['CategoriaNombre'],
-            claveProdServ: prod['ClaveProdServ'],
-            descripcionProdServ: prod['DescripcionProdServ'],
-            claveUnidadSat: prod['ClaveUnidadSat'],
-            descripcionUnidadSat: prod['DescripcionUnidadSat'],
-            
-            // CAMPOS FISCALES
-            objetoImpuestoSat: prod['ObjetoImpuesto'], 
-            tasaIva: prod['TasaIVA'],
-            aplicaRetencionIsr: prod['AplicaRetencionISR'],
-            aplicaRetencionIva: prod['AplicaRetencionIVA'],
-
-            // --- ¡ESTA ES LA LÍNEA QUE FALTABA! ---
-            existencia: Number(prod['Existencia'] || 0),
-            reservada: Number(prod['Reservada'] || 0),
-            disponible: Number(prod['Disponible'] ?? prod['Existencia'] ?? 0),
-            imagenes: prod['imagenes'] || [],
-          }));
-          
-          this.dataSource.data = camelCaseData;
-          setTimeout(() => this.animarEntradaTabla(), 0);
-          // Paginación y Sorting ahora se delegan completamente al servidor.
-        },
-        error: (err) => {
-          this.mostrarNotificacion('Error al cargar productos: ' + (err.error?.message || err.message));
-        }
-      });
-  }
+  ngOnDestroy(): void { this.directory.dispose(); }
+  cargarProductos(): void { this.directory.reload(); }
 
   verKardex(producto: Producto) {
     this.dialog.open(ProductoKardexComponent, {
@@ -183,9 +91,11 @@ export class ProductoListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.searchSubject.next(filterValue.trim().toLowerCase());
+  applyFilter(event: Event): void {
+    if (event.target instanceof HTMLInputElement) this.directory.setTerm(event.target.value);
+  }
+  exportar(): void {
+    this.directory.export(query => this.productoService.exportCsv(query.term, query.sortBy === 'id' ? '' : query.sortBy, query.sortOrder), 'productos_' + localDate() + '.csv');
   }
 
   onImageError(event: Event) {

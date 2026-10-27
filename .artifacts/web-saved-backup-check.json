@@ -1,0 +1,10 @@
+{
+  "status": "verified-local",
+  "generatedAt": "2026-10-11T23:34:11.194Z",
+  "scope": "Respaldo local guardado; no activa versiones ni restaura ERP. Conservar hash original por separado.",
+  "files": 20,
+  "httpChecks": 4,
+  "backup": "web-preview-ae108fa3-dc0e-4e72-ad35-f3163fff18f8.json",
+  "archiveSha256": "1a8e288ac985752cad58dc3840e50253570898e6cdf3716bd5dcb89b6998b6ac",
+  "archiveBytes": 477761
+}

@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "physicalCameraTested": false,
+  "decoded": {
+    "producto": "RTT1:P:11",
+    "ubicacion": "RTT1:U:1"
+  },
+  "pdfSha256": {
+    "producto": "5a8407f29c645107d24c4666246b734327509befb360f71af9cf80f74d4f83c0",
+    "ubicacion": "a59ba727aaff46e360d2cbe03d3f5b071473a5747b8277b9852940853d668365"
+  }
+}

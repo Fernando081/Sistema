@@ -1,0 +1,329 @@
+<section
+  class="web-editor"
+  aria-label="Ficha comercial web"
+  [attr.aria-busy]="loading() || saving()"
+>
+  <h2>Ficha comercial web</h2>
+  <p>Prepara información para el futuro catálogo. Marcar «lista» todavía no publica el producto.</p>
+  <p *ngIf="loading()" role="status">Cargando ficha…</p>
+  <p *ngIf="message()" role="status" class="notice">{{ message() }}</p>
+  <button mat-stroked-button type="button" *ngIf="!loaded() && !loading()" (click)="load()">
+    Reintentar carga
+  </button>
+  <button
+    mat-stroked-button
+    type="button"
+    *ngIf="conflict()"
+    (click)="load(true)"
+    [disabled]="loading()"
+  >
+    Cargar versión actual conservando mi texto
+  </button>
+  <div *ngIf="loaded() && product() as p">
+    <p>
+      <strong>Estado: {{ state() }} · Versión {{ version() }}</strong>
+    </p>
+    <div [formGroup]="form" class="fields">
+      <mat-form-field
+        ><mat-label>URL del producto</mat-label
+        ><input matInput formControlName="slug" maxlength="160" /><mat-hint
+          >Minúsculas, números y guiones; sin espacios.</mat-hint
+        ><mat-error>Usa entre 3 y 160 caracteres válidos.</mat-error></mat-form-field
+      >
+      <mat-form-field
+        ><mat-label>Título comercial</mat-label
+        ><input matInput formControlName="titulo" maxlength="160" /><mat-error
+          >Entre 8 y 160 caracteres, sin HTML.</mat-error
+        ></mat-form-field
+      >
+      <mat-form-field
+        ><mat-label>Descripción comercial</mat-label
+        ><textarea matInput formControlName="descripcion" rows="5" maxlength="6000"></textarea
+        ><mat-error>Entre 30 y 6000 caracteres, sin HTML.</mat-error></mat-form-field
+      >
+      <section aria-label="Imágenes de la ficha" class="image-selection">
+        <mat-form-field
+          ><mat-label>Fuente de compatibilidad</mat-label
+          ><textarea
+            matInput
+            formControlName="fuenteCompatibilidad"
+            maxlength="500"
+            rows="2"
+          ></textarea
+          ><mat-hint>Catálogo del fabricante, revisión técnica o documento comprobado.</mat-hint
+          ><mat-error>Hasta 500 caracteres sin HTML.</mat-error></mat-form-field
+        >
+        <mat-form-field
+          ><mat-label>Fuente de referencias cruzadas</mat-label
+          ><textarea
+            matInput
+            formControlName="fuenteReferencias"
+            maxlength="500"
+            rows="2"
+          ></textarea
+          ><mat-error>Hasta 500 caracteres sin HTML.</mat-error></mat-form-field
+        >
+        <h3>Seleccionar fotografías</h3>
+        <p>
+          La primera seleccionada será la principal. Una imagen que no carga impide marcar lista.
+        </p>
+        <p *ngIf="!p.imagenes.length">
+          Agrega fotografías al producto y guarda Datos Generales primero.
+        </p>
+        <div *ngFor="let photo of p.imagenes; let i = index" class="image-option">
+          <img
+            [src]="imageUrl(photo)"
+            [alt]="'Fotografía ' + (i + 1) + ' de ' + p.nombre"
+            (error)="imageFailed(photo)"
+            [hidden]="brokenImages().includes(photo)"
+          />
+          <span *ngIf="brokenImages().includes(photo)" role="status"
+            >Imagen {{ i + 1 }} no disponible</span
+          >
+          <mat-checkbox
+            [checked]="selectedImages().includes(photo)"
+            (change)="selectImage(photo, $event.checked)"
+            [disabled]="saving() || loading()"
+            >Incluir fotografía {{ i + 1 }}</mat-checkbox
+          >
+        </div>
+      </section>
+      <section aria-label="Especificaciones técnicas">
+        <h3>Equivalencias para revisar</h3>
+        <p>
+          Selecciona únicamente equivalencias que hayas comprobado. Ninguna se incluye
+          automáticamente.
+        </p>
+        <p *ngIf="!p.equivalencias?.length">Sin equivalencias vinculadas en el maestro.</p>
+        <mat-checkbox
+          *ngFor="let equivalent of p.equivalencias"
+          [checked]="selectedEquivalents().includes(equivalent.id)"
+          (change)="selectEquivalent(equivalent.id, $event.checked)"
+          [disabled]="saving() || loading()"
+          >Incluir {{ equivalent.codigo || equivalent.nombre }} ·
+          {{ equivalent.marca }}</mat-checkbox
+        >
+        <h3>Especificaciones con unidades</h3>
+        <p>Usa valores comprobados. Para un dato sin medida, indica «sin unidad».</p>
+        <div
+          *ngFor="let row of specifications.controls; let i = index"
+          [formGroup]="row"
+          class="spec-row"
+        >
+          <mat-form-field
+            ><mat-label>Característica {{ i + 1 }}</mat-label
+            ><input matInput formControlName="nombre" maxlength="80" /><mat-error
+              >Nombre de 2 a 80 caracteres, sin HTML.</mat-error
+            ></mat-form-field
+          >
+          <mat-form-field
+            ><mat-label>Valor {{ i + 1 }}</mat-label
+            ><input matInput formControlName="valor" maxlength="160" /><mat-error
+              >Indica un valor sin HTML.</mat-error
+            ></mat-form-field
+          >
+          <mat-form-field
+            ><mat-label>Unidad {{ i + 1 }}</mat-label
+            ><input matInput formControlName="unidad" maxlength="30" /><mat-error
+              >Indica la unidad.</mat-error
+            ></mat-form-field
+          >
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="removeSpecification(i)"
+            [disabled]="saving() || loading()"
+            [attr.aria-label]="'Eliminar característica ' + (i + 1)"
+          >
+            Eliminar
+          </button>
+        </div>
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="addSpecification()"
+          [disabled]="saving() || loading() || specifications.length >= 30"
+        >
+          Agregar característica
+        </button>
+      </section>
+      <mat-checkbox formControlName="datosRealesConfirmados"
+        >Confirmé que los datos son reales</mat-checkbox
+      >
+      <mat-checkbox formControlName="derechosImagenConfirmados"
+        >Tengo autorización para usar estas imágenes</mat-checkbox
+      >
+      <mat-checkbox formControlName="compatibilidadVerificada"
+        >Revisé referencias, aplicaciones y restricciones</mat-checkbox
+      >
+    </div>
+    <aside *ngIf="requirements().length">
+      <h3>Requisitos para marcar lista</h3>
+      <ul>
+        <li *ngFor="let item of requirements()">{{ item }}</li>
+      </ul>
+    </aside>
+    <article class="preview" aria-label="Vista previa comercial">
+      <p>Vista previa de esta edición · /productos/{{ form.controls.slug.value }}</p>
+      <h3>{{ form.controls.titulo.value || 'Título pendiente' }}</h3>
+      <p>{{ p.marca || 'Marca pendiente' }} · {{ p.codigo || 'Código pendiente' }}</p>
+      <p>Categoría: {{ p.categoria || 'Pendiente en Datos Generales' }}</p>
+      <div class="photos">
+        <img
+          *ngFor="let photo of selectedImages()"
+          [src]="imageUrl(photo)"
+          [alt]="form.controls.titulo.value || p.nombre"
+          loading="lazy"
+          (error)="imageFailed(photo)"
+          [hidden]="brokenImages().includes(photo)"
+        />
+      </div>
+      <p class="description">{{ form.controls.descripcion.value }}</p>
+      <dl *ngIf="specifications.length" aria-label="Especificaciones en vista previa">
+        <ng-container *ngFor="let row of specifications.controls"
+          ><dt>{{ row.controls.nombre.value }}</dt>
+          <dd>{{ row.controls.valor.value }} {{ row.controls.unidad.value }}</dd></ng-container
+        >
+      </dl>
+      <h4>Referencias del maestro</h4>
+      <h4 *ngIf="selectedEquivalents().length">Equivalencias seleccionadas</h4>
+      <ul>
+        <ng-container *ngFor="let equivalent of p.equivalencias"
+          ><li *ngIf="selectedEquivalents().includes(equivalent.id)">
+            {{ equivalent.codigo }} · {{ equivalent.nombre }} · {{ equivalent.marca }}
+          </li></ng-container
+        >
+      </ul>
+      <p *ngIf="!p.numerosParte.length">Sin referencias registradas.</p>
+      <ul>
+        <li *ngFor="let reference of p.numerosParte">
+          {{ reference.numero }} · {{ reference.tipo }} · {{ reference.fabricante }}
+        </li>
+      </ul>
+      <h4>Aplicaciones del maestro</h4>
+      <p *ngIf="!p.aplicaciones.length">
+        Sin aplicaciones registradas. Revisa la compatibilidad antes de aprobar.
+      </p>
+      <ul>
+        <li *ngFor="let application of p.aplicaciones">
+          {{ application.fabricante }} {{ application.modelo }} {{ application.motor }} ·
+          {{ application.desde }}–{{ application.hasta }}
+          <strong>{{ application.restricciones }}</strong>
+        </li>
+      </ul>
+      <p>
+        Las imágenes y referencias se toman del producto guardado; guarda primero sus cambios en
+        Datos Generales. Costos, existencias y clientes quedan fuera de esta ficha.
+      </p>
+    </article>
+    <div class="actions">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="approveCandidate()"
+        [disabled]="!canExport() || !approvalConfirmed()"
+        aria-describedby="approval-help"
+      >
+        Registrar aprobación y descargar
+      </button>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="exportCandidate()"
+        [disabled]="!canExport()"
+        aria-describedby="export-help"
+      >
+        {{ exporting() ? 'Preparando descarga…' : 'Descargar candidata' }}
+      </button>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="save('borrador')"
+        [disabled]="saving() || loading() || conflict()"
+      >
+        Guardar borrador
+      </button>
+      <button
+        mat-flat-button
+        type="button"
+        (click)="save('listo')"
+        [disabled]="saving() || loading() || conflict() || !!requirements().length"
+      >
+        Marcar lista
+      </button>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="save('retirado')"
+        [disabled]="saving() || loading() || conflict()"
+      >
+        Retirar ficha
+      </button>
+    </div>
+    <mat-checkbox
+      [checked]="approvalConfirmed()"
+      (change)="approvalConfirmed.set($event.checked)"
+      [disabled]="!canExport()"
+      >Revisé la versión guardada y autorizo registrar su aprobación editorial</mat-checkbox
+    >
+    <p id="approval-help">
+      Registra tu usuario y la versión revisada. Descarga el manifiesto aprobado; esta acción no
+      activa el sitio. No incluye las imágenes o alternativas añadidas después al archivo.
+    </p>
+    <p *ngIf="approvalReceipt() as receipt" class="approval-receipt" role="status">
+      Recibo {{ receipt.id }} · {{ receipt.timestamp }}<br />SHA-256: {{ receipt.sha256 }}
+    </p>
+    <section aria-label="Vigencia de aprobación">
+      <h3>Consultar o revocar un recibo</h3>
+      <mat-form-field
+        ><mat-label>Número de recibo</mat-label
+        ><input
+          matInput
+          #receiptLookup
+          type="number"
+          min="1"
+          step="1"
+          [value]="receiptLookupId() || ''"
+          (input)="setReceiptLookup(receiptLookup.value)"
+          [disabled]="exporting() || loading() || saving()"
+      /></mat-form-field>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="checkReceipt()"
+        [disabled]="exporting() || loading() || saving() || receiptLookupId() < 1"
+      >
+        Consultar vigencia
+      </button>
+      <div *ngIf="receiptStatus() as status" role="status" class="approval-receipt">
+        <p>
+          Recibo {{ status.receiptId }} · Versión {{ status.version }} ·
+          {{ status.revoked ? 'Revocado' : status.active ? 'Vigente al consultar' : 'No vigente' }}
+        </p>
+        <p>SHA-256: {{ status.sha256 }}</p>
+        <mat-checkbox
+          [checked]="revokeConfirmed()"
+          (change)="revokeConfirmed.set($event.checked)"
+          [disabled]="status.revoked || exporting()"
+          >Confirmo revocar este recibo</mat-checkbox
+        >
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="revokeReceipt()"
+          [disabled]="status.revoked || !revokeConfirmed() || exporting() || loading() || saving()"
+        >
+          Revocar recibo
+        </button>
+      </div>
+      <p>
+        La consulta corresponde a este producto. Revocar conserva el historial y no retira
+        automáticamente versiones activas del sitio.
+      </p>
+    </section>
+    <p id="export-help">
+      Guarda y marca lista la ficha antes de descargarla. Se exporta la versión guardada como
+      borrador sin aprobación pública; descargar no publica ni retira productos de la web.
+    </p>
+  </div>
+</section>

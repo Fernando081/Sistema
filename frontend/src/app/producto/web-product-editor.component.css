@@ -1,0 +1,111 @@
+:host {
+  display: block;
+  color: var(--text-main);
+  --mat-checkbox-label-text-color: var(--text-main);
+}
+.spec-row {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr auto;
+  gap: 12px;
+  align-items: start;
+}
+.image-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.image-selection h3,
+.image-selection > p {
+  flex-basis: 100%;
+}
+.image-option {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 220px;
+}
+.image-option img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  background: white;
+}
+dt {
+  font-weight: 600;
+}
+dd {
+  margin: 0 0 12px;
+}
+@media (max-width: 700px) {
+  .spec-row {
+    grid-template-columns: 1fr;
+  }
+}
+.web-editor {
+  padding: 24px;
+}
+h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 16px 0 8px;
+}
+h4 {
+  font-weight: 600;
+  margin: 16px 0 8px;
+}
+.fields {
+  display: grid;
+  gap: 16px;
+}
+.preview {
+  border: 1px solid currentColor;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 24px 0;
+  overflow-wrap: anywhere;
+}
+.photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.photos img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  background: white;
+  border-radius: 8px;
+}
+.description {
+  white-space: pre-wrap;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+/* Mantiene contraste también sobre la capa de pulsación del botón. */
+button[mat-stroked-button]:not(:disabled) {
+  color: var(--wrap-text-title);
+}
+.notice {
+  border-left: 3px solid currentColor;
+  padding: 12px;
+}
+@media (max-width: 600px) {
+  .web-editor {
+    padding: 16px;
+  }
+  .actions button {
+    width: 100%;
+  }
+}
+
+.approval-receipt {
+  overflow-wrap: anywhere;
+}

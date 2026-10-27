@@ -1,0 +1,21 @@
+{
+  "phase": "O02.4",
+  "generatedAt": "2026-10-12T20:25:07.767Z",
+  "node": "24.19.0",
+  "source": "restored-test-database",
+  "passed": true,
+  "cleaned": true,
+  "checks": [
+    "Restauración propia/db:check antes de db:migrate",
+    "Concurrencia PostgreSQL/guardia sin intento ficticio",
+    "Fallo real y aviso crítico por ADMIN activo",
+    "Callback NotificationService real/éxito/aviso recuperado",
+    "Consulta manual no genera historial de cron",
+    "Callback DashboardService real/último éxito",
+    "Instalación/tolerancia y veinte intentos de historial",
+    "Cero transacciones ociosas y copia eliminada"
+  ],
+  "limits": [
+    "Servicios y tablas completos en copia; no AppModule HTTP/UI completo ni monitor externo."
+  ]
+}

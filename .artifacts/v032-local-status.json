@@ -1,0 +1,115 @@
+{
+  "checkedAt": "2026-10-21T00:35:56.642Z",
+  "passed": true,
+  "sqlReadOnly": true,
+  "checks": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/cliente",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/portal",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4600/catalogo",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/clientes/1/portal-publicaciones",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/clientes/1/portal-publicaciones/candidatos/xml",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/portal/archivos",
+      "status": 403,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/portal/archivos",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/portal/archivos/1/descarga",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/portal/archivos",
+      "status": 403,
+      "passed": true
+    },
+    {
+      "name": "105 aplicada",
+      "passed": true
+    },
+    {
+      "name": "portal_publicacion vacía sin sembrado",
+      "passed": true
+    },
+    {
+      "name": "portal_publicacion_archivo vacía sin sembrado",
+      "passed": true
+    },
+    {
+      "name": "portal_publicacion_retiro vacía sin sembrado",
+      "passed": true
+    },
+    {
+      "name": "portal_acceso vacía sin sembrado",
+      "passed": true
+    },
+    {
+      "name": "portal_credencial vacía sin sembrado",
+      "passed": true
+    },
+    {
+      "name": "portal_invitacion vacía sin sembrado",
+      "passed": true
+    },
+    {
+      "name": "portal_sesion vacía sin sembrado",
+      "passed": true
+    },
+    {
+      "name": "portal_evento vacía sin sembrado",
+      "passed": true
+    },
+    {
+      "name": "Permiso ADMIN inicial",
+      "passed": true
+    },
+    {
+      "name": "Tres guardas ALWAYS",
+      "passed": true
+    },
+    {
+      "name": "Guard de auditoría de bytes y secretos",
+      "passed": true
+    }
+  ]
+}

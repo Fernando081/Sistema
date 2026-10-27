@@ -1,0 +1,120 @@
+
+> test:commercial-approvals
+> node backend/verify-commercial-approvals.js --backup=.backups/2026-10-20T00-59-00-659Z/database.dump
+
+{"type":"http_request","requestId":"caae6d90-82b6-4da0-b14f-b1a872a0c69a","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":401,"durationMs":6.88,"idUser":null}
+{"type":"http_request","requestId":"97f2c413-cc8b-4eae-86d5-6d211d453f2d","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":403,"durationMs":7.49,"idUser":4}
+{"type":"http_request","requestId":"fd593fe1-1cbd-4929-a14e-ab3ff7cde75c","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":11.25,"idUser":2}
+{"type":"http_request","requestId":"e250a6ca-fb60-464c-9544-0991849da9b0","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":4.55,"idUser":2}
+OK: 099 check/migrate en copia; nueve reglas compatibles sin límites inventados; API privada ADMIN y operador403
+{"type":"http_request","requestId":"2861f53b-5dc5-4a33-8945-313b97ab9077","method":"PUT","path":"/api/v1/comercial/clientes/2","statusCode":200,"durationMs":17.59,"idUser":2}
+{"type":"http_request","requestId":"8873ae26-7ffb-497e-a71b-176def76c160","method":"POST","path":"/api/v1/comercial/listas","statusCode":201,"durationMs":8.28,"idUser":2}
+{"type":"http_request","requestId":"625a06b0-9816-4a2c-beee-1844bba9f56a","method":"PUT","path":"/api/v1/comercial/listas/2/precios","statusCode":200,"durationMs":11.88,"idUser":2}
+{"type":"http_request","requestId":"f23cc8d3-dedd-4862-9e9e-f4580349dbae","method":"PUT","path":"/api/v1/comercial/precios-especiales","statusCode":200,"durationMs":6.1,"idUser":2}
+OK: Crédito/listas/escalas/precios especiales se confirman con actor vigente y auditoría en la misma transacción
+{"type":"http_request","requestId":"83d584a8-138d-425a-9841-83c4529a9780","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":7.66,"idUser":2}
+{"type":"http_request","requestId":"635324b7-fd45-4d5c-97e5-d840ad3c8b19","method":"POST","path":"/api/v1/comercial/autorizaciones/1/resolver","statusCode":201,"durationMs":6.06,"idUser":2}
+{"type":"http_request","requestId":"a9f7b418-d5b3-4f4d-b2c4-80d812741f4a","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":400,"durationMs":2.98,"idUser":2}
+{"type":"http_request","requestId":"ee7596ae-c685-462e-8555-2350a47c8e27","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":9.3,"idUser":2}
+{"type":"http_request","requestId":"8321e0b9-e4b8-458e-8c84-2c53363e86e6","method":"POST","path":"/api/v1/comercial/autorizaciones/2/resolver","statusCode":400,"durationMs":5.64,"idUser":2}
+OK: Un administrador puede aprobar inicialmente; destino/tope total/vigencia y DTO no se omiten; moneda no comparable rechazada
+{"type":"http_request","requestId":"68204e2f-1bad-489d-825c-0efabd99cd61","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":4.6,"idUser":2}
+{"type":"http_request","requestId":"055394e0-1934-4c25-8dd7-e32c7a0c006f","method":"PUT","path":"/api/v1/comercial/reglas-aprobacion","statusCode":200,"durationMs":6.99,"idUser":2}
+{"type":"http_request","requestId":"3911bccf-17db-4b0b-bc2a-57da0aa220ec","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":4.8,"idUser":2}
+{"type":"http_request","requestId":"44835ccb-1608-4682-971e-c84e1fd3480f","method":"POST","path":"/api/v1/comercial/autorizaciones/3/resolver","statusCode":403,"durationMs":6.29,"idUser":2}
+{"type":"http_request","requestId":"191d5695-2344-4981-bd3c-a6c1c7d7ef1b","method":"PUT","path":"/api/v1/comercial/limites-aprobacion/3","statusCode":200,"durationMs":7.32,"idUser":2}
+{"type":"http_request","requestId":"5ab3012e-7e6c-4f0c-8774-c2aadecd233a","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":4.92,"idUser":2}
+{"type":"http_request","requestId":"33c51c4d-0751-4788-837b-614733e52450","method":"POST","path":"/api/v1/comercial/autorizaciones/4/resolver","statusCode":403,"durationMs":4.32,"idUser":3}
+{"type":"http_request","requestId":"7d1ca8a9-59f6-499a-9e10-52797a00ed3b","method":"POST","path":"/api/v1/comercial/autorizaciones/3/resolver","statusCode":201,"durationMs":5.41,"idUser":3}
+{"type":"http_request","requestId":"be9160c7-e72e-4021-989a-fcde86afc588","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":5.01,"idUser":4}
+{"type":"http_request","requestId":"2aa6dea1-becd-43bc-aae4-a5d1a30d7119","method":"POST","path":"/api/v1/comercial/autorizaciones/5/resolver","statusCode":403,"durationMs":5.09,"idUser":2}
+{"type":"http_request","requestId":"1354da65-f2cf-41f7-9653-9f5ea8933d99","method":"POST","path":"/api/v1/comercial/autorizaciones/5/resolver","statusCode":201,"durationMs":4.88,"idUser":2}
+{"type":"http_request","requestId":"7cdef3c2-d4d6-4bfa-a077-ddc4814152f0","method":"PUT","path":"/api/v1/comercial/limites-aprobacion/3","statusCode":200,"durationMs":4.17,"idUser":2}
+{"type":"http_request","requestId":"d7cbdea1-d7f5-4ae6-80c6-c36bc97060ff","method":"PUT","path":"/api/v1/comercial/limites-aprobacion/3","statusCode":409,"durationMs":4.73,"idUser":2}
+{"type":"http_request","requestId":"eeeb1652-e841-44b2-9375-6a94b19b9230","method":"PUT","path":"/api/v1/comercial/limites-aprobacion/3","statusCode":200,"durationMs":4.51,"idUser":2}
+OK: Cambio de versión invalida autorizaciones anteriores; separación y menor límite entre regla/aprobador se verifican al resolver
+OK: Revocar permiso impide resolver incluso desde servicio y usar una autorización ya aprobada
+{"type":"http_request","requestId":"3d73cd7e-1eee-431a-bd28-ee45491f80e0","method":"POST","path":"/api/v1/venta","statusCode":409,"durationMs":11.81,"idUser":2}
+{"type":"http_request","requestId":"0dc22915-12b2-4ef6-b117-819546780088","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":67.62,"idUser":2}
+{"type":"http_request","requestId":"c581568b-c3fb-4e7a-9efe-4db46e5e293a","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":5.29,"idUser":2}
+{"type":"http_request","requestId":"8a0d3a89-a1a9-42ae-8fa8-49bcc5c5483e","method":"POST","path":"/api/v1/venta","statusCode":409,"durationMs":7.94,"idUser":2}
+OK: Venta HTTP valida precio neto después de descuento y total real; rechazos revierten stock; consumo único y reintento conservan factura/stock
+{"type":"http_request","requestId":"c983e44d-82ca-4708-8279-d58c6bc735f6","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":2.75,"idUser":2}
+{"type":"http_request","requestId":"d98146ff-7baf-483d-ad1e-8444e18d42e7","method":"POST","path":"/api/v1/comercial/autorizaciones/6/resolver","statusCode":201,"durationMs":4.86,"idUser":2}
+{"type":"http_request","requestId":"6649f619-5c8c-400b-95c1-d5ebcdc11883","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":11.66,"idUser":2}
+{"type":"http_request","requestId":"0f786991-b3c9-4265-8b03-f6fa2157bded","method":"POST","path":"/api/v1/pedidos","statusCode":409,"durationMs":9.81,"idUser":2}
+{"type":"http_request","requestId":"861330cd-f53e-4af3-9543-ff92d07b6462","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":3.59,"idUser":2}
+{"type":"http_request","requestId":"f97de1d4-2772-4445-b0d8-c6057d2534e8","method":"POST","path":"/api/v1/comercial/autorizaciones/7/resolver","statusCode":201,"durationMs":5.6,"idUser":2}
+{"type":"http_request","requestId":"5c3f2a59-13f1-4a10-a3c3-09216e9685a2","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":13.26,"idUser":2}
+{"type":"http_request","requestId":"e3971cd8-6d96-4f6f-91f9-4c90717b7011","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":3.93,"idUser":2}
+OK: Cotización valida sin gastar; pedido exige su propio alcance, consume una sola vez y conserva idempotencia por HTTP
+{"type":"http_request","requestId":"b5fe3d66-0d29-44f0-84c9-2a3aadcbd130","method":"PUT","path":"/api/v1/comercial/clientes/2","statusCode":200,"durationMs":4.65,"idUser":2}
+{"type":"http_request","requestId":"658c6f85-bb0d-4371-80c9-1478e5b8ce51","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":6.12,"idUser":2}
+{"type":"http_request","requestId":"3e45e788-bbbe-418b-b1d5-35c766b1b3e8","method":"POST","path":"/api/v1/comercial/autorizaciones/8/resolver","statusCode":201,"durationMs":6.47,"idUser":2}
+{"type":"http_request","requestId":"437c59af-2574-4b92-bbe2-7fb6485921b5","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":3.12,"idUser":2}
+{"type":"http_request","requestId":"65bf310a-61b7-44d5-9c46-50fa13b22824","method":"POST","path":"/api/v1/comercial/autorizaciones/9/resolver","statusCode":201,"durationMs":5.38,"idUser":2}
+OK: Descuento y exceso de crédito conservan sus tipos; crédito compara total del documento con el alcance aprobado
+{"type":"http_request","requestId":"d03a8022-0f40-403c-9db7-e30fd72b4fef","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":3.64,"idUser":2}
+{"type":"http_request","requestId":"9ff9c72d-875b-498e-a071-d6fa593d9f26","method":"PUT","path":"/api/v1/comercial/reglas-aprobacion","statusCode":200,"durationMs":4.13,"idUser":2}
+OK: Históricos aprobados se conservan y funcionan bajo regla inicial compatible; modificar esa regla exige nueva solicitud con alcance
+{"type":"http_request","requestId":"5666b2cd-43e7-4b2a-b6bd-0570f1c93e99","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":3.49,"idUser":2}
+{"type":"http_request","requestId":"9df02f29-790c-4623-bfaa-5226ebe68654","method":"POST","path":"/api/v1/comercial/autorizaciones/11/resolver","statusCode":201,"durationMs":4.32,"idUser":2}
+{"type":"http_request","requestId":"2b9318eb-e450-4d35-97ff-7abd925a54d6","method":"POST","path":"/api/v1/comercial/autorizaciones/11/resolver","statusCode":409,"durationMs":9.14,"idUser":3}
+{"type":"http_request","requestId":"17f3bb7d-588e-4533-ab50-aa9f89999d98","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":6.49,"idUser":2}
+{"type":"http_request","requestId":"f4074937-a08d-4ae6-a56c-7f0b91a0a5d9","method":"PUT","path":"/api/v1/comercial/reglas-aprobacion","statusCode":200,"durationMs":10.16,"idUser":2}
+{"type":"http_request","requestId":"8328e7df-9a85-4e50-bd64-245ff665f748","method":"PUT","path":"/api/v1/comercial/reglas-aprobacion","statusCode":409,"durationMs":10.46,"idUser":2}
+OK: Dos resoluciones y dos ediciones concurrentes producen un solo commit y un409; versiones no se sobrescriben
+{"type":"http_request","requestId":"06fe483d-4629-4e4b-af43-c93383ef26ff","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":3.93,"idUser":2}
+{"type":"http_request","requestId":"56b860e7-1758-401a-9a3c-cfe665299002","method":"PUT","path":"/api/v1/comercial/reglas-aprobacion","statusCode":400,"durationMs":15.77,"idUser":2}
+{"type":"http_request","requestId":"2783a28e-919f-4b99-b6ba-782d38877ec6","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":3.8,"idUser":2}
+OK: Fallo de auditoría revierte cambio de regla y versión; la bitácora protegida no se evita
+OK: Actor revocado mientras esperaba el bloqueo se revalida dentro de la transacción y no cambia precios
+{"type":"http_request","requestId":"1f58b2c7-f163-4868-9c6c-c5670be03f26","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":69.42,"idUser":null}
+{"type":"http_request","requestId":"e1e422d9-1ea3-4535-8709-7fb939192c68","method":"GET","path":"/api/v1/cliente","statusCode":200,"durationMs":16.6,"idUser":2}
+{"type":"http_request","requestId":"ff4717f3-e7f0-499e-ae2c-fcc18e45766c","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":12.32,"idUser":2}
+{"type":"http_request","requestId":"bb5ecacb-b857-4e8a-8ec5-56089b788e8f","method":"GET","path":"/api/v1/producto","statusCode":200,"durationMs":40.16,"idUser":2}
+{"type":"http_request","requestId":"d7a39773-5e3b-4ebc-b1dc-760bd092b1a8","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":69.33,"idUser":2}
+{"type":"http_request","requestId":"348e45f1-d615-40bf-ad17-ce4943d744b3","method":"GET","path":"/api/v1/comercial/listas","statusCode":200,"durationMs":65.67,"idUser":2}
+{"type":"http_request","requestId":"9f8a6209-067a-4ff7-bcce-0488c57064ba","method":"GET","path":"/api/v1/comercial/clientes","statusCode":200,"durationMs":71.99,"idUser":2}
+{"type":"http_request","requestId":"8cef32b9-020a-43a1-8656-aecdbe1495c8","method":"GET","path":"/api/v1/comercial/autorizaciones","statusCode":200,"durationMs":75.57,"idUser":2}
+{"type":"http_request","requestId":"21a6d1e1-0e15-4fb3-a05b-355629f19f0e","method":"PUT","path":"/api/v1/comercial/reglas-aprobacion","statusCode":200,"durationMs":37.39,"idUser":2}
+{"type":"http_request","requestId":"62264e18-86a2-4be8-b550-c9bd15197939","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":20.88,"idUser":2}
+{"type":"http_request","requestId":"d1a51499-0f5c-477f-a36f-fa3c21956e2c","method":"PUT","path":"/api/v1/comercial/limites-aprobacion/3","statusCode":200,"durationMs":12.34,"idUser":2}
+{"type":"http_request","requestId":"2557a7e6-af71-446a-8555-1b3787992c97","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":8.07,"idUser":2}
+{"type":"http_request","requestId":"fecf6c1f-d4a9-433a-b62b-b1ac28359614","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":10.09,"idUser":2}
+{"type":"http_request","requestId":"818cb411-1f18-410e-ba31-62b41692893d","method":"GET","path":"/api/v1/cliente","statusCode":200,"durationMs":22.28,"idUser":2}
+{"type":"http_request","requestId":"bc88931a-1efb-4454-baf7-3fa24370d61c","method":"GET","path":"/api/v1/comercial/autorizaciones","statusCode":200,"durationMs":17.77,"idUser":2}
+{"type":"http_request","requestId":"8cd3e355-0c71-4554-ba32-037e0cf8191d","method":"GET","path":"/api/v1/comercial/listas","statusCode":200,"durationMs":18.85,"idUser":2}
+{"type":"http_request","requestId":"ba312f33-bcc4-41a6-ad8c-5b48d9ea678e","method":"GET","path":"/api/v1/comercial/clientes","statusCode":200,"durationMs":33.62,"idUser":2}
+{"type":"http_request","requestId":"caa892c2-f810-401e-be08-20f6be292757","method":"GET","path":"/api/v1/producto","statusCode":200,"durationMs":53.68,"idUser":2}
+{"type":"http_request","requestId":"d6dfddc8-0cd4-4dea-9f21-27e7d3eedbf9","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":19.57,"idUser":2}
+{"type":"http_request","requestId":"93f1ac68-c25c-4269-9645-ce0bb460d410","method":"POST","path":"/api/v1/comercial/autorizaciones/12/resolver","statusCode":403,"durationMs":10.67,"idUser":2}
+{"type":"http_request","requestId":"109bcd66-cd1f-4189-af5e-e480178533d8","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":71.53,"idUser":null}
+{"type":"http_request","requestId":"3aa2c4bb-2168-433e-baa2-6f0c8525896e","method":"GET","path":"/api/v1/cliente","statusCode":200,"durationMs":11.46,"idUser":2}
+{"type":"http_request","requestId":"ac39d150-3633-42ca-913f-bd20bf1dbc49","method":"GET","path":"/api/v1/comercial/autorizaciones","statusCode":200,"durationMs":11.19,"idUser":2}
+{"type":"http_request","requestId":"5c3a1c3a-f413-46e5-958b-d77243c0ee94","method":"GET","path":"/api/v1/comercial/clientes","statusCode":200,"durationMs":16.99,"idUser":2}
+{"type":"http_request","requestId":"0f1f5383-6028-470a-8953-b091ff7f647a","method":"GET","path":"/api/v1/producto","statusCode":200,"durationMs":21.96,"idUser":2}
+{"type":"http_request","requestId":"fb979ee1-8b79-4525-8731-f355c45f7d97","method":"GET","path":"/api/v1/comercial/listas","statusCode":200,"durationMs":15.45,"idUser":2}
+{"type":"http_request","requestId":"0860a80c-cfce-415a-b316-86616310297f","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":6.07,"idUser":2}
+{"type":"http_request","requestId":"96877883-3a8c-442f-9549-aa4ddef7b7aa","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":70.03,"idUser":2}
+{"type":"http_request","requestId":"fe647bc3-8579-4a4d-94b7-e2e209f6062d","method":"PUT","path":"/api/v1/comercial/reglas-aprobacion","statusCode":200,"durationMs":8.78,"idUser":2}
+{"type":"http_request","requestId":"aca43298-7cf4-4d7c-aee9-90ae2e77757b","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":3.34,"idUser":2}
+{"type":"http_request","requestId":"aa778655-bdc3-437f-a72b-7e3de3e3bb33","method":"PUT","path":"/api/v1/comercial/limites-aprobacion/3","statusCode":200,"durationMs":7.84,"idUser":2}
+{"type":"http_request","requestId":"9ce49883-9951-4016-b835-b7931ebd8fcb","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":5.99,"idUser":2}
+{"type":"http_request","requestId":"128c2f1c-b73c-40d4-8797-ffd3e8120421","method":"POST","path":"/api/v1/comercial/autorizaciones","statusCode":201,"durationMs":10.8,"idUser":2}
+{"type":"http_request","requestId":"358cda51-3257-4d48-afc5-e56a70f228af","method":"GET","path":"/api/v1/cliente","statusCode":200,"durationMs":16.21,"idUser":2}
+{"type":"http_request","requestId":"f8c149ff-e6b2-43a6-bd9f-fc69ad3a87a5","method":"GET","path":"/api/v1/comercial/autorizaciones","statusCode":200,"durationMs":9.54,"idUser":2}
+{"type":"http_request","requestId":"2b900a81-ac0f-48b6-81fe-4c09ee0a342b","method":"GET","path":"/api/v1/comercial/listas","statusCode":200,"durationMs":12.59,"idUser":2}
+{"type":"http_request","requestId":"baa696a8-d9e5-4768-80d7-b8ce5dc96368","method":"GET","path":"/api/v1/comercial/clientes","statusCode":200,"durationMs":23.43,"idUser":2}
+{"type":"http_request","requestId":"48660b95-5a38-4a4c-a328-03bc45f11c4c","method":"GET","path":"/api/v1/producto","statusCode":200,"durationMs":33.51,"idUser":2}
+{"type":"http_request","requestId":"8dc15131-da43-42a4-97f0-2b7a9dc99f9c","method":"GET","path":"/api/v1/comercial/politica-aprobaciones","statusCode":200,"durationMs":5.1,"idUser":2}
+{"type":"http_request","requestId":"e7cd97c4-f9d9-4df2-a70b-6f7fd14ef4a9","method":"POST","path":"/api/v1/comercial/autorizaciones/13/resolver","statusCode":403,"durationMs":5.96,"idUser":2}
+OK: Angular producción con login real: reglas guardadas, solicitud completa, error de autoaprobación conserva borrador; claro1280/oscuro390/axe/reflujo sin fallos
+{"type":"http_request","requestId":"cd1b9610-9bc8-4e5d-ab92-ae9a65121318","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":66.21,"idUser":null}
+{"type":"http_request","requestId":"cd2df7f2-e3a1-45d5-8bab-94ac98d9fc6d","method":"GET","path":"/api/v1/cliente","statusCode":200,"durationMs":9.82,"idUser":4}
+{"type":"http_request","requestId":"0cedc487-e26e-475d-a309-09ea0680e14f","method":"GET","path":"/api/v1/comercial/clientes","statusCode":200,"durationMs":8.85,"idUser":4}
+{"type":"http_request","requestId":"82458fba-c82a-4be5-9b12-bc003f8492bf","method":"GET","path":"/api/v1/comercial/autorizaciones","statusCode":200,"durationMs":10.09,"idUser":4}
+{"type":"http_request","requestId":"2b45695a-db94-4766-9688-d79b9fee71f1","method":"GET","path":"/api/v1/comercial/listas","statusCode":200,"durationMs":10.04,"idUser":4}
+{"type":"http_request","requestId":"e6fa23e7-828f-41d9-b6e6-ca688bdc02ed","method":"GET","path":"/api/v1/producto","statusCode":200,"durationMs":27.73,"idUser":4}
+{"type":"http_request","requestId":"134a251a-6e87-4c20-a9a9-3b65e17c1898","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":67.99,"idUser":4}
+OK: Operador autenticado conserva solicitud/consulta; configuración y resolución no se ofrecen ni se autorizan

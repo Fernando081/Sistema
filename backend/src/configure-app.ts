@@ -3,8 +3,13 @@ import { randomUUID } from 'node:crypto';
 import { Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
 import { PostgresExceptionFilter } from './common/filters/postgres-exception.filter';
+import { browserOrigins } from './auth/browser-auth';
 
 export function configureApp(app: INestApplication): void {
+  if(process.env.AUTH_TRUST_LOOPBACK_PROXY==='true'){
+    const server=app.getHttpAdapter().getInstance() as {set:(key:string,value:string)=>void};
+    server.set('trust proxy','loopback');
+  }
   app.use(helmet());
   app.use((req: Request, res: Response, next: NextFunction) => {
     const supplied = req.header('X-Request-ID');
@@ -23,8 +28,7 @@ export function configureApp(app: INestApplication): void {
     });
     next();
   });
-  const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:4200,http://127.0.0.1:4200')
-    .split(',').map((origin) => origin.trim()).filter(Boolean);
+  const allowedOrigins = browserOrigins();
   app.enableCors({
     origin: allowedOrigins,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',

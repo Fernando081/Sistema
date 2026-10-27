@@ -1,0 +1,9 @@
+
+> db:verify
+> node backend/verify-isolated-database.js --backup=.backups/2026-10-20T23-12-58-387Z/database.dump
+
+Respaldo restaurado en base aislada.
+Verificación terminada: cambios de esquema revertidos.
+Caja: concurrencia de apertura/cierre, movimientos, conteo y bitácora inmutable verificados.
+Operaciones aisladas aprobadas: idempotencia, caja, devoluciones, NC/REP, fiscal mock, pedidos, backorder, abastecimiento, cuenta por pagar y tesorería local avanzada.
+Base de verificación eliminada. La base de operación no fue modificada.

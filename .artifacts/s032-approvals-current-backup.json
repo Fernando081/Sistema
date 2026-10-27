@@ -1,0 +1,27 @@
+{
+  "phase": "S03.2",
+  "startedAt": "2026-10-20T01:00:06.333Z",
+  "checks": [
+    "099 check/migrate en copia; nueve reglas compatibles sin límites inventados; API privada ADMIN y operador403",
+    "Crédito/listas/escalas/precios especiales se confirman con actor vigente y auditoría en la misma transacción",
+    "Un administrador puede aprobar inicialmente; destino/tope total/vigencia y DTO no se omiten; moneda no comparable rechazada",
+    "Cambio de versión invalida autorizaciones anteriores; separación y menor límite entre regla/aprobador se verifican al resolver",
+    "Revocar permiso impide resolver incluso desde servicio y usar una autorización ya aprobada",
+    "Venta HTTP valida precio neto después de descuento y total real; rechazos revierten stock; consumo único y reintento conservan factura/stock",
+    "Cotización valida sin gastar; pedido exige su propio alcance, consume una sola vez y conserva idempotencia por HTTP",
+    "Descuento y exceso de crédito conservan sus tipos; crédito compara total del documento con el alcance aprobado",
+    "Históricos aprobados se conservan y funcionan bajo regla inicial compatible; modificar esa regla exige nueva solicitud con alcance",
+    "Dos resoluciones y dos ediciones concurrentes producen un solo commit y un409; versiones no se sobrescriben",
+    "Fallo de auditoría revierte cambio de regla y versión; la bitácora protegida no se evita",
+    "Actor revocado mientras esperaba el bloqueo se revalida dentro de la transacción y no cambia precios",
+    "Angular producción con login real: reglas guardadas, solicitud completa, error de autoaprobación conserva borrador; claro1280/oscuro390/axe/reflujo sin fallos",
+    "Operador autenticado conserva solicitud/consulta; configuración y resolución no se ofrecen ni se autorizan"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "passed": true,
+  "completedAt": "2026-10-20T01:00:27.698Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "UI solicitud dark"
+}

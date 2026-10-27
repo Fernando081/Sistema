@@ -9,7 +9,7 @@ import { JwtPayload } from '../auth/auth.types';
 export class GarantiaController {
   constructor(private readonly service: GarantiaService) {}
 
-  @Get() findAll() { return this.service.findAll(); }
+  @Get() findAll(@Req() req: { user: JwtPayload }) { return this.service.findAll(req.user); }
   @Post() create(@Body() dto: CreateGarantiaDto, @Req() req: { user: JwtPayload }) {
     return this.service.create(dto, req.user?.idUser);
   }

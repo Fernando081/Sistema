@@ -3,11 +3,15 @@ import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
 import { AuthUser } from './auth-user.entity';
 import { RolUsuario } from '../common/enums/app.enums';
+import { LoginResponse } from './auth.types';
 
 describe('AuthService', () => {
   let service: AuthService;
   let loggerErrorSpy: jest.SpyInstance;
   let loggerLogSpy: jest.SpyInstance;
+  async function successfulLogin(...args:Parameters<AuthService['login']>):Promise<LoginResponse>{
+    const result=await service.login(...args);if(!('access_token' in result))throw new Error('Se esperaba una cuenta sin MFA');return result;
+  }
 
   const repoMock = {
     findOne: jest.fn(),
@@ -26,6 +30,8 @@ describe('AuthService', () => {
     repoMock.save = jest.fn((entity?: any) =>
       Promise.resolve({ idUser: 1, ...entity } as any),
     ) as any;
+    const query=jest.fn().mockResolvedValue([{id_user:7,last_seen_at:new Date()}]);
+    Object.assign(repoMock,{manager:{query,transaction:jest.fn(work=>work({query}))}});
     service = new AuthService(repoMock);
     loggerErrorSpy = jest.spyOn(service['logger'], 'error');
     loggerLogSpy = jest.spyOn(service['logger'], 'log');
@@ -37,7 +43,7 @@ describe('AuthService', () => {
   });
 
   it('genera token válido con credenciales fallback correctas', async () => {
-    const response = await service.login(RolUsuario.ADMIN, 'admin123');
+    const response = await successfulLogin(RolUsuario.ADMIN, 'admin123');
     expect(response.access_token).toBeTruthy();
     const payload = service.verify(response.access_token);
     expect(payload.sub).toBe(RolUsuario.ADMIN);
@@ -156,7 +162,7 @@ describe('AuthService', () => {
       isActive: true,
     });
 
-    const response = await service.login('fer', 'secreto');
+    const response = await successfulLogin('fer', 'secreto');
     expect(response.access_token).toBeTruthy();
   });
 
@@ -174,6 +180,14 @@ describe('AuthService', () => {
     expect(loggerErrorSpy).toHaveBeenCalledWith(
       'Invalid password hash: storedHash is null, undefined, empty, or not a string',
     );
+  });
+
+  it('contraseña válida con MFA solo entrega reto y nunca crea sesión completa',async()=>{
+    const user={idUser:7,username:'mfa-user',role:RolUsuario.USER,isActive:true,tokenVersion:0,passwordHash:await AuthService.hashPassword('password123')};
+    repoMock.findOne=jest.fn().mockResolvedValue(user);
+    jest.spyOn(service.mfa,'challenge').mockResolvedValue({mfaRequired:true,challenge:'opaque',expiresIn:300});
+    const create=jest.spyOn(service['sessions'],'create');
+    expect(await service.login(user.username,'password123')).toEqual({mfaRequired:true,challenge:'opaque',expiresIn:300});expect(create).not.toHaveBeenCalled();
   });
 
   it('no permite fallback para un usuario desactivado', async () => {
@@ -195,13 +209,13 @@ describe('AuthService', () => {
   });
 
   it('rechaza segmentos JWT extra y claims nulos sin devolver errores internos', async () => {
-    const { access_token } = await service.login('admin', 'admin123');
+    const { access_token } = await successfulLogin('admin', 'admin123');
     expect(() => service.verify(access_token + '.extra')).toThrow(UnauthorizedException);
     expect(() => service.verify('bnVsbA.bnVsbA.c2ln')).toThrow(UnauthorizedException);
   });
 
   it('rechaza tokens firmados con audiencia, fechas o versión inválidas', async () => {
-    const { access_token } = await service.login('admin', 'admin123');
+    const { access_token } = await successfulLogin('admin', 'admin123');
     const valid = service.verify(access_token);
     for (const changes of [{ aud: 'otra-api' }, { iat: valid.exp }, { exp: valid.iat - 1 }, { version: -1 }, { idUser: -4 }]) {
       const token = service['sign']({ ...valid, ...changes } as any);
@@ -212,7 +226,11 @@ describe('AuthService', () => {
   it('revoca inmediatamente el token de un usuario desactivado o con versión nueva', async () => {
     const user = { idUser: 7, username: 'fer', role: 'user', isActive: true, tokenVersion: 2, passwordHash: await AuthService.hashPassword('password123') };
     repoMock.findOne = jest.fn().mockResolvedValue(user);
-    const { access_token } = await service.login('fer', 'password123');
+    const { access_token } = await successfulLogin('fer', 'password123');
+    const claims=service.verify(access_token);
+    for(const sid of [undefined,null,7,'not-a-session','00000000-0000-1000-8000-000000000000']){
+      expect(()=>service.verify(service['sign']({...claims,sid} as any))).toThrow(UnauthorizedException);
+    }
     await expect(service.authenticate(access_token)).resolves.toMatchObject({ idUser: 7, version: 2 });
     repoMock.findOne = jest.fn().mockResolvedValue({ ...user, isActive: false });
     await expect(service.authenticate(access_token)).rejects.toThrow(UnauthorizedException);
@@ -228,9 +246,13 @@ describe('AuthService', () => {
 
   it('no permite retirar al último administrador ni desactivar la propia cuenta', async () => {
     const txRepo = { findOne: jest.fn().mockResolvedValue({ idUser: 2, role: 'admin', isActive: true, tokenVersion: 0 }), countBy: jest.fn().mockResolvedValue(1), save: jest.fn() };
-    Object.assign(repoMock, { manager: { transaction: jest.fn((fn) => fn({ query: jest.fn(), getRepository: () => txRepo })) } });
+    Object.assign(repoMock, { manager: { transaction: jest.fn((fn) => fn({ query: jest.fn().mockResolvedValue([{id_user:1}]), getRepository: () => txRepo })) } });
     await expect(service.updateUser(2, { isActive: false }, { idUser: 1 } as any)).rejects.toThrow('Debe permanecer');
     await expect(service.updateUser(2, { isActive: false }, { idUser: 2 } as any)).rejects.toThrow('tu propia cuenta');
     expect(txRepo.save).not.toHaveBeenCalled();
+  });
+  it('no modifica accesos si el administrador fue revocado durante la solicitud',async()=>{
+    const save=jest.fn();Object.assign(repoMock,{manager:{transaction:jest.fn(work=>work({query:jest.fn().mockResolvedValue([]),getRepository:()=>({save})}))}});
+    await expect(service.updateUser(2,{isActive:false},{idUser:1,version:0} as any)).rejects.toThrow('administrador vigente');expect(save).not.toHaveBeenCalled();
   });
 });

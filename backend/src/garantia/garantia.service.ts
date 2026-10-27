@@ -3,6 +3,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { CreateGarantiaDto, UpdateGarantiaDto } from './garantia.dto';
 import { queryRows } from '../common/database/typed-query';
+import { JwtPayload } from '../auth/auth.types';
 
 interface GarantiaOrigenRow {
   id_concepto: number;
@@ -26,7 +27,7 @@ interface GarantiaRow {
 export class GarantiaService {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
-  findAll() {
+  findAll(actor?: JwtPayload) {
     return queryRows<Record<string, unknown>>(this.dataSource, `
       SELECT g.id_garantia AS "idGarantia", g.id_factura AS "idFactura",
              g.id_concepto AS "idConcepto", g.id_proveedor AS "idProveedor",
@@ -37,7 +38,7 @@ export class GarantiaService {
              CONCAT(f.serie, '-', f.folio) AS factura,
              c."RazonSocial" AS cliente, p."Codigo" AS codigo,
              cf.descripcion AS producto, pr."RazonSocial" AS proveedor,
-             u.username AS responsable
+             u.username AS responsable, enlace."idUnidad", enlace."idPieza"
         FROM garantia g
         JOIN factura f ON f.id_factura = g.id_factura
         JOIN cliente c ON c."IdCliente" = f.id_cliente
@@ -45,8 +46,15 @@ export class GarantiaService {
         LEFT JOIN producto p ON p."IdProducto" = cf.id_producto
         LEFT JOIN proveedor pr ON pr."IdProveedor" = g.id_proveedor
         LEFT JOIN auth_user u ON u.id_user = g.id_user
+        LEFT JOIN LATERAL (
+          SELECT up.id_unidad AS "idUnidad",up.id_pieza AS "idPieza"
+          FROM crm_unidad_pieza_garantia l JOIN crm_unidad_pieza up USING(id_pieza)
+          WHERE l.id_garantia=g.id_garantia AND NOT l.retirado
+           AND EXISTS(SELECT 1 FROM auth_user au WHERE au.id_user=$1 AND au.is_active AND au.role=$2 AND au.token_version=$3
+            AND fn_effective_permission(au.id_user,au.role,'crm.unidades.consultar'))
+        ) enlace ON true
        ORDER BY CASE WHEN g.estado = 'Cerrada' THEN 1 ELSE 0 END, g.updated_at DESC
-    `);
+    `, [actor?.idUser ?? null, actor?.role ?? null, actor?.version ?? null]);
   }
 
   async create(dto: CreateGarantiaDto, idUser?: number) {

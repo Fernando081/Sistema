@@ -1,0 +1,46 @@
+{
+  "phase": "C03.1",
+  "checkedAt": "2026-10-21T16:24:04.115Z",
+  "checks": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/bandeja",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm/bandeja",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4600/",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503
+    },
+    {
+      "name": "Consulta real local de sólo lectura",
+      "total": 7,
+      "rows": 7,
+      "resumen": {
+        "hoy": 0,
+        "proximas": 0,
+        "sinFecha": 0,
+        "vencidas": 7
+      }
+    },
+    {
+      "name": "Sin fixtures de aceptación en origen",
+      "fixtures": 0
+    },
+    {
+      "name": "Sin copias de aceptación restantes",
+      "copies": 0
+    }
+  ],
+  "passed": true
+}

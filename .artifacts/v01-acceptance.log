@@ -1,0 +1,176 @@
+
+> test:quote-versions
+> node backend/verify-quote-versions.js --backup=.backups/2026-10-20T16-10-21-093Z/database.dump
+
+{"type":"http_request","requestId":"0f8c0132-f788-4eda-aa8b-2f7c70cad076","method":"PUT","path":"/api/v1/comercial/clientes/2","statusCode":200,"durationMs":42.48,"idUser":2}
+{"type":"http_request","requestId":"0d45f067-fa7c-47a3-bed8-cfd732bd1279","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":46.43,"idUser":2}
+{"type":"http_request","requestId":"763f5ecc-6118-4b12-a77d-88ee861411c0","method":"GET","path":"/api/v1/cotizacion/24/versiones","statusCode":401,"durationMs":1.36,"idUser":null}
+{"type":"http_request","requestId":"d34fd74d-826c-4800-a1af-fbc95b81212a","method":"GET","path":"/api/v1/cotizacion/24/versiones","statusCode":200,"durationMs":20.62,"idUser":2}
+{"type":"http_request","requestId":"da116bf6-9402-4bbc-b191-49ae2efee3c6","method":"GET","path":"/api/v1/cotizacion/24/versiones","statusCode":200,"durationMs":7.5,"idUser":2}
+{"type":"http_request","requestId":"fb448e66-975a-4d97-b9ba-e84e40e1e245","method":"GET","path":"/api/v1/cotizacion/24/versiones","statusCode":200,"durationMs":7.96,"idUser":3}
+{"type":"http_request","requestId":"f05d2a0c-8b3e-42bb-b55b-eac53f8cd31f","method":"POST","path":"/api/v1/cotizacion/24/versiones/sellar","statusCode":403,"durationMs":4.98,"idUser":3}
+{"type":"http_request","requestId":"26a6903d-c732-4ea5-b8db-439900715ef1","method":"POST","path":"/api/v1/cotizacion/24/versiones/sellar","statusCode":201,"durationMs":13.82,"idUser":2}
+{"type":"http_request","requestId":"384312d3-8264-47cd-aa09-b562cb2b1fa5","method":"POST","path":"/api/v1/cotizacion/24/versiones/sellar","statusCode":201,"durationMs":9.06,"idUser":2}
+{"type":"http_request","requestId":"367b3266-9279-43e1-809b-66ae744ac5cf","method":"POST","path":"/api/v1/cotizacion/24/versiones/sellar","statusCode":409,"durationMs":9.75,"idUser":2}
+{"type":"http_request","requestId":"ff5b64ed-845a-401e-a045-e36d26991b1d","method":"GET","path":"/api/v1/cotizacion/24/versiones","statusCode":200,"durationMs":13.65,"idUser":2}
+OK: 102 en copia; activación explícita sin backfill, consulta privada/permisos/idempotencia, snapshot exacto y evidencia no reescribible por UPDATE
+{"type":"http_request","requestId":"02478868-d9e2-49c4-9057-330e92e40ff3","method":"POST","path":"/api/v1/pedidos","statusCode":409,"durationMs":8.77,"idUser":2}
+{"type":"http_request","requestId":"cfd5d53b-d10f-4467-b086-dc4880485b52","method":"GET","path":"/api/v1/cotizacion/24","statusCode":200,"durationMs":4.71,"idUser":2}
+{"type":"http_request","requestId":"4a3901e3-b571-42ee-bf47-f1d9ebdc819a","method":"POST","path":"/api/v1/cotizacion/24/convertir","statusCode":409,"durationMs":9.44,"idUser":2}
+OK: Sin aceptación no hay pedido/venta y crear pedido directo con idCotizacion no evade el flujo versionado
+{"type":"http_request","requestId":"def28ab8-ef03-4d07-b238-4ce6677a17ba","method":"POST","path":"/api/v1/cotizacion/24/versiones/enlaces","statusCode":201,"durationMs":11.2,"idUser":2}
+{"type":"http_request","requestId":"0ec286f3-468b-4b0a-a2e6-6b5ad5cb735c","method":"POST","path":"/api/v1/cotizacion/24/versiones/enlaces","statusCode":201,"durationMs":8.57,"idUser":2}
+{"type":"http_request","requestId":"2802b19c-e750-4c9a-9886-08a2bd773dcb","method":"GET","path":"/api/v1/cotizacion/24/versiones","statusCode":200,"durationMs":10,"idUser":2}
+{"type":"http_request","requestId":"9f833096-38cd-4e23-bc44-78cd0da5893b","method":"POST","path":"/api/v1/cotizacion-respuesta/consultar","statusCode":403,"durationMs":1.8,"idUser":null}
+{"type":"http_request","requestId":"b53271ac-841e-4cf2-8678-29d0b1aec62f","method":"POST","path":"/api/v1/cotizacion-respuesta/consultar","statusCode":400,"durationMs":4.59,"idUser":null}
+{"type":"http_request","requestId":"f86b417d-05f6-4997-817f-7b7f20c6fcda","method":"POST","path":"/api/v1/cotizacion-respuesta/consultar","statusCode":201,"durationMs":8.19,"idUser":null}
+{"type":"http_request","requestId":"3aabc530-c4d7-43ec-94c5-cb14f3a556e0","method":"POST","path":"/api/v1/cotizacion-respuesta/consultar","statusCode":403,"durationMs":2.58,"idUser":null}
+OK: Emisión HMAC de servidor/hash único sin token en metadata; formulario JSON/cabecera, proyección pública mínima y HTTP rechazado en modo producción
+{"type":"http_request","requestId":"9e05078a-43f5-401e-b706-74c28567ddef","method":"POST","path":"/api/v1/cotizacion-respuesta","statusCode":400,"durationMs":3.96,"idUser":null}
+{"type":"http_request","requestId":"b9cb459b-4b9a-4480-948d-ff35ae11798c","method":"POST","path":"/api/v1/cotizacion-respuesta","statusCode":201,"durationMs":11.92,"idUser":null}
+{"type":"http_request","requestId":"72084de3-c4bc-4b79-be10-d736b18ee29f","method":"POST","path":"/api/v1/cotizacion-respuesta","statusCode":409,"durationMs":28.46,"idUser":null}
+{"type":"http_request","requestId":"9ae408c6-1fda-47f1-bd81-a31b680c630b","method":"POST","path":"/api/v1/cotizacion-respuesta","statusCode":201,"durationMs":7.76,"idUser":null}
+OK: Confirmación explícita, única respuesta concurrente, reintento idéntico sin duplicado y nombre declarado separado de actor autenticado
+{"type":"http_request","requestId":"941a8ebe-95a0-4956-9f8f-8cf2176f1ade","method":"POST","path":"/api/v1/cotizacion/24/versiones","statusCode":201,"durationMs":58.24,"idUser":2}
+{"type":"http_request","requestId":"2cdfec95-dd85-4aaa-abd5-fbe9d620f283","method":"POST","path":"/api/v1/cotizacion/24/versiones","statusCode":201,"durationMs":7.98,"idUser":2}
+{"type":"http_request","requestId":"2ab3d81f-3095-4fc9-8a4f-8edd119e5406","method":"GET","path":"/api/v1/cotizacion/25/versiones","statusCode":200,"durationMs":12.65,"idUser":2}
+{"type":"http_request","requestId":"12097a9d-2b38-47b7-93dd-8d9048d27bd4","method":"GET","path":"/api/v1/cotizacion/25/versiones","statusCode":200,"durationMs":9.21,"idUser":2}
+{"type":"http_request","requestId":"7b2b7c00-0955-4448-a3bc-067d9c1fa6c1","method":"POST","path":"/api/v1/cotizacion-respuesta/consultar","statusCode":404,"durationMs":5.64,"idUser":null}
+{"type":"http_request","requestId":"75c62365-6dfd-4820-9538-95407f2bdad1","method":"GET","path":"/api/v1/cotizacion/24","statusCode":200,"durationMs":2.83,"idUser":2}
+{"type":"http_request","requestId":"9e6427a0-97c7-4574-850f-9bbf02780bc9","method":"POST","path":"/api/v1/cotizacion/24/convertir","statusCode":409,"durationMs":6.62,"idUser":2}
+{"type":"http_request","requestId":"f5d3d3d7-37c3-40c0-b867-9f2de9ea9b33","method":"POST","path":"/api/v1/cotizacion/25/versiones","statusCode":400,"durationMs":5.29,"idUser":2}
+{"type":"http_request","requestId":"1f1120f4-cd1d-48b5-8cd6-7566a039d99f","method":"POST","path":"/api/v1/cotizacion/25/versiones","statusCode":400,"durationMs":4.75,"idUser":2}
+OK: Nueva revisión conserva anterior/cliente, crea cotización atómica, no hereda respuesta y retira enlace/conversión/pedido de la sustituida
+{"type":"http_request","requestId":"2b805569-a30c-4ab5-9921-860f9f7b4d5d","method":"GET","path":"/api/v1/cotizacion/25/versiones","statusCode":200,"durationMs":7.42,"idUser":2}
+{"type":"http_request","requestId":"7f0e9e6d-78af-4258-a8ac-eeb8824246bb","method":"POST","path":"/api/v1/cotizacion/25/versiones","statusCode":201,"durationMs":17.81,"idUser":2}
+{"type":"http_request","requestId":"80f216d2-d6e7-4c69-9cd5-ee020555608d","method":"POST","path":"/api/v1/cotizacion/25/versiones","statusCode":409,"durationMs":19.99,"idUser":2}
+{"type":"http_request","requestId":"97094b3e-0f4a-42b1-8191-92bcf4ffa778","method":"GET","path":"/api/v1/cotizacion/26/versiones","statusCode":200,"durationMs":7.87,"idUser":2}
+{"type":"http_request","requestId":"50e3593a-fb93-4489-abcf-3c6c2185f0c0","method":"POST","path":"/api/v1/cotizacion/26/versiones","statusCode":400,"durationMs":31.96,"idUser":2}
+{"type":"http_request","requestId":"cc4137cb-c948-4ec7-8b99-159c808b5086","method":"GET","path":"/api/v1/cotizacion/26/versiones","statusCode":200,"durationMs":7.78,"idUser":2}
+OK: Dos revisiones concurrentes producen una alta/un409; fallo de auditoría revierte cotización nueva y evidencia juntas
+{"type":"http_request","requestId":"9bbfcc0b-8206-4ebb-adbf-ab2f27f4c8c0","method":"POST","path":"/api/v1/cotizacion/26/versiones/enlaces","statusCode":201,"durationMs":11.63,"idUser":2}
+{"type":"http_request","requestId":"428f0feb-02d8-48c9-810b-488e392f8208","method":"POST","path":"/api/v1/cotizacion-respuesta/consultar","statusCode":404,"durationMs":4.09,"idUser":null}
+{"type":"http_request","requestId":"f725a723-9388-40f0-92bb-33e3901ce814","method":"POST","path":"/api/v1/cotizacion/26/versiones/enlaces","statusCode":201,"durationMs":9.39,"idUser":2}
+{"type":"http_request","requestId":"9dfdc04b-6b77-4630-907c-020f496005de","method":"POST","path":"/api/v1/cotizacion/26/versiones/enlaces/3/revocar","statusCode":201,"durationMs":6.02,"idUser":2}
+{"type":"http_request","requestId":"85c14a6f-13a8-4412-8188-25d967f26894","method":"POST","path":"/api/v1/cotizacion-respuesta/consultar","statusCode":404,"durationMs":5.43,"idUser":null}
+{"type":"http_request","requestId":"89ac0bca-4db6-4219-ba72-ba6598fea1da","method":"GET","path":"/api/v1/cotizacion/26/versiones","statusCode":200,"durationMs":8.19,"idUser":2}
+{"type":"http_request","requestId":"49b053dd-8076-48c0-82ff-078934c25313","method":"POST","path":"/api/v1/cotizacion/26/versiones/enlaces","statusCode":409,"durationMs":5.77,"idUser":2}
+{"type":"http_request","requestId":"4128e932-094e-4176-9589-70f810388353","method":"GET","path":"/api/v1/cotizacion/26/versiones","statusCode":200,"durationMs":7.48,"idUser":2}
+OK: Vencimiento/revocación bloquean consulta; cambios posteriores al sello se detectan sin reescribir la evidencia
+{"type":"http_request","requestId":"400de893-554d-453a-af23-1ffbca88db42","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":7.88,"idUser":2}
+{"type":"http_request","requestId":"87b0521b-8d7c-436a-b2fe-0d399335bc69","method":"POST","path":"/api/v1/cotizacion/28/versiones/sellar","statusCode":201,"durationMs":11.58,"idUser":2}
+{"type":"http_request","requestId":"b13fee7b-64bb-4c9f-9428-043f8a4ce72b","method":"POST","path":"/api/v1/cotizacion/28/versiones/enlaces","statusCode":201,"durationMs":15.39,"idUser":2}
+{"type":"http_request","requestId":"7a6c3e96-6b00-47b6-b6a4-5ab136cd290a","method":"POST","path":"/api/v1/cotizacion-respuesta","statusCode":201,"durationMs":8.16,"idUser":null}
+{"type":"http_request","requestId":"91b3f388-3ab2-41f9-ade9-88b06061136a","method":"GET","path":"/api/v1/cotizacion/28","statusCode":200,"durationMs":2.86,"idUser":2}
+{"type":"http_request","requestId":"51356874-cac2-4fd4-990e-30a84e0351d8","method":"POST","path":"/api/v1/cotizacion/28/convertir","statusCode":400,"durationMs":8.15,"idUser":2}
+{"type":"http_request","requestId":"4021bca3-f01b-4616-bd05-37b815e00aa9","method":"GET","path":"/api/v1/cotizacion/28","statusCode":200,"durationMs":2.96,"idUser":2}
+{"type":"http_request","requestId":"349c18ee-45e1-4a02-ba8e-1fb088546c75","method":"POST","path":"/api/v1/cotizacion/28/convertir","statusCode":409,"durationMs":8.15,"idUser":2}
+{"type":"http_request","requestId":"b8545fb7-dd65-44cc-8e97-94908edb71dc","method":"GET","path":"/api/v1/cotizacion/28","statusCode":200,"durationMs":8.39,"idUser":2}
+{"type":"http_request","requestId":"9df8ce76-5953-49e0-b1bc-ce2d271966d9","method":"POST","path":"/api/v1/cotizacion/28/convertir","statusCode":201,"durationMs":112.13,"idUser":2}
+{"type":"http_request","requestId":"374b24e7-26f0-4b45-b22e-fbea96144830","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":13.05,"idUser":2}
+{"type":"http_request","requestId":"7fe02239-9e2a-441e-9d1a-4445ff9f77cc","method":"GET","path":"/api/v1/cotizacion/29","statusCode":200,"durationMs":4,"idUser":2}
+{"type":"http_request","requestId":"51d09c21-ce43-421f-9489-f3adb9c15873","method":"POST","path":"/api/v1/cotizacion/29/convertir","statusCode":201,"durationMs":19.67,"idUser":2}
+OK: Aceptación permite conversión a precio aceptado; precio/impuestos cambiados se rechazan y cotización no versionada conserva conversión anterior
+{"type":"http_request","requestId":"d1722e74-8044-4750-9b23-4ea7ce7037b8","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":8.68,"idUser":2}
+{"type":"http_request","requestId":"a2a79725-f3a5-40cd-9071-9dd87ef4eff4","method":"POST","path":"/api/v1/cotizacion/30/versiones/sellar","statusCode":201,"durationMs":9.89,"idUser":2}
+{"type":"http_request","requestId":"8b3db572-ec69-416e-8142-ad6301cbad72","method":"POST","path":"/api/v1/cotizacion/30/versiones/enlaces","statusCode":201,"durationMs":11.23,"idUser":2}
+{"type":"http_request","requestId":"d59c4494-1503-41ba-b817-f4761ded5884","method":"POST","path":"/api/v1/cotizacion-respuesta","statusCode":201,"durationMs":8.58,"idUser":null}
+{"type":"http_request","requestId":"3c175100-a9e4-43a2-8a34-31f867299bf4","method":"GET","path":"/api/v1/cotizacion/30/versiones","statusCode":200,"durationMs":7.63,"idUser":2}
+{"type":"http_request","requestId":"cc9c3b6a-8450-4c75-bab4-c7a97fbd8c35","method":"POST","path":"/api/v1/cotizacion/30/versiones","statusCode":409,"durationMs":7.5,"idUser":2}
+OK: Pedido desde revisión aceptada funciona y documento ya utilizado no admite nueva revisión
+{"type":"http_request","requestId":"2d1ed2ba-b3d5-47d9-aa03-b54366e118b2","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":8.46,"idUser":2}
+{"type":"http_request","requestId":"da87c2b0-dd84-4951-a77d-a900c2711dcc","method":"POST","path":"/api/v1/cotizacion/31/versiones/sellar","statusCode":201,"durationMs":7.28,"idUser":2}
+{"type":"http_request","requestId":"454788bd-4020-4239-b063-b960c82fbb2f","method":"POST","path":"/api/v1/cotizacion/31/versiones/enlaces","statusCode":201,"durationMs":9.64,"idUser":2}
+{"type":"http_request","requestId":"3ebc9104-165b-483a-98b5-2571cf7da1e8","method":"POST","path":"/api/v1/cotizacion-respuesta","statusCode":201,"durationMs":6.55,"idUser":null}
+{"type":"http_request","requestId":"e9575dde-0881-4624-bd19-a48ab6e57817","method":"GET","path":"/api/v1/cotizacion/31/versiones","statusCode":200,"durationMs":10.2,"idUser":2}
+{"type":"http_request","requestId":"5648d74b-89c6-41e6-a9d8-3aaa13f907a5","method":"POST","path":"/api/v1/cotizacion/31/versiones","statusCode":201,"durationMs":17.24,"idUser":2}
+{"type":"http_request","requestId":"15870427-da8f-440e-b286-328e438c32b7","method":"GET","path":"/api/v1/cotizacion/32/versiones","statusCode":200,"durationMs":6.74,"idUser":2}
+OK: Rechazo explícito impide pedido y la propuesta corregida exige nueva respuesta
+{"type":"http_request","requestId":"49c2ed18-1cae-4e71-9000-b768a93228ce","method":"GET","path":"/api/v1/cotizacion/26/versiones","statusCode":200,"durationMs":6.74,"idUser":2}
+{"type":"http_request","requestId":"bffbfeb8-286a-48f2-9185-c279218e532b","method":"POST","path":"/api/v1/cotizacion/26/versiones","statusCode":201,"durationMs":14.83,"idUser":2}
+{"type":"http_request","requestId":"e4229eb2-8485-4261-b155-77611d41cabb","method":"GET","path":"/api/v1/cotizacion/33/versiones","statusCode":200,"durationMs":11.13,"idUser":2}
+{"type":"http_request","requestId":"da6942b6-21e3-4d16-b8cf-f7815592c890","method":"POST","path":"/api/v1/cotizacion/33/versiones","statusCode":201,"durationMs":16.9,"idUser":2}
+{"type":"http_request","requestId":"3cf3d496-6445-43db-a33e-3c6c9b781565","method":"GET","path":"/api/v1/cotizacion/34/versiones","statusCode":200,"durationMs":6.41,"idUser":2}
+{"type":"http_request","requestId":"b2287836-6b71-4d89-b937-90f8fa09b346","method":"POST","path":"/api/v1/cotizacion/34/versiones","statusCode":201,"durationMs":11.69,"idUser":2}
+{"type":"http_request","requestId":"8ff33f35-202f-4db2-8c91-32b20ad0f189","method":"GET","path":"/api/v1/cotizacion/35/versiones","statusCode":200,"durationMs":5.67,"idUser":2}
+{"type":"http_request","requestId":"e4c0363d-c5ef-4737-9677-56500d3ab2f6","method":"POST","path":"/api/v1/cotizacion/35/versiones","statusCode":201,"durationMs":14.98,"idUser":2}
+{"type":"http_request","requestId":"3784ac4c-4d4b-422a-a93e-50f0ff59b6d8","method":"GET","path":"/api/v1/cotizacion/36/versiones","statusCode":200,"durationMs":5.79,"idUser":2}
+{"type":"http_request","requestId":"d2676f46-defa-47b6-b104-9bb3abc3a010","method":"POST","path":"/api/v1/cotizacion/36/versiones","statusCode":201,"durationMs":14.83,"idUser":2}
+{"type":"http_request","requestId":"d192d52a-7065-4e66-9f59-80bf7060b4e4","method":"GET","path":"/api/v1/cotizacion/37/versiones","statusCode":200,"durationMs":11.28,"idUser":2}
+{"type":"http_request","requestId":"4d94579f-afe8-415d-a45d-753bc9ceaeb1","method":"POST","path":"/api/v1/cotizacion/37/versiones","statusCode":201,"durationMs":13.47,"idUser":2}
+{"type":"http_request","requestId":"40eabb55-b415-4092-b51a-6533c43778fd","method":"GET","path":"/api/v1/cotizacion/38/versiones","statusCode":200,"durationMs":8.08,"idUser":2}
+{"type":"http_request","requestId":"5211c9a7-0d73-42ce-9f81-2394113c7d5b","method":"POST","path":"/api/v1/cotizacion/38/versiones","statusCode":201,"durationMs":11.77,"idUser":2}
+{"type":"http_request","requestId":"5d72967b-c3a1-495b-97a4-2ad8025bc4ca","method":"GET","path":"/api/v1/cotizacion/39/versiones","statusCode":200,"durationMs":6.49,"idUser":2}
+{"type":"http_request","requestId":"774d3e26-0e0a-4f2f-8cf4-e6904a95e9c8","method":"POST","path":"/api/v1/cotizacion/39/versiones","statusCode":201,"durationMs":14.64,"idUser":2}
+{"type":"http_request","requestId":"4161f4cf-ee17-4867-9dcc-0c0973b670ff","method":"GET","path":"/api/v1/cotizacion/40/versiones","statusCode":200,"durationMs":5.77,"idUser":2}
+{"type":"http_request","requestId":"3b75df85-1ecc-4f18-ae23-ecf53f2738d4","method":"POST","path":"/api/v1/cotizacion/40/versiones","statusCode":201,"durationMs":18.58,"idUser":2}
+{"type":"http_request","requestId":"2996fbde-39c5-46ee-9304-a88cad37c087","method":"GET","path":"/api/v1/cotizacion/41/versiones","statusCode":200,"durationMs":7.66,"idUser":2}
+{"type":"http_request","requestId":"8d4bf2b0-1581-450c-a18c-03506e17063c","method":"POST","path":"/api/v1/cotizacion/41/versiones","statusCode":201,"durationMs":10.1,"idUser":2}
+{"type":"http_request","requestId":"5743f28e-4206-4df3-9c85-fdc70f2b53b9","method":"GET","path":"/api/v1/cotizacion/42/versiones","statusCode":200,"durationMs":6.31,"idUser":2}
+{"type":"http_request","requestId":"62078849-97ee-4b8f-8922-da61acbccbc9","method":"POST","path":"/api/v1/cotizacion/42/versiones","statusCode":201,"durationMs":13.3,"idUser":2}
+{"type":"http_request","requestId":"8ef17b88-ec06-4471-9929-c713f68147fb","method":"GET","path":"/api/v1/cotizacion/43/versiones","statusCode":200,"durationMs":7.93,"idUser":2}
+{"type":"http_request","requestId":"94ae59ff-98e1-4645-94c0-84aad472b7b5","method":"POST","path":"/api/v1/cotizacion/43/versiones","statusCode":201,"durationMs":11.04,"idUser":2}
+{"type":"http_request","requestId":"00599fc8-00cc-4f51-904d-8a89fb105849","method":"GET","path":"/api/v1/cotizacion/44/versiones","statusCode":200,"durationMs":5.61,"idUser":2}
+{"type":"http_request","requestId":"cc2e0782-4e96-4d0d-8331-3fb3942f5e33","method":"POST","path":"/api/v1/cotizacion/44/versiones","statusCode":201,"durationMs":18.38,"idUser":2}
+{"type":"http_request","requestId":"3a3493e8-4fe8-4702-a341-a3cb272aa25a","method":"GET","path":"/api/v1/cotizacion/45/versiones","statusCode":200,"durationMs":13.12,"idUser":2}
+{"type":"http_request","requestId":"01c03dfe-5d0c-4ad3-9f72-028f9f356680","method":"POST","path":"/api/v1/cotizacion/45/versiones","statusCode":201,"durationMs":9.98,"idUser":2}
+{"type":"http_request","requestId":"4ea9345e-5682-46d4-ae32-8c55b9255a82","method":"GET","path":"/api/v1/cotizacion/46/versiones","statusCode":200,"durationMs":8.44,"idUser":2}
+{"type":"http_request","requestId":"3aec1f3b-52bc-48db-bc27-5a7bb2982f3e","method":"POST","path":"/api/v1/cotizacion/46/versiones","statusCode":201,"durationMs":11.14,"idUser":2}
+{"type":"http_request","requestId":"6565633d-4193-45fa-bf5d-bfb8921be731","method":"GET","path":"/api/v1/cotizacion/47/versiones","statusCode":200,"durationMs":6.52,"idUser":2}
+{"type":"http_request","requestId":"ef4ebd06-96fc-4230-8c7e-bbe4f1099d0c","method":"POST","path":"/api/v1/cotizacion/47/versiones","statusCode":201,"durationMs":9.68,"idUser":2}
+{"type":"http_request","requestId":"7097fdf7-c4fe-4a9d-bf25-ed10f0cf306c","method":"GET","path":"/api/v1/cotizacion/48/versiones","statusCode":200,"durationMs":7.53,"idUser":2}
+{"type":"http_request","requestId":"3a475de1-c021-4de0-80d0-871bfabf0817","method":"POST","path":"/api/v1/cotizacion/48/versiones","statusCode":201,"durationMs":18.23,"idUser":2}
+{"type":"http_request","requestId":"9c409d80-621f-4ac5-8f20-8483c6c1f33c","method":"GET","path":"/api/v1/cotizacion/49/versiones","statusCode":200,"durationMs":7.46,"idUser":2}
+{"type":"http_request","requestId":"37fedc77-acb6-47d7-8e74-e810b5e66610","method":"POST","path":"/api/v1/cotizacion/49/versiones","statusCode":201,"durationMs":10.69,"idUser":2}
+{"type":"http_request","requestId":"19aa7f51-d78b-4ed4-8508-169316532b02","method":"GET","path":"/api/v1/cotizacion/50/versiones","statusCode":200,"durationMs":6.78,"idUser":2}
+{"type":"http_request","requestId":"236e0aa7-ffc5-474b-bc2a-95a341e03351","method":"POST","path":"/api/v1/cotizacion/50/versiones","statusCode":201,"durationMs":13.01,"idUser":2}
+{"type":"http_request","requestId":"53f01cef-4ec0-4e4a-a535-1b516a979732","method":"GET","path":"/api/v1/cotizacion/51/versiones","statusCode":200,"durationMs":7.16,"idUser":2}
+{"type":"http_request","requestId":"a60dccf5-6c26-4f4b-aef8-23c760dd6132","method":"POST","path":"/api/v1/cotizacion/51/versiones","statusCode":201,"durationMs":13.53,"idUser":2}
+{"type":"http_request","requestId":"eef97e04-51d8-4a65-b927-8db531df6c6d","method":"GET","path":"/api/v1/cotizacion/52/versiones","statusCode":200,"durationMs":7.74,"idUser":2}
+{"type":"http_request","requestId":"056600bf-4d2c-418a-a4e4-936f34ff37b7","method":"GET","path":"/api/v1/cotizacion/52/versiones","statusCode":200,"durationMs":6.53,"idUser":2}
+OK: Historial por familia paginado20 conserva anteriores, respuestas y total fuera de rango; documentos de volumen sólo en copia
+{"type":"http_request","requestId":"ffcb82b6-9528-4f5b-be88-fb52209357fd","method":"PUT","path":"/api/v1/auth/users/3/permissions","statusCode":200,"durationMs":8.91,"idUser":2}
+{"type":"http_request","requestId":"38df3e14-a160-4569-92c8-571440b159ec","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":9.54,"idUser":2}
+{"type":"http_request","requestId":"e5c0ee2c-f3b6-4ff3-8a5a-5e2a61f523c1","method":"GET","path":"/api/v1/cotizacion/53/versiones","statusCode":200,"durationMs":7.25,"idUser":2}
+OK: Permiso delegado revalidado en transacción: actor revocado mientras espera no sella cotización
+{"type":"http_request","requestId":"e2d935b1-91a4-43a7-982f-3b8d2c406f6d","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":30.91,"idUser":2}
+{"type":"http_request","requestId":"b6f7f57d-3d4f-486c-9866-382b63354f78","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":34.17,"idUser":2}
+{"type":"http_request","requestId":"1a70dd2b-ec8b-497b-ac23-d0b60fbf1622","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":119.22,"idUser":2}
+{"type":"http_request","requestId":"8e615790-9809-46e3-8228-22ea26856946","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":141.1,"idUser":2}
+{"type":"http_request","requestId":"85e05c43-d2ad-44ee-8847-d31b5bfd3897","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":168.12,"idUser":2}
+{"type":"http_request","requestId":"898500f4-6acc-40d1-b299-51d828a91bf4","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":189.25,"idUser":2}
+{"type":"http_request","requestId":"75a9c507-d520-483b-b857-3462cb5dc9e2","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":209.05,"idUser":2}
+{"type":"http_request","requestId":"1f712388-8694-4900-9e9c-5a6abdaca2b2","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":231.97,"idUser":2}
+OK: Ocho cotizaciones concurrentes por HTTP conservan folios distintos; asignación serializada en creación y nuevas revisiones
+{"type":"http_request","requestId":"58576673-7855-4010-98c5-8ce7f5892d10","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":17.43,"idUser":2}
+{"type":"http_request","requestId":"a4c39e84-1913-4f43-b5b0-9e92a94bd1d1","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":69.64,"idUser":null}
+{"type":"http_request","requestId":"8db100cf-ce91-4d58-a853-50c17eaf79a7","method":"GET","path":"/api/v1/cotizacion/62/versiones","statusCode":200,"durationMs":21.27,"idUser":2}
+{"type":"http_request","requestId":"62a11dab-f420-4dc6-b0fa-df997de35c26","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":77.32,"idUser":2}
+{"type":"http_request","requestId":"52d9dc26-ce92-45fc-82a2-0bc740e6467a","method":"POST","path":"/api/v1/cotizacion/62/versiones/sellar","statusCode":201,"durationMs":31.16,"idUser":2}
+{"type":"http_request","requestId":"cd8be8f3-261e-46ce-8258-23ab06d37c76","method":"GET","path":"/api/v1/cotizacion/62/versiones","statusCode":200,"durationMs":13.16,"idUser":2}
+{"type":"http_request","requestId":"9d6dc287-115f-4f68-a861-ec9356c33bf8","method":"POST","path":"/api/v1/cotizacion/62/versiones/enlaces","statusCode":201,"durationMs":12.19,"idUser":2}
+{"type":"http_request","requestId":"21aa94ba-ecb1-42fe-aac4-694e73298abd","method":"GET","path":"/api/v1/cotizacion/62/versiones","statusCode":200,"durationMs":14.78,"idUser":2}
+{"type":"http_request","requestId":"8e594853-0897-4e6a-a430-c44cf3107dac","method":"POST","path":"/api/v1/cotizacion-respuesta/consultar","statusCode":201,"durationMs":12.77,"idUser":null}
+{"type":"http_request","requestId":"3e71160b-2158-4c21-8bfa-60c18afbf402","method":"POST","path":"/api/v1/cotizacion-respuesta","statusCode":201,"durationMs":9.48,"idUser":null}
+{"type":"http_request","requestId":"b5b7ce1a-bc59-44c1-881a-bbebdf52d418","method":"GET","path":"/api/v1/cotizacion/62/versiones","statusCode":200,"durationMs":7.44,"idUser":2}
+{"type":"http_request","requestId":"d2dae63e-bb57-4e89-90e0-8ee0b06daf55","method":"GET","path":"/api/v1/cliente","statusCode":200,"durationMs":2.85,"idUser":2}
+{"type":"http_request","requestId":"23115ea4-c8c2-4226-9472-4081509ce8b7","method":"GET","path":"/api/v1/cotizacion/62/versiones","statusCode":200,"durationMs":8.28,"idUser":2}
+{"type":"http_request","requestId":"99d1b686-5d4a-4d30-8278-2267e44e3abd","method":"POST","path":"/api/v1/cotizacion/62/versiones","statusCode":201,"durationMs":19.12,"idUser":2}
+{"type":"http_request","requestId":"0a0bd46c-0e83-44f1-ad32-2156165e311e","method":"GET","path":"/api/v1/cotizacion/63/versiones","statusCode":200,"durationMs":7.84,"idUser":2}
+{"type":"http_request","requestId":"81a1a31e-e03c-441c-9343-22c006039954","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":9.09,"idUser":2}
+{"type":"http_request","requestId":"aafee0a1-5e08-4ff8-85fd-c4c26cd2ec64","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":65.36,"idUser":null}
+{"type":"http_request","requestId":"a8f21007-4f7c-4036-a36f-385c95034ccc","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":22.68,"idUser":2}
+{"type":"http_request","requestId":"29e3f199-c1f8-422e-b762-fef3a2a328ae","method":"GET","path":"/api/v1/cotizacion/64/versiones","statusCode":200,"durationMs":6.6,"idUser":2}
+{"type":"http_request","requestId":"e31f1672-b4af-49a7-b959-8d7b06ccb8f0","method":"POST","path":"/api/v1/cotizacion/64/versiones/sellar","statusCode":201,"durationMs":15.1,"idUser":2}
+{"type":"http_request","requestId":"b09a2622-121e-4e47-8ff1-9315ff4e4750","method":"GET","path":"/api/v1/cotizacion/64/versiones","statusCode":200,"durationMs":18.59,"idUser":2}
+{"type":"http_request","requestId":"c57cf44f-95ef-4247-bdcd-987670121034","method":"POST","path":"/api/v1/cotizacion/64/versiones/enlaces","statusCode":201,"durationMs":26.83,"idUser":2}
+{"type":"http_request","requestId":"fd337b4a-1c40-4744-a235-a9a8502fa4d1","method":"GET","path":"/api/v1/cotizacion/64/versiones","statusCode":200,"durationMs":15.84,"idUser":2}
+{"type":"http_request","requestId":"435d2f31-ee07-40ad-94f9-92e69fcdd26e","method":"POST","path":"/api/v1/cotizacion-respuesta/consultar","statusCode":201,"durationMs":8.35,"idUser":null}
+{"type":"http_request","requestId":"850ca3dc-a455-4122-937e-40e9650a0f22","method":"POST","path":"/api/v1/cotizacion-respuesta","statusCode":201,"durationMs":23.61,"idUser":null}
+{"type":"http_request","requestId":"decf01b8-14ca-43e7-98da-c139ea97b2cb","method":"GET","path":"/api/v1/cotizacion/64/versiones","statusCode":200,"durationMs":16.9,"idUser":2}
+{"type":"http_request","requestId":"2398db6a-05bf-4c34-a9b3-1ffa7292f260","method":"GET","path":"/api/v1/cliente","statusCode":200,"durationMs":3.59,"idUser":2}
+{"type":"http_request","requestId":"c2d8d84a-42f6-4f78-8c6b-54f28afb9321","method":"GET","path":"/api/v1/cotizacion/64/versiones","statusCode":200,"durationMs":13.7,"idUser":2}
+{"type":"http_request","requestId":"f790ce4f-f313-4ed4-b1fb-0dcf236152a7","method":"POST","path":"/api/v1/cotizacion/64/versiones","statusCode":201,"durationMs":41.05,"idUser":2}
+{"type":"http_request","requestId":"6dac0edc-9481-4944-9a8e-e8cfb731c261","method":"GET","path":"/api/v1/cotizacion/65/versiones","statusCode":200,"durationMs":17.21,"idUser":2}
+{"type":"http_request","requestId":"7f338150-9f8e-4d5b-b84b-34d3c5a05928","method":"GET","path":"/api/v1/producto","statusCode":200,"durationMs":233.81,"idUser":2}
+OK: Angular producción con login real y destinatario anónimo: sello/enlace/aceptación/nueva revisión, fragmento borrado y sin token en red/almacenamiento; claro1280/oscuro390/axe/reflujo sin errores JS

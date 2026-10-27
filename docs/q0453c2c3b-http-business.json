@@ -1,0 +1,226 @@
+{
+  "generatedAt": "2026-10-02T18:44:59.401Z",
+  "postgresSettings": {
+    "version": "18.2",
+    "autovacuum": "on"
+  },
+  "phase": "Q04.5.3c2c3b",
+  "node": "24.19.0",
+  "fixturesPerDomain": 20000,
+  "poolMax": 4,
+  "secondsPerGroup": 120,
+  "relational": true,
+  "separateGenerator": true,
+  "preflight": {
+    "unauthorized401": true,
+    "invalidLimit400": true,
+    "invalidDate400": true,
+    "csvSixDomains": true
+  },
+  "groups": [
+    {
+      "business": {
+        "transfers": 2638,
+        "assembled": 1319,
+        "disassembled": 1319,
+        "payments": 1319,
+        "replays": 396
+      },
+      "businessIntegrity": {
+        "stockPhysicalAligned": true,
+        "stockRestored": true,
+        "paymentBalanceCashAligned": true
+      },
+      "postgresProcesses": {
+        "samples": 23,
+        "availableSamples": 23,
+        "unavailableSamples": 0,
+        "workingSetSumPeakBytes": 602464256,
+        "cpuMillisecondsDelta": 312437.5,
+        "readTransferBytesDelta": 4857856,
+        "writeTransferBytesDelta": 394723328,
+        "maxDeadTuples": 11913,
+        "maxLiveTuples": 848689,
+        "autovacuumCountPeak": 24
+      },
+      "walBytesClusterWide": 91914088,
+      "readers": 4,
+      "generatorResources": {
+        "rssPeak": 222052352,
+        "heapPeak": 85424656,
+        "cpuMicroseconds": {
+          "user": 15000000,
+          "system": 2219000
+        },
+        "eventLoopP95Ms": 30.851071
+      },
+      "postgres": {
+        "peak": {
+          "samples": 239,
+          "connections": 7,
+          "active": 6,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 18.093079
+        },
+        "countersDelta": {
+          "xact_commit": 68222,
+          "xact_rollback": 0,
+          "blks_read": 33501,
+          "blks_hit": 55795813,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 22813,
+      "writerCommits": 3234,
+      "elapsedMs": 123852.56829999998,
+      "rps": 184.19480769055642,
+      "p50": 12.550699999999779,
+      "p95": 60.884699999995064,
+      "max": 221.59240000000136,
+      "rssPeak": 292220928,
+      "heapPeak": 160290432,
+      "poolConnectionsPeak": 4,
+      "poolWaitingPeak": 1,
+      "cpuMicroseconds": {
+        "user": 47937000,
+        "system": 11687000
+      },
+      "eventLoopP95Ms": 25.722879,
+      "eventLoopMaxMs": 98.828287,
+      "idleTransactions": 0,
+      "cases": {
+        "cliente:": 949,
+        "cliente:Q04TARGET": 950,
+        "cliente:%": 951,
+        "cliente:Q04HTTPONLY": 952,
+        "proveedor:": 952,
+        "proveedor:Q04TARGET": 952,
+        "proveedor:%": 952,
+        "proveedor:Q04HTTPONLY": 952,
+        "producto:": 952,
+        "producto:Q04TARGET": 952,
+        "producto:%": 952,
+        "producto:Q04HTTPONLY": 952,
+        "cotizacion:": 951,
+        "cotizacion:Q04TARGET": 951,
+        "cotizacion:%": 951,
+        "cotizacion:Q04HTTPONLY": 950,
+        "compra:": 950,
+        "compra:Q04TARGET": 950,
+        "compra:%": 950,
+        "compra:Q04HTTPONLY": 949,
+        "venta:": 949,
+        "venta:Q04TARGET": 948,
+        "venta:%": 948,
+        "venta:Q04HTTPONLY": 948
+      },
+      "errors": 0
+    },
+    {
+      "business": {
+        "transfers": 1562,
+        "assembled": 781,
+        "disassembled": 781,
+        "payments": 781,
+        "replays": 236
+      },
+      "businessIntegrity": {
+        "stockPhysicalAligned": true,
+        "stockRestored": true,
+        "paymentBalanceCashAligned": true
+      },
+      "postgresProcesses": {
+        "samples": 23,
+        "availableSamples": 23,
+        "unavailableSamples": 0,
+        "workingSetSumPeakBytes": 647860224,
+        "cpuMillisecondsDelta": 406093.75,
+        "readTransferBytesDelta": 22470656,
+        "writeTransferBytesDelta": 277372928,
+        "maxDeadTuples": 25696,
+        "maxLiveTuples": 907316,
+        "autovacuumCountPeak": 37
+      },
+      "walBytesClusterWide": 89850328,
+      "readers": 8,
+      "generatorResources": {
+        "rssPeak": 227917824,
+        "heapPeak": 94274440,
+        "cpuMicroseconds": {
+          "user": 18563000,
+          "system": 2422000
+        },
+        "eventLoopP95Ms": 27.066367
+      },
+      "postgres": {
+        "peak": {
+          "samples": 240,
+          "connections": 7,
+          "active": 6,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 3.784754
+        },
+        "countersDelta": {
+          "xact_commit": 87710,
+          "xact_rollback": 0,
+          "blks_read": 22028,
+          "blks_hit": 84961283,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 36189,
+      "writerCommits": 3504,
+      "elapsedMs": 122803.94320000001,
+      "rps": 294.6892343763111,
+      "p50": 20.666800000006333,
+      "p95": 61.338899999987916,
+      "max": 365.2974000000104,
+      "rssPeak": 290033664,
+      "heapPeak": 115285200,
+      "poolConnectionsPeak": 4,
+      "poolWaitingPeak": 5,
+      "cpuMicroseconds": {
+        "user": 46234000,
+        "system": 12125000
+      },
+      "eventLoopP95Ms": 23.674879,
+      "eventLoopMaxMs": 157.679615,
+      "idleTransactions": 0,
+      "cases": {
+        "cliente:": 1506,
+        "cliente:Q04TARGET": 1507,
+        "proveedor:": 1509,
+        "cliente:Q04HTTPONLY": 1509,
+        "proveedor:Q04TARGET": 1510,
+        "proveedor:Q04HTTPONLY": 1511,
+        "cliente:%": 1508,
+        "proveedor:%": 1510,
+        "producto:": 1511,
+        "producto:Q04TARGET": 1510,
+        "producto:%": 1509,
+        "producto:Q04HTTPONLY": 1508,
+        "cotizacion:": 1508,
+        "cotizacion:Q04TARGET": 1508,
+        "cotizacion:%": 1508,
+        "cotizacion:Q04HTTPONLY": 1507,
+        "compra:": 1507,
+        "compra:Q04TARGET": 1507,
+        "compra:%": 1507,
+        "compra:Q04HTTPONLY": 1506,
+        "venta:": 1506,
+        "venta:Q04TARGET": 1506,
+        "venta:%": 1506,
+        "venta:Q04HTTPONLY": 1505
+      },
+      "errors": 0
+    }
+  ],
+  "limitations": [
+    "Servidor Nest de prueba con controladores/servicios reales y JWT; no AppModule, scheduler, integraciones ni ThrottlerGuard.",
+    "Seis proyecciones reales; transferencias/kits/cobros por HTTP y mutación SQL de nombres para carreras total/página. No venta/compra/REP completos; imágenes como metadatos, no archivos.",
+    "Carga cerrada, caché caliente y ventanas de 120 segundos y 20000 registros por dominio: no certificación de capacidad máxima, SLA ni soak de horas.",
+    "CPU/memoria/event loop del padre incluyen servidor, escritor y monitor; generador en hijo separado. PostgreSQL: actividad, tuplas/autovacuum y CPU/working set/transferencia de procesos asociados a la copia muestreados con CIM Windows. Working sets sumados incluyen páginas compartidas; I/O de proceso incluye red y no equivale a disco. WAL global del cluster incluye otras bases; estadísticas pueden retrasarse. Pool 4 solo de prueba."
+  ]
+}

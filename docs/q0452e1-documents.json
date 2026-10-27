@@ -1,0 +1,227 @@
+{
+  "generatedAt": "2026-10-01T21:56:23.950Z",
+  "node": "24.19.0",
+  "existingComparisons": 36,
+  "comparisons": 352,
+  "fixtureRowsPerDomain": 20004,
+  "plans": 110,
+  "indexBuildMs": 913.7150999999999,
+  "indexedWriteMs": 19.89219999999841,
+  "indexBytes": 2416640,
+  "metrics": [
+    {
+      "domain": "factura",
+      "term": "Q04TARGET",
+      "before": {
+        "medianMs": 17.815,
+        "samplesMs": [
+          16.029,
+          16.999,
+          17.815,
+          18.736,
+          18.881
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 0.201,
+        "samplesMs": [
+          0.149,
+          0.15999999999999998,
+          0.201,
+          0.219,
+          0.33699999999999997
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "domain": "factura",
+      "term": "Cliente",
+      "before": {
+        "medianMs": 18.333,
+        "samplesMs": [
+          15.632,
+          17.242,
+          18.333,
+          20.668,
+          21.481
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 22.814,
+        "samplesMs": [
+          19.663,
+          20.229,
+          22.814,
+          29.107,
+          30.313
+        ],
+        "indexUsed": false
+      }
+    },
+    {
+      "domain": "factura",
+      "term": "RFC1000",
+      "before": {
+        "medianMs": 19.206,
+        "samplesMs": [
+          13.927,
+          19.003,
+          19.206,
+          19.515,
+          19.966
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 0.648,
+        "samplesMs": [
+          0.511,
+          0.605,
+          0.648,
+          0.6739999999999999,
+          0.694
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "domain": "factura",
+      "term": "%",
+      "before": {
+        "medianMs": 19.155,
+        "samplesMs": [
+          17.318,
+          17.993,
+          19.155,
+          19.942,
+          20.826
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 18.832,
+        "samplesMs": [
+          17.268,
+          18.406,
+          18.832,
+          19.2,
+          20.417
+        ],
+        "indexUsed": false
+      }
+    },
+    {
+      "domain": "cotizacion",
+      "term": "Q04TARGET",
+      "before": {
+        "medianMs": 13.984,
+        "samplesMs": [
+          10.307,
+          10.883,
+          13.984,
+          14.112,
+          14.298
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 0.16499999999999998,
+        "samplesMs": [
+          0.14,
+          0.143,
+          0.16499999999999998,
+          0.19,
+          0.191
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "domain": "cotizacion",
+      "term": "Cliente",
+      "before": {
+        "medianMs": 13.598,
+        "samplesMs": [
+          12.279,
+          12.465,
+          13.598,
+          17.548,
+          18.653
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 13.547,
+        "samplesMs": [
+          12.738999999999999,
+          12.912,
+          13.547,
+          14.658,
+          15.908000000000001
+        ],
+        "indexUsed": false
+      }
+    },
+    {
+      "domain": "cotizacion",
+      "term": "RFC1000",
+      "before": {
+        "medianMs": 14.76,
+        "samplesMs": [
+          12.505,
+          13.538,
+          14.76,
+          15.243,
+          15.634
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 0.43500000000000005,
+        "samplesMs": [
+          0.323,
+          0.32999999999999996,
+          0.43500000000000005,
+          0.515,
+          0.5529999999999999
+        ],
+        "indexUsed": true
+      }
+    },
+    {
+      "domain": "cotizacion",
+      "term": "%",
+      "before": {
+        "medianMs": 12.445,
+        "samplesMs": [
+          10.943,
+          11.004,
+          12.445,
+          12.728,
+          12.918
+        ],
+        "indexUsed": false
+      },
+      "after": {
+        "medianMs": 15.008,
+        "samplesMs": [
+          14.551,
+          14.629,
+          15.008,
+          15.497,
+          17.716
+        ],
+        "indexUsed": false
+      }
+    }
+  ],
+  "limitations": [
+    "Fixtures sintéticos; sin carga concurrente ni SLA.",
+    "Tiempos posteriores incluyen sondeo; no garantizan mejora universal.",
+    "Costos de escritura son muestra única, sin comparación estadística previa.",
+    "Compras requiere conservar concatenación con proveedor; pendiente."
+  ]
+}

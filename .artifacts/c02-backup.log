@@ -1,0 +1,10 @@
+
+> db:backup
+> node backend/backup.js
+
+Respaldo creado y legible: C:\Sistema\.backups\2026-10-21T06-12-22-771Z
+npm notice
+npm notice New major version of npm available! 11.17.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

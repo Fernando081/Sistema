@@ -1,0 +1,19 @@
+const assert=require('node:assert/strict');
+exports.ui=async(page,p,expect)=>{
+ await page.evaluate(()=>{Object.defineProperty(globalThis,'BarcodeDetector',{configurable:true,value:undefined});});
+ await page.getByRole('button',{name:'Leer ubicación con cámara',exact:true}).click();await expect(page.getByText('La cámara requiere conexión segura',{exact:false})).toBeVisible();
+ await page.evaluate(()=>{
+  globalThis.__scanTest={value:'',streams:[],stops:0,late:false,resolve:null};
+  globalThis.__makeScanStream=()=>{const c=document.createElement('canvas');c.width=32;c.height=32;const ctx=c.getContext('2d'),stream=c.captureStream(10),timer=setInterval(()=>{ctx.fillStyle='#fff';ctx.fillRect(0,0,32,32);},100);
+   for(const track of stream.getTracks()){const stop=track.stop.bind(track);track.stop=()=>{globalThis.__scanTest.stops++;clearInterval(timer);stop();};}globalThis.__scanTest.streams.push(stream);return stream;};
+  Object.defineProperty(globalThis,'BarcodeDetector',{configurable:true,value:class{static async getSupportedFormats(){return['qr_code'];}async detect(){const v=globalThis.__scanTest.value;return v?[{rawValue:v}]:[];}}});
+  Object.defineProperty(navigator.mediaDevices,'getUserMedia',{configurable:true,value:async()=>globalThis.__scanTest.late?new Promise(r=>globalThis.__scanTest.resolve=r):globalThis.__makeScanStream()});
+ });
+ const stopped=async()=>assert.ok(await page.evaluate(()=>globalThis.__scanTest.streams.every(s=>s.getTracks().every(t=>t.readyState==='ended'))));
+ await page.getByRole('button',{name:'Leer ubicación con cámara',exact:true}).click();await expect(page.getByRole('button',{name:'Detener cámara',exact:true})).toBeVisible();await expect(page.getByLabel('Vista de cámara para leer códigos',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Detener cámara',exact:true}).click();await stopped();
+ await page.evaluate(v=>globalThis.__scanTest.value=v,'RTT1:U:'+p.idUbicacion);await page.getByRole('button',{name:'Leer ubicación con cámara',exact:true}).click();await expect(page.getByLabel('Código de ubicación',{exact:true})).toHaveValue('RTT1:U:'+p.idUbicacion);await expect(page.getByRole('button',{name:'Detener cámara',exact:true})).toBeHidden();await stopped();
+ await page.evaluate(v=>globalThis.__scanTest.value=v,'RTT1:P:'+p.idProducto);await page.getByRole('button',{name:'Leer producto con cámara',exact:true}).click();await expect(page.getByLabel('Código de producto',{exact:true})).toHaveValue('RTT1:P:'+p.idProducto);await stopped();
+ await page.evaluate(()=>{globalThis.__scanTest.value='';globalThis.__scanTest.late=true;});await page.getByRole('button',{name:'Leer ubicación con cámara',exact:true}).click();await page.waitForFunction(()=>typeof globalThis.__scanTest.resolve==='function');await page.getByRole('button',{name:'Detener cámara',exact:true}).click();await page.evaluate(()=>{globalThis.__scanTest.resolve(globalThis.__makeScanStream());globalThis.__scanTest.late=false;});await expect.poll(()=>page.evaluate(()=>globalThis.__scanTest.streams.every(s=>s.getTracks().every(t=>t.readyState==='ended')))).toBe(true);
+ await page.getByRole('button',{name:'Leer ubicación con cámara',exact:true}).click();await expect(page.getByLabel('Vista de cámara para leer códigos',{exact:true})).toBeVisible();await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));delete document.hidden;});await stopped();
+ await page.getByRole('button',{name:'Leer ubicación con cámara',exact:true}).click();await expect(page.getByLabel('Vista de cámara para leer códigos',{exact:true})).toBeVisible();await page.getByRole('link',{name:'Volver al almacén',exact:true}).click();await expect.poll(()=>page.evaluate(()=>globalThis.__scanTest.streams.every(s=>s.getTracks().every(t=>t.readyState==='ended')))).toBe(true);assert.ok(await page.evaluate(()=>globalThis.__scanTest.stops>=6));
+};

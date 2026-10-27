@@ -1,0 +1,11 @@
+Refacciones y Tractorepuestos Tampico
+Entrega de pedido 2
+COPIA DOCUMENTAL PARA CLIENTE - NO ES CFDI
+Cliente: Cliente Portal Alfa
+Fecha de registro: 2026-10-21T00:33:36.024Z
+Parte Descripción Cantidad
+V03-74316a13 V03 Pieza de prueba 1.000000
+Copia de entrega V02; no incluye receptor, notas internas, ubicación, firma ni fotografías.
+Huella del snapshot conservado: 31cc175c8cf25398773291f244e36fe9a3f589c528d1fa38615a43911231b1ac
+Copia de datos conservados en el ERP. No acredita pago, identidad, firma avanzada ni aceptación comercial. No incluye anexos
+privados del expediente.

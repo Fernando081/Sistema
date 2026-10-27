@@ -5,6 +5,16 @@ import { DataSource } from 'typeorm';
 import { RegistrarPagoProveedorDto } from './pago-proveedor.dto';
 import { queryRows } from '../common/database/typed-query';
 
+export interface LegacySupplierDebtRow {
+  id_compra: number;
+  id_proveedor: number;
+  folio_factura_proveedor: string | null;
+  fecha_compra: Date | string;
+  total: string | number;
+  saldo_pendiente: string | number;
+  proveedor_nombre: string;
+}
+
 @Injectable()
 export class PagoProveedorService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
@@ -62,7 +72,7 @@ export class PagoProveedorService {
 
   // Buscar compras que debemos pagar (Deuda)
   async getDeudaPorProveedor(idProveedor: number) {
-    return queryRows<Record<string, unknown>>(this.dataSource,
+    return queryRows<LegacySupplierDebtRow>(this.dataSource,
       `SELECT id_compra, c.id_proveedor, folio_factura_proveedor, fecha_compra, total, saldo_pendiente, p."RazonSocial" as proveedor_nombre
        FROM compra c
        JOIN proveedor p ON c.id_proveedor = p."IdProveedor"
@@ -74,7 +84,7 @@ export class PagoProveedorService {
 
   // Buscar TODA la deuda
   async getAllDeuda() {
-    return queryRows<Record<string, unknown>>(this.dataSource,
+    return queryRows<LegacySupplierDebtRow>(this.dataSource,
       `SELECT id_compra, c.id_proveedor, folio_factura_proveedor, fecha_compra, total, saldo_pendiente, p."RazonSocial" as proveedor_nombre
        FROM compra c
        JOIN proveedor p ON c.id_proveedor = p."IdProveedor"

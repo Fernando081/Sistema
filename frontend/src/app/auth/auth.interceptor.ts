@@ -1,18 +1,16 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { AuthService } from './auth.service';
 import { isApiUrl } from '../shared/api-url';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const token = authService.getToken();
-
-  if (!token || !isApiUrl(req.url)) {
+  if (!isApiUrl(req.url)) {
     return next(req);
   }
 
+  const path=new URL(req.url,window.location.origin).pathname;
+  const portal=path==='/api/v1/portal'||path.startsWith('/api/v1/portal/');
   const authReq = req.clone({
-    setHeaders: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
+    setHeaders: portal?{ 'X-Portal-Browser': '1' }:{ 'X-ERP-Browser': '1' },
   });
 
   return next(authReq);

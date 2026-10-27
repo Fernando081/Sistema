@@ -1,0 +1,5 @@
+
+> check:repository
+> node scripts/verify-repository.js
+
+Repositorio sin residuos de conflictos ni plantillas placeholder.

@@ -13,6 +13,7 @@ import { UPLOAD_DIRECTORY } from './upload/upload-path';
 import { ClienteModule } from './cliente/cliente.module';
 import { ProveedorModule } from './proveedor/proveedor.module';
 import { ProductoModule } from './producto/producto.module';
+import { WebCatalogModule } from './web-catalog/web-catalog.module';
 import { CategoriaModule } from './categoria/categoria.module';
 
 import { CompraModule } from './compra/compra.module';
@@ -27,6 +28,7 @@ import { CotizacionModule } from './cotizacion/cotizacion.module';
 import { PagoModule } from './pago/pago.module';
 import { PagoProveedorModule } from './pago-proveedor/pago-proveedor.module';
 import { AuthModule } from './auth/auth.module';
+import { PortalModule } from './portal/portal.module';
 import { ReportesModule } from './reportes/reportes.module';
 import { FinanzasModule } from './finanzas/finanzas.module';
 import { UploadModule } from './upload/upload.module';
@@ -98,6 +100,7 @@ import { FiscalModule } from './fiscal/fiscal.module';
     ClienteModule,
     ProveedorModule,
     ProductoModule,
+    WebCatalogModule,
     CategoriaModule,
     CatalogosModule,
     VentaModule,
@@ -107,6 +110,7 @@ import { FiscalModule } from './fiscal/fiscal.module';
     PagoModule,
     PagoProveedorModule,
     AuthModule,
+    PortalModule,
     ReportesModule,
     FinanzasModule,
     UploadModule,

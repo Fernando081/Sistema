@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-10-05T18:49:13.997Z",
+  "phase": "Q04.5.3c2c3d12",
+  "node": "24.19.0",
+  "status": "passed",
+  "diagnostics": [
+    {
+      "method": "GET",
+      "route": "/reset",
+      "stage": "headers",
+      "name": "TypeError",
+      "code": "UND_ERR_SOCKET"
+    },
+    {
+      "method": "GET",
+      "route": "/truncated",
+      "stage": "body-json",
+      "name": "TypeError",
+      "code": "UND_ERR_SOCKET"
+    },
+    {
+      "method": "GET",
+      "route": "/truncated-text",
+      "stage": "body-text",
+      "name": "TypeError",
+      "code": "UND_ERR_SOCKET"
+    },
+    {
+      "method": "GET",
+      "route": "/truncated-arrayBuffer",
+      "stage": "body-arrayBuffer",
+      "name": "TypeError",
+      "code": "UND_ERR_SOCKET"
+    },
+    {
+      "method": "GET",
+      "route": "/truncated-reader",
+      "stage": "body-json",
+      "name": "TypeError",
+      "code": "UND_ERR_SOCKET"
+    },
+    {
+      "method": "GET",
+      "route": "/invalid",
+      "stage": "body-json",
+      "name": "SyntaxError",
+      "code": null
+    },
+    {
+      "method": "GET",
+      "route": "/timeout",
+      "stage": "headers",
+      "name": "TimeoutError",
+      "code": 23
+    }
+  ],
+  "requests": {
+    "/reset": 1,
+    "/truncated": 1,
+    "/truncated-text": 1,
+    "/truncated-arrayBuffer": 1,
+    "/truncated-reader": 1,
+    "/invalid": 1,
+    "/timeout": 1,
+    "/healthy": 1
+  },
+  "scope": "Servidor HTTP local con fallos deliberados: valida diagnostico, lectura de cuerpo, timeout, ausencia de reintentos y recuperacion; no identifica la causa del incidente historico del ERP."
+}

@@ -1,0 +1,240 @@
+{
+  "generatedAt": "2026-10-11T23:39:17.066Z",
+  "origin": "http://127.0.0.1:4500",
+  "status": "passed-local",
+  "checks": [
+    {
+      "path": "/",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3522,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/catalogo",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2569,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/categorias",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2531,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/marcas",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2479,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/nosotros",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2868,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/contacto",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5154,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/buscar",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3565,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/consulta",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3518,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/assets/site.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 17939,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/robots.txt",
+      "method": "GET",
+      "status": 200,
+      "bytes": 26,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/assets/logo-rtt.jpg",
+      "method": "GET",
+      "status": 200,
+      "bytes": 298735,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/consulta",
+      "method": "HEAD",
+      "status": 200,
+      "bytes": 0,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/consulta?parte=HTTP-CHECK&cantidad=0",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3576,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/consulta?parte=A&parte=B",
+      "method": "GET",
+      "status": 400,
+      "bytes": 2471,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/buscar?page=0",
+      "method": "GET",
+      "status": 400,
+      "bytes": 2471,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/cotizar",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/consulta/?parte=HTTP-CHECK&cantidad=2",
+      "method": "GET",
+      "status": 308,
+      "bytes": 0,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/buscar/?q=HTTP-CHECK",
+      "method": "GET",
+      "status": 308,
+      "bytes": 0,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/consulta",
+      "method": "POST",
+      "status": 405,
+      "bytes": 2495,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/current-release.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/approval.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/search-catalog.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/inquiry-business.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/integrity.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/business.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/routes.json",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/.env",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/ruta-inexistente-prueba-http",
+      "method": "GET",
+      "status": 404,
+      "bytes": 2313,
+      "passed": true,
+      "failures": []
+    },
+    {
+      "path": "/",
+      "method": "HEAD",
+      "status": 200,
+      "bytes": 0,
+      "passed": true,
+      "failures": []
+    }
+  ],
+  "scope": "HTTP local; no certifica integridad de versión, fotos comerciales, accesibilidad visual, hosting ni aceptación"
+}

@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-10-03T18:59:04.865Z",
+  "node": "v24.19.0",
+  "scope": "Probe aislado de Buffer/Blob con GC explícito; no usa ERP/DB ni cambia criterios del soak, no demuestra fuga del ERP",
+  "heldBlobBytes": 83886080,
+  "before": {
+    "rss": 37548032,
+    "heapTotal": 7331840,
+    "heapUsed": 4395760,
+    "external": 1992830,
+    "arrayBuffers": 137467
+  },
+  "retained": {
+    "rss": 132218880,
+    "heapTotal": 7331840,
+    "heapUsed": 4420800,
+    "external": 12478630,
+    "arrayBuffers": 94509307
+  },
+  "released": {
+    "rss": 37818368,
+    "heapTotal": 7331840,
+    "heapUsed": 4420064,
+    "external": 1992870,
+    "arrayBuffers": 137467
+  }
+}

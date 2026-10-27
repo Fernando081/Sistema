@@ -1,0 +1,130 @@
+{
+  "generatedAt": "2026-10-01T22:24:07.046Z",
+  "node": "24.19.0",
+  "fixtureRowsPerDomain": 20000,
+  "warmupCases": 24,
+  "groups": [
+    {
+      "concurrency": 1,
+      "requests": 411,
+      "elapsedMs": 6086.7678,
+      "requestsPerSecond": 67.52352208999989,
+      "p50Ms": 10.490300000001298,
+      "p95Ms": 48.55420000000049,
+      "maxMs": 97.12259999999878,
+      "domains": {
+        "cliente": {
+          "requests": 71,
+          "p95Ms": 44.15730000000076
+        },
+        "proveedor": {
+          "requests": 68,
+          "p95Ms": 20.974100000001272
+        },
+        "producto": {
+          "requests": 68,
+          "p95Ms": 66.76180000000022
+        },
+        "factura": {
+          "requests": 68,
+          "p95Ms": 29.921699999998964
+        },
+        "cotizacion": {
+          "requests": 68,
+          "p95Ms": 25.86579999999958
+        },
+        "compra": {
+          "requests": 68,
+          "p95Ms": 27.859300000000076
+        }
+      }
+    },
+    {
+      "concurrency": 4,
+      "requests": 1395,
+      "elapsedMs": 6028.4678,
+      "requestsPerSecond": 231.40208196848954,
+      "p50Ms": 2.4657999999999447,
+      "p95Ms": 49.624900000002526,
+      "maxMs": 105.5671999999995,
+      "domains": {
+        "cliente": {
+          "requests": 235,
+          "p95Ms": 48.00539999999819
+        },
+        "proveedor": {
+          "requests": 234,
+          "p95Ms": 21.0750999999982
+        },
+        "producto": {
+          "requests": 232,
+          "p95Ms": 77.74380000000019
+        },
+        "factura": {
+          "requests": 232,
+          "p95Ms": 29.9887000000017
+        },
+        "cotizacion": {
+          "requests": 231,
+          "p95Ms": 26.260600000001432
+        },
+        "compra": {
+          "requests": 231,
+          "p95Ms": 23.09809999999925
+        }
+      }
+    },
+    {
+      "concurrency": 8,
+      "requests": 2927,
+      "elapsedMs": 6028.6162,
+      "requestsPerSecond": 485.517721297302,
+      "p50Ms": 2.90139999999883,
+      "p95Ms": 40.594600000000355,
+      "maxMs": 122.52959999999803,
+      "domains": {
+        "cliente": {
+          "requests": 437,
+          "p95Ms": 47.87800000000061
+        },
+        "proveedor": {
+          "requests": 542,
+          "p95Ms": 22.376000000000204
+        },
+        "producto": {
+          "requests": 435,
+          "p95Ms": 71.52599999999802
+        },
+        "factura": {
+          "requests": 541,
+          "p95Ms": 30.594900000000052
+        },
+        "cotizacion": {
+          "requests": 433,
+          "p95Ms": 23.34559999999692
+        },
+        "compra": {
+          "requests": 539,
+          "p95Ms": 23.434900000000198
+        }
+      }
+    }
+  ],
+  "consistency": {
+    "readCommitted": {
+      "total": 0,
+      "rows": 1
+    },
+    "repeatableRead": {
+      "total": 0,
+      "rows": 0
+    }
+  },
+  "limitations": [
+    "Carga cerrada y acotada, hasta 6 s o 512 solicitudes por lector/grupo; no certifica carga sostenida de producción.",
+    "Métodos de aplicación con proyección sintética de productos/compras, sin HTTP/autenticación/UI ni escrituras concurrentes de negocio.",
+    "Conexión por lector serializa consultas internas; concurrency expresa lectores, no usuarios reales.",
+    "La prueba determinista de escritura cubre cliente, no todos los flujos de negocio.",
+    "P95 orientativo y caché caliente; sin WAL/autovacuum/CPU ni SLA."
+  ]
+}

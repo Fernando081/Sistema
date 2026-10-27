@@ -40,6 +40,11 @@ import { debounceTime, switchMap, startWith, map, finalize, catchError } from 'r
 import { environment } from '../../../environments/environment';
 import { ErpEchartsDirective } from '../../shared/echarts.provider';
 import { ConfirmService } from '../../shared/confirm.service';
+import { AuthService } from '../../auth/auth.service';
+import { WebProductEditorComponent } from '../web-product-editor.component';
+
+import { HistorialPrecio, ProductoEquivalente, NumeroParte, AplicacionProducto, CotizacionProveedor } from '../../services/producto-api.types';
+import { productImageUrl } from '../../shared/api-url';
 
 @Component({
   selector: 'app-producto-dialog',
@@ -60,10 +65,14 @@ import { ConfirmService } from '../../shared/confirm.service';
     MatIconModule,
     ErpEchartsDirective,
     MatSnackBarModule,
+    WebProductEditorComponent,
   ],
   templateUrl: './producto-dialog.component.html',
 })
 export class ProductoDialogComponent implements OnInit {
+  readonly canPrepareWeb = inject(AuthService).getSessionIdentity()?.role === 'admin';
+  selectedTab = 0;
+  get webTabActive() { return this.canPrepareWeb && this.isEditMode && this.selectedTab === 0; }
   form: FormGroup;
   isEditMode: boolean;
   isSaving = signal(false);
@@ -80,12 +89,12 @@ export class ProductoDialogComponent implements OnInit {
   public filteredClavesUnidad$!: Observable<ClaveUnidad[]>;
 
   // --- VARIABLES PARA PESTAÑAS AVANZADAS ---
-  historialPrecios: any[] = [];
-  equivalentes = signal<any[]>([]);
-  numerosParte = signal<any[]>([]);
-  aplicaciones = signal<any[]>([]);
+  historialPrecios: HistorialPrecio[] = [];
+  equivalentes = signal<ProductoEquivalente[]>([]);
+  numerosParte = signal<NumeroParte[]>([]);
+  aplicaciones = signal<AplicacionProducto[]>([]);
   kardex = signal<KardexItem[]>([]);
-  cotizacionesProveedor = signal<any[]>([]);
+  cotizacionesProveedor = signal<CotizacionProveedor[]>([]);
   numeroParteForm: FormGroup;
   aplicacionForm: FormGroup;
 
@@ -164,8 +173,7 @@ export class ProductoDialogComponent implements OnInit {
       this.form.patchValue(this.data);
 
       if (this.data.imagenes && this.data.imagenes.length > 0) {
-        const baseUrl = environment.apiBaseUrl.replace('/api/v1', '');
-        const urls = this.data.imagenes.map(img => ({ url: `${baseUrl}${img}` }));
+        const urls = this.data.imagenes.map(img => ({ url: productImageUrl(img) })).filter(image => !!image.url);
         this.previewUrls.set(urls);
       }
 
@@ -319,7 +327,7 @@ export class ProductoDialogComponent implements OnInit {
 
   // --- UTILIDADES ---
 
-  displayClave(item: any): string {
+  displayClave(item: { clave?: string; descripcion?: string } | null): string {
     return item ? `${item.clave} - ${item.descripcion}` : '';
   }
 
@@ -334,8 +342,10 @@ export class ProductoDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  onFileSelected(event: any) {
-    const files: FileList = event.target.files;
+  onFileSelected(event: Event) {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    const files = input.files;
     if (files && files.length > 0) {
       Array.from(files).forEach((file) => {
         if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type) || file.size > 5 * 1024 * 1024) {
@@ -347,14 +357,15 @@ export class ProductoDialogComponent implements OnInit {
         this.selectedFiles.push(file);
         
         const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.previewUrls.update(previews => [...previews, { file, url: e.target.result }]);
+        reader.onload = () => {
+          const url = reader.result;
+          if (typeof url === 'string') this.previewUrls.update(previews => [...previews, { file, url }]);
         };
         reader.readAsDataURL(file);
       });
     }
     // Resetear el input para permitir seleccionar la misma foto si se borró
-    event.target.value = '';
+    input.value = '';
   }
 
   eliminarImagenA(index: number) {

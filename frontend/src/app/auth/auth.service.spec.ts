@@ -4,81 +4,66 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 
-describe('AuthService', () => {
-  let service: AuthService;
-  let httpMock: HttpTestingController;
-
-  beforeEach(() => {
-    localStorage.clear();
-
-    TestBed.configureTestingModule({
-      providers: [AuthService, provideHttpClient(), provideHttpClientTesting()],
-    });
-
-    service = TestBed.inject(AuthService);
-    httpMock = TestBed.inject(HttpTestingController);
+describe('Identidad de navegador sin JWT en Web Storage',()=>{
+  let service:AuthService,http:HttpTestingController;
+  const state=()=>({profile:{idUser:1,username:'José García',role:'admin',isActive:true},expiresAt:Math.floor(Date.now()/1000)+3600});
+  beforeEach(()=>{
+    localStorage.clear();sessionStorage.clear();
+    TestBed.configureTestingModule({providers:[AuthService,provideHttpClient(),provideHttpClientTesting()]});
+    service=TestBed.inject(AuthService);http=TestBed.inject(HttpTestingController);
   });
-
-  afterEach(() => {
-    httpMock.verify();
-    localStorage.clear();
+  afterEach(()=>{http.verify();localStorage.clear();sessionStorage.clear();});
+  it('purga credenciales anteriores y conserva preferencias ajenas',()=>{
+    localStorage.setItem('access_token','legacy');sessionStorage.setItem('access_token','legacy');localStorage.setItem('theme','dark');
+    service.clearSession();expect(localStorage.getItem('access_token')).toBeNull();expect(sessionStorage.getItem('access_token')).toBeNull();expect(localStorage.getItem('theme')).toBe('dark');
   });
-
-  it('guarda token al hacer login', () => {
-    service.login({ username: 'admin', password: 'admin123' }).subscribe();
-
-    const req = httpMock.expectOne(`${environment.apiBaseUrl}/auth/login`);
-    req.flush({ access_token: 'abc', token_type: 'Bearer', expires_in: 3600 });
-
-    expect(localStorage.getItem('access_token')).toBe('abc');
+  it('conserva solo identidad pública en memoria al iniciar sesión',()=>{
+    service.login({username:'fixture',password:'fixture-password'}).subscribe();
+    http.expectOne(environment.apiBaseUrl+'/auth/login').flush(state());
+    expect(service.getSessionIdentity()).toEqual(jasmine.objectContaining({sub:'José García',role:'admin',idUser:1}));
+    expect(localStorage.length).toBe(0);expect(sessionStorage.length).toBe(0);
   });
-
-  describe('getDecodedToken', () => {
-    it('rechaza payload válido cuando falta el segmento de firma', () => {
-      localStorage.setItem('access_token', `header.${btoa(JSON.stringify({exp: Date.now() / 1000 + 60}))}`);
-      expect(service.getDecodedToken()).toBeNull();
-    });
-    it('elimina tokens vencidos sin iniciar otra petición HTTP', () => {
-      localStorage.setItem('access_token', `header.${btoa(JSON.stringify({exp: 1}))}.sig`);
-      expect(service.isAuthenticated()).toBeFalse();
-      expect(service.getToken()).toBeNull();
-      httpMock.expectNone(`${environment.apiBaseUrl}/auth/logout`);
-    });
-    it('retorna null cuando no hay token almacenado', () => {
-      expect(service.getDecodedToken()).toBeNull();
-    });
-
-    it('retorna null para un token con menos de 3 segmentos', () => {
-      // token with only header and no payload
-      localStorage.setItem('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');
-      expect(service.getDecodedToken()).toBeNull();
-    });
-
-    it('retorna null para un payload que no es JSON válido', () => {
-      // second segment decodes to non-JSON text
-      const badPayload = btoa('not-json').replace(/=/g, '');
-      localStorage.setItem('access_token', `header.${badPayload}.sig`);
-      expect(service.getDecodedToken()).toBeNull();
-    });
-
-    it('decodifica un token con payload ASCII', () => {
-      // payload: {"sub":"admin","role":"ADMIN"}
-      localStorage.setItem(
-        'access_token',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiJ9.fakesig',
-      );
-      const result = service.getDecodedToken();
-      expect(result).toEqual(jasmine.objectContaining({ sub: 'admin', role: 'ADMIN' }));
-    });
-
-    it('decodifica correctamente un payload con caracteres no-ASCII (acentos)', () => {
-      // payload: {"sub":"José García","role":"USER"}
-      localStorage.setItem(
-        'access_token',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKb3PDqSBHYXJjw61hIiwicm9sZSI6IlVTRVIifQ.fakesig',
-      );
-      const result = service.getDecodedToken();
-      expect(result).toEqual(jasmine.objectContaining({ sub: 'José García', role: 'USER' }));
-    });
+  it('rechaza una respuesta Bearer y no almacena el JWT',()=>{
+    let failed=false;service.login({username:'fixture',password:'fixture-password'}).subscribe({error:()=>failed=true});
+    http.expectOne(environment.apiBaseUrl+'/auth/login').flush({access_token:'not-saved'});
+    expect(failed).toBeTrue();expect(service.isAuthenticated()).toBeFalse();expect(localStorage.length).toBe(0);
+  });
+  it('restaura una sola vez para guards simultáneos y reutiliza metadata vigente',()=>{
+    const results:boolean[]=[];service.ensureSession().subscribe(value=>results.push(value));service.ensureSession().subscribe(value=>results.push(value));
+    http.expectOne(environment.apiBaseUrl+'/auth/browser-state').flush(state());
+    service.ensureSession().subscribe(value=>results.push(value));expect(results).toEqual([true,true,true]);
+  });
+  it('no resucita identidad después de cerrar acceso con restauración pendiente',()=>{
+    let restored=true;service.ensureSession().subscribe(value=>restored=value);service.clearSession();
+    http.expectOne(environment.apiBaseUrl+'/auth/browser-state').flush(state());
+    expect(restored).toBeFalse();expect(service.getSessionIdentity()).toBeNull();
+  });
+  it('401 de restauración deja el guard sin sesión y permite un nuevo intento',()=>{
+    let restored=true;service.ensureSession().subscribe(value=>restored=value);
+    http.expectOne(environment.apiBaseUrl+'/auth/browser-state').flush({}, {status:401,statusText:'Unauthorized'});
+    expect(restored).toBeFalse();service.ensureSession().subscribe();http.expectOne(environment.apiBaseUrl+'/auth/browser-state').flush(state());
+    expect(service.isAuthenticated()).toBeTrue();
+  });
+  it('ignora metadata vencida y estados sin usuario registrado',()=>{
+    for(const changes of [{expiresAt:1},{profile:{...state().profile,idUser:0}}]){
+      let restored=true;service.ensureSession().subscribe(value=>restored=value);
+      http.expectOne(environment.apiBaseUrl+'/auth/browser-state').flush({...state(),...changes});expect(restored).toBeFalse();
+    }
+  });
+  it('logout borra identidad y solicita revocación al servidor',()=>{
+    service.login({username:'fixture',password:'fixture-password'}).subscribe();http.expectOne(environment.apiBaseUrl+'/auth/login').flush(state());
+    service.logout();expect(service.getSessionIdentity()).toBeNull();http.expectOne(environment.apiBaseUrl+'/auth/logout').flush({message:'Sesión cerrada'});
+  });
+  it('reto MFA no autentica ni persiste y segundo factor restaura identidad pública',()=>{
+    service.login({username:'fixture',password:'fixture-password'}).subscribe();
+    http.expectOne(environment.apiBaseUrl+'/auth/login').flush({mfaRequired:true,challenge:'opaque',expiresIn:300});
+    expect(service.isAuthenticated()).toBeFalse();expect(sessionStorage.length).toBe(0);expect(localStorage.length).toBe(0);
+    service.completeMfa('opaque','123456').subscribe();
+    const request=http.expectOne(environment.apiBaseUrl+'/auth/mfa/login');expect(request.request.body).toEqual({challenge:'opaque',code:'123456'});request.flush(state());
+    expect(service.isAuthenticated()).toBeTrue();expect(sessionStorage.length).toBe(0);expect(localStorage.length).toBe(0);
+  });
+  it('segundo factor pendiente no revive identidad cancelada',()=>{
+    let failed=false;service.completeMfa('opaque','123456').subscribe({error:()=>failed=true});service.clearSession();
+    http.expectOne(environment.apiBaseUrl+'/auth/mfa/login').flush(state());expect(failed).toBeTrue();expect(service.isAuthenticated()).toBeFalse();
   });
 });

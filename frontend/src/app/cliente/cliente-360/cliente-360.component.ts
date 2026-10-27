@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialog,MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { Cliente360, ClienteService } from '../../services/cliente.service';
@@ -20,7 +21,7 @@ import { NotificationService } from '../../shared/notification.service';
   selector: 'app-cliente-360',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatProgressSpinnerModule, MatSelectModule, MatTabsModule],
+    MatFormFieldModule, MatIconModule, MatInputModule, MatProgressSpinnerModule, MatSelectModule, MatTabsModule,MatDialogModule],
   templateUrl: './cliente-360.component.html',
   styleUrl: './cliente-360.component.css',
 })
@@ -30,6 +31,7 @@ export class Cliente360Component {
   private readonly fb = inject(FormBuilder);
   private readonly confirm = inject(ConfirmService);
   private readonly notifications = inject(NotificationService);
+  private readonly dialog = inject(MatDialog);
   readonly idCliente = Number(this.route.snapshot.paramMap.get('id'));
   readonly data = signal<Cliente360 | null>(null);
   readonly loading = signal(true);
@@ -46,6 +48,11 @@ export class Cliente360Component {
   });
 
   constructor() { this.load(); }
+
+  async preferenciasComerciales(){
+    const {ConsentimientoComercialDialogComponent}=await import('../../crm/consentimiento-comercial-dialog.component');
+    this.dialog.open(ConsentimientoComercialDialogComponent,{width:'820px',maxWidth:'96vw',disableClose:true,data:{idCliente:this.idCliente,razonSocial:this.data()?.cliente.razonSocial??'Cliente'}});
+  }
 
   load() {
     this.loading.set(true);

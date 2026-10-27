@@ -1,0 +1,91 @@
+{
+  "generatedAt": "2026-10-12T02:49:32.656Z",
+  "passed": 12,
+  "total": 12,
+  "probes": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4600/catalogo",
+      "expected": 200,
+      "status": 200,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/",
+      "expected": 200,
+      "status": 200,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4300/login",
+      "expected": 200,
+      "status": 200,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "expected": 200,
+      "status": 200,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4600/solicitar",
+      "expected": 503,
+      "status": 503,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4500/solicitar",
+      "expected": 503,
+      "status": 503,
+      "passed": true
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:3100/api/v1/web-lead-bridge/check",
+      "expected": 503,
+      "status": 503,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4600/current-release.json",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4600/approval.json",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4600/.artifacts/web-test-pilot.json",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4600/.backups/web-test-pilot-4385d3f4-0dbb-4ae3-9344-dcffaecc5710.json",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:4600/.runtime/web-test-pilot-current.json",
+      "expected": 404,
+      "status": 404,
+      "passed": true
+    }
+  ]
+}

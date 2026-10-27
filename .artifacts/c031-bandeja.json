@@ -1,0 +1,29 @@
+{
+  "phase": "C03.1",
+  "startedAt": "2026-10-21T16:44:27.444Z",
+  "checks": [
+    "ACL real: tareas propias/creadas, oportunidad asignada, otras fuentes administrativas403",
+    "ADMIN incluye asuntos sin asignar y ajenos; excluye tareas/oportunidades cerradas",
+    "Búsqueda literal de comodines y parámetros sin inyección SQL",
+    "Plazos excluyentes de Tampico, sin fecha y resumen consistentes con filtros",
+    "Solicitudes vigentes sin conversión: descarta vencidas/purgadas/descartadas/vinculadas y no devuelve contactos o piezas",
+    "Cotización pendiente/vigente real: identidad/fecha correctas y deja de aparecer al cancelarse",
+    "Paginación estable sin duplicados, totales completos y página vacía conservando resumen",
+    "Secuencia activa aparece; pausarla retira su tarea de la bandeja sin reactivar ni duplicar",
+    "HTTP real: sin sesión401, DTO cerrado400, caché privada y acceso directo a tarea conserva ACL/bigint",
+    "Revalidación de cuenta/version y lecturas concurrentes sin crear tareas/avisos/auditoría ni modificar fuentes",
+    "Angular real light: login, filtros, páginas, oportunidad existente, Axe sin infracciones y reflujo 1280px",
+    "Navegación light: tarea exacta con ACL, quitar foco en misma ruta y volver, solicitudes en pestaña correcta",
+    "Angular real dark: login, filtros, páginas, oportunidad existente, Axe sin infracciones y reflujo 390px",
+    "Navegación dark: tarea exacta con ACL, quitar foco en misma ruta y volver, solicitudes en pestaña correcta",
+    "Operador Angular real: alcance propio, fuente403 sin resultados viejos, recuperación/vacío y filtros al recargar"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "externalDeliveryEnabled": false,
+  "passed": true,
+  "completedAt": "2026-10-21T16:44:45.612Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular C03.1"
+}

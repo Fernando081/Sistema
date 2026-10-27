@@ -1,0 +1,105 @@
+    stage='fixtures';
+    const client=(await writer.query('SELECT "IdCliente" id FROM cliente ORDER BY "IdCliente" LIMIT 1')).rows[0].id;
+    const makeUnit=async name=>(await call('crm/clientes/'+client+'/unidades',tokens[0],201,'POST',{esn:'D02-'+randomBytes(6).toString('hex'),numeroEconomico:name})).body.idUnidad;
+    const unit=await makeUnit('D02 Historial de verificación'),second=await makeUnit('D02 Segunda unidad'),uiUnit=await makeUnit('D02 Unidad UI');
+    const base='crm/unidades/'+unit+'/piezas',other='crm/unidades/'+second+'/piezas';
+    const tax=(await writer.query('SELECT "IdObjetoImpuesto" id FROM objetoimpuesto WHERE "Clave"=\'01\'')).rows[0].id;
+    const product=(await writer.query(`INSERT INTO producto("Codigo","Descripcion","IdObjetoImpuesto","PrecioUnitario","Existencia","ObjetoImpuesto","TasaIVA","AplicaRetencionISR",costo_reposicion,margen_minimo)
+      VALUES($1,'D02 Pieza de verificación',$2,100,100,'01',0,false,10,0) RETURNING "IdProducto" id`,['D02-'+randomBytes(4).toString('hex'),tax])).rows[0].id;
+    await writer.query("INSERT INTO producto_aplicacion(id_producto,fabricante_equipo,modelo,motor,restricciones)VALUES($1,'Fabricante de prueba','Modelo de prueba','Motor de prueba','Confirmar por serie')",[product]);
+    const form=(await writer.query('SELECT "IdFormaPago" id FROM formadepago WHERE "Clave"=\'01\'')).rows[0].id,method=(await writer.query('SELECT "IdMetodoDePago" id FROM metododepago WHERE "Clave"=\'PPD\'')).rows[0].id;
+    await call('comercial/clientes/'+client,tokens[0],200,'PUT',{limiteCredito:99999999999,diasCredito:30,bloqueado:false});
+    const sale=async(qty=4)=>{
+      const body={requestId:randomUUID(),idCliente:client,rfcReceptor:'XAXX010101000',nombreReceptor:'D02 Cliente de prueba',cpReceptor:'89318',regimenReceptor:'616',usoCfdi:'S01',idFormaPago:form,idMetodoPago:method,moneda:'MXN',tipoCambio:1,subtotal:100*qty,totalImpuestosTrasladados:0,totalImpuestosRetenidos:0,total:100*qty,conceptos:[{idProducto:product,claveProdServ:'01010101',claveUnidad:'H87',objetoImpuesto:'01',codigo:'D02',descripcion:'D02 Pieza vendida',unidadDescripcion:'Pieza',cantidad:qty,valorUnitario:100,importe:100*qty,descuento:0,baseIva:0,tasaIva:0,importeIva:0}]};
+      const id=(await call('venta',tokens[0],201,'POST',body)).body.idFactura;return (await writer.query('SELECT f.id_factura AS id,cf.id_concepto AS concepto,concat(f.serie,\'-\',f.folio) AS folio FROM factura f JOIN conceptofactura cf USING(id_factura)WHERE f.id_factura=$1',[id])).rows[0];
+    };
+    const origin=await sale(),decimalOrigin=await sale(.3),warrantyOrigin=await sale(),uiOrigin=await sale(10);
+    const initialStock=(await writer.query('SELECT "Existencia" value FROM producto WHERE "IdProducto"=$1',[product])).rows[0].value;
+    const get=async(id=unit,query='')=>(await call('crm/unidades/'+id+'/piezas'+query)).body;
+    const body=(concept=origin.concepto,quantity=1)=>({requestId:randomUUID(),idConcepto:concept,cantidad:quantity,fecha:new Date().toISOString(),detalle:'Instalación reportada en copia',compatibilidad:'Pendiente',referencia:'Falta revisión técnica por serie'});
+    await call(base,null,401);await call(base,tokens[1],403);assert.equal((await get()).total,0);assert.equal((await call(base)).cache,'private, no-store');await call(base+'?page=-1',tokens[0],400);
+    await call('auth/users/'+users[1]+'/permissions',tokens[0],200,'PUT',{permissions:[{permissionCode:'crm.unidades.consultar',granted:true}],accessVersion:0});tokens[1]=(await auth.login(names[1],password)).access_token;
+    await call(base,tokens[1]);await call(base,tokens[1],403,'POST',body());
+    checked('101 verificada/aplicada solo en copia; ventas existentes no generan instalaciones; privado401/403, no-store, paginación validada y consulta no permite gestionar');
+    const sources=(await call(base+'/origenes')).body;assert.equal(sources.data.find(x=>x.idConcepto===origin.concepto).aplicacionesTotal,1);assert.equal(sources.data.find(x=>x.idConcepto===origin.concepto).aplicaciones[0].restricciones,'Confirmar por serie');
+    assert.equal((await call(base+'/origenes?term=%25')).body.total,0);
+    await writer.query('UPDATE factura SET id_unidad=$2 WHERE id_factura=$1',[origin.id,second]);assert.ok(!(await call(base+'/origenes')).body.data.some(x=>x.idConcepto===origin.concepto));await call(base,tokens[0],409,'POST',body());await writer.query('UPDATE factura SET id_unidad=NULL WHERE id_factura=$1',[origin.id]);
+    checked('Orígenes acotados al cliente/unidad, aplicaciones/restricciones informativas existentes y comodines literales; factura de otra unidad rechazada');
+    await call(base,tokens[0],400,'POST',{...body(),cantidad:0});await call(base,tokens[0],400,'POST',{...body(),cantidad:.0000001});await call(base,tokens[0],400,'POST',{...body(),fecha:'2100-01-01T00:00:00Z'});await call(base,tokens[0],400,'POST',{...body(),fecha:'2026-10-20'});await call(base,tokens[0],409,'POST',{...body(),fecha:'2000-01-01T00:00:00Z'});await call(base,tokens[0],400,'POST',{...body(),referencia:' '});
+    const intent=body(),[one,again]=await Promise.all([call(base,tokens[0],201,'POST',intent),call(base,tokens[0],201,'POST',intent)]),piece=one.body.idPieza;assert.equal(piece,again.body.idPieza);await call(base,tokens[0],409,'POST',{...intent,cantidad:2});assert.equal((await get()).total,1);
+    checked('Fecha/precisión/cantidad/fuente obligatorias, fecha anterior a venta rechazada y UUID/huella concurrente sin duplicado ni cambio de intención');
+    const races=await Promise.all([base,other].map(route=>fetch(api+'/api/v1/'+route,{method:'POST',headers:{Authorization:'Bearer '+tokens[0],'Content-Type':'application/json'},body:JSON.stringify(body(origin.concepto,2))}).then(async r=>({status:r.status,body:await r.json()}))));assert.deepEqual(races.map(x=>x.status).sort(),[201,409]);
+    await call(base,tokens[0],201,'POST',body(decimalOrigin.concepto,.1));await call(other,tokens[0],201,'POST',body(decimalOrigin.concepto,.2));await call(base,tokens[0],409,'POST',body(decimalOrigin.concepto,.000001));
+    assert.equal((await writer.query('SELECT sum(cantidad)::text value FROM crm_unidad_pieza WHERE id_concepto=$1 AND NOT anulada',[decimalOrigin.concepto])).rows[0].value,'0.300000');
+    checked('Asignación global por renglón serializada entre unidades: una alta y un409 concurrentes; suma decimal exacta0.1+0.2 y exceso rechazado');
+    const before=(await get()).data.find(x=>x.idPieza===piece);
+    await call('crm/unidades/'+unit,tokens[0],200,'PATCH',{esn:'D02-ESN-ACTUALIZADO'});await writer.query('UPDATE producto SET "Codigo"=$2 WHERE "IdProducto"=$1',[product,'D02-CODIGO-ACTUAL']);
+    const snapshot=(await get()).data.find(x=>x.idPieza===piece);assert.equal(snapshot.esn,before.esn);assert.equal(snapshot.codigo,before.codigo);assert.notEqual(snapshot.esn,'D02-ESN-ACTUALIZADO');
+    await call(other+'/'+piece+'/revision',tokens[0],404,'POST',{version:1,compatibilidad:'Verificada',referencia:'No pertenece'});
+    const reviews=await Promise.all(['Verificada','Incompatible'].map(compatibilidad=>{const value={version:1,compatibilidad,referencia:'Revisión '+compatibilidad};return fetch(api+'/api/v1/'+base+'/'+piece+'/revision',{method:'POST',headers:{Authorization:'Bearer '+tokens[0],'Content-Type':'application/json'},body:JSON.stringify(value)}).then(async r=>({status:r.status,body:value,response:await r.json()}));}));assert.deepEqual(reviews.map(x=>x.status).sort(),[201,409]);
+    const won=reviews.find(x=>x.status===201);assert.equal((await call(base+'/'+piece+'/revision',tokens[0],201,'POST',won.body)).body.version,2);await call(base+'/'+piece+'/revision',tokens[0],409,'POST',{version:1,compatibilidad:'Pendiente',referencia:'Versión vieja'});
+    checked('VIN/ESN/código originales sobreviven cambios del maestro; revisión manual versionada concurrente y reintento sin nueva versión; IDs de otra unidad404');
+    const warranty=async(origin,qty=1)=>(await call('garantias',tokens[0],201,'POST',{idFactura:origin.id,idConcepto:origin.concepto,cantidad:qty,motivo:'D02 Falla reportada',destinoProducto:'Revision'})).body.idGarantia;
+    const g=await warranty(origin),tooMuch=await warranty(origin,2),wrong=await warranty(decimalOrigin,.1);
+    await call(base+'/'+piece+'/garantias',tokens[0],409,'POST',{requestId:randomUUID(),idGarantia:tooMuch,motivo:'Cantidad incorrecta'});await call(base+'/'+piece+'/garantias',tokens[0],409,'POST',{requestId:randomUUID(),idGarantia:wrong,motivo:'Renglón incorrecto'});
+    assert.ok((await call(base+'/'+piece+'/garantias-candidatas')).body.data.some(x=>x.idGarantia===g));
+    const linkBody={requestId:randomUUID(),idGarantia:g,motivo:'Misma pieza reportada'},linked=(await call(base+'/'+piece+'/garantias',tokens[0],201,'POST',linkBody)).body.idVinculo;
+    assert.equal((await call(base+'/'+piece+'/garantias',tokens[0],201,'POST',linkBody)).body.idVinculo,linked);await call(base+'/'+piece+'/garantias',tokens[0],409,'POST',{...linkBody,motivo:'Otra intención'});await call(base+'/'+piece+'/anular',tokens[0],409,'POST',{motivo:'Vínculo activo'});
+    const wp=(await call(base,tokens[0],201,'POST',body(warrantyOrigin.concepto,2))).body.idPieza,wp2=(await call(other,tokens[0],201,'POST',body(warrantyOrigin.concepto,2))).body.idPieza,wg=await warranty(warrantyOrigin);
+    const links=await Promise.all([[base,wp],[other,wp2]].map(([route,p])=>fetch(api+'/api/v1/'+route+'/'+p+'/garantias',{method:'POST',headers:{Authorization:'Bearer '+tokens[0],'Content-Type':'application/json'},body:JSON.stringify({requestId:randomUUID(),idGarantia:wg,motivo:'Concurrencia de vínculo'})}).then(async r=>{await r.arrayBuffer();return r.status;})));assert.deepEqual(links.sort(),[201,409]);
+    checked('Vínculos a garantías existentes validan venta y cantidad; vínculo único concurrente entre unidades, UUID estable y anulación bloqueada con vínculo activo');
+    const visible=(await call('garantias')).body.find(x=>x.idGarantia===g);assert.equal(visible.idUnidad,unit);assert.equal(visible.idPieza,piece);
+    const noRead=await auth.login(names[1],password); // Explicit read permission currently exists.
+    await call('auth/users/'+users[1]+'/permissions',tokens[0],200,'PUT',{permissions:[],accessVersion:1});tokens[1]=(await auth.login(names[1],password)).access_token;
+    assert.equal((await call('garantias',tokens[1])).body.find(x=>x.idGarantia===g).idUnidad,null);
+    await call('auth/users/'+users[1]+'/permissions',tokens[0],200,'PUT',{permissions:[{permissionCode:'crm.unidades.consultar',granted:true},{permissionCode:'crm.unidades.gestionar',granted:true}],accessVersion:2});tokens[1]=(await auth.login(names[1],password)).access_token;
+    await call(base+'/'+piece+'/garantias/'+linked+'/retirar',tokens[1],403,'POST',{motivo:'No ADMIN'});
+    await call(base+'/'+piece+'/garantias/'+linked+'/retirar',tokens[0],201,'POST',{motivo:'Corrección de vínculo'});assert.equal((await call(base+'/'+piece+'/garantias',tokens[0],201,'POST',linkBody)).body.idVinculo,linked);
+    assert.equal((await get()).data.find(x=>x.idPieza===piece).garantias[0].retirado,true);
+    await call(base+'/'+piece+'/anular',tokens[1],403,'POST',{motivo:'No ADMIN'});await call(base+'/'+piece+'/anular',tokens[0],201,'POST',{motivo:'Registro equivocado'});await call(base+'/'+piece+'/anular',tokens[0],201,'POST',{motivo:'Registro equivocado'});await call(base+'/'+piece+'/anular',tokens[0],409,'POST',{motivo:'Otro motivo'});
+    assert.equal((await call(base,tokens[0],201,'POST',intent)).body.idPieza,piece);assert.equal((await get()).data.find(x=>x.idPieza===piece).anulada,true);await call('crm/unidades/'+unit,tokens[0],409,'DELETE');
+    checked('Garantías sólo expone enlace a quien tiene consulta; retiro/anulación ADMIN con motivo conservan historia, reintentos no reactivan y unidad con piezas no se elimina');
+    await writer.query("UPDATE factura SET estatus='Cancelada' WHERE id_factura=$1",[warrantyOrigin.id]);assert.equal((await get()).data.find(x=>x.idPieza===wp).estadoFactura,'Cancelada');await call(base,tokens[0],409,'POST',body(warrantyOrigin.concepto,.1));await writer.query("UPDATE factura SET estatus='Borrador' WHERE id_factura=$1",[warrantyOrigin.id]);
+    // Existing warranty records and exact unit/client matching remain historical; no financial operation is triggered by D02.
+    const count=(await get()).total;
+    await writer.query("ALTER TABLE auditoria_jsonb ADD CONSTRAINT verify_d02_audit_failure CHECK(table_name<>'crm_unidad_pieza') NOT VALID");
+    try{await call(base,tokens[0],400,'POST',body(uiOrigin.concepto,.1));}finally{await writer.query('ALTER TABLE auditoria_jsonb DROP CONSTRAINT verify_d02_audit_failure');}assert.equal((await get()).total,count);
+    const audit=(await writer.query("SELECT actor_name FROM auditoria_jsonb WHERE table_name='crm_unidad_pieza' AND app_user_id=$1",[users[0]])).rows;assert.ok(audit.length>0);assert.ok(audit.every(x=>x.actor_name===names[0]));
+    assert.equal((await writer.query('SELECT "Existencia" value FROM producto WHERE "IdProducto"=$1',[product])).rows[0].value,initialStock);
+    checked('Origen cancelado visible sin borrar historia y bloquea nuevas instalaciones; fallo de auditoría revierte alta, actor registrado y stock sin movimientos D02');
+    const stale=auth.verify(tokens[1]),service=app.get(require('./dist/crm/unidad-piezas.service').UnidadPiezasService);
+    await writer.query('BEGIN');await writer.query('UPDATE auth_user SET token_version=token_version+1 WHERE id_user=$1',[users[1]]);
+    const waiting=service.create(unit,body(uiOrigin.concepto,.1),stale).then(()=>({allowed:true}),e=>({status:e.getStatus?.()}));let blocked=false;
+    for(let i=0;i<100;i++){if((await control.query("SELECT 1 FROM pg_stat_activity WHERE datname=$1 AND wait_event_type='Lock'",[database])).rowCount){blocked=true;break;}await new Promise(r=>setTimeout(r,20));}await writer.query('COMMIT');assert.ok(blocked);assert.equal((await waiting).status,403);assert.equal((await get()).total,count);
+    checked('Actor revocado durante bloqueo no registra instalación; permisos/versiones revalidados dentro de la transacción');
+    const pagedUnit=await makeUnit('D02 Paginación');
+    await writer.query(`INSERT INTO crm_unidad_pieza(id_unidad,id_concepto,request_id,huella,cantidad,fecha,detalle,codigo,descripcion,compatibilidad,referencia,id_autor,autor_nombre,revision_nombre)
+      SELECT $1,$2,md5('D02-page-'||g)::uuid,repeat('a',64),.000001,now(),'Fixture paginado','D02-PAGE','Sólo copia','Pendiente','Por revisar',$3,$4,$4 FROM generate_series(1,25)g`,[pagedUnit,uiOrigin.concepto,users[0],names[0]]);
+    const paged=await get(pagedUnit,'?page=2');assert.equal(paged.total,25);assert.equal(paged.data.length,5);assert.equal((await get(pagedUnit,'?page=3')).total,25);assert.equal((await get(pagedUnit,'?page=3')).data.length,0);
+    checked('Historial acotado/paginado20 con total correcto incluso fuera de rango; fixtures de volumen exclusivamente en copia');
+    const uiGuarantee=await warranty(uiOrigin),uiCode='D02-CODIGO-ACTUAL';
+    stage='Angular';server=preview(api,path.join(root,'frontend/dist/frontend/browser'));server.listen(0,'127.0.0.1');await once(server,'listening');const originUrl='http://127.0.0.1:'+server.address().port;process.env.CORS_ORIGINS=originUrl;
+    browser=await chromium.launch();const browserErrors=[];
+    for(const [theme,width]of[['light',1280],['dark',390]]){
+      const context=await browser.newContext({viewport:{width,height:1100}}),page=await context.newPage();page.setDefaultTimeout(15000);page.on('pageerror',e=>browserErrors.push(e.name));await page.addInitScript(value=>localStorage.setItem('theme',value),theme);
+      await page.goto(originUrl+'/login?returnUrl='+encodeURIComponent('/crm/unidades/'+uiUnit+'/expediente'));await page.getByLabel('Usuario',{exact:true}).fill(names[0]);await page.getByLabel('Contraseña',{exact:true}).fill(password);await page.getByRole('button',{name:'Entrar',exact:true}).click();await page.waitForURL('**/expediente');
+      const area=page.locator('.unit-parts');await expect(area.getByRole('heading',{name:'Piezas instaladas y garantías',exact:true})).toBeVisible();await area.getByRole('button',{name:'Registrar instalación',exact:true}).click();
+      await area.getByLabel('Buscar venta por folio, parte o descripción',{exact:true}).fill(uiOrigin.folio);await area.getByRole('button',{name:'Buscar ventas de origen',exact:true}).click();await expect(area.getByRole('button',{name:'Buscar ventas de origen',exact:true})).toBeEnabled();
+      await area.getByLabel('Renglón de factura',{exact:true}).click();await page.getByRole('option').filter({hasText:uiOrigin.folio}).click();
+      await area.getByLabel('Cantidad instalada',{exact:true}).fill('999');await area.getByLabel('Trabajo o instalación reportada',{exact:true}).fill('Instalación UI '+theme);await area.getByLabel('Fuente y motivo de compatibilidad',{exact:true}).fill('Pendiente de documento técnico '+theme);
+      await area.getByRole('button',{name:'Guardar instalación',exact:true}).click();await expect(area.getByRole('alert')).toContainText('cantidad instalada');await expect(area.getByLabel('Trabajo o instalación reportada',{exact:true})).toHaveValue('Instalación UI '+theme);
+      await area.getByLabel('Cantidad instalada',{exact:true}).fill('1');await area.getByRole('button',{name:'Guardar instalación',exact:true}).click();await expect(area.getByRole('heading',{name:'Nueva instalación reportada',exact:true})).toHaveCount(0);await expect(area.getByText('Instalación UI '+theme,{exact:true})).toBeVisible();
+      const saved=(await get(uiUnit)).data.find(x=>x.detalle==='Instalación UI '+theme);
+      await area.getByRole('button',{name:'Revisar compatibilidad instalación '+saved.idPieza,exact:true}).click();await area.getByLabel('Resultado de revisión',{exact:true}).click();await page.getByRole('option',{name:'Verificada',exact:true}).click();await area.getByLabel('Referencia de revisión',{exact:true}).fill('Documento técnico revisado '+theme);await area.getByRole('button',{name:'Guardar revisión',exact:true}).click();await expect(area.getByText('Compatibilidad: Verificada · Revisión 2',{exact:true})).toBeVisible();
+      if(theme==='light'){
+        await area.getByRole('button',{name:'Vincular garantía instalación '+saved.idPieza,exact:true}).click();await area.getByLabel('Garantía existente',{exact:true}).click();await page.getByRole('option').filter({hasText:'#'+uiGuarantee+' ·'}).click();await area.getByLabel('Motivo del vínculo',{exact:true}).fill('Falla relacionada con instalación reportada');await area.getByRole('button',{name:'Guardar vínculo de garantía',exact:true}).click();await expect(area.getByText(new RegExp('Garantía #'+uiGuarantee+' · Recibida'))).toBeVisible();
+        await page.goto(originUrl+'/garantias');const back=page.getByRole('link',{name:'Instalación #'+saved.idPieza+' · Unidad #'+uiUnit,exact:true});await expect(back).toBeVisible();await back.click();await page.waitForURL('**/expediente');
+      }
+      assert.deepEqual((await new AxeBuilder({page}).include('.unit-parts').analyze()).violations,[]);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await area.screenshot({path:path.join(root,'.artifacts/d02-pieces-'+theme+'.png')});await context.close();
+    }
+    assert.deepEqual(browserErrors,[]);checked('Angular producción/login real: buscar venta, error con borrador, alta/revisión y vínculo de garantía con regreso desde Garantías; claro1280/oscuro390/axe/reflujo sin errores JS');
+    const version=(await writer.query('SELECT token_version FROM auth_user WHERE id_user=$1',[users[1]])).rows[0].token_version;
+    await call('auth/users/'+users[1]+'/permissions',tokens[0],200,'PUT',{permissions:[{permissionCode:'crm.unidades.consultar',granted:true},{permissionCode:'crm.unidades.gestionar',granted:false}],accessVersion:version});
+    const context=await browser.newContext(),page=await context.newPage();await page.goto(originUrl+'/login?returnUrl='+encodeURIComponent('/crm/unidades/'+uiUnit+'/expediente'));await page.getByLabel('Usuario',{exact:true}).fill(names[1]);await page.getByLabel('Contraseña',{exact:true}).fill(password);await page.getByRole('button',{name:'Entrar',exact:true}).click();await page.waitForURL('**/expediente');await expect(page.locator('.unit-parts').getByText('Instalación UI light',{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Registrar instalación',exact:true})).toHaveCount(0);await context.close();
+    checked('Operador real de sólo consulta ve historial sin alta/revisión/vínculo; no se confunde permiso efectivo con rol');
+    report.passed=true;report.completedAt=new Date().toISOString();

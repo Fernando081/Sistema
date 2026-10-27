@@ -1,0 +1,26 @@
+[WebServer] (node:28592) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:28592) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 15 tests using 1 worker
+
+(node:29184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium] › tests\dashboard-freshness.spec.ts:7:9 › Actualización dashboard: current, light (6.9s)
+  ok  2 [chromium] › tests\dashboard-freshness.spec.ts:7:9 › Actualización dashboard: pending, light (1.8s)
+  ok  3 [chromium] › tests\dashboard-freshness.spec.ts:7:9 › Actualización dashboard: overdue, light (1.8s)
+  ok  4 [chromium] › tests\dashboard-freshness.spec.ts:7:9 › Actualización dashboard: unavailable, light (1.5s)
+  ok  5 [chromium] › tests\dashboard-freshness.spec.ts:7:9 › Actualización dashboard: current, dark (1.8s)
+  ok  6 [chromium] › tests\dashboard-freshness.spec.ts:7:9 › Actualización dashboard: pending, dark (1.6s)
+  ok  7 [chromium] › tests\dashboard-freshness.spec.ts:7:9 › Actualización dashboard: overdue, dark (1.5s)
+  ok  8 [chromium] › tests\dashboard-freshness.spec.ts:7:9 › Actualización dashboard: unavailable, dark (1.3s)
+  ok  9 [chromium] › tests\dashboard-indicators.spec.ts:5:7 › GMROI null: distingue dato desconocido de cero y valor calculado (787ms)
+  ok 10 [chromium] › tests\dashboard-indicators.spec.ts:5:7 › GMROI 0: distingue dato desconocido de cero y valor calculado (818ms)
+  ok 11 [chromium] › tests\dashboard-indicators.spec.ts:5:7 › GMROI 2.5: distingue dato desconocido de cero y valor calculado (893ms)
+  ok 12 [chromium] › tests\scheduled-job-alerts.spec.ts:6:7 › Avisos de jobs: fallo, leído y navegación al proceso light (1.7s)
+  ok 13 [chromium] › tests\scheduled-job-alerts.spec.ts:49:7 › Avisos de jobs: recuperación y enlace directo light (5.6s)
+  ok 14 [chromium] › tests\scheduled-job-alerts.spec.ts:6:7 › Avisos de jobs: fallo, leído y navegación al proceso dark (1.7s)
+  ok 15 [chromium] › tests\scheduled-job-alerts.spec.ts:49:7 › Avisos de jobs: recuperación y enlace directo dark (5.6s)
+
+  15 passed (52.9s)

@@ -4,6 +4,7 @@ export interface JwtPayload {
   sub: string;
   role: RolUsuario;
   idUser?: number;
+  sid?: string;
   iat: number;
   exp: number;
   version: number;
@@ -16,3 +17,6 @@ export interface LoginResponse {
   token_type: 'Bearer';
   expires_in: number;
 }
+
+export interface MfaChallenge { mfaRequired: true; challenge: string; expiresIn: number }
+export type LoginResult = LoginResponse | MfaChallenge;

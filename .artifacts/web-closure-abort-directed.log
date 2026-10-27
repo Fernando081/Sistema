@@ -1,0 +1,22 @@
+✔ cancela seis casos sin crear recibo de cierre, conserva origen y permite revisión nueva de bloques residuales (9043.4797ms)
+✔ cierre ya terminado usa continuación existente y registros v1 no reciben vínculos inventados (4716.3577ms)
+✔ publicación residual queda intacta y conserva recuperación ordinaria independiente (2399.7012ms)
+✔ guardas ajenas activas corruptas sin vínculo y evidencia divergente o ambigua se rechazan sin mutar (24235.3753ms)
+✔ revisión exacta exige motivo acotado IDs nuevos y rechaza etapa puntero historial o directorio cambiados (2571.4907ms)
+✔ revisores concurrentes registran una cancelación y motivo o responsable diferente impide replay (2389.2685ms)
+✔ cinco cortes de ambos tipos conservan exclusión de once herramientas y evidencia para revisión manual (14175.2719ms)
+✔ sustituciones entre pasos conservan guarda sin certificar cancelación de ninguno de los tipos (18832.2605ms)
+✔ alteraciones históricas o recibo original agregado invalidan cancelación aun sin guardas (3395.8866ms)
+✔ dos cancelaciones válidas del mismo cierre quedan ambiguas sin seleccionar una (2404.6331ms)
+✔ reserva tres destinos dentro del límite cuando no caben cinco de continuación sin truncar (9095.9318ms)
+✔ CLI conserva inspección sin mutación y un fallo reemplaza éxito anterior sin valores privados (2284.6754ms)
+✔ fallo tras retirar recuperación conserva intención pendiente y bloquea preparaciones aun sin guardas (2651.7352ms)
+✔ cierre sucesor nuevamente interrumpido conserva cancelación previa y se continúa por revisión separada (3630.4866ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 101970.8385

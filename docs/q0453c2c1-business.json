@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-10-02T17:27:34.459Z",
+  "node": "24.19.0",
+  "concurrentCallers": 8,
+  "controlRace23505": true,
+  "requestOrderReceiptSingleEffect": true,
+  "rollbackAfterStockAndKardex": true,
+  "retryAfterRollback": true,
+  "competingOverReceiptRejected": true,
+  "finalState": {
+    "stock": 9,
+    "received": 10,
+    "kardex": 5,
+    "receipts": 4
+  },
+  "locationSync": true,
+  "manualStockAndPriceAudit": true,
+  "closedOrderRetry": true,
+  "costAndReturnSingleEffect": true,
+  "idleTransactions": 0,
+  "limitations": [
+    "Servicios TypeORM/PostgreSQL reales de abastecimiento; no HTTP ni carga prolongada.",
+    "No prueba pagos/ventas, backorders ni fingerprints de payload.",
+    "Fallo SQL controlado, no caída física de PostgreSQL/PAC."
+  ]
+}

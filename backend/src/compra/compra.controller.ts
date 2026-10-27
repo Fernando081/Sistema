@@ -1,4 +1,5 @@
-import { Body, Controller, Post, Get, Param, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
+import { CompraQueryDto } from './compra-query';
+import { Body, Controller, Post, Get, Param, Query, StreamableFile, ParseIntPipe } from '@nestjs/common';
 import { CompraService } from './compra.service';
 import { CreateCompraDto } from './compra.dto';
 
@@ -12,14 +13,14 @@ export class CompraController {
   }
 
   @Get()
-  findAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
-    @Query('term') term?: string,
-    @Query('sortBy') sortBy?: string,
-    @Query('sortOrder') sortOrder?: string,
-  ) {
-    return this.compraService.findAll(page, limit, term, sortBy, sortOrder);
+  findAll(@Query() query: CompraQueryDto) {
+    return this.compraService.findAll(query.page, query.limit, query.term, query.sortBy, query.sortOrder, query.estado, query.desde, query.hasta);
+  }
+  @Get('exportar')
+  async exportCsv(@Query() query: CompraQueryDto) {
+    return new StreamableFile(Buffer.from(await this.compraService.exportCsv(query), 'utf8'), {
+      type: 'text/csv; charset=utf-8', disposition: 'attachment; filename="compras.csv"',
+    });
   }
 
   @Get(':id/detalle')

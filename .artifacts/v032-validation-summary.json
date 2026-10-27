@@ -1,0 +1,28 @@
+{
+  "phase": "V03.2",
+  "date": "2026-10-20",
+  "realAcceptanceGroups": 18,
+  "realAcceptancePassed": true,
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "backendTests": 285,
+  "backendSuites": 60,
+  "httpTests": 19,
+  "httpSuites": 3,
+  "frontendTests": 95,
+  "generalUiPassed": 79,
+  "generalUiApiMocked": true,
+  "localReadOnlyChecks": 24,
+  "initialBundleKB": 480.71,
+  "initialWarningBudgetKB": 500,
+  "migration": "105_portal_publicaciones.sql",
+  "preBackup": ".backups/2026-10-21T00-21-11-370Z/database.dump",
+  "restoredPostBackup": ".backups/2026-10-21T00-29-48-226Z/database.dump",
+  "remaining": "V03.3 operativo/piloto/HTTPS",
+  "initialFailuresPreserved": [
+    "v032-publicaciones-first.json",
+    "v032-publicaciones-second.json",
+    "v032-post-backup-first.json"
+  ],
+  "notes": "Repeticion completa aprobada; no ensayo fiscal real o despliegue publico."
+}

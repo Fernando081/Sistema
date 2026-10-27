@@ -1,0 +1,64 @@
+{
+  "phase": "O02.4",
+  "generatedAt": "2026-10-19T19:40:34.023Z",
+  "node": "24.19.0",
+  "source": "isolated-test-schema",
+  "checks": [
+    {
+      "name": "Instalación sin falsa acusación y frontera diez minutos/cinco minutos de tolerancia conservadas",
+      "passed": true
+    },
+    {
+      "name": "Fallo confirmado del runner genera aviso crítico inmediato sólo a ADMIN activos, sin detalle privado",
+      "passed": true
+    },
+    {
+      "name": "Revisión concurrente/fallo reiterado conserva ID/fecha/lectura: un incidente por job y administrador, sin spam",
+      "passed": true
+    },
+    {
+      "name": "Veinticinco intentos sin cierre no ocultan el último fallo finalizado ni inventan recuperación por running",
+      "passed": true
+    },
+    {
+      "name": "Guardia PostgreSQL real omite una revisión competidora sin cambios ni bloqueo prolongado",
+      "passed": true
+    },
+    {
+      "name": "Éxito posterior resuelve; nuevo fallo reabre el mismo aviso sin duplicarlo",
+      "passed": true
+    },
+    {
+      "name": "Sin éxito esperado genera atraso warning independiente del fallo; repetir conserva aviso y fecha",
+      "passed": true
+    },
+    {
+      "name": "Éxito anterior al incidente o intento pendiente no pueden cerrar una alerta aunque el estado de frescura cambie",
+      "passed": true
+    },
+    {
+      "name": "Atraso sólo se resuelve con un éxito posterior comprobado y proceso al día",
+      "passed": true
+    },
+    {
+      "name": "Login bcrypt/JWT/SQL y notificaciones reales: anónimo401, ADMIN200, operador sin avisos, lectura ajena protegida y sin cron ficticio",
+      "passed": true
+    },
+    {
+      "name": "Al perder rol ADMIN desaparecen avisos e unread de jobs; JWT previo revocado y avisos históricos conservados",
+      "passed": true
+    },
+    {
+      "name": "Sin alertas para administrador inactivo, secretos en avisos o transacciones ociosas finales",
+      "passed": true
+    },
+    {
+      "name": "Sólo el esquema propio eliminado y servidor/conexiones cerrados",
+      "passed": true
+    }
+  ],
+  "cleaned": true,
+  "limits": [
+    "No AppModule completo o monitor externo; incidentes sólo en esquema propio."
+  ]
+}

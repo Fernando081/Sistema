@@ -1,0 +1,5 @@
+
+> check:no-any
+> node scripts/verify-no-any.js
+
+Backend/frontend: 0 any explícitos en producción; 0 escapes $any de plantilla.

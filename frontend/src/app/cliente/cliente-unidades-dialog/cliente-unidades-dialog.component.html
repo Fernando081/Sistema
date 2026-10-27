@@ -11,7 +11,7 @@
         <article class="unit-card">
           <div class="unit-main"><mat-icon>local_shipping</mat-icon><div><strong>{{unidad.numeroEconomico || unidad.marca || 'Unidad sin número económico'}}</strong><span>{{unidad.marca}} {{unidad.modelo}} {{unidad.anio || ''}}</span></div></div>
           <dl>@if(unidad.vin){<div><dt>VIN</dt><dd>{{unidad.vin}}</dd></div>}@if(unidad.esn){<div><dt>ESN</dt><dd>{{unidad.esn}}</dd></div>}@if(unidad.motor){<div><dt>Motor</dt><dd>{{unidad.motor}}</dd></div>}</dl>
-          <div class="unit-actions"><button mat-button type="button" (click)="editar(unidad)"><mat-icon>edit</mat-icon>Editar</button><button mat-button type="button" (click)="eliminar(unidad)"><mat-icon>delete</mat-icon>Eliminar</button></div>
+          <div class="unit-actions"><a mat-stroked-button [href]="'/crm/unidades/'+unidad.idUnidad+'/expediente'" target="_blank" rel="noopener">Expediente (otra pestaña)</a><button mat-button type="button" (click)="editar(unidad)"><mat-icon>edit</mat-icon>Editar</button><button mat-button type="button" (click)="eliminar(unidad)"><mat-icon>delete</mat-icon>Eliminar</button></div>
         </article>
       } @empty {<div class="erp-empty-state compact"><mat-icon>local_shipping</mat-icon><strong>Este cliente todavía no tiene unidades</strong><span>Captura abajo su primer VIN o ESN.</span></div>}
     </section>

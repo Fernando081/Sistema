@@ -1,0 +1,54 @@
+
+> test:mfa
+> node backend/verify-mfa.js --backup=.backups/2026-10-20T00-06-11-003Z/database.dump
+
+OK: Respaldo restaurado,096 check/migrate solo en copia; AppModule real, cron detenido y fiscal mock
+{"type":"http_request","requestId":"72f47bc5-1746-454b-850d-76b8503c8675","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":401,"durationMs":4.86,"idUser":null}
+{"type":"http_request","requestId":"55e9198f-ed02-4c77-9081-dfe4d77387f9","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":6.41,"idUser":2}
+{"type":"http_request","requestId":"b3cfecf3-b2cb-4259-9b2f-d5662cb2a7cf","method":"POST","path":"/api/v1/auth/mfa/setup","statusCode":401,"durationMs":9.52,"idUser":null}
+{"type":"http_request","requestId":"8db2d3ac-a1a1-483c-88cc-55a4cc260871","method":"POST","path":"/api/v1/auth/mfa/setup","statusCode":400,"durationMs":62.29,"idUser":2}
+{"type":"http_request","requestId":"ff075bdb-13f8-407b-9050-baaf73485a3c","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":6.23,"idUser":2}
+OK: MFA opcional, estado privado sin secretos y configuración exige sesión/contraseña actual
+{"type":"http_request","requestId":"cc0b9cb1-f194-43ac-8efa-6a8340f78a5b","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":64.92,"idUser":null}
+{"type":"http_request","requestId":"2183ced8-b180-416a-ae87-28a1812686e7","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":153.56,"idUser":2}
+{"type":"http_request","requestId":"baf97368-27e2-43ac-b2a1-9ca95981da7f","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":138.58,"idUser":2}
+{"type":"http_request","requestId":"b3e44d05-b5f0-418d-9861-28d319a1af66","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":162.97,"idUser":2}
+{"type":"http_request","requestId":"44a37ed9-e0b0-4ca4-9002-60bbcb8f2f6a","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":192.41,"idUser":2}
+{"type":"http_request","requestId":"a4d68091-e142-4e93-9615-a83e749e24a2","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":183.16,"idUser":2}
+{"type":"http_request","requestId":"066cd90d-8663-464a-9621-8df97ac3c99b","method":"POST","path":"/api/v1/auth/mfa/setup","statusCode":201,"durationMs":90.38,"idUser":2}
+{"type":"http_request","requestId":"898f13d0-b6c7-4c16-8821-3873d588c8b7","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":5.03,"idUser":2}
+{"type":"http_request","requestId":"7ab4022d-116f-4919-ab9e-e0f28ae34465","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":2.76,"idUser":2}
+{"type":"http_request","requestId":"215d922e-7392-4c8b-88b1-31aa074e5bb3","method":"POST","path":"/api/v1/auth/mfa/confirm","statusCode":400,"durationMs":5.78,"idUser":2}
+{"type":"http_request","requestId":"7617509b-9268-499a-8d30-58f9661e7619","method":"POST","path":"/api/v1/auth/mfa/confirm","statusCode":201,"durationMs":26.44,"idUser":2}
+{"type":"http_request","requestId":"a98fc7ad-b408-4401-80f4-616dbfdd9825","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.09,"idUser":null}
+{"type":"http_request","requestId":"8fd97500-14fb-442b-a39d-0f325dc501d7","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.08,"idUser":null}
+OK: Activación por formulario real, vencimiento pendiente, secreto cifrado,10 respaldos hasheados mostrados una vez y todas las sesiones/cookie revocadas
+{"type":"http_request","requestId":"bc44f93d-e050-4519-be0b-6823934b7609","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":68.05,"idUser":null}
+{"type":"http_request","requestId":"ba43c87d-b0e2-4b7d-a2c6-7c282f3da0c4","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":1.06,"idUser":null}
+{"type":"http_request","requestId":"fb52805c-595d-4f09-94ae-5c87697d4b64","method":"POST","path":"/api/v1/auth/mfa/login","statusCode":403,"durationMs":1.62,"idUser":null}
+{"type":"http_request","requestId":"e2b323f6-4e89-4ea6-8e95-6423ee163706","method":"POST","path":"/api/v1/auth/mfa/login","statusCode":401,"durationMs":5.24,"idUser":null}
+OK: Contraseña sola no crea JWT/cookie; reto no autoriza API, CSRF rechazado, TOTP usado no se repite y cinco fallos bloquean la cuenta sin consumir respaldo
+OK: Retos vencidos y versiones revocadas se rechazan antes de consumir el segundo factor
+{"type":"http_request","requestId":"7b06efe1-3e69-4008-ab84-58f5e5772838","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":73.2,"idUser":null}
+{"type":"http_request","requestId":"f1724aa5-c89c-4e72-9e2a-19ee4f62e846","method":"POST","path":"/api/v1/auth/mfa/login","statusCode":201,"durationMs":74.99,"idUser":null}
+{"type":"http_request","requestId":"399eaf6b-9952-4084-97b8-02870ef1290e","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":93.51,"idUser":2}
+{"type":"http_request","requestId":"49fc9f54-415b-40e6-8bf5-a69dd138f95d","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":33.85,"idUser":2}
+{"type":"http_request","requestId":"3e3b015c-fdb3-4d18-85e5-1a0c0b9cbda5","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":8.97,"idUser":2}
+{"type":"http_request","requestId":"4ab97db5-adeb-4a5a-9a68-a7084b36623b","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":16.78,"idUser":2}
+{"type":"http_request","requestId":"70e72c82-2728-4a64-a2a3-97e086b8d9ee","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":103.4,"idUser":2}
+OK: Login TOTP real desde Angular no revela JWT, limpia contraseña, instala cookie HttpOnly/Strict y restaura al recargar
+{"type":"http_request","requestId":"9d5b11ef-2497-4cbf-a1db-5a8961317df5","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":193.76,"idUser":2}
+{"type":"http_request","requestId":"84e573bd-2b0b-446e-9156-8203e9b96549","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":199.71,"idUser":2}
+{"type":"http_request","requestId":"ec6c1aaa-38c9-4cc3-9c99-a58916f43a46","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":68.25,"idUser":null}
+{"type":"http_request","requestId":"1411e8a7-d665-4564-bfd4-ac67209d71d5","method":"POST","path":"/api/v1/auth/mfa/login","statusCode":201,"durationMs":10.55,"idUser":null}
+{"type":"http_request","requestId":"37f1b878-7d03-4814-8e4e-1d63a3523880","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":7.36,"idUser":2}
+{"type":"http_request","requestId":"34246c7e-bb97-4c61-b945-c23063f7c7bc","method":"GET","path":"/api/v1/auth/password-recovery/status","statusCode":200,"durationMs":8.86,"idUser":2}
+{"type":"http_request","requestId":"7b407bb5-199f-4e3a-8b74-dc23f0e36218","method":"GET","path":"/api/v1/auth/mfa/status","statusCode":200,"durationMs":12.46,"idUser":2}
+{"type":"http_request","requestId":"e9561af7-b7f7-4b03-8e38-ee2b8b6fe63f","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":70.55,"idUser":2}
+{"type":"http_request","requestId":"43c51a4b-4581-431f-a72c-81275ea25cce","method":"GET","path":"/api/v1/auth/sessions","statusCode":200,"durationMs":46.79,"idUser":2}
+OK: Respaldo inicia sesión móvil real y descuenta una vez; repetición y dos verificaciones concurrentes no duplican acceso
+OK: Panel claro1280/oscuro390 sin desbordamiento ni infracciones axe; sin credenciales en Web Storage; capturas sin secretos
+{"type":"http_request","requestId":"534e8650-5c29-4908-86d6-f2ecbf02ecc4","method":"POST","path":"/api/v1/auth/mfa/disable","statusCode":400,"durationMs":66.44,"idUser":2}
+{"type":"http_request","requestId":"32cc52ac-cc71-4369-ac18-83d5726d6796","method":"POST","path":"/api/v1/auth/mfa/disable","statusCode":201,"durationMs":169.59,"idUser":2}
+{"type":"http_request","requestId":"ea0fee63-db6b-4d04-812f-16a90987c8b5","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":3.79,"idUser":2}
+OK: Desactivar exige contraseña y segundo factor; error local conserva pantalla, éxito borra secretos/respaldos y revoca sesiones; login normal restaurado

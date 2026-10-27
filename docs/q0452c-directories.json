@@ -1,0 +1,302 @@
+{
+  "generatedAt": "2026-10-01T21:12:19.743Z",
+  "node": "24.19.0",
+  "migration": "081_busqueda_directorios_trigram.sql",
+  "restoredComparisons": 64,
+  "totalComparisons": 256,
+  "fixtureClients": 20005,
+  "fixtureProviders": 20000,
+  "indexedUpdateMs": 16.18709999999919,
+  "ginIndexBytes": 3547136,
+  "rows": [
+    {
+      "domain": "cliente",
+      "scenario": "Q04TARGET",
+      "before": {
+        "medianMs": 19.947,
+        "samplesMs": [
+          18.742,
+          19.928,
+          19.947,
+          27.743,
+          30.23
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Seq Scan": 2
+        }
+      },
+      "after": {
+        "medianMs": 0.195,
+        "samplesMs": [
+          0.189,
+          0.191,
+          0.195,
+          0.201,
+          0.239
+        ],
+        "nodes": {
+          "Limit": 1,
+          "Result": 1,
+          "Append": 2,
+          "Subquery Scan": 2,
+          "Bitmap Heap Scan": 4,
+          "Bitmap Index Scan": 4,
+          "Aggregate": 1,
+          "Nested Loop": 1,
+          "Unique": 1,
+          "Sort": 1,
+          "Index Only Scan": 1
+        }
+      }
+    },
+    {
+      "domain": "cliente",
+      "scenario": "Cliente",
+      "before": {
+        "medianMs": 23.65,
+        "samplesMs": [
+          18.678,
+          20.935,
+          23.65,
+          24.575,
+          29.788
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Seq Scan": 2
+        }
+      },
+      "after": {
+        "medianMs": 28.085,
+        "samplesMs": [
+          22.879,
+          26.02,
+          28.085,
+          29.144,
+          40.667
+        ],
+        "nodes": {
+          "Limit": 1,
+          "Result": 1,
+          "Append": 1,
+          "Subquery Scan": 2,
+          "Seq Scan": 3,
+          "Bitmap Heap Scan": 1,
+          "Bitmap Index Scan": 1,
+          "Aggregate": 1
+        }
+      }
+    },
+    {
+      "domain": "cliente",
+      "scenario": "VIN1000",
+      "before": {
+        "medianMs": 27.383,
+        "samplesMs": [
+          19.506,
+          24.808,
+          27.383,
+          29.807,
+          40.638
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Seq Scan": 2
+        }
+      },
+      "after": {
+        "medianMs": 0.364,
+        "samplesMs": [
+          0.348,
+          0.358,
+          0.364,
+          0.372,
+          0.42200000000000004
+        ],
+        "nodes": {
+          "Limit": 1,
+          "Result": 1,
+          "Append": 2,
+          "Subquery Scan": 2,
+          "Bitmap Heap Scan": 4,
+          "Bitmap Index Scan": 4,
+          "Aggregate": 1,
+          "Nested Loop": 1,
+          "Unique": 1,
+          "Sort": 1,
+          "Index Only Scan": 1
+        }
+      }
+    },
+    {
+      "domain": "cliente",
+      "scenario": "%",
+      "before": {
+        "medianMs": 20.238,
+        "samplesMs": [
+          17.654,
+          20.122,
+          20.238,
+          28.988,
+          29.557
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Seq Scan": 2
+        }
+      },
+      "after": {
+        "medianMs": 20.324,
+        "samplesMs": [
+          17.705,
+          19.44,
+          20.324,
+          21.488,
+          23.245
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Seq Scan": 2
+        }
+      }
+    },
+    {
+      "domain": "proveedor",
+      "scenario": "Q04TARGET",
+      "before": {
+        "medianMs": 10.116,
+        "samplesMs": [
+          9.65,
+          9.929,
+          10.116,
+          11.548,
+          15.133
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.25,
+        "samplesMs": [
+          0.16399999999999998,
+          0.223,
+          0.25,
+          0.272,
+          0.31
+        ],
+        "nodes": {
+          "Limit": 1,
+          "Bitmap Heap Scan": 2,
+          "Bitmap Index Scan": 2,
+          "Aggregate": 1
+        }
+      }
+    },
+    {
+      "domain": "proveedor",
+      "scenario": "Cliente",
+      "before": {
+        "medianMs": 13.983,
+        "samplesMs": [
+          11.69,
+          12.794,
+          13.983,
+          14.038,
+          14.61
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 11.369,
+        "samplesMs": [
+          11.119,
+          11.226999999999999,
+          11.369,
+          12.055,
+          15.146
+        ],
+        "nodes": {
+          "Limit": 1,
+          "Seq Scan": 2,
+          "Aggregate": 1
+        }
+      }
+    },
+    {
+      "domain": "proveedor",
+      "scenario": "VIN1000",
+      "before": {
+        "medianMs": 12.4,
+        "samplesMs": [
+          9.259,
+          11.884,
+          12.4,
+          13.76,
+          17.186
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 0.08,
+        "samplesMs": [
+          0.057,
+          0.063,
+          0.08,
+          0.08099999999999999,
+          0.092
+        ],
+        "nodes": {
+          "Limit": 1,
+          "Bitmap Heap Scan": 2,
+          "Bitmap Index Scan": 2,
+          "Aggregate": 1
+        }
+      }
+    },
+    {
+      "domain": "proveedor",
+      "scenario": "%",
+      "before": {
+        "medianMs": 10.503,
+        "samplesMs": [
+          9.38,
+          10.03,
+          10.503,
+          11.154,
+          11.468
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Seq Scan": 1
+        }
+      },
+      "after": {
+        "medianMs": 10.236,
+        "samplesMs": [
+          8.532,
+          9.771,
+          10.236,
+          11.7,
+          14.375
+        ],
+        "nodes": {
+          "Aggregate": 1,
+          "Seq Scan": 1
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Base restaurada y corpus sintetico; no concurrencia ni SLA.",
+    "Costo de actualizar tres registros es una muestra; costo general de GIN medido en Q04.5.2b."
+  ]
+}

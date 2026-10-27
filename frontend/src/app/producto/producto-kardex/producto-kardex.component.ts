@@ -40,8 +40,8 @@ export class ProductoKardexComponent implements OnInit {
   cargarMovimientos() {
     this.isLoading = true;
     this.productoService.getKardex(this.data.idProducto).subscribe({
-      next: (res: any) => {
-        this.movimientos = res.data || res;
+      next: (res) => {
+        this.movimientos = res;
         this.isLoading = false;
         this.cdr.detectChanges();
       },

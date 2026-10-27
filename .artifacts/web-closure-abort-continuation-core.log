@@ -1,0 +1,12 @@
+✔ veinticuatro combinaciones conservan recibos, fuentes residuales y cierre cancelado sin fabricar éxito (41312.8619ms)
+✔ fuentes presentes se cierran por revisión nueva independiente y replay conserva puntero posterior (10676.2734ms)
+✔ publicación residual mantiene recuperación ordinaria independiente en ambos tipos (3520.1779ms)
+✔ IDs nuevos distintos compiten por un único destino exclusivo por cancelación original (1716.144ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 57457.2728

@@ -1,8 +1,20 @@
+import { updateManagedStock } from '../common/database/managed-stock';
+import { createHash } from 'node:crypto';
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, EntityManager } from 'typeorm';
 import { queryRows } from '../common/database/typed-query';
 import { CreateCostoAdicionalDto, CreateDevolucionProveedorDto, CreateEvaluacionProveedorDto, CreateOrdenDto, CreateRecepcionDto, CreateSolicitudDto } from './abastecimiento.dto';
+
+const requestTables = {"solicitud":"solicitud_compra","orden":"orden_compra","recepcion":"recepcion_compra","costo":"recepcion_costo_adicional","devolucion":"devolucion_proveedor"} as const;
+function canonicalPayload(value:unknown):unknown{
+  if(Array.isArray(value))return value.map(canonicalPayload);
+  if(value!==null&&typeof value==='object'){
+    const record=value as Record<string,unknown>;
+    return Object.fromEntries(Object.keys(record).sort().filter(key=>record[key]!==undefined).map(key=>[key,canonicalPayload(record[key])]));
+  }
+  return value;
+}
 
 interface ProductRow { id:number; descripcion:string; existencia:string|number; }
 interface OrderLine { idDetalle:number; idProducto:number; cantidad:string|number; recibida:string|number; costo:string|number; }
@@ -12,8 +24,39 @@ interface BackorderRow { idBackorder:number; idPedido:number; idDetalle:number; 
 export class AbastecimientoService {
   constructor(@InjectDataSource() private readonly dataSource:DataSource) {}
 
-  async createRequest(dto:CreateSolicitudDto,idUser?:number){
+  private async lockRequest(manager:EntityManager,scope:string,requestId:string):Promise<void>{
+    // Serializa reintentos antes de consultar existencia; PostgreSQL libera el lock con commit/rollback.
+    await manager.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[
+      'abastecimiento:'+scope+':'+requestId.toLowerCase(),
+    ]);
+  }
+
+  private async updateStock(manager:EntityManager,idProducto:number,existencia:number):Promise<void>{
+    await updateManagedStock(manager,idProducto,existencia);
+  }
+
+  private transactionRequest<T>(scope:keyof typeof requestTables,requestId:string,payload:unknown,idUser:number|undefined,work:(manager:EntityManager)=>Promise<T>):Promise<T>{
     return this.dataSource.transaction(async manager=>{
+      await this.lockRequest(manager,scope,requestId);
+      const hash=createHash('sha256').update(JSON.stringify(canonicalPayload(payload))).digest('hex');
+      const operation='abastecimiento:'+scope;
+      const previous=await queryRows<{operation_type:string;payload_hash:string;response:T}>(manager,
+        'SELECT operation_type,payload_hash,response FROM operation_idempotency WHERE request_id=$1',[requestId]);
+      if(previous.length){
+        if(previous[0].operation_type!==operation||previous[0].payload_hash!==hash)
+          throw new ConflictException('El identificador de reintento ya fue usado con datos diferentes');
+        return previous[0].response;
+      }
+      const legacy=await queryRows<{exists:number}>(manager,'SELECT 1 AS exists FROM '+requestTables[scope]+' WHERE request_id=$1',[requestId]);
+      if(legacy.length)throw new ConflictException('La operación original no tiene huella de reintento; consulte su registro antes de continuar');
+      const response=await work(manager);
+      await manager.query('INSERT INTO operation_idempotency(request_id,operation_type,id_user,payload_hash,response) VALUES($1,$2,$3,$4,$5::jsonb)',[requestId,operation,idUser??null,hash,JSON.stringify(response)]);
+      return response;
+    });
+  }
+
+  async createRequest(dto:CreateSolicitudDto,idUser?:number){
+    return this.transactionRequest('solicitud',dto.requestId,{motivo:dto.motivo||null,partidas:dto.partidas.map(x=>({idProducto:x.idProducto,cantidad:x.cantidad,costoEstimado:x.costoEstimado??0,origen:x.origen??'Manual'})).sort((a,b)=>a.idProducto-b.idProducto)},idUser,async manager=>{
       const repeated=await queryRows<{idSolicitud:number}>(manager,'SELECT id_solicitud AS "idSolicitud" FROM solicitud_compra WHERE request_id=$1',[dto.requestId]);
       if(repeated.length)return repeated[0];
       const ids=[...new Set(dto.partidas.map(x=>x.idProducto))].sort((a,b)=>a-b);
@@ -39,7 +82,7 @@ export class AbastecimientoService {
   }
 
   async createOrder(dto:CreateOrdenDto,idUser?:number){
-    return this.dataSource.transaction(async manager=>{
+    return this.transactionRequest('orden',dto.requestId,{idSolicitud:dto.idSolicitud||null,idProveedor:dto.idProveedor,fechaPromesa:dto.fechaPromesa||null,notas:dto.notas||null,partidas:dto.partidas.map(x=>({idProducto:x.idProducto,cantidad:x.cantidad,costoUnitario:x.costoUnitario,tasaIva:x.tasaIva??0.16})).sort((a,b)=>a.idProducto-b.idProducto)},idUser,async manager=>{
       const repeated=await queryRows<{idOrden:number}>(manager,'SELECT id_orden AS "idOrden" FROM orden_compra WHERE request_id=$1',[dto.requestId]);
       if(repeated.length)return repeated[0];
       const providers=await queryRows<{id:number}>(manager,'SELECT "IdProveedor" AS id FROM proveedor WHERE "IdProveedor"=$1',[dto.idProveedor]);
@@ -71,7 +114,7 @@ export class AbastecimientoService {
   }
 
   async receive(idOrden:number,dto:CreateRecepcionDto,idUser?:number){
-    return this.dataSource.transaction(async manager=>{
+    return this.transactionRequest('recepcion',dto.requestId,{idOrden,referencia:dto.referencia||null,notas:dto.notas||null,partidas:[...dto.partidas].sort((a,b)=>a.idDetalle-b.idDetalle)},idUser,async manager=>{
       const repeated=await queryRows<{idRecepcion:number}>(manager,'SELECT id_recepcion AS "idRecepcion" FROM recepcion_compra WHERE request_id=$1',[dto.requestId]);
       if(repeated.length)return repeated[0];
       const orders=await queryRows<{estado:string}>(manager,'SELECT estado FROM orden_compra WHERE id_orden=$1 FOR UPDATE',[idOrden]);
@@ -88,7 +131,7 @@ export class AbastecimientoService {
         const line=map.get(item.idDetalle)!;
         const stocks=await queryRows<{existencia:string|number}>(manager,'SELECT "Existencia" AS existencia FROM producto WHERE "IdProducto"=$1 FOR UPDATE',[line.idProducto]);
         const before=Number(stocks[0].existencia),after=before+item.cantidad;
-        await manager.query('UPDATE producto SET "Existencia"=$2 WHERE "IdProducto"=$1',[line.idProducto,after]);
+        await this.updateStock(manager,line.idProducto,after);
         await manager.query(`INSERT INTO kardex(id_producto,tipo_movimiento,cantidad,stock_anterior,stock_resultante,precio_unitario,referencia,id_referencia)
           VALUES($1,'COMPRA'::tipo_movimiento_enum,$2,$3,$4,$5,$6,$7)`,[line.idProducto,item.cantidad,before,after,Number(line.costo),`Recepción OC-${idOrden}`,receipt[0].idRecepcion]);
         await manager.query(`INSERT INTO recepcion_compra_detalle(id_recepcion,id_orden_detalle,id_producto,cantidad,costo_unitario)
@@ -134,7 +177,7 @@ export class AbastecimientoService {
     FROM producto_cotizacion_prov q JOIN proveedor p ON p."IdProveedor"=q.id_proveedor WHERE q.id_producto=$1 ORDER BY q.precio_cotizado,q.dias_entrega,q.fecha_registro DESC LIMIT 50`,[idProducto]);}
 
   async addReceiptCost(idRecepcion:number,dto:CreateCostoAdicionalDto,idUser?:number){
-    return this.dataSource.transaction(async manager=>{
+    return this.transactionRequest('costo',dto.requestId,{idRecepcion,tipo:dto.tipo,monto:dto.monto,criterio:dto.criterio??'Valor',notas:dto.notas||null},idUser,async manager=>{
       const old=await queryRows<{idCosto:number}>(manager,'SELECT id_costo AS "idCosto" FROM recepcion_costo_adicional WHERE request_id=$1',[dto.requestId]);if(old.length)return old[0];
       const lines=await queryRows<{idDetalle:number;idProducto:number;cantidad:string|number;costo:string|number}>(manager,`SELECT id_detalle AS "idDetalle",id_producto AS "idProducto",cantidad,costo_unitario AS costo FROM recepcion_compra_detalle WHERE id_recepcion=$1 ORDER BY id_detalle FOR UPDATE`,[idRecepcion]);
       if(!lines.length)throw new NotFoundException('Recepción no encontrada');
@@ -148,14 +191,14 @@ export class AbastecimientoService {
   }
 
   async returnToProvider(dto:CreateDevolucionProveedorDto,idUser?:number){
-    return this.dataSource.transaction(async manager=>{
+    return this.transactionRequest('devolucion',dto.requestId,{idRecepcion:dto.idRecepcion,motivo:dto.motivo.trim(),partidas:[...dto.partidas].sort((a,b)=>a.idRecepcionDetalle-b.idRecepcionDetalle)},idUser,async manager=>{
       const old=await queryRows<{idDevolucion:number}>(manager,'SELECT id_devolucion AS "idDevolucion" FROM devolucion_proveedor WHERE request_id=$1',[dto.requestId]);if(old.length)return old[0];
       if(new Set(dto.partidas.map(item=>item.idRecepcionDetalle)).size!==dto.partidas.length)throw new BadRequestException('Hay partidas repetidas');
       const receipts=await queryRows<{idProveedor:number}>(manager,`SELECT o.id_proveedor AS "idProveedor" FROM recepcion_compra r JOIN orden_compra o ON o.id_orden=r.id_orden WHERE r.id_recepcion=$1 FOR UPDATE OF r`,[dto.idRecepcion]);if(!receipts.length)throw new NotFoundException('Recepción no encontrada');
       const ids=dto.partidas.map(item=>item.idRecepcionDetalle);const lines=await queryRows<{idDetalle:number;idProducto:number;cantidad:string|number;costo:string|number;devuelta:string|number}>(manager,`SELECT rd.id_detalle AS "idDetalle",rd.id_producto AS "idProducto",rd.cantidad,rd.costo_unitario AS costo,coalesce((SELECT sum(dd.cantidad) FROM devolucion_proveedor_detalle dd JOIN devolucion_proveedor d ON d.id_devolucion=dd.id_devolucion WHERE dd.id_recepcion_detalle=rd.id_detalle AND d.estado<>'Cancelada'),0) AS devuelta FROM recepcion_compra_detalle rd WHERE rd.id_recepcion=$1 AND rd.id_detalle=ANY($2::int[]) ORDER BY rd.id_producto FOR UPDATE`,[dto.idRecepcion,ids]);if(lines.length!==ids.length)throw new BadRequestException('Una partida no pertenece a la recepción');
       const map=new Map(lines.map(line=>[line.idDetalle,line]));for(const item of dto.partidas){const line=map.get(item.idRecepcionDetalle)!;if(Number(line.devuelta)+item.cantidad>Number(line.cantidad)+.000001)throw new BadRequestException('La devolución excede lo recibido');}
       const head=await queryRows<{idDevolucion:number}>(manager,`INSERT INTO devolucion_proveedor(request_id,id_recepcion,id_proveedor,motivo,id_user) VALUES($1,$2,$3,$4,$5) RETURNING id_devolucion AS "idDevolucion"`,[dto.requestId,dto.idRecepcion,receipts[0].idProveedor,dto.motivo.trim(),idUser??null]);
-      for(const item of [...dto.partidas].sort((a,b)=>map.get(a.idRecepcionDetalle)!.idProducto-map.get(b.idRecepcionDetalle)!.idProducto)){const line=map.get(item.idRecepcionDetalle)!;const stock=await queryRows<{existencia:string|number}>(manager,'SELECT "Existencia" AS existencia FROM producto WHERE "IdProducto"=$1 FOR UPDATE',[line.idProducto]);const before=Number(stock[0].existencia);if(before+1e-6<item.cantidad)throw new ConflictException('Existencia insuficiente para devolver al proveedor');const after=before-item.cantidad;await manager.query('UPDATE producto SET "Existencia"=$2 WHERE "IdProducto"=$1',[line.idProducto,after]);await manager.query(`INSERT INTO devolucion_proveedor_detalle(id_devolucion,id_recepcion_detalle,id_producto,cantidad,costo_unitario) VALUES($1,$2,$3,$4,$5)`,[head[0].idDevolucion,line.idDetalle,line.idProducto,item.cantidad,line.costo]);await manager.query(`INSERT INTO kardex(id_producto,tipo_movimiento,cantidad,stock_anterior,stock_resultante,precio_unitario,referencia,id_referencia) VALUES($1,'SALIDA POR MERMA/AJUSTE'::tipo_movimiento_enum,$2,$3,$4,$5,$6,$7)`,[line.idProducto,-item.cantidad,before,after,line.costo,`Devolución a proveedor #${head[0].idDevolucion}`,head[0].idDevolucion]);}
+      for(const item of [...dto.partidas].sort((a,b)=>map.get(a.idRecepcionDetalle)!.idProducto-map.get(b.idRecepcionDetalle)!.idProducto)){const line=map.get(item.idRecepcionDetalle)!;const stock=await queryRows<{existencia:string|number}>(manager,'SELECT "Existencia" AS existencia FROM producto WHERE "IdProducto"=$1 FOR UPDATE',[line.idProducto]);const before=Number(stock[0].existencia);if(before+1e-6<item.cantidad)throw new ConflictException('Existencia insuficiente para devolver al proveedor');const after=before-item.cantidad;await this.updateStock(manager,line.idProducto,after);await manager.query(`INSERT INTO devolucion_proveedor_detalle(id_devolucion,id_recepcion_detalle,id_producto,cantidad,costo_unitario) VALUES($1,$2,$3,$4,$5)`,[head[0].idDevolucion,line.idDetalle,line.idProducto,item.cantidad,line.costo]);await manager.query(`INSERT INTO kardex(id_producto,tipo_movimiento,cantidad,stock_anterior,stock_resultante,precio_unitario,referencia,id_referencia) VALUES($1,'SALIDA POR MERMA/AJUSTE'::tipo_movimiento_enum,$2,$3,$4,$5,$6,$7)`,[line.idProducto,-item.cantidad,before,after,line.costo,`Devolución a proveedor #${head[0].idDevolucion}`,head[0].idDevolucion]);}
       return head[0];
     });
   }

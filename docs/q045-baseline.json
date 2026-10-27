@@ -1,0 +1,1453 @@
+{
+  "generatedAt": "2026-10-01T20:03:48.316Z",
+  "node": "24.19.0",
+  "fixtureSizes": [
+    1000,
+    20000
+  ],
+  "limitations": [
+    "Una ejecucion por caso; tiempos orientativos, sin SLA.",
+    "Fixtures sinteticos con indices de relacion; no reproducen distribucion ni concurrencia reales.",
+    "Planes resumidos sin SQL, valores de filas, parametros privados ni credenciales."
+  ],
+  "rows": [
+    {
+      "volume": "real",
+      "domain": "cliente",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 3.246,
+      "executionMs": 0.04,
+      "returnedRows": 1,
+      "sharedHits": 1,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "cliente",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.14,
+      "executionMs": 0.041,
+      "returnedRows": 6,
+      "sharedHits": 4,
+      "nodes": {
+        "Limit": 1,
+        "Sort": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Sort": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "cliente",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 5.014,
+      "executionMs": 0.053,
+      "returnedRows": 1,
+      "sharedHits": 1,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 2
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 2
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "cliente",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.143,
+      "executionMs": 0.037,
+      "returnedRows": 0,
+      "sharedHits": 1,
+      "nodes": {
+        "Limit": 1,
+        "Sort": 1,
+        "Seq Scan": 2
+      },
+      "loops": {
+        "Limit": 1,
+        "Sort": 1,
+        "Seq Scan": 2
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "proveedor",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 2.102,
+      "executionMs": 0.021,
+      "returnedRows": 1,
+      "sharedHits": 1,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "proveedor",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.074,
+      "executionMs": 0.017,
+      "returnedRows": 2,
+      "sharedHits": 1,
+      "nodes": {
+        "Limit": 1,
+        "Sort": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Sort": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "proveedor",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.036,
+      "executionMs": 0.018,
+      "returnedRows": 1,
+      "sharedHits": 1,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "proveedor",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.038,
+      "executionMs": 0.017,
+      "returnedRows": 0,
+      "sharedHits": 1,
+      "nodes": {
+        "Limit": 1,
+        "Sort": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Sort": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "producto",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 0.025,
+      "executionMs": 11.076,
+      "returnedRows": 1,
+      "sharedHits": 547,
+      "nodes": {
+        "Aggregate": 1,
+        "Function Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Function Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "producto",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 1.88,
+      "executionMs": 0.64,
+      "returnedRows": 7,
+      "sharedHits": 79,
+      "nodes": {
+        "Limit": 1,
+        "Result": 1,
+        "Sort": 1,
+        "Function Scan": 1,
+        "Aggregate": 2,
+        "Index Scan": 2
+      },
+      "loops": {
+        "Limit": 1,
+        "Result": 1,
+        "Sort": 1,
+        "Function Scan": 1,
+        "Aggregate": 14,
+        "Index Scan": 14
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "producto",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 5.79,
+      "executionMs": 0.727,
+      "returnedRows": 1,
+      "sharedHits": 51,
+      "nodes": {
+        "Aggregate": 1,
+        "Function Scan": 1,
+        "Seq Scan": 2
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Function Scan": 1,
+        "Seq Scan": 2
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "producto",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.352,
+      "executionMs": 1.045,
+      "returnedRows": 0,
+      "sharedHits": 51,
+      "nodes": {
+        "Limit": 1,
+        "Result": 1,
+        "Sort": 1,
+        "Function Scan": 1,
+        "Seq Scan": 2,
+        "Aggregate": 2,
+        "Index Scan": 2
+      },
+      "loops": {
+        "Limit": 1,
+        "Result": 1,
+        "Sort": 1,
+        "Function Scan": 1,
+        "Seq Scan": 2,
+        "Aggregate": 0,
+        "Index Scan": 0
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "factura",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 3.686,
+      "executionMs": 0.032,
+      "returnedRows": 1,
+      "sharedHits": 2,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "factura",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.338,
+      "executionMs": 0.044,
+      "returnedRows": 10,
+      "sharedHits": 2,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "factura",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.068,
+      "executionMs": 0.068,
+      "returnedRows": 1,
+      "sharedHits": 2,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "factura",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.07,
+      "executionMs": 0.078,
+      "returnedRows": 0,
+      "sharedHits": 2,
+      "nodes": {
+        "Limit": 1,
+        "Sort": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Sort": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "cotizacion",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 1.858,
+      "executionMs": 0.022,
+      "returnedRows": 1,
+      "sharedHits": 1,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "cotizacion",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 2.964,
+      "executionMs": 0.092,
+      "returnedRows": 10,
+      "sharedHits": 21,
+      "nodes": {
+        "Limit": 2,
+        "Result": 1,
+        "Sort": 2,
+        "Seq Scan": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 11,
+        "Result": 1,
+        "Sort": 11,
+        "Seq Scan": 1,
+        "Index Scan": 10
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "cotizacion",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.055,
+      "executionMs": 0.035,
+      "returnedRows": 1,
+      "sharedHits": 1,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "cotizacion",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.098,
+      "executionMs": 0.041,
+      "returnedRows": 0,
+      "sharedHits": 1,
+      "nodes": {
+        "Limit": 2,
+        "Result": 1,
+        "Sort": 2,
+        "Seq Scan": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Result": 1,
+        "Sort": 1,
+        "Seq Scan": 1,
+        "Index Scan": 0
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "compra",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 0.021,
+      "executionMs": 2.189,
+      "returnedRows": 1,
+      "sharedHits": 99,
+      "nodes": {
+        "Aggregate": 1,
+        "Function Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Function Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "compra",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.025,
+      "executionMs": 0.06,
+      "returnedRows": 10,
+      "sharedHits": 2,
+      "nodes": {
+        "Limit": 1,
+        "Sort": 1,
+        "Function Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Sort": 1,
+        "Function Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "compra",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.029,
+      "executionMs": 0.072,
+      "returnedRows": 1,
+      "sharedHits": 2,
+      "nodes": {
+        "Aggregate": 1,
+        "Function Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Function Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": "real",
+      "domain": "compra",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.027,
+      "executionMs": 0.059,
+      "returnedRows": 0,
+      "sharedHits": 2,
+      "nodes": {
+        "Limit": 1,
+        "Sort": 1,
+        "Function Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Sort": 1,
+        "Function Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "cliente",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 9.586,
+      "executionMs": 0.092,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "cliente",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.06,
+      "executionMs": 0.018,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "cliente",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.127,
+      "executionMs": 0.817,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 2
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 2
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "cliente",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.121,
+      "executionMs": 1.417,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "proveedor",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 10.763,
+      "executionMs": 0.096,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "proveedor",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.063,
+      "executionMs": 0.012,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "proveedor",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.049,
+      "executionMs": 0.443,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "proveedor",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.037,
+      "executionMs": 0.444,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "producto",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 10.377,
+      "executionMs": 0.148,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "producto",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.43,
+      "executionMs": 0.191,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 3,
+        "Aggregate": 2
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 21,
+        "Aggregate": 20
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "producto",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.474,
+      "executionMs": 1.978,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 3
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 3
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "producto",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.383,
+      "executionMs": 1.619,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 3,
+        "Aggregate": 2,
+        "Seq Scan": 2
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 3,
+        "Aggregate": 2,
+        "Seq Scan": 2
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "factura",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 10.102,
+      "executionMs": 0.101,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "factura",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.1,
+      "executionMs": 0.017,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "factura",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.06,
+      "executionMs": 0.932,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "factura",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.122,
+      "executionMs": 0.998,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "cotizacion",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 13.147,
+      "executionMs": 0.093,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "cotizacion",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.265,
+      "executionMs": 0.096,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 2,
+        "Index Scan": 2,
+        "Sort": 1
+      },
+      "loops": {
+        "Limit": 11,
+        "Index Scan": 11,
+        "Sort": 10
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "cotizacion",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.076,
+      "executionMs": 0.807,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "cotizacion",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.085,
+      "executionMs": 0.528,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 2,
+        "Index Scan": 2,
+        "Sort": 1
+      },
+      "loops": {
+        "Limit": 2,
+        "Index Scan": 2,
+        "Sort": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "compra",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 11.258,
+      "executionMs": 0.098,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "compra",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.083,
+      "executionMs": 0.014,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "compra",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.041,
+      "executionMs": 0.422,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 1000,
+      "domain": "compra",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.042,
+      "executionMs": 0.459,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "cliente",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 8.932,
+      "executionMs": 1.899,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "cliente",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.061,
+      "executionMs": 0.029,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "cliente",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.107,
+      "executionMs": 22.483,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 2
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 2
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "cliente",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.11,
+      "executionMs": 13.895,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "proveedor",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 12.262,
+      "executionMs": 1.889,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "proveedor",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.083,
+      "executionMs": 0.034,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "proveedor",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.035,
+      "executionMs": 8.543,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "proveedor",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.052,
+      "executionMs": 4.414,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "producto",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 4.897,
+      "executionMs": 2.798,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "producto",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.214,
+      "executionMs": 0.121,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 3,
+        "Aggregate": 2
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 21,
+        "Aggregate": 20
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "producto",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.338,
+      "executionMs": 36.691,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 3
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 3
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "producto",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.257,
+      "executionMs": 19.641,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 3,
+        "Aggregate": 2,
+        "Seq Scan": 2
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 21,
+        "Aggregate": 20,
+        "Seq Scan": 2
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "factura",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 10.355,
+      "executionMs": 3.066,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "factura",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.086,
+      "executionMs": 0.03,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "factura",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.058,
+      "executionMs": 16.714,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "factura",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.087,
+      "executionMs": 6.642,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "cotizacion",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 8.871,
+      "executionMs": 2.119,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "cotizacion",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.145,
+      "executionMs": 0.074,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 2,
+        "Index Scan": 2,
+        "Sort": 1
+      },
+      "loops": {
+        "Limit": 11,
+        "Index Scan": 11,
+        "Sort": 10
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "cotizacion",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.043,
+      "executionMs": 9.697,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "cotizacion",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.092,
+      "executionMs": 5.625,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 2,
+        "Index Scan": 2,
+        "Sort": 1
+      },
+      "loops": {
+        "Limit": 11,
+        "Index Scan": 11,
+        "Sort": 10
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "compra",
+      "scenario": "sin-filtro",
+      "operation": "conteo",
+      "planningMs": 8.455,
+      "executionMs": 2.078,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "compra",
+      "scenario": "sin-filtro",
+      "operation": "pagina",
+      "planningMs": 0.09,
+      "executionMs": 0.033,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "compra",
+      "scenario": "texto-selectivo",
+      "operation": "conteo",
+      "planningMs": 0.047,
+      "executionMs": 8.694,
+      "returnedRows": 1,
+      "sharedHits": 0,
+      "nodes": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "loops": {
+        "Aggregate": 1,
+        "Seq Scan": 1
+      },
+      "rows": 0
+    },
+    {
+      "volume": 20000,
+      "domain": "compra",
+      "scenario": "texto-selectivo",
+      "operation": "pagina",
+      "planningMs": 0.092,
+      "executionMs": 7.542,
+      "returnedRows": 10,
+      "sharedHits": 0,
+      "nodes": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "loops": {
+        "Limit": 1,
+        "Index Scan": 1
+      },
+      "rows": 0
+    }
+  ]
+}

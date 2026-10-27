@@ -18,6 +18,8 @@
     <div class="md:col-span-2"><button mat-flat-button type="submit" [disabled]="busy() || loadFailed()">Guardar oportunidad</button><p class="text-sm text-gray-500 mt-2">Al marcar Ganada o Perdida se cierra la acción pendiente. El cambio de etapa queda en el historial.</p></div>
   </form>
   @if (item(); as current) {
+    <app-crm-documentos [oportunidadId]="current.idOportunidad" [version]="current.version"
+      [locked]="busy() || form.dirty || loadFailed()" (working)="documentsWorking($event)" (changed)="documentsChanged()" (reload)="recargar()" />
     <hr class="my-6">
     <section aria-labelledby="unidades-title">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
@@ -41,6 +43,7 @@
               @if (unidad.vin) {<p class="font-mono text-sm mt-2"><span class="text-gray-500">VIN</span> {{ unidad.vin }}</p>}
               @if (unidad.esn) {<p class="font-mono text-sm"><span class="text-gray-500">ESN</span> {{ unidad.esn }}</p>}
               @if (unidad.motor) {<p class="text-sm mt-1">Motor: {{ unidad.motor }}</p>}
+              <a mat-stroked-button [href]="'/crm/unidades/'+unidad.idUnidad+'/expediente'" target="_blank" rel="noopener">Expediente (otra pestaña)</a>
             </mat-card-content>
           </mat-card>
         } @empty {<div class="lg:col-span-2 erp-empty-state"><mat-icon>local_shipping</mat-icon><strong>No hay unidades registradas</strong><span>Agrega el VIN o ESN para conservar la configuración del cliente.</span></div>}
@@ -72,6 +75,17 @@
       <article class="border-l-2 border-blue-400 pl-4 py-2 mb-3"><strong>{{ s.tipo }}</strong> · {{ s.createdAt | date:'short' }} · {{ s.username || 'Sistema' }}<p class="whitespace-pre-wrap mt-1">{{ s.detalle }}</p></article>
     } @empty {<p class="text-gray-500">Aún no hay seguimientos registrados.</p>}
     @if (historial().length < historyTotal()) {<button mat-button [disabled]="historyBusy()" (click)="cargarHistorial()">Cargar actividades anteriores</button>}
+  }
+  @if (webLoading()) { <p role="status">Cargando consulta web…</p> }
+  @if (webError()) { <p role="alert">No se pudo consultar el origen web o no tienes acceso.</p><button mat-button (click)="cargarConsultaWeb()">Reintentar consulta web</button> }
+  @if (webConsulta(); as consulta) {
+    <section aria-label="Piezas de la consulta web" style="color:var(--text-main);overflow-wrap:anywhere">
+      <h3>Consulta web original</h3>
+      <p>Datos conservados al convertir. No confirman precio, existencia o compatibilidad.</p>
+      <ul>@for (pieza of consulta.piezas; track $index) {
+        <li><strong>{{pieza.code}}</strong> · {{pieza.brand || 'Marca por confirmar'}} · Cantidad: {{pieza.quantity}} @if(pieza.application){ · {{pieza.application}} }</li>
+      }</ul>
+    </section>
   }
 </mat-dialog-content>
 <mat-dialog-actions align="end"><button mat-button [disabled]="busy()" (click)="cerrar()">Cerrar</button></mat-dialog-actions>

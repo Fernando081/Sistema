@@ -1,0 +1,31 @@
+:host { display: block; min-width: 0; color: var(--text-main); scroll-margin-top: 80px; }
+.web-metrics { margin: 20px 0; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-card); }
+.web-metrics > summary { padding: 16px; font-weight: 600; }
+summary { cursor: pointer; min-height: 24px; padding: 8px 0; }
+section { padding: 0 16px 16px; min-width: 0; }
+h3 { margin: 4px 0 12px; }
+p { line-height: 1.6; overflow-wrap: anywhere; }
+.hint { color: var(--text-muted); font-size: .875rem; }
+.period-form { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; margin-top: 16px; }
+label { display: grid; gap: 8px; flex: 1 1 160px; min-width: 0; }
+input { min-height: 44px; min-width: 0; width: 100%; box-sizing: border-box; padding: 8px;
+  border: 1px solid currentColor; border-radius: 8px; background: var(--bg-card); color: var(--text-main); font: inherit; }
+button:not(:disabled) { color: var(--text-main); }
+button { min-height: 44px; white-space: normal; }
+.metrics-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,160px),1fr)); gap: 12px; margin: 20px 0; }
+.metrics-cards > div { padding: 16px; border: 1px solid var(--border-color); border-radius: 10px; min-width: 0; }
+dt { color: var(--text-muted); font-size: .875rem; line-height: 1.5; }
+dd { margin: 8px 0 0; font-size: 1.65rem; font-weight: 700; overflow-wrap: anywhere; }
+.empty,.measurement-limit { padding: 12px; border-inline-start: 3px solid currentColor; background: var(--bg-primary); border-radius: 4px; }
+.currency { padding: 0; border-bottom: 1px solid var(--border-color); }
+.financial-cards dd { font-size: 1.2rem; }
+.profit-content,.cash-content { padding: 0; }
+:host-context(.dark) input { color-scheme: dark; }
+.references { padding-inline-start: 24px; }
+.references li { padding: 12px 0; border-bottom: 1px solid var(--border-color); overflow-wrap: anywhere; }
+.references span { display: block; color: var(--text-muted); margin-top: 4px; }
+.references p { margin: 8px 0 0; }
+.daily { list-style: none; padding: 0; max-height: 360px; overflow-y: auto; }
+.daily li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+.daily span { overflow-wrap: anywhere; }
+:focus-visible { outline: 2px solid var(--text-main); outline-offset: 3px; }

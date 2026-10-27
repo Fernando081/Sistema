@@ -1,0 +1,28 @@
+{
+  "contact": {
+    "phone": { "confirmed": true, "value": "+528332261772" },
+    "whatsapp": { "confirmed": true, "value": "+528333095845" },
+    "email": {
+      "confirmed": true,
+      "value": "refaccionesytractorepuestos@hotmail.com"
+    },
+    "address": {
+      "confirmed": true,
+      "value": "Calle Sor Juana Inés de la Cruz #201-A\nColonia Nuevo Progreso, C.P. 89318\nTampico, Tamaulipas"
+    },
+    "hours": {
+      "confirmed": true,
+      "value": "Lunes a viernes: 9:00 a.m. a 6:00 p.m.\nSábado: 9:00 a.m. a 2:00 p.m.\nDomingo: cerrado"
+    },
+    "serviceArea": {
+      "confirmed": true,
+      "value": "Venta en mostrador y entregas locales.\nEnvíos por paquetería por cobrar a toda la República Mexicana."
+    },
+    "maps": {
+      "confirmed": true,
+      "value": "https://maps.app.goo.gl/YY6oqnrE7NCMpCWY9"
+    }
+  },
+  "story": { "confirmed": false, "paragraphs": [] },
+  "brands": []
+}

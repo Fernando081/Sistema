@@ -1,0 +1,46 @@
+{
+  "phase": "O01.2a",
+  "checkedAt": "2026-10-22T15:54:29.240Z",
+  "checksums": {
+    "112_crm_reportes_reintentos.sql": true,
+    "113_salida_documentos_local.sql": true
+  },
+  "sourceRows": {
+    "documento_salida": 0,
+    "documento_salida_archivo": 0,
+    "documento_salida_cierre": 0
+  },
+  "remainingCopies": 0,
+  "guard": "A",
+  "http": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/venta/1/preparar-correo",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:4300/facturas/correos?factura=1",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4300/api/v1/venta/1/preparar-correo",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503
+    },
+    {
+      "url": "http://127.0.0.1:4600/",
+      "status": 200
+    }
+  ],
+  "passed": true
+}

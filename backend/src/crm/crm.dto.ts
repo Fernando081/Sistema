@@ -1,7 +1,7 @@
 import { Transform, Type } from 'class-transformer';
 import {
   IsBoolean, IsDateString, IsEmail, IsIn, IsInt, IsNotEmpty, IsNumber,
-  IsOptional, IsString, Max, MaxLength, Min, MinLength,
+  IsOptional, IsString, Matches, Max, MaxLength, Min, MinLength,
 } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
@@ -64,6 +64,7 @@ export class CreateMetaDto {
 }
 
 export class CrmTareasQuery {
+  @IsOptional() @IsString() @Matches(/^[1-9]\d{0,18}$/) idTarea?: string;
   @IsIn(['Pendiente', 'En progreso', 'Completada', 'Cancelada']) @IsOptional() estado?: string;
   @IsIn(['todas', 'vencidas', 'hoy', 'proximas']) @IsOptional() vencimiento?: string;
   @Type(() => Number) @IsInt() @Min(1) @IsOptional() idResponsable?: number;

@@ -20,13 +20,7 @@ export class PermissionsGuard implements CanActivate {
     const rows = await queryRows<{ code: string }>(this.dataSource, `
       SELECT requested.code
       FROM unnest($1::text[]) AS requested(code)
-      WHERE COALESCE(
-        (SELECT up.granted FROM app_user_permission up
-          WHERE up.id_user=$2 AND up.permission_code=requested.code),
-        EXISTS(SELECT 1 FROM app_role_permission rp
-          WHERE rp.role=$3 AND rp.permission_code=requested.code),
-        false
-      )`, [required, user.idUser ?? null, user.role]);
+      WHERE fn_effective_permission($2::integer,$3::text,requested.code)`, [required, user.idUser ?? null, user.role]);
     const granted = new Set(rows.map(row => row.code));
     const missing = required.filter(code => !granted.has(code));
     if (missing.length) throw new ForbiddenException(`Permiso requerido: ${missing.join(', ')}`);

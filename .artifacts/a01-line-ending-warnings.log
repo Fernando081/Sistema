@@ -1,0 +1,10 @@
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/migrations/README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/src/almacen/almacen.module.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/ALMACEN_PROFESIONAL.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/CALIDAD_Y_RELEASE.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/app/almacen/almacen.component.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/app/almacen/almacen.component.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/app/layout/authenticated-shell.component.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/app/pedido/pedido-detail-dialog.component.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it

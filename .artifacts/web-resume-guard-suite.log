@@ -1,0 +1,166 @@
+
+> test:web-publica
+> node --test public-web/test/*.test.mjs
+
+✔ inspección distingue preview, versión sellada, alteración y ruta sin sello (166.5456ms)
+✔ auditoría bloquea enlace roto, ancla, metadatos y pérdida de noindex (8.2083ms)
+✔ título comercial duplicado es advertencia editorial y consulta conserva producto publicado (24.5765ms)
+✔ presupuesto por ruta incluye CSS compartido y rechaza exceso antes de escribir (20.9891ms)
+✔ Google Maps solo admite enlace corto HTTPS confirmado y conserva configuración anterior (14.7822ms)
+✔ solo incluye información pública confirmada y escapa texto (2.6303ms)
+✔ rechaza datos desconocidos, confirmaciones inválidas, URL en teléfono y marcas duplicadas (4.1205ms)
+✔ excluye borradores, retirados y productos sin aprobación explícita (2.9173ms)
+✔ rechaza campos privados y direcciones ambiguas (5.2556ms)
+✔ ficha tiene contenido HTML inicial escapado y enlace desde catálogo (14.7215ms)
+✔ alternativas solo hacia fichas aprobadas: bloquea retirada, borrador y ciclos propios (15.2086ms)
+✔ comprobación HTTP rechaza destino externo y detecta servidor sin protecciones (389.5943ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ aceptación HTTP cubre consulta, logo, rechazo de entradas y redirecciones reales (1348.3377ms)
+Web pública: 14 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ slash final conserva criterios y piezas en Location relativo; cuota sigue compartida (868.8588ms)
+✔ recibo de lote verifica ruta, hash, vigencia y alcance (3.7906ms)
+✔ recibo ERP exige sesión, origen local y vigencia/hash exactos (1.7603ms)
+✔ errores mantienen identidad, noindex y rutas de recuperación sin reintentos (1.5159ms)
+✔ consulta libre conserva referencia indicada sin aprobar producto ni enviar (16.1444ms)
+✔ incluye logo una vez y candidatos responsivos; excluye ampliación lazy (1.9168ms)
+✔ rechaza asset faltante y exceso aunque HTML y CSS sean pequeños (1.4826ms)
+✔ consulta multipieza conserva identificación y acumula duplicados sin adivinar marca (2.9933ms)
+✔ lista inválida conserva captura, muestra corrección y no prepara envío (8.964ms)
+✔ resumen multipieza refleja cantidades acumuladas y enlaces antes de enviar (2.4605ms)
+✔ consulta conserva producto/cantidad y solo prepara canales confirmados (3.0641ms)
+Web pública: 14 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ consulta HTTP respeta versión publicable, 404 y archivos privados (779.1272ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ perfil cerrado no lee claves, no consulta puente y no habilita formulario (855.9973ms)
+✔ perfil habilitado exige origen local, aprobaciones ligadas al texto y retenciones declaradas (4.1088ms)
+✔ perfil y claves inválidos cierran con errores sanitizados; archivo acotado y CLI no revela valores (393.4724ms)
+✔ comprobación usa dominio propio, prueba ambas claves y autentica recibo/nonce sin contactos (124.451ms)
+✔ CLI exige perfil explícito: cerrado aun con variables; habilitado hace preflight antes de servir y enviar (1046.3971ms)
+✔ cliente puente restringe destino y no acepta confirmación de otra solicitud (68.5332ms)
+✔ firma v2 vincula ID/fecha/cuerpo y captura clave/configuración al crear emisor (24.8602ms)
+✔ selección GET conserva fichas/cantidades autorizadas y rechaza contactos, ambigüedad o repetición (3.6724ms)
+✔ POST mixto deriva identidad del catálogo y no acepta identidad falsificada ni ficha retirada (2.0809ms)
+Web pública: 15 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ HTTP enlaza selección solo con recepción habilitada y revalida catálogo en POST/reintento (1187.8052ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ GET del formulario condicionado comparte cuota antes de resolver la selección (654.7032ms)
+✔ contrato deriva identidad autorizada y mantiene referencia indicada sin equivalencia (2.214ms)
+✔ rechaza identidad falsificada, retirados, contactos inválidos y consentimiento ausente (2.3871ms)
+✔ huella privada distingue cambio de contenido y conserva reintentos (1.4289ms)
+✔ receptor pendiente vence sin confirmar y su rechazo tardío queda manejado (132.9202ms)
+✔ deadline solo configurable por servidor, intervalo inválido bloquea antes del receptor (78.8343ms)
+✔ formulario nativo admite diez referencias, huecos vacíos y cantidad opcional 1 (5.2678ms)
+✔ referencias parciales, repetidas, cantidades inválidas y campos ambiguos impiden confirmar (1.8744ms)
+✔ error conserva todas las referencias, cero inválido y UUID; campos escapados (1.4217ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ recepción HTTP cerrada por defecto; origen, tamaño y validación antes de persistencia (1222.9184ms)
+✔ diagnóstico clasifica intención, archivo y guarda retirada sin intervenir ni permitir cierre parcial (3898.9777ms)
+✔ cierre de operación terminada conserva bytes, separa historial, permite publicar y repite sin duplicar (1210.3715ms)
+✔ bloqueo ordinario inactivo conserva su recuperación y aceptación independientes del cierre (1331.9391ms)
+✔ guarda activa/ajena/antigua, recibo corrupto e intención v1 sin vínculo rechazan plan y conservan evidencia (4441.4759ms)
+✔ revisión por hash rechaza cambios de mantenimiento, puntero, historia y traslado de directorio (4644.8155ms)
+✔ dos revisores concurrentes completan un solo cierre (1206.0586ms)
+✔ interrupción del cierre conserva exclusión antes/después del archivo y de retirar mantenimiento (3171.8291ms)
+✔ cierre registrado antes de liberar guarda se resuelve con reconciliación existente sin fabricar recibos (1414.3685ms)
+✔ propietario reemplazado durante el cierre se conserva y rechaza terminar (985.1718ms)
+✔ cambio de historial o puntero durante cierre conserva exclusión sin certificar resultado (2082.3009ms)
+✔ intención, archivo o recibo de cierre alterados invalidan historial y repetición (2560.549ms)
+✔ CLI diagnostica sin mutar, exige plan y revisión explícitos e invalida reporte anterior al fallar (1694.7135ms)
+✔ CLI con fallo de E/S tras intención deja guarda y reporte incierto, sin imprimir la excepción (1048.0143ms)
+✔ medios seleccionados: autorización, hash, dimensiones y HTML accesible (132.3153ms)
+✔ fichas con título comercial repetido tienen metadatos propios y rutas existentes (16.9964ms)
+✔ descripción acotada conserva identificación y normaliza espacios (0.3269ms)
+✔ paginación enlaza cada ficha una vez por listado y conserva números originales (18.6375ms)
+✔ mil fichas conservan el presupuesto y grupos con nombres similares no colisionan (46985.515ms)
+✔ PNG conserva pixels comprimidos y elimina metadata antes de aprobar (6.4498ms)
+✔ Organization solo incluye identidad del negocio y contactos confirmados (3.3029ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ respaldo restaura bytes y HTTP, rechaza manipulación/traversal y no sobrescribe (1303.0077ms)
+✔ miniatura elige variante suficiente sin usar archivo privado y conserva fallback (1.3365ms)
+✔ bloqueo identifica propietario, impide otro publicador y no recupera proceso activo (120.9037ms)
+✔ proceso terminado deja bloqueo recuperable por hash; archiva y permite publicar de nuevo (617.6945ms)
+✔ bloqueo incompleto y recuperación en curso requieren revisión (16.5764ms)
+Web pública: 14 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ aprobación exacta, activación completa y retiro HTTP sin reinicio (1900.8288ms)
+Web pública: 14 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+Web pública: 14 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ rollback con recibo exige vigencia también en la segunda comprobación (1620.9521ms)
+✔ catálogo vacío no se considera preparado aunque el HTML sea válido (1.201ms)
+✔ borrador no cuenta y configuración técnica no sustituye aceptación del propietario (5.2675ms)
+✔ plan de reconciliación es de solo lectura y aplicación conserva evidencia sin inventar recuperación anterior (995.7838ms)
+✔ interrupción previa al archivo conserva publicación huérfana para recuperación ordinaria separada (805.7638ms)
+✔ rechaza hash equivocado y evidencia cambiada desde el plan sin crear intención ni conservar mantenimiento (3915.7381ms)
+✔ revisión ligada al directorio físico no se trasplanta a una copia (1036.7542ms)
+✔ directorio listo, guarda activa, ajena, antigua e historial inválido no generan plan (3106.5965ms)
+✔ dos reconciliadores concurrentes dejan una sola operación completada (614.5565ms)
+✔ interrupción antes/después del enlace o después de retirar la guarda conserva exclusión y exige revisión (2249.9509ms)
+✔ mantenimiento reemplazado se conserva y no se retira la guarda original (825.302ms)
+✔ cambio externo de publicación o puntero tras retirar guarda conserva mantenimiento sin recibo de terminación (1424.525ms)
+✔ intención, recibo o guarda archivada alterados invalidan reconocimiento y repetición (2175.5348ms)
+✔ CLI prepara y aplica revisión explícita, invalida reporte anterior al fallar sin afirmar que no hubo mutaciones (1236.4027ms)
+✔ más de veinte archivos sin registro bloquean preparación sin truncar evidencia (805.0461ms)
+✔ CLI con fallo de E/S tras intención conserva bloqueo y reporta resultado incierto (781.1006ms)
+✔ reanudación de las tres etapas conserva evidencia, completa recibo ligado y requiere cierre separado (5501.3857ms)
+✔ bloqueo ordinario previo sigue necesitando aprobación propia después de reanudar y cerrar mantenimiento (1178.818ms)
+✔ fuente v1, propietarios activos/ajenos, archivos inconsistentes, intención ambigua y recibo existente no se reanudan (13246.0132ms)
+✔ revisión exacta, ID distinto y cambios posteriores de guarda, mantenimiento, puntero o historia rechazan sin mutar (6520.2595ms)
+✔ dos revisores concurrentes producen una sola reanudación y ningún cierre automático (948.7796ms)
+✔ interrupción antes/después de enlace, retiro y escritura conserva exclusión y no permite reinicio automático (5911.6929ms)
+✔ cambios durante reanudación preservan bloqueos y no certifican un recibo original (3477.1368ms)
+✔ intención o recibos alterados invalidan historial y replay sin sobrescribir evidencia (4853.8877ms)
+✔ CLI diagnostica y prepara sin mutar; aplica con revisión exacta e invalida resultados anteriores al fallar (1403.1574ms)
+✔ CLI con fallo de escritura tras retirar guarda deja mantenimiento intacto y resultado incierto sin revelar excepción (827.385ms)
+✔ recibo original no puede atribuirse reanudación de otra reconciliación ni aceptar hash de intención falso (2239.3358ms)
+✔ interrupción después de ambos recibos conserva historial completado y guarda residual sin replay automático (963.1284ms)
+✔ inspección no altera archivos, distingue publicación activa y no la recupera (158.5065ms)
+✔ guarda antigua, archivo excesivo, equipo ajeno y metadata inválida requieren revisión (79.5646ms)
+✔ proceso interrumpido antes y después de archivar deja guarda identificable y diagnóstico sin mutar (1568.1583ms)
+✔ recuperación terminada verifica archivo/registro y detecta alteración sin borrar evidencia (567.5229ms)
+✔ liberación conserva una guarda reemplazada y no retira el nuevo propietario (758.7369ms)
+✔ CLI estricto rechaza coordinación incierta y no imprime contenido privado (487.5807ms)
+✔ redirecciones rechazan destinos externos, cadenas, ciclos y fichas retiradas (1.6669ms)
+Web pública: 14 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ HTTP 308 conserva destino vigente sin propagar query ni exponer configuración (1227.2702ms)
+✔ límite por conexión acota memoria y recupera ventanas sin dormir (2.0969ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ HTTP limita antes de procesar y no confía en cabeceras de proxy (614.0582ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ HTTP responde 503 sin cuerpo HEAD cuando CSS supera presupuesto (565.6862ms)
+✔ presupuesto dinámico incluye CSS y cuenta bytes UTF-8 (1.6587ms)
+✔ mensaje largo no crea enlaces enormes y conserva texto para copiar (3.4172ms)
+✔ cierre residual conserva bytes, liga guarda v2, deja mantenimiento separado y repite históricamente (2118.2738ms)
+✔ operación parcial, guarda antigua/activa/ajena/sin vínculo, ambigüedad e historial alterado rechazan sin mutar (11664.5702ms)
+✔ lectura histórica v1 compatible sin atribuirle vínculo de guarda ni cierre elegible (1134.5582ms)
+✔ revisión exacta y plan ligados a fuente, mantenimiento, puntero, historial y directorio físico (9665.2746ms)
+✔ dos revisores concurrentes completan solo un cierre de guarda (1115.8483ms)
+✔ corte antes/después de archivar, tras retirar fuente y antes de liberar recuperación conserva exclusión/evidencia (7753.2498ms)
+✔ evidencia o propietario sustituidos durante enlace conservan bloqueos y no certifican cierre (6471.2374ms)
+✔ archivo, intención o recibo de cierre alterados impiden replay y diagnóstico ready aun sin mantenimiento (3497.61ms)
+✔ CLI exige revisión nueva, diagnostica sin intervenir e invalida reporte anterior al fallar (1721.0646ms)
+✔ fallo de E/S tras retirar fuente conserva recuperación e informa resultado incierto sin revelar excepción (1040.5755ms)
+✔ respaldo guardado rechaza traversal, hash distinto y formato inválido (18.4983ms)
+✔ sugerencias limitadas a 40, únicas, escapadas y sin reemplazar filtro escrito (18.1818ms)
+Web pública: 14 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+100 consultas / 1000 fichas: 379.5 ms (motor en memoria)
+✔ búsqueda HTTP sirve HTML público y mantiene índice privado y límites (834.1103ms)
+✔ prioriza código original, normalizado y referencia; filtros y límites (18.234ms)
+✔ búsquedas representativas sobre mil fichas y paginación acotada (387.0668ms)
+Web pública: 11 páginas; máximo HTML+CSS 23155 bytes; JavaScript cliente 0 bytes.
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ sitemap HTTP queda sellado y desactivar dominio lo retira del manifest (1329.4309ms)
+✔ dominio requiere confirmación y origen HTTPS público sin rutas o credenciales (1.048ms)
+✔ canonical y sitemap solo incluyen rutas publicables; preview conserva noindex (2.864ms)
+✔ microdatos Product/Brand usan datos publicados y no afirman precios, GTIN o fabricante (5.8297ms)
+✔ HTML inicial y navegación sin ejecutar JavaScript (2.3779ms)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+✔ servidor local: métodos, encabezados, 404 real y aislamiento de archivos (824.4958ms)
+ℹ tests 133
+ℹ suites 0
+ℹ pass 133
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52520.6943

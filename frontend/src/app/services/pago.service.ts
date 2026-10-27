@@ -1,3 +1,4 @@
+import { FacturaPendiente, RepHistorial, PagoRegistrado, RepRegistrado, RepCancelacion } from './pago-api.types';
 // frontend/src/app/services/pago.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -8,6 +9,7 @@ import { FiscalCancellation } from './fiscal.service';
 const API_URL = `${environment.apiBaseUrl}/pago`;
 
 export interface PagoDto {
+  requestId?: string;
   idFactura: number;
   monto: number;
   formaPago: string;
@@ -21,6 +23,7 @@ export interface RepFacturaDto {
 }
 
 export interface RegistrarRepDto {
+  requestId?: string;
   idCliente: number;
   fechaPago: string;
   formaPago: string;
@@ -35,24 +38,24 @@ export interface RegistrarRepDto {
 export class PagoService {
   constructor(private http: HttpClient) {}
 
-  registrar(dto: PagoDto): Observable<any> {
-    return this.http.post(API_URL, dto);
+  registrar(dto: PagoDto): Observable<PagoRegistrado> {
+    return this.http.post<PagoRegistrado>(API_URL, dto);
   }
 
-  getPendientes(idCliente: number): Observable<any[]> {
-    return this.http.get<any[]>(`${API_URL}/pendientes/${idCliente}`);
+  getPendientes(idCliente: number): Observable<FacturaPendiente[]> {
+    return this.http.get<FacturaPendiente[]>(`${API_URL}/pendientes/${idCliente}`);
   }
 
-  getAllPendientes(): Observable<any[]> {
-    return this.http.get<any[]>(`${API_URL}/pendientes`);
+  getAllPendientes(): Observable<FacturaPendiente[]> {
+    return this.http.get<FacturaPendiente[]>(`${API_URL}/pendientes`);
   }
 
-  getPpdPendientes(idCliente: number): Observable<any[]> {
-    return this.http.get<any[]>(`${API_URL}/pendientes-ppd/${idCliente}`);
+  getPpdPendientes(idCliente: number): Observable<FacturaPendiente[]> {
+    return this.http.get<FacturaPendiente[]>(`${API_URL}/pendientes-ppd/${idCliente}`);
   }
 
-  registrarRep(dto: RegistrarRepDto): Observable<any> {
-    return this.http.post(`${API_URL}/rep`, dto);
+  registrarRep(dto: RegistrarRepDto): Observable<RepRegistrado> {
+    return this.http.post<RepRegistrado>(`${API_URL}/rep`, dto);
   }
 
   descargarRepPdf(idPago: number): Observable<Blob> {
@@ -63,11 +66,11 @@ export class PagoService {
     return this.http.get(`${API_URL}/${idPago}/xml`, { responseType: 'blob' });
   }
 
-  getHistorialReps(): Observable<any[]> {
-    return this.http.get<any[]>(`${API_URL}/rep`);
+  getHistorialReps(): Observable<RepHistorial[]> {
+    return this.http.get<RepHistorial[]>(`${API_URL}/rep`);
   }
 
-  cancelarRep(idRep: number, fiscal: FiscalCancellation = {}): Observable<any> {
-    return this.http.post(`${API_URL}/rep/${idRep}/cancelar`, fiscal);
+  cancelarRep(idRep: number, fiscal: FiscalCancellation = {}): Observable<RepCancelacion> {
+    return this.http.post<RepCancelacion>(`${API_URL}/rep/${idRep}/cancelar`, fiscal);
   }
 }

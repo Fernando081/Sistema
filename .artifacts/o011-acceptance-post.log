@@ -1,0 +1,61 @@
+
+> test:report-retries
+> node backend/verify-report-retries.js --backup=.backups/2026-10-22T05-38-15-882Z/database.dump
+
+{"type":"http_request","requestId":"6762c8f2-dcb2-4385-ac78-9ac3c3cccc02","method":"POST","path":"/api/v1/crm/reportes-programados/3c1d6ea9-de3e-42d3-85d4-b60ddfafa070/resultados/7de1bc59-61e9-4c09-ab88-79c64957a469/reintentar","statusCode":401,"durationMs":16.54,"idUser":null}
+{"type":"http_request","requestId":"abca32aa-8d66-4e09-b14e-0c33edb8ed8f","method":"POST","path":"/api/v1/crm/reportes-programados/3c1d6ea9-de3e-42d3-85d4-b60ddfafa070/resultados/7de1bc59-61e9-4c09-ab88-79c64957a469/reintentar","statusCode":403,"durationMs":7.64,"idUser":3}
+{"type":"http_request","requestId":"02d92d8a-ff8f-4733-8cf8-7cd05f093dbd","method":"POST","path":"/api/v1/crm/reportes-programados/3c1d6ea9-de3e-42d3-85d4-b60ddfafa070/resultados/7de1bc59-61e9-4c09-ab88-79c64957a469/reintentar","statusCode":400,"durationMs":8.1,"idUser":2}
+{"type":"http_request","requestId":"ee5c6240-d1ab-4a1b-ba0b-c3ecd7c98fdf","method":"POST","path":"/api/v1/crm/reportes-programados/3c1d6ea9-de3e-42d3-85d4-b60ddfafa070/resultados/7de1bc59-61e9-4c09-ab88-79c64957a469/reintentar","statusCode":400,"durationMs":5.04,"idUser":2}
+{"type":"http_request","requestId":"89270d5d-4eb6-40e3-a075-bcfea2705981","method":"POST","path":"/api/v1/crm/reportes-programados/3c1d6ea9-de3e-42d3-85d4-b60ddfafa070/resultados/7de1bc59-61e9-4c09-ab88-79c64957a469/reintentar","statusCode":400,"durationMs":3.98,"idUser":2}
+{"type":"http_request","requestId":"abbe8523-e91e-4a3e-bc13-0365ccbc7fc6","method":"POST","path":"/api/v1/crm/reportes-programados/3c1d6ea9-de3e-42d3-85d4-b60ddfafa070/resultados/7de1bc59-61e9-4c09-ab88-79c64957a469/reintentar","statusCode":404,"durationMs":6.5,"idUser":4}
+{"type":"http_request","requestId":"47f29c19-6b61-4119-adac-4a50cc89d1e2","method":"GET","path":"/api/v1/crm/reportes-programados/3c1d6ea9-de3e-42d3-85d4-b60ddfafa070/historial","statusCode":404,"durationMs":5.65,"idUser":4}
+{"type":"http_request","requestId":"fd49c436-7c26-45fa-94d2-ff297e7ce275","method":"POST","path":"/api/v1/crm/reportes-programados/3c1d6ea9-de3e-42d3-85d4-b60ddfafa070/resultados/7de1bc59-61e9-4c09-ab88-79c64957a469/reintentar","statusCode":201,"durationMs":7.94,"idUser":2}
+{"type":"http_request","requestId":"63bfa426-62c0-43d6-8271-c5337156989d","method":"POST","path":"/api/v1/crm/reportes-programados/3c1d6ea9-de3e-42d3-85d4-b60ddfafa070/resultados/7de1bc59-61e9-4c09-ab88-79c64957a469/reintentar","statusCode":201,"durationMs":7.23,"idUser":2}
+{"type":"http_request","requestId":"0e7b7bd3-21df-4e25-a335-37495901f4b7","method":"GET","path":"/api/v1/crm/reportes-programados/3c1d6ea9-de3e-42d3-85d4-b60ddfafa070/historial","statusCode":200,"durationMs":6.28,"idUser":2}
+OK: HTTP/login reales: contrato cerrado/confirmación/401/403/propietario incluso otro ADMIN, caché y puesta en cola histórica idempotente
+OK: Dos consumidores reales conservan una sola recuperación atómica y snapshot posterior; Error original inmutable y lecturas sin recalcular
+OK: Fallo real con rollback, espera10/20min adelantada sólo en copia, tres intentos y Agotado sin bucle ni SQL privado
+OK: Claim persistido, lease vencido, evento Interrumpido, token antiguo rechazado y recuperación con nuevo intento
+{"type":"http_request","requestId":"43c41d11-00da-4dd5-8719-f77c58c990fd","method":"POST","path":"/api/v1/crm/reportes-programados/3feada5e-97fc-4dfc-955c-f2eda0b5dd72/resultados/f5949b62-b887-4911-b63c-09bbe3645779/cancelar-reintento","statusCode":409,"durationMs":5.37,"idUser":2}
+{"type":"http_request","requestId":"4054b6ad-407d-4177-acee-166cbcb1c9af","method":"POST","path":"/api/v1/crm/reportes-programados/3feada5e-97fc-4dfc-955c-f2eda0b5dd72/resultados/f5949b62-b887-4911-b63c-09bbe3645779/cancelar-reintento","statusCode":201,"durationMs":5.71,"idUser":2}
+{"type":"http_request","requestId":"e570c2cf-6c16-4885-b323-00a7ab1b77fd","method":"POST","path":"/api/v1/crm/reportes-programados/3feada5e-97fc-4dfc-955c-f2eda0b5dd72/resultados/f5949b62-b887-4911-b63c-09bbe3645779/cancelar-reintento","statusCode":201,"durationMs":5.78,"idUser":2}
+OK: Cancelación confirmada/versionada/idempotente pendiente y tras claim impide resultado tardío; bitácora conservada
+OK: Suspensión y pérdida de permiso efectivo cancelan sin exponer datos o generar snapshots
+OK: Revocación de permiso mientras espera bloqueo real se observa después de esperar; sin autoridad de snapshot antiguo
+OK: Fallo de auditoría revierte snapshot/éxito; recuperación posterior, guardas ALWAYS/terminal y auditoría humana separada del ejecutor
+OK: Cron/guardia/historial O02 existentes procesan cola aunque falle generación inicial, sin otro scheduler ni envíos
+{"type":"http_request","requestId":"9b2ee109-781d-4283-b86b-f61b1e83ff35","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":71.59,"idUser":null}
+{"type":"http_request","requestId":"c7bb9d82-a384-46a3-a3b2-a050e354dc64","method":"GET","path":"/api/v1/crm/reportes-programados/f0422bbc-8fce-4996-b7c5-a78c99c2773a/historial","statusCode":200,"durationMs":13.7,"idUser":2}
+{"type":"http_request","requestId":"c0f5af36-a0f2-4ae8-8228-c9b04978b8d8","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":57.04,"idUser":2}
+{"type":"http_request","requestId":"422a5330-562a-4e5c-bc62-38daab53a083","method":"POST","path":"/api/v1/crm/reportes-programados/f0422bbc-8fce-4996-b7c5-a78c99c2773a/resultados/8dedb706-5d5b-437a-8a1d-3d91b854ffae/reintentar","statusCode":201,"durationMs":5.61,"idUser":2}
+{"type":"http_request","requestId":"31e90a5c-0401-480d-b8f6-9c0f0778ba46","method":"POST","path":"/api/v1/crm/reportes-programados/f0422bbc-8fce-4996-b7c5-a78c99c2773a/resultados/8dedb706-5d5b-437a-8a1d-3d91b854ffae/reintentar","statusCode":201,"durationMs":6.1,"idUser":2}
+{"type":"http_request","requestId":"939db347-ed57-4338-af0f-2469c424396b","method":"GET","path":"/api/v1/crm/reportes-programados/f0422bbc-8fce-4996-b7c5-a78c99c2773a/historial","statusCode":200,"durationMs":5.19,"idUser":2}
+{"type":"http_request","requestId":"080b125e-21b1-4554-aeea-ca60e840b503","method":"POST","path":"/api/v1/crm/reportes-programados/f0422bbc-8fce-4996-b7c5-a78c99c2773a/resultados/8dedb706-5d5b-437a-8a1d-3d91b854ffae/cancelar-reintento","statusCode":201,"durationMs":6.13,"idUser":2}
+{"type":"http_request","requestId":"80d4d445-d923-4042-8b15-2cb1ac05294e","method":"GET","path":"/api/v1/crm/reportes-programados/f0422bbc-8fce-4996-b7c5-a78c99c2773a/historial","statusCode":200,"durationMs":7.16,"idUser":2}
+{"type":"http_request","requestId":"fc75b80f-5509-421a-8326-4e8ac6cf7fb1","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.59,"idUser":2}
+{"type":"http_request","requestId":"1f657a7b-24d0-4ec0-b3f7-75a0954b7c59","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":20.92,"idUser":2}
+{"type":"http_request","requestId":"72c60bb0-3570-4c49-a71d-bc01be8be4c2","method":"GET","path":"/api/v1/crm/reportes-programados/f0422bbc-8fce-4996-b7c5-a78c99c2773a/historial","statusCode":200,"durationMs":8.46,"idUser":2}
+{"type":"http_request","requestId":"6d8a7547-93c7-458e-bfd8-c3dda0280817","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.1,"idUser":2}
+{"type":"http_request","requestId":"4a66c822-56a5-4a1c-b1f3-ca68836ef982","method":"GET","path":"/api/v1/crm/reportes-programados/e5b42f76-a1b8-42c4-ad02-54e4b2577b0a/historial","statusCode":200,"durationMs":6.63,"idUser":2}
+{"type":"http_request","requestId":"5e38fb9f-35ee-4aad-909f-8e19369cc1e7","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":73.15,"idUser":2}
+{"type":"http_request","requestId":"25b82173-611c-4c87-9072-6f0e8e10e723","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.64,"idUser":2}
+{"type":"http_request","requestId":"e23b0645-78de-4d20-8f32-a5ac726c5a10","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":17.15,"idUser":2}
+{"type":"http_request","requestId":"0ae7ba6b-689f-4269-ab1f-55c3ad235d7a","method":"GET","path":"/api/v1/crm/reportes-programados/794b902f-aed3-45fb-b5e1-ee41127d9eb8/historial","statusCode":200,"durationMs":6.92,"idUser":2}
+OK: Angular/SQL reales light: confirmación, cola/bitácora/cancelación/recarga, respuesta perdida idempotente, resumen recuperado con Error original y agotado; Axe/reflujo 1280px
+{"type":"http_request","requestId":"bf64019e-0011-45c2-9ae3-40f2af61252b","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":66.58,"idUser":null}
+{"type":"http_request","requestId":"8b9f3a21-fcfd-44f2-b541-1a803677e6f8","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":16.8,"idUser":2}
+{"type":"http_request","requestId":"a32b1e15-f676-4992-96ec-ab42cdf3208e","method":"GET","path":"/api/v1/crm/reportes-programados/645e3445-d9b8-4b58-ab8c-3d2eede9fdd3/historial","statusCode":200,"durationMs":5.13,"idUser":2}
+{"type":"http_request","requestId":"4411ffa0-c5a3-47c1-9393-9e1ade799a7f","method":"POST","path":"/api/v1/crm/reportes-programados/645e3445-d9b8-4b58-ab8c-3d2eede9fdd3/resultados/db8b5806-fbec-43ed-b887-45cc4dc9375c/reintentar","statusCode":201,"durationMs":5.8,"idUser":2}
+{"type":"http_request","requestId":"41e4e030-f304-43d0-b52b-ec73669c7649","method":"GET","path":"/api/v1/crm/reportes-programados/645e3445-d9b8-4b58-ab8c-3d2eede9fdd3/historial","statusCode":200,"durationMs":5.7,"idUser":2}
+{"type":"http_request","requestId":"45b0bc32-016e-49d4-a116-0fca46c15034","method":"POST","path":"/api/v1/crm/reportes-programados/645e3445-d9b8-4b58-ab8c-3d2eede9fdd3/resultados/db8b5806-fbec-43ed-b887-45cc4dc9375c/cancelar-reintento","statusCode":201,"durationMs":13.96,"idUser":2}
+{"type":"http_request","requestId":"0ed7c568-f1f4-4a68-9f3d-0e91861f7e8d","method":"GET","path":"/api/v1/crm/reportes-programados/645e3445-d9b8-4b58-ab8c-3d2eede9fdd3/historial","statusCode":200,"durationMs":6.5,"idUser":2}
+{"type":"http_request","requestId":"2eaf2dd8-5662-4df5-9e94-802dba2e39c2","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.58,"idUser":2}
+{"type":"http_request","requestId":"ef7832b2-c907-4c7c-ae23-44273bc7c690","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":25.51,"idUser":2}
+{"type":"http_request","requestId":"428d5814-70dd-4371-8bec-bf08303ea799","method":"GET","path":"/api/v1/crm/reportes-programados/645e3445-d9b8-4b58-ab8c-3d2eede9fdd3/historial","statusCode":200,"durationMs":7.29,"idUser":2}
+{"type":"http_request","requestId":"0b55c7e3-c78b-41ed-a8e7-9789f524c126","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.86,"idUser":2}
+{"type":"http_request","requestId":"10b338d5-d927-452d-98f9-00fdf7f747a6","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":16.13,"idUser":2}
+{"type":"http_request","requestId":"af1cb70c-7605-4a60-977c-0739e3c54698","method":"GET","path":"/api/v1/crm/reportes-programados/e0039c82-23e8-45ea-8d8f-f8a6ebeed62d/historial","statusCode":200,"durationMs":6.97,"idUser":2}
+{"type":"http_request","requestId":"7c9f5550-de18-4045-8da5-d65011755478","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":1.7,"idUser":2}
+{"type":"http_request","requestId":"734383ce-f1ef-4cab-8565-88b93c7f9284","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":15,"idUser":2}
+{"type":"http_request","requestId":"86b1cf4f-ab3f-4dd5-bb91-74c01ff0398a","method":"GET","path":"/api/v1/crm/reportes-programados/794b902f-aed3-45fb-b5e1-ee41127d9eb8/historial","statusCode":200,"durationMs":7.73,"idUser":2}
+OK: Angular/SQL reales dark: confirmación, cola/bitácora/cancelación/recarga, respuesta perdida idempotente, resumen recuperado con Error original y agotado; Axe/reflujo 390px

@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "tipo": "cotizacion",
+      "pages": 1,
+      "passed": true
+    },
+    {
+      "tipo": "entrega",
+      "pages": 1,
+      "passed": true
+    }
+  ]
+}

@@ -23,6 +23,9 @@ import {
 } from '../../services/cotizacion.service';
 import { Producto } from '../../producto/producto.interface';
 import { Cliente } from '../../cliente/cliente.interface';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CotizacionVersionService } from '../../services/cotizacion-version.service';
+import { FinancialRequestIntent } from '../../shared/financial-request-intent';
 
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap } from 'rxjs/operators';
@@ -56,6 +59,10 @@ export class NuevaCotizacionComponent implements OnInit {
   retIsrGeneral = 0;
   totalGeneral = 0;
   isSaving = signal(false);
+  revisionSource=Number(inject(ActivatedRoute).snapshot.queryParamMap.get('revisionDe'))||0;
+  revisionId=0; revisionLoading=signal(false); revisionError=signal('');
+  revisionMotive=new FormControl('',{nonNullable:true});
+  private readonly versions=inject(CotizacionVersionService);private readonly router=inject(Router);private readonly revisionIntent=new FinancialRequestIntent();
   private readonly destroyRef = inject(DestroyRef);
 
   // Controles
@@ -88,9 +95,17 @@ export class NuevaCotizacionComponent implements OnInit {
     this.clienteService.getClientes().subscribe((data) => {
       this.listaClientes = data;
       this.clienteControl.updateValueAndValidity({ emitEvent: true });
+      if(this.revisionSource)this.loadRevision();
     });
 
   }
+
+  private loadRevision(){this.revisionLoading.set(true);this.versions.state(this.revisionSource).pipe(finalize(()=>this.revisionLoading.set(false)),takeUntilDestroyed(this.destroyRef)).subscribe({next:d=>{
+    if(!d.gestion||!d.actual||d.actual.idCotizacion!==this.revisionSource){this.revisionError.set('Abre la última revisión con permiso para versionar.');return;}
+    const client=this.listaClientes.find(c=>c.idCliente===d.snapshot.idCliente);if(!client){this.revisionError.set('El cliente ya no está disponible.');return;}
+    this.revisionId=d.actual.idRevision;this.clienteSeleccionado=client;this.clienteControl.setValue(client);this.clienteControl.disable();
+    this.carrito=d.snapshot.conceptos.map(c=>{const p=d.productos.find(p=>p.idProducto===c.idProducto);return{idProducto:c.idProducto,descripcion:c.descripcion,unidadDescripcion:c.unidad,cantidad:Number(c.cantidad),valorUnitario:Number(c.precio),importe:0,importeIva:0,importeRetIsr:0,objetoImpuesto:p?.objetoImpuesto,tasaIva:Number(p?.tasaIva??0),aplicaRetencionIsr:p?.aplicaRetencionIsr??false};});this.recalcularCarrito();
+  },error:()=>this.revisionError.set('No se pudo cargar la revisión. Vuelve al historial y reintenta.')});}
 
   configurarAutocompletes() {
     this.clientesFiltrados$ = this.clienteControl.valueChanges.pipe(
@@ -164,7 +179,7 @@ export class NuevaCotizacionComponent implements OnInit {
   }
 
   alCambiarValor(item: ConceptoCotizacion) {
-    if (!Number.isFinite(item.cantidad) || item.cantidad < 0.0001) item.cantidad = 1;
+    if (!Number.isFinite(item.cantidad) || item.cantidad < 0.000001) item.cantidad = 1;
     if (!Number.isFinite(item.valorUnitario) || item.valorUnitario < 0) item.valorUnitario = 0;
     this.recalcularRenglon(item);
     this.recalcularTotales();
@@ -191,7 +206,7 @@ export class NuevaCotizacionComponent implements OnInit {
   }
 
   guardar() {
-    if (this.isSaving()) return;
+    if (this.isSaving()||this.revisionLoading()||this.revisionError()) return;
     if (!this.clienteSeleccionado || this.carrito.length === 0) {
       this.snackBar.open('Selecciona cliente y productos', 'Ok', { duration: 3000 });
       return;
@@ -217,6 +232,11 @@ export class NuevaCotizacionComponent implements OnInit {
       })),
     };
 
+    if(this.revisionSource){if(!this.revisionId||!this.revisionMotive.value.trim()){this.snackBar.open('Indica el motivo de la nueva revisión.','Cerrar');return;}
+      try{const body={...dto,revisionAnterior:this.revisionId,motivo:this.revisionMotive.value.trim()},requestId=this.revisionIntent.begin('revision',body);this.isSaving.set(true);
+      this.versions.revise(this.revisionSource,{...body,requestId}).pipe(finalize(()=>this.isSaving.set(false)),takeUntilDestroyed(this.destroyRef)).subscribe({next:r=>{this.revisionIntent.success('revision');this.router.navigate(['/cotizacion',r.idCotizacion,'versiones']);},error:e=>{this.revisionIntent.failure('revision',e.status);this.snackBar.open(Array.isArray(e.error?.message)?e.error.message.join('. '):e.error?.message||'No se pudo confirmar la revisión. Reintenta sin cambiar los datos.','Cerrar');}});
+      }catch(e){this.snackBar.open(e instanceof Error?e.message:'Revisa los datos.','Cerrar');}return;
+    }
     this.isSaving.set(true);
     this.cotizacionService
       .crear(dto)

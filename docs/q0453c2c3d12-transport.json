@@ -1,0 +1,617 @@
+{
+  "generatedAt": "2026-10-05T18:29:14.837Z",
+  "postgresSettings": {
+    "version": "18.2",
+    "autovacuum": "on"
+  },
+  "profile": {
+    "name": "soak",
+    "readers": 8,
+    "readerPauseMs": 2000,
+    "businessPauseMs": 3000,
+    "financialPauseMs": 30000,
+    "sqlPauseMs": 60,
+    "duration": 600
+  },
+  "phase": "Q04.5.3c2c3d12",
+  "financialHttpResults": [
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "commercialDocuments": {
+        "ticketPdf": true,
+        "quotePdf": true,
+        "repPdf": true,
+        "repDraftXml": true,
+        "mockStampedXml": true,
+        "malformedIds400": true,
+        "missing404": true,
+        "anonymous401": true,
+        "stampPermission403": true,
+        "stampedReplayStable": true
+      },
+      "reversals": {
+        "documents": {
+          "pdfRoundtrip": true,
+          "xmlRoundtrip": true,
+          "missingPdf404": true,
+          "nonexistentInvoice404": true,
+          "unauthorized401": true,
+          "uploadPermission403": true,
+          "invalid400": true,
+          "oversized413": true,
+          "transportProbeCycles": 12,
+          "rejectedUploadsPreserveOriginal": true,
+          "unsafeXml400": true,
+          "xmlCreatedOverHttp": true
+        },
+        "legacyRejected": true,
+        "concurrentEight": true,
+        "rollbackAndRetry": true,
+        "payloadConflicts": 5,
+        "devolucionesConRedondeo": true,
+        "notaCreditoYCancelacion": true,
+        "cuentasProveedorLiquidadasRevertidas": true,
+        "polizasCanceladas": true,
+        "anticiposYNotasLiberados": true,
+        "permission403": true,
+        "dto400": true,
+        "unauthorized401": true,
+        "replays": 6,
+        "businessConflicts409": 2,
+        "cashCentsDelta": -100
+      },
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    }
+  ],
+  "transactionAgeScope": {
+    "client": "client backend: aplicación, escritor SQL y conexiones de medición; no exclusivamente HTTP",
+    "auxiliary": "backend_type distinto de client backend; incluye autovacuum",
+    "autovacuum": "autovacuum worker; subconjunto de auxiliares",
+    "peaks": "Máximos independientes muestreados cada 500 ms; no se suman ni equivalen a duración de solicitudes"
+  },
+  "transactionAgeContract": {
+    "mixedBackendTypes": true,
+    "otherDatabaseExcluded": true,
+    "emptyGroupsZero": true
+  },
+  "node": "24.19.0",
+  "fixturesPerDomain": 1000,
+  "poolMax": 10,
+  "secondsPerGroup": 120,
+  "relational": true,
+  "separateGenerator": true,
+  "schedulerJobs": 2,
+  "preflight": {
+    "throttler429": true,
+    "notificationJobExecuted": true,
+    "unauthorized401": true,
+    "invalidLimit400": true,
+    "invalidDate400": true,
+    "csvSixDomains": true
+  },
+  "groups": [
+    {
+      "financialClientMemory": {
+        "scope": "Cliente financiero/documental persistente separado; incluye fetch, Blob y una conexión PostgreSQL de verificación. No sumar picos independientes.",
+        "samples": 1168,
+        "elapsedMs": 123706.443,
+        "quarterSamples": 292,
+        "comparison": {
+          "rss": {
+            "firstMean": 202040193.75342464,
+            "lastMean": 581297194.0821918,
+            "deltaBytes": 379257000.3287672,
+            "peak": 685867008
+          },
+          "heapUsed": {
+            "firstMean": 10769236.547945205,
+            "lastMean": 13771506.10958904,
+            "deltaBytes": 3002269.561643835,
+            "peak": 16300280
+          },
+          "heapTotal": {
+            "firstMean": 17123271.89041096,
+            "lastMean": 23562941.369863015,
+            "deltaBytes": 6439669.479452055,
+            "peak": 31711232
+          },
+          "external": {
+            "firstMean": 17054125.407534245,
+            "lastMean": 26695087.81849315,
+            "deltaBytes": 9640962.410958905,
+            "peak": 119768602
+          },
+          "arrayBuffers": {
+            "firstMean": 134730692.28082192,
+            "lastMean": 503375821.42808217,
+            "deltaBytes": 368645129.14726025,
+            "peak": 608446758
+          }
+        },
+        "windows": [
+          {
+            "minute": 0,
+            "samples": 566,
+            "means": {
+              "rss": 266876595.10954064,
+              "heapUsed": 11125006.784452297,
+              "heapTotal": 17450523.137809187,
+              "external": 23126277.507067136,
+              "arrayBuffers": 197665913.75618374
+            },
+            "peaks": {
+              "rss": 407199744,
+              "heapUsed": 15489368,
+              "heapTotal": 31711232,
+              "external": 98769024,
+              "arrayBuffers": 335816228
+            }
+          },
+          {
+            "minute": 1,
+            "samples": 566,
+            "means": {
+              "rss": 509379710.64310956,
+              "heapUsed": 12742046.798586572,
+              "heapTotal": 22259936.339222614,
+              "external": 28710555.212014135,
+              "arrayBuffers": 432997616.7208481
+            },
+            "peaks": {
+              "rss": 685867008,
+              "heapUsed": 16300280,
+              "heapTotal": 28708864,
+              "external": 119768602,
+              "arrayBuffers": 608446758
+            }
+          },
+          {
+            "minute": 2,
+            "samples": 36,
+            "means": {
+              "rss": 645762844.4444444,
+              "heapUsed": 15213149.777777778,
+              "heapTotal": 24776704,
+              "external": 25429913.666666668,
+              "arrayBuffers": 566569538.6666666
+            },
+            "peaks": {
+              "rss": 645885952,
+              "heapUsed": 15351872,
+              "heapTotal": 24776704,
+              "external": 25429937,
+              "arrayBuffers": 566569562
+            }
+          }
+        ]
+      },
+      "processScope": "Padre: AppModule, monitor, escritor SQL y cliente HTTP de almacén/pagos; cliente financiero/documental y lectores separados. No es servidor puro.",
+      "business": {
+        "transfers": 78,
+        "assembled": 39,
+        "disassembled": 39,
+        "payments": 39,
+        "replays": 12
+      },
+      "financialCycles": 4,
+      "businessIntegrity": {
+        "stockPhysicalAligned": true,
+        "stockRestored": true,
+        "paymentBalanceCashAligned": true
+      },
+      "postgresProcesses": {
+        "samples": 24,
+        "availableSamples": 24,
+        "unavailableSamples": 0,
+        "workingSetSumPeakBytes": 530989056,
+        "cpuMillisecondsDelta": 11421.875,
+        "readTransferBytesDelta": 3579100,
+        "writeTransferBytesDelta": 57920559,
+        "maxDeadTuples": 4632,
+        "maxLiveTuples": 248592,
+        "autovacuumCountPeak": 21
+      },
+      "walBytesClusterWide": 27884976,
+      "readers": 8,
+      "generatorResources": {
+        "rssPeak": 71049216,
+        "heapPeak": 16513600,
+        "cpuMicroseconds": {
+          "user": 1204000,
+          "system": 390000
+        },
+        "eventLoopP95Ms": 34.996223
+      },
+      "readWindows": [
+        {
+          "minute": 0,
+          "requests": 232,
+          "p95": 58.72400000000016
+        },
+        {
+          "minute": 1,
+          "requests": 232,
+          "p95": 58.33419999999751
+        },
+        {
+          "minute": 2,
+          "requests": 8,
+          "p95": 34.38430000000517
+        }
+      ],
+      "postgres": {
+        "peak": {
+          "samples": 236,
+          "connections": 14,
+          "active": 2,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 0.380431,
+          "clientConnections": 13,
+          "auxiliaryConnections": 1,
+          "maxClientTransactionAgeSeconds": 0.027984,
+          "maxAuxiliaryTransactionAgeSeconds": 0.380433,
+          "maxAutovacuumTransactionAgeSeconds": 0.380434
+        },
+        "countersDelta": {
+          "xact_commit": 5551,
+          "xact_rollback": 76,
+          "blks_read": 67,
+          "blks_hit": 661779,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 472,
+      "writerCommits": 1684,
+      "elapsedMs": 125271.8366,
+      "rps": 3.7678061790306665,
+      "p50": 27.76589999999851,
+      "p95": 58.33419999999751,
+      "max": 89.52419999999984,
+      "rssPeak": 226463744,
+      "heapPeak": 85792104,
+      "poolConnectionsPeak": 10,
+      "poolWaitingPeak": 0,
+      "memoryDiagnostic": {
+        "scope": "Padre: AppModule, monitor, escritor SQL y cliente HTTP de almacén/pagos; cliente financiero/documental y lectores separados. No es servidor puro.",
+        "samples": 1199,
+        "elapsedMs": 125269.1944,
+        "quarterSamples": 299,
+        "comparison": {
+          "rss": {
+            "firstMean": 144684021.7257525,
+            "lastMean": 178261851.61204013,
+            "deltaBytes": 33577829.88628763,
+            "peak": 226463744
+          },
+          "heapUsed": {
+            "firstMean": 57077438.66220736,
+            "lastMean": 64490759.224080265,
+            "deltaBytes": 7413320.561872907,
+            "peak": 85792104
+          },
+          "heapTotal": {
+            "firstMean": 86021630.28762542,
+            "lastMean": 121174789.99331103,
+            "deltaBytes": 35153159.705685616,
+            "peak": 131358720
+          },
+          "external": {
+            "firstMean": 5900494.692307692,
+            "lastMean": 6284861.08361204,
+            "deltaBytes": 384366.39130434766,
+            "peak": 47396596
+          },
+          "arrayBuffers": {
+            "firstMean": 1725600.4715719065,
+            "lastMean": 2119359.7926421403,
+            "deltaBytes": 393759.3210702338,
+            "peak": 42756437
+          }
+        },
+        "windows": [
+          {
+            "minute": 0,
+            "samples": 572,
+            "means": {
+              "rss": 144701053.3146853,
+              "heapUsed": 57166754.62937063,
+              "heapTotal": 85364965.14685315,
+              "external": 5900333.5227272725,
+              "arrayBuffers": 1719859.8286713287
+            },
+            "peaks": {
+              "rss": 226463744,
+              "heapUsed": 85792104,
+              "heapTotal": 131358720,
+              "external": 46919293,
+              "arrayBuffers": 42756437
+            }
+          },
+          {
+            "minute": 1,
+            "samples": 576,
+            "means": {
+              "rss": 171358968.8888889,
+              "heapUsed": 63146903.708333336,
+              "heapTotal": 115554531.55555555,
+              "external": 6130800.397569444,
+              "arrayBuffers": 1969977.611111111
+            },
+            "peaks": {
+              "rss": 220823552,
+              "heapUsed": 78294152,
+              "heapTotal": 125014016,
+              "external": 47396596,
+              "arrayBuffers": 42682915
+            }
+          },
+          {
+            "minute": 2,
+            "samples": 51,
+            "means": {
+              "rss": 175441879.84313726,
+              "heapUsed": 63996386.823529415,
+              "heapTotal": 120819712,
+              "external": 5749487.764705882,
+              "arrayBuffers": 1593724.7647058824
+            },
+            "peaks": {
+              "rss": 175931392,
+              "heapUsed": 64979296,
+              "heapTotal": 120819712,
+              "external": 5786811,
+              "arrayBuffers": 1631048
+            }
+          }
+        ]
+      },
+      "cpuMicroseconds": {
+        "user": 12156000,
+        "system": 3516000
+      },
+      "eventLoopP95Ms": 34.635775,
+      "eventLoopMaxMs": 103.743487,
+      "idleTransactions": 0,
+      "cases": {
+        "proveedor:%": 23,
+        "cliente:": 17,
+        "proveedor:": 21,
+        "proveedor:Q04HTTPONLY": 24,
+        "cliente:%": 19,
+        "proveedor:Q04TARGET": 22,
+        "cliente:Q04TARGET": 18,
+        "cliente:Q04HTTPONLY": 20,
+        "producto:": 24,
+        "producto:Q04TARGET": 24,
+        "producto:%": 24,
+        "producto:Q04HTTPONLY": 23,
+        "cotizacion:": 22,
+        "cotizacion:Q04TARGET": 21,
+        "cotizacion:%": 20,
+        "cotizacion:Q04HTTPONLY": 19,
+        "compra:": 18,
+        "compra:Q04TARGET": 17,
+        "compra:%": 16,
+        "compra:Q04HTTPONLY": 16,
+        "venta:": 16,
+        "venta:Q04TARGET": 16,
+        "venta:%": 16,
+        "venta:Q04HTTPONLY": 16
+      },
+      "errors": 0,
+      "objectives": {
+        "scope": "Objetivos provisionales de regresión local; no SLA productivo ni certificación de fuga de memoria",
+        "goals": {
+          "readP95Ms": 500,
+          "eventLoopP95Ms": 100,
+          "rssGrowthBytes": 134217728
+        },
+        "firstRssMean": 144684021.7257525,
+        "lastRssMean": 178261851.61204013,
+        "rssGrowthBytes": 33577829.88628763,
+        "samples": 1199,
+        "checks": {
+          "readP95": true,
+          "eventLoopP95": true,
+          "rssGrowth": true,
+          "readsAndWrites": true,
+          "integrity": true
+        },
+        "passed": true
+      }
+    }
+  ],
+  "limitations": [
+    "Documentos proveedor por HTTP: XML de prueba ingresado por JSON y PDF multipart, hashes/bytes/MIME/disposición y rechazos. PDF mínimo sintético: no certifica renderizado, estructura completa, antivirus ni autenticidad fiscal del XML.",
+    "Ocho solicitudes concurrentes por operación de proveedor; UUID mayúscula, contenido/operación distinta 409 y rollback tras efectos financieros. Registros anteriores sin huella se rechazan. No prueba caída física ni todas las carreras entre operaciones con claves distintas.",
+    "Seis proyecciones reales; transferencias/kits/cobros por HTTP y mutación SQL de nombres para carreras total/página. Modalidad financiera indicada por financialHttpResults; escritores de caja coordinados. Imágenes como metadatos, no archivos.",
+    "Carga cerrada, caché caliente y ventanas de 120 segundos y 1000 registros por dominio: no certificación de capacidad máxima, SLA ni soak de horas.",
+    "Cliente financiero/documental y lectores separados; padre incluye servidor, monitor, escritor SQL y cliente de almacen/pagos. Una conexion PG adicional del cliente; pool de aplicacion sin ajuste, maximo 10. No es servidor puro. No sumar picos independientes ni inferir causalidad entre ventanas."
+  ]
+}

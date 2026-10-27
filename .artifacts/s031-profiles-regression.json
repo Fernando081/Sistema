@@ -1,0 +1,24 @@
+{
+  "phase": "S01",
+  "startedAt": "2026-10-20T00:19:38.826Z",
+  "checks": [
+    "Respaldo restaurado y migración verificada/aplicada en copia; accesos anteriores sin asignaciones nuevas",
+    "Login real bcrypt/JWT: anónimo401, operador403 en administración; permisos base conservados",
+    "Catálogo privado y validación de nombres, duplicados, permisos desconocidos, DTO y perfil prohibido para administradores",
+    "Perfil reutilizado por dos operadores; asignación revoca sesiones, no escala a administrador y bloquea eliminación con usuarios",
+    "Lista vacía deniega permisos base; excepción concede sobre perfil, retirarla restaura herencia; JWT revocado y editor viejo409",
+    "Ediciones concurrentes: un commit y un409; denegación individual prevalece sobre perfil permitido",
+    "Promoción explícita conserva rol base protegido, retira perfil y revoca JWT previo",
+    "Administrador revocado durante la operación rechazado dentro de transacción de perfiles y excepciones",
+    "Angular producción sin mocks: login, crear perfil, asignar operador y guardar/retirar solo excepciones",
+    "Duplicar y eliminar perfil sin asignaciones desde UI real",
+    "Editor claro/1280 y oscuro/390 sin desbordamiento de página, errores JS ni infracciones axe en panel de perfiles",
+    "Retiro del perfil restaura rol base; perfil sin usuarios eliminable, borrado repetido404"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "passed": true,
+  "completedAt": "2026-10-20T00:19:51.040Z",
+  "copyRemoved": true,
+  "lastStage": "Angular"
+}

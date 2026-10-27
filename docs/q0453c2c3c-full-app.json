@@ -1,0 +1,131 @@
+{
+  "generatedAt": "2026-10-02T19:06:19.529Z",
+  "postgresSettings": {
+    "version": "18.2",
+    "autovacuum": "on"
+  },
+  "phase": "Q04.5.3c2c3c",
+  "node": "24.19.0",
+  "fixturesPerDomain": 20000,
+  "poolMax": 10,
+  "secondsPerGroup": 300,
+  "relational": true,
+  "separateGenerator": true,
+  "schedulerJobs": 2,
+  "preflight": {
+    "throttler429": true,
+    "notificationJobExecuted": true,
+    "unauthorized401": true,
+    "invalidLimit400": true,
+    "invalidDate400": true,
+    "csvSixDomains": true
+  },
+  "groups": [
+    {
+      "business": {
+        "transfers": 288,
+        "assembled": 144,
+        "disassembled": 144,
+        "payments": 144,
+        "replays": 44
+      },
+      "financialCycles": 15,
+      "businessIntegrity": {
+        "stockPhysicalAligned": true,
+        "stockRestored": true,
+        "paymentBalanceCashAligned": true
+      },
+      "postgresProcesses": {
+        "samples": 57,
+        "availableSamples": 57,
+        "unavailableSamples": 0,
+        "workingSetSumPeakBytes": 631009280,
+        "cpuMillisecondsDelta": 53781.25,
+        "readTransferBytesDelta": 8456833,
+        "writeTransferBytesDelta": 329105912,
+        "maxDeadTuples": 23562,
+        "maxLiveTuples": 824412,
+        "autovacuumCountPeak": 31
+      },
+      "walBytesClusterWide": 123744024,
+      "readers": 8,
+      "generatorResources": {
+        "rssPeak": 75206656,
+        "heapPeak": 17980992,
+        "cpuMicroseconds": {
+          "user": 3640000,
+          "system": 672000
+        },
+        "eventLoopP95Ms": 34.897919
+      },
+      "postgres": {
+        "peak": {
+          "samples": 593,
+          "connections": 10,
+          "active": 5,
+          "waiting": 1,
+          "maxTransactionAgeSeconds": 16.952344
+        },
+        "countersDelta": {
+          "xact_commit": 14366,
+          "xact_rollback": 120,
+          "blks_read": 36487,
+          "blks_hit": 5377583,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 1567,
+      "writerCommits": 6890,
+      "elapsedMs": 306461.0738,
+      "rps": 5.113210563970816,
+      "p50": 25.31899999998859,
+      "p95": 65.10050000000047,
+      "max": 202.2666999999783,
+      "rssPeak": 174256128,
+      "heapPeak": 82287616,
+      "poolConnectionsPeak": 8,
+      "poolWaitingPeak": 0,
+      "cpuMicroseconds": {
+        "user": 18922000,
+        "system": 7125000
+      },
+      "eventLoopP95Ms": 33.914879,
+      "eventLoopMaxMs": 45.744127,
+      "idleTransactions": 0,
+      "cases": {
+        "cliente:": 65,
+        "cliente:Q04TARGET": 66,
+        "proveedor:": 68,
+        "cliente:Q04HTTPONLY": 68,
+        "proveedor:Q04TARGET": 68,
+        "proveedor:Q04HTTPONLY": 68,
+        "cliente:%": 67,
+        "proveedor:%": 68,
+        "producto:": 67,
+        "producto:Q04TARGET": 66,
+        "producto:%": 64,
+        "producto:Q04HTTPONLY": 64,
+        "cotizacion:": 64,
+        "cotizacion:Q04TARGET": 64,
+        "cotizacion:%": 64,
+        "cotizacion:Q04HTTPONLY": 64,
+        "compra:": 64,
+        "compra:Q04TARGET": 64,
+        "compra:%": 64,
+        "compra:Q04HTTPONLY": 64,
+        "venta:": 64,
+        "venta:Q04TARGET": 64,
+        "venta:%": 64,
+        "venta:Q04HTTPONLY": 64
+      },
+      "errors": 0
+    }
+  ],
+  "limitations": [
+    "AppModule completo con JWT/permisos/scheduler/ThrottlerGuard; fiscal mock. Flujos financieros usan servicios reales sobre DataSource de aplicación, no todos por HTTP.",
+    "Seis proyecciones reales; transferencias/kits/cobros por HTTP y mutación SQL de nombres para carreras total/página. Venta/compra/REP/pedidos/abastecimiento/cuentas proveedor por servicios en paralelo; imágenes como metadatos, no archivos.",
+    "Carga cerrada, caché caliente y ventanas de 300 segundos y 20000 registros por dominio: no certificación de capacidad máxima, SLA ni soak de horas.",
+    "CPU/memoria/event loop del padre incluyen servidor, escritor y monitor; generador en hijo separado. PostgreSQL: actividad, tuplas/autovacuum y CPU/working set/transferencia de procesos asociados a la copia muestreados con CIM Windows. Working sets sumados incluyen páginas compartidas; I/O de proceso incluye red y no equivale a disco. WAL global del cluster incluye otras bases; estadísticas pueden retrasarse. Pool de aplicación sin ajuste, observado máximo 10."
+  ]
+}

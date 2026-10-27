@@ -1,0 +1,98 @@
+{
+  "passed": true,
+  "checkedAt": "2026-10-21T04:44:58.224Z",
+  "sqlReadOnly": true,
+  "tables": {
+    "crm_consentimiento_comercial": 0,
+    "crm_campana_preparacion": 0
+  },
+  "checks": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm/campanas",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/cliente",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/portal",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4600/catalogo",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/campanas-locales",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/campanas-locales/1/destinatarios",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/clientes/1/consentimiento-comercial",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/clientes/1/consentimiento-comercial/historial",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/campanas-locales",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/portal/archivos",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "106 aplicada con checksum vigente",
+      "passed": true
+    },
+    {
+      "name": "crm_consentimiento_comercial registros observados",
+      "rows": 0,
+      "passed": true
+    },
+    {
+      "name": "crm_campana_preparacion registros observados",
+      "rows": 0,
+      "passed": true
+    },
+    {
+      "name": "Permiso ADMIN inicial",
+      "passed": true
+    },
+    {
+      "name": "Guardas ALWAYS de conservación",
+      "passed": true
+    }
+  ]
+}

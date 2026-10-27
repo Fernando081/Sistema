@@ -1,0 +1,49 @@
+
+> test:web-publica-ui
+> playwright test --config public-web/playwright.config.ts
+
+[WebServer] (node:18908) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 32 tests using 1 worker
+
+(node:11032) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Web pública: 15 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+  ok  1 public-web\ui-tests\lead-catalog.spec.ts:9:3 › catálogo a solicitud mixta 390: selección, fallo y reintento sin JavaScript (2.6s)
+Web pública: 15 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+  ok  2 public-web\ui-tests\lead-catalog.spec.ts:9:3 › catálogo a solicitud mixta 1440: selección, fallo y reintento sin JavaScript (1.9s)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+  ok  3 public-web\ui-tests\lead-form.spec.ts:8:3 › solicitud multipieza 390 sin JavaScript conserva datos tras timeout y confirma por POST (1.7s)
+Web pública: 11 páginas; máximo HTML+CSS 23093 bytes; JavaScript cliente 0 bytes.
+  ok  4 public-web\ui-tests\lead-form.spec.ts:8:3 › solicitud multipieza 1440 sin JavaScript conserva datos tras timeout y confirma por POST (1.8s)
+  ok  5 public-web\ui-tests\web.spec.ts:5:1 › error de consulta ofrece recuperación accesible en móvil (531ms)
+  ok  6 public-web\ui-tests\web.spec.ts:28:1 › cotización contextual móvil sin JavaScript conserva pieza y cantidad (1.1s)
+  ok  7 public-web\ui-tests\web.spec.ts:129:1 › formulario de búsqueda GET funciona sin JavaScript (255ms)
+  ok  8 public-web\ui-tests\web.spec.ts:168:5 › Web pública / 390: sin JavaScript, accesibilidad y diseño (831ms)
+  ok  9 public-web\ui-tests\web.spec.ts:168:5 › Web pública /catalogo 390: sin JavaScript, accesibilidad y diseño (915ms)
+  ok 10 public-web\ui-tests\web.spec.ts:168:5 › Web pública /buscar 390: sin JavaScript, accesibilidad y diseño (730ms)
+  ok 11 public-web\ui-tests\web.spec.ts:168:5 › Web pública /contacto 390: sin JavaScript, accesibilidad y diseño (871ms)
+  ok 12 public-web\ui-tests\web.spec.ts:168:5 › Web pública /nosotros 390: sin JavaScript, accesibilidad y diseño (670ms)
+  ok 13 public-web\ui-tests\web.spec.ts:168:5 › Web pública /marcas 390: sin JavaScript, accesibilidad y diseño (725ms)
+  ok 14 public-web\ui-tests\web.spec.ts:168:5 › Web pública /categorias 390: sin JavaScript, accesibilidad y diseño (703ms)
+  ok 15 public-web\ui-tests\web.spec.ts:168:5 › Web pública /diseno/ficha 390: sin JavaScript, accesibilidad y diseño (693ms)
+  ok 16 public-web\ui-tests\web.spec.ts:168:5 › Web pública /diseno/categoria 390: sin JavaScript, accesibilidad y diseño (765ms)
+  ok 17 public-web\ui-tests\web.spec.ts:168:5 › Web pública / 1440: sin JavaScript, accesibilidad y diseño (890ms)
+  ok 18 public-web\ui-tests\web.spec.ts:168:5 › Web pública /catalogo 1440: sin JavaScript, accesibilidad y diseño (703ms)
+  ok 19 public-web\ui-tests\web.spec.ts:168:5 › Web pública /buscar 1440: sin JavaScript, accesibilidad y diseño (717ms)
+  ok 20 public-web\ui-tests\web.spec.ts:168:5 › Web pública /contacto 1440: sin JavaScript, accesibilidad y diseño (904ms)
+  ok 21 public-web\ui-tests\web.spec.ts:168:5 › Web pública /nosotros 1440: sin JavaScript, accesibilidad y diseño (685ms)
+  ok 22 public-web\ui-tests\web.spec.ts:168:5 › Web pública /marcas 1440: sin JavaScript, accesibilidad y diseño (757ms)
+  ok 23 public-web\ui-tests\web.spec.ts:168:5 › Web pública /categorias 1440: sin JavaScript, accesibilidad y diseño (732ms)
+  ok 24 public-web\ui-tests\web.spec.ts:168:5 › Web pública /diseno/ficha 1440: sin JavaScript, accesibilidad y diseño (732ms)
+  ok 25 public-web\ui-tests\web.spec.ts:168:5 › Web pública /diseno/categoria 1440: sin JavaScript, accesibilidad y diseño (712ms)
+  ok 26 public-web\ui-tests\web.spec.ts:235:3 › Reflujo y teclado 320 (317ms)
+  ok 27 public-web\ui-tests\web.spec.ts:235:3 › Reflujo y teclado 768 (299ms)
+  ok 28 public-web\ui-tests\web.spec.ts:260:1 › ficha con alternativa revisada: enlace y accesibilidad móvil con fixture aislada (707ms)
+  ok 29 public-web\ui-tests\web.spec.ts:332:3 › Ampliación PNG sin JavaScript 390 (528ms)
+  ok 30 public-web\ui-tests\web.spec.ts:332:3 › Ampliación PNG sin JavaScript 1440 (519ms)
+  ok 31 public-web\ui-tests\web.spec.ts:451:1 › navegación paginada de catálogo y marca sin JavaScript (486ms)
+  ok 32 public-web\ui-tests\web.spec.ts:505:1 › consulta de pieza no publicada conserva datos y no envía automáticamente (875ms)
+
+  32 passed (29.9s)

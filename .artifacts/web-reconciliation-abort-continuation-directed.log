@@ -1,0 +1,23 @@
+✔ continúa las seis etapas desde tres reconciliaciones; preserva bytes y sólo crea recibos faltantes de cancelación (18977.4367ms)
+✔ conserva publicación residual y requiere su recuperación independiente (1164.8523ms)
+✔ rechaza revisión mal formada, IDs originales, cambios previos, trasplante y secuencias imposibles sin mutar (12189.0615ms)
+✔ propietario activo, extranjero, inválido, guarda ausente o sin vínculo no son elegibles (5033.4363ms)
+✔ concurrencia permite una continuación y cambio de revisor impide replay (1014.865ms)
+✔ nueve cortes mantienen exclusión de once herramientas y no certifican un recibo v2 hasta cerrar su auditoría (11802.0706ms)
+✔ recibo v1 previo permanece cancelled aunque una nueva auditoría quede parcial y pierda guardas (1149.2896ms)
+✔ sustituciones durante continuación conservan evidencia y no confirman éxito (8835.7535ms)
+✔ fallo de IO tras retirar finalización deja resultado incierto, guarda propia y cancelación v2 pendiente (1116.5245ms)
+✔ alteración posterior de archivos, recibos o vínculos invalida el diagnóstico y el replay (6429.9023ms)
+✔ dos intenciones vinculadas al mismo bloqueo no eligen una cancelación arbitraria (869.868ms)
+✔ CLI valida argumentos, planes sólo observan y fallo elimina resultado anterior sin divulgar datos (1620.076ms)
+✔ reserva archivos faltantes dentro del límite600 y rechaza sin truncar evidencia (9062.8598ms)
+✔ dos auditorías completas del mismo aborto previo son ambiguas aunque sus vínculos sean válidos (2549.2262ms)
+✔ recibo ligado a otra continuación no certifica cancelación y replay histórico conserva puntero posterior (1893.8489ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83857.6388

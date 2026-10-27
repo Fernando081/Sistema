@@ -1,3 +1,9 @@
+import { Cliente } from '../../cliente/cliente.interface';
+import { FacturaPendiente, RepHistorial } from '../../services/pago-api.types';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { FiscalCancellation } from '../../services/fiscal.service';
+interface FacturaRepEditable extends Omit<FacturaPendiente, 'total' | 'saldo_pendiente'> { total: number; saldo_pendiente: number; montoSaldado: number; }
 // frontend/src/app/rep/rep-create/rep-create.component.ts
 import { Component, OnInit, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -38,22 +44,24 @@ export class RepCreateComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private pendingRequest?: Subscription;
   // Cliente Control AutoComplete
-  clienteControl = new FormControl('');
-  clientesOriginales: any[] = [];
-  clientesFiltrados!: Observable<any[]>;
-  clienteSeleccionado: any = null;
+  clienteControl = new FormControl<string | Cliente>('', { nonNullable: true });
+  clientesOriginales: Cliente[] = [];
+  clientesFiltrados!: Observable<Cliente[]>;
+  clienteSeleccionado: Cliente | null = null;
 
   // Facturas PPD Data
-  facturasPendientes: any[] = [];
+  facturasPendientes: FacturaRepEditable[] = [];
   displayedColumns: string[] = ['folio', 'total', 'saldo', 'abono', 'insoluto'];
   
   // Forma principal CFDI REP
-  repForm: FormGroup;
+  repForm: FormGroup<{ fechaPago: FormControl<string>; formaPago: FormControl<string>; moneda: FormControl<string>; cuentaBeneficiario: FormControl<string>; rfcBeneficiario: FormControl<string> }>;
   totalRep: number = 0;
   isSaving: boolean = false;
+  private repAttempt?: { signature: string; requestId: string };
+  repPendingConfirmation = false;
 
   // Historial Data
-  historialReps: any[] = [];
+  historialReps: RepHistorial[] = [];
   displayedColumnsHistorico: string[] = ['id_rep', 'fecha_pago', 'cliente', 'estado', 'fiscal', 'total', 'acciones'];
   fiscalConfiguration?: FiscalConfiguration;
   fiscalOperationId?: number;
@@ -67,7 +75,7 @@ export class RepCreateComponent implements OnInit {
     private fiscalService: FiscalService,
     private dialog: MatDialog,
   ) {
-    this.repForm = this.fb.group({
+    this.repForm = this.fb.nonNullable.group({
       fechaPago: [localDate(), Validators.required],
       formaPago: ['Transferencia', Validators.required],
       moneda: ['MXN', Validators.required],
@@ -95,31 +103,31 @@ export class RepCreateComponent implements OnInit {
 
   cargarHistorial() {
     this.pagoService.getHistorialReps().subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.historialReps = res || [];
         this.cdr.detectChanges();
       },
-      error: (e: any) => console.error('Error cargando historial:', e)
+      error: (e: unknown) => console.error('Error cargando historial:', e)
     });
   }
 
   cargarClientes() {
     this.clienteService.getClientes().subscribe({
-      next: (res: any) => {
-        this.clientesOriginales = res.data || res;
+      next: (res) => {
+        this.clientesOriginales = res;
         this.clientesFiltrados = this.clienteControl.valueChanges.pipe(
           startWith(''),
           map(value => {
-            const name = typeof value === 'string' ? value : (value as any)?.razonSocial;
+            const name = typeof value === 'string' ? value : value?.razonSocial;
             return name ? this._filterClientes(name) : this.clientesOriginales.slice();
           })
         );
       },
-      error: (e: any) => console.error('Error cargando clientes:', e)
+      error: (e: unknown) => console.error('Error cargando clientes:', e)
     });
   }
 
-  private _filterClientes(name: string): any[] {
+  private _filterClientes(name: string): Cliente[] {
     const filterValue = name.toLowerCase();
     return this.clientesOriginales.filter(c => 
       c.razonSocial?.toLowerCase().includes(filterValue) || 
@@ -127,13 +135,17 @@ export class RepCreateComponent implements OnInit {
     );
   }
 
-  mostrarNombreCliente(cliente: any): string {
-    return cliente && cliente.razonSocial ? cliente.razonSocial : '';
+  mostrarNombreCliente(cliente: Cliente | string | null): string {
+    return typeof cliente === 'object' && cliente ? cliente.razonSocial : '';
   }
 
-  onClienteSeleccionado(event: any) {
-    this.clienteSeleccionado = event.option.value;
-    this.cargarFacturasPpd(this.clienteSeleccionado.idCliente);
+  onClienteSeleccionado(event: MatAutocompleteSelectedEvent) {
+    const cliente: unknown = event.option.value;
+    if (!cliente || typeof cliente !== 'object' || !('idCliente' in cliente)) return;
+    const selected = this.clientesOriginales.find(item => item.idCliente === cliente.idCliente);
+    if (!selected) return;
+    this.clienteSeleccionado = selected;
+    this.cargarFacturasPpd(selected.idCliente);
   }
 
   cargarFacturasPpd(idCliente: number) {
@@ -142,19 +154,20 @@ export class RepCreateComponent implements OnInit {
     this.totalRep = 0;
     
     this.pendingRequest = this.pagoService.getPpdPendientes(idCliente).subscribe({
-      next: (res: any) => {
-        const facturas = res.data || res;
-        this.facturasPendientes = facturas.map((f: any) => ({
+      next: (res) => {
+        const facturas = res;
+        this.facturasPendientes = facturas.map((f) => ({
           ...f,
+          total: Number(f.total), saldo_pendiente: Number(f.saldo_pendiente),
           montoSaldado: 0 // Iniciar abono en cero
         }));
         this.cdr.detectChanges();
       },
-      error: (e: any) => this.snackBar.open('Error al cargar facturas PPD', 'Ok', {duration: 3000})
+      error: (e: unknown) => this.snackBar.open('Error al cargar facturas PPD', 'Ok', {duration: 3000})
     });
   }
 
-  validarMontoSaldado(f: any) {
+  validarMontoSaldado(f: FacturaRepEditable) {
     const abono = Number(f.montoSaldado) || 0;
     const maximo = Number(f.saldo_pendiente) || 0;
 
@@ -192,7 +205,7 @@ export class RepCreateComponent implements OnInit {
        return;
     }
 
-    const val = this.repForm.value;
+    const val = this.repForm.getRawValue();
     const dto: RegistrarRepDto = {
       idCliente: this.clienteSeleccionado.idCliente,
       fechaPago: val.fechaPago,
@@ -204,10 +217,19 @@ export class RepCreateComponent implements OnInit {
       facturas: facturasAAbonar
     };
 
+    const signature=JSON.stringify({...dto,facturas:[...dto.facturas].sort((a,b)=>a.idFactura-b.idFactura)});
+    if(this.repAttempt&&this.repAttempt.signature!==signature){
+      this.snackBar.open('Hay un REP pendiente de confirmar. Reintenta con los mismos datos o consulta el historial antes de registrar otro.', 'Cerrar', {duration:8000});
+      return;
+    }
+    this.repAttempt??={signature,requestId:crypto.randomUUID()};
+    dto.requestId=this.repAttempt.requestId;
     this.isSaving = true;
     this.pagoService.registrarRep(dto).subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.isSaving = false;
+        this.repAttempt=undefined;
+        this.repPendingConfirmation=false;
         const snackRef = this.snackBar.open('REP Registrado exitosamente', 'Ver Recibo PDF', { duration: 8000 });
         
         snackRef.onAction().subscribe(() => {
@@ -235,9 +257,12 @@ export class RepCreateComponent implements OnInit {
         // Recargar el historial
         this.cargarHistorial();
       },
-      error: (e: any) => {
+      error: (e: unknown) => {
         this.isSaving = false;
-        this.snackBar.open('Error al generar REP: ' + (e.error?.message || e.message), 'Cerrar');
+        const definitive=e instanceof HttpErrorResponse&&e.status>=400&&e.status<500&&![408,409,429].includes(e.status);
+        if(definitive)this.repAttempt=undefined;
+        this.repPendingConfirmation=!definitive;
+        this.snackBar.open('Error al generar REP: ' + this.errorMessage(e), 'Cerrar');
       }
     });
   }
@@ -251,7 +276,7 @@ export class RepCreateComponent implements OnInit {
     });
   }
 
-  descargarXml(rep: any) {
+  descargarXml(rep: RepHistorial) {
     const request = rep.tiene_xml_fiscal
       ? this.fiscalService.xml('reps', rep.id_rep)
       : this.pagoService.descargarRepXml(rep.id_rep);
@@ -264,11 +289,11 @@ export class RepCreateComponent implements OnInit {
   }
 
   cancelarRep(idRep: number) {
-    this.dialog.open(FiscalCancelDialogComponent, { width: '560px', data: { label: `REP-${idRep}` } }).afterClosed().subscribe(fiscal => {
+    this.dialog.open<FiscalCancelDialogComponent, { label: string }, FiscalCancellation>(FiscalCancelDialogComponent, { width: '560px', data: { label: `REP-${idRep}` } }).afterClosed().subscribe(fiscal => {
       if (!fiscal) return;
       this.fiscalOperationId = idRep;
       this.pagoService.cancelarRep(idRep, fiscal).subscribe({
-        next: (response: any) => {
+        next: (response) => {
         this.fiscalOperationId = undefined;
         this.snackBar.open(response.message || 'Solicitud procesada', 'Cerrar', {duration: 6000});
         this.cargarHistorial();
@@ -277,9 +302,9 @@ export class RepCreateComponent implements OnInit {
            this.cargarFacturasPpd(this.clienteSeleccionado.idCliente);
         }
       },
-        error: (error: any) => {
+        error: (error: unknown) => {
           this.fiscalOperationId = undefined;
-          this.snackBar.open(error.error?.message || 'Error al cancelar REP', 'Cerrar', {duration: 5000});
+          this.snackBar.open(this.errorMessage(error, 'Error al cancelar REP'), 'Cerrar', {duration: 5000});
         },
       });
     });
@@ -302,10 +327,18 @@ export class RepCreateComponent implements OnInit {
     });
   }
 
-  descargarAcuse(rep: any) {
+  descargarAcuse(rep: RepHistorial) {
     this.fiscalService.acknowledgement('reps', rep.id_rep).subscribe({
       next: blob => downloadDocument(blob, `ACUSE_REP_${rep.id_rep}.xml`),
       error: error => this.snackBar.open(error.error?.message || 'Acuse no disponible', 'Cerrar', { duration: 4000 }),
     });
+  }
+  private errorMessage(error: unknown, fallback = 'No fue posible procesar la solicitud'): string {
+    if (error instanceof HttpErrorResponse) {
+      const body: unknown = error.error;
+      if (body && typeof body === 'object' && 'message' in body && typeof body.message === 'string') return body.message;
+      return error.message || fallback;
+    }
+    return error instanceof Error ? error.message : fallback;
   }
 }

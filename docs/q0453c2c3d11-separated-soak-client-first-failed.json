@@ -1,0 +1,97 @@
+{
+  "generatedAt": "2026-10-03T21:38:32.910Z",
+  "phase": "Q04.5.3c2c3d11",
+  "status": "failed",
+  "failure": "Cliente financiero terminó: 17",
+  "injectedCoverageFailure": false,
+  "injectedObjectiveFailure": false,
+  "secondsPerGroup": 40,
+  "fixtureCount": 1000,
+  "profile": {
+    "name": "soak",
+    "readers": 8,
+    "readerPauseMs": 2000,
+    "businessPauseMs": 3000,
+    "financialPauseMs": 30000,
+    "sqlPauseMs": 60,
+    "duration": 600
+  },
+  "groups": [
+    {
+      "elapsedMs": 5535.2287,
+      "requests": 0,
+      "writerCommits": 8,
+      "financialCycles": 0,
+      "business": {
+        "transfers": 2,
+        "assembled": 1,
+        "disassembled": 1,
+        "payments": 1,
+        "replays": 2
+      },
+      "memoryDiagnostic": {
+        "scope": "Padre: AppModule, monitor, escritor SQL y cliente de almacen/pagos; lectores y cliente financiero/documental separados.",
+        "samples": 54,
+        "elapsedMs": 5534.971699999998,
+        "quarterSamples": 13,
+        "comparison": {
+          "rss": {
+            "firstMean": 161752300.30769232,
+            "lastMean": 163509484.30769232,
+            "deltaBytes": 1757184,
+            "peak": 163553280
+          },
+          "heapUsed": {
+            "firstMean": 71261025.23076923,
+            "lastMean": 72763131.07692307,
+            "deltaBytes": 1502105.8461538404,
+            "peak": 72822736
+          },
+          "heapTotal": {
+            "firstMean": 121336753.23076923,
+            "lastMean": 121540608,
+            "deltaBytes": 203854.76923076808,
+            "peak": 121540608
+          },
+          "external": {
+            "firstMean": 5169272.384615385,
+            "lastMean": 5182786,
+            "deltaBytes": 13513.615384615026,
+            "peak": 5182786
+          },
+          "arrayBuffers": {
+            "firstMean": 1006646.4615384615,
+            "lastMean": 1020157,
+            "deltaBytes": 13510.538461538497,
+            "peak": 1020157
+          }
+        },
+        "windows": [
+          {
+            "minute": 0,
+            "samples": 54,
+            "means": {
+              "rss": 162664144.5925926,
+              "heapUsed": 72029147.25925925,
+              "heapTotal": 121443745.18518518,
+              "external": 5179532.722222222,
+              "arrayBuffers": 1016904.4629629629
+            },
+            "peaks": {
+              "rss": 163553280,
+              "heapUsed": 72822736,
+              "heapTotal": 121540608,
+              "external": 5182786,
+              "arrayBuffers": 1020157
+            }
+          }
+        ]
+      },
+      "errors": 1,
+      "incomplete": true,
+      "readerResultAvailable": false,
+      "failure": "Cliente financiero terminó: 17"
+    }
+  ],
+  "scope": "Diagnóstico fallido publicado después de eliminar la copia; no reemplaza evidencia exitosa ni certifica rendimiento"
+}

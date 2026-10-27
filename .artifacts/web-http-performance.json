@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-07T20:36:29.666Z",
+  "node": "24.19.0",
+  "scope": "Fixtures y loopback; cliente/servidor en mismo proceso. No SLA, carga prolongada, datos comerciales, navegador o hosting distribuido",
+  "products": 1000,
+  "requests": 40,
+  "concurrency": 4,
+  "warmupRequests": 2,
+  "quota": "Defaults 60/min por conexión, sin elevar límites",
+  "elapsedMs": 284.9303,
+  "processCpuMs": 390,
+  "rssBeforeBytes": 98861056,
+  "rssAfterBytes": 123895808,
+  "scenarios": {
+    "buscar": {
+      "requests": 20,
+      "p50Ms": 23.42489999999816,
+      "p95Ms": 49.43159999999989,
+      "maxMs": 55.641999999999825,
+      "maxHtmlBytes": 4990
+    },
+    "cotizar": {
+      "requests": 20,
+      "p50Ms": 24.01680000000124,
+      "p95Ms": 58.747699999999895,
+      "maxMs": 59.55740000000151,
+      "maxHtmlBytes": 3671
+    }
+  },
+  "passed": true
+}

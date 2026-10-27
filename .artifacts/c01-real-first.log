@@ -1,0 +1,11 @@
+
+> test:campaign-consent
+> node backend/verify-campaign-consent.js --backup=.backups/2026-10-21T01-07-00-316Z/database.dump
+
+{"type":"http_request","requestId":"9b05167c-054b-47a1-a782-fd1db77e312b","method":"POST","path":"/api/v1/crm/oportunidades","statusCode":400,"durationMs":18.96,"idUser":2}
+Falló aceptación C01: crm/oportunidades: HTTP400 esperado201
+
+400 !== 201
+     at call (C:\Sistema\backend\verify-campaign-consent.js:33:350)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async main (C:\Sistema\backend\verify-campaign-consent.js:36:4) Etapa en .artifacts/c01-consentimiento.json; sin secretos.

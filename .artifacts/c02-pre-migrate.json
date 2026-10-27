@@ -1,0 +1,23 @@
+{
+  "phase": "C02.1",
+  "startedAt": "2026-10-21T06:25:18.925Z",
+  "checks": [
+    "HTTP real401/403, DTO cerrado con pasos1–8/plazos0–720 y consultas privadas; sin inscripción por migración",
+    "Modelos conservados e idempotentes; búsqueda literal de cliente; inicio concurrente crea exactamente una tarea y rechaza duplicado activo",
+    "Completar concurrentemente produce un solo siguiente paso/plazo; recorrido HTTP heredado también avanza; cierre final y rechazo de reapertura/contexto",
+    "ACL404 ajeno, permiso delegable y asignación protegida; responsable inactivo impide crear siguiente paso pero permite cancelar sin perder historia",
+    "Historial/modelos inmutables, tarea preservada, auditoría con actor y fallo forzado revierte estado/evento/siguiente tarea completos",
+    "Reutilización real del generador de alertas: vencida deduplicada y atendida al cancelar, sin cron nuevo",
+    "Revocación mientras espera guardia real: vuelve a validar la cuenta antes de escribir",
+    "Angular real claro1280/oscuro390: crear modelo, buscar cliente, revisar/iniciar/completar/cancelar y recargar historial; axe/reflujo/errores JS",
+    "No crea comunicaciones ficticias, facturas ni envíos externos; cohortes sólo en copia propia"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "externalDeliveryEnabled": false,
+  "passed": true,
+  "completedAt": "2026-10-21T06:25:37.416Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular"
+}

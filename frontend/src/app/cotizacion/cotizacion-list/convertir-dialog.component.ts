@@ -179,7 +179,7 @@ export class ConvertirDialogComponent implements OnInit {
   ngOnInit() {
     this.cotizacionService.getById(this.data.idCotizacion).subscribe({
       next: (res) => {
-        const mapped: ConceptoForm[] = res.conceptos.map((x: any) => ({
+        const mapped: ConceptoForm[] = res.conceptos.map((x) => ({
           idConcepto: x.id_concepto,
           idProducto: x.id_producto,
           descripcion: x.descripcion,

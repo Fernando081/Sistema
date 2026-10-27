@@ -1,0 +1,29 @@
+{
+  "fields": [
+    {
+      "id": "scan-location",
+      "value": ""
+    },
+    {
+      "id": "scan-product",
+      "value": ""
+    },
+    {
+      "id": "scan-quantity",
+      "value": "2.000000"
+    },
+    {
+      "id": "scan-method",
+      "value": "Manual"
+    }
+  ],
+  "forms": [],
+  "checks": [
+    false
+  ],
+  "buttons": [
+    {
+      "disabled": true
+    }
+  ]
+}

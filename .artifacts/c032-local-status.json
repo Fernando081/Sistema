@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "checkedAt": "2026-10-21T16:46:18.632Z",
+  "sqlReadOnly": true,
+  "checks": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/reportes-programados",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/reportes-programados",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm/reportes-programados",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm/bandeja",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4600/",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503
+    },
+    {
+      "name": "110 aplicada/checksum correcto"
+    },
+    {
+      "name": "Consulta privada local sin programaciones sembradas",
+      "total": 0
+    },
+    {
+      "name": "Sin resultados ficticios en origen"
+    },
+    {
+      "name": "Nuevo proceso registrado en observabilidad existente",
+      "jobs": 3
+    },
+    {
+      "name": "Copias de aceptación/regresión eliminadas"
+    }
+  ]
+}

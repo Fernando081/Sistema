@@ -1,0 +1,71 @@
+{
+  "generatedAt": "2026-10-11T17:22:39.9637605Z",
+  "scope": "Sondeos HTTP locales sin autenticacion ni escrituras de negocio",
+  "checks": [
+    {
+      "url": "http://127.0.0.1:4500/",
+      "method": "GET",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/login",
+      "method": "GET",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "method": "GET",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "method": "GET",
+      "expected": 503,
+      "actual": 503,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/web-lead-bridge/check",
+      "method": "POST",
+      "expected": 503,
+      "actual": 503,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/resumption-continuation.mjs",
+      "method": "GET",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/.artifacts/web-resumption-continuation-status.json",
+      "method": "GET",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/publish-continued-resume-00000000-0000-4000-8000-000000000000.lock",
+      "method": "GET",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/resumption-continuation-00000000-0000-4000-8000-000000000000.intent.json",
+      "method": "GET",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    }
+  ],
+  "passed": 9,
+  "total": 9
+}

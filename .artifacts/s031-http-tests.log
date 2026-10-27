@@ -1,0 +1,80 @@
+
+> backend@0.0.1 test:e2e
+> jest --config ./test/jest-e2e.json --runInBand
+
+PASS test/auth.e2e-spec.ts
+  ● Console
+
+    console.log
+      {"type":"http_request","requestId":"d965da75-7c5e-4551-98d4-501c86b6fdfa","method":"GET","path":"/api/v1/protected","statusCode":401,"durationMs":4.12,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"115651a2-fff0-43ac-b7fd-ce6d08a7f98f","method":"POST","path":"/api/v1/auth/register","statusCode":401,"durationMs":8.06,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"84518674-78e3-4195-b6e2-34521832001e","method":"POST","path":"/api/v1/auth/login","statusCode":400,"durationMs":3.02,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"fe44deab-1009-42cd-ac1a-a57f93681c82","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":56.32,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"b084d6b4-1b52-4c1d-9056-711ee87c8937","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":1.2,"idUser":1}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"e891f336-a227-4ef1-8c50-828d02ba928b","method":"GET","path":"/api/v1/protected/admin","statusCode":403,"durationMs":1.02,"idUser":1}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"05f53657-3dc7-42b4-bdaa-0c49261fb081","method":"POST","path":"/api/v1/auth/logout","statusCode":201,"durationMs":0.86,"idUser":1}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"d0ad933c-d380-468e-adbb-26577b136af5","method":"GET","path":"/api/v1/protected","statusCode":401,"durationMs":0.88,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"b0007999-8604-4a85-ac49-a27cc733ad2d","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":54.46,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"a55facb8-f5c3-4f45-bddc-610de687eb48","method":"GET","path":"/api/v1/protected","statusCode":401,"durationMs":0.81,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"3990be8a-4a23-46a6-8ec4-450df57711c3","method":"POST","path":"/api/v1/auth/login","statusCode":401,"durationMs":0.9,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"f5a27196-f0ef-424b-a54c-c88ad5cebfaf","method":"POST","path":"/api/v1/auth/login","statusCode":401,"durationMs":0.74,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+    console.log
+      {"type":"http_request","requestId":"214262c0-b801-4dde-8c57-9603449e1e93","method":"POST","path":"/api/v1/auth/login","statusCode":429,"durationMs":0.62,"idUser":null}
+
+      at ServerResponse.<anonymous> (../src/file:/C:/Sistema/backend/src/configure-app.ts:23:15)
+
+PASS test/web-catalog.e2e-spec.ts
+PASS test/scheduled-jobs.e2e-spec.ts
+
+Test Suites: 3 passed, 3 total
+Tests:       19 passed, 19 total
+Snapshots:   0 total
+Time:        2.82 s, estimated 4 s
+Ran all test suites.

@@ -1,0 +1,239 @@
+{
+  "generatedAt": "2026-10-02T19:42:43.636Z",
+  "postgresSettings": {
+    "version": "18.2",
+    "autovacuum": "on"
+  },
+  "phase": "Q04.5.3c2c3d2",
+  "financialHttpResults": [
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    },
+    {
+      "compra": true,
+      "ventaPpd": true,
+      "rep": true,
+      "pedidoFacturado": true,
+      "ordenRecepcion": true,
+      "solicitudAutorizada": true,
+      "stockPhysicalAligned": true,
+      "cashAndBalanceAligned": true,
+      "unauthorized401": true,
+      "dto400": true,
+      "permission403": true,
+      "replays": 5,
+      "conflicts409": 4
+    }
+  ],
+  "transactionAgeScope": {
+    "client": "client backend: aplicación, escritor SQL y conexiones de medición; no exclusivamente HTTP",
+    "auxiliary": "backend_type distinto de client backend; incluye autovacuum",
+    "autovacuum": "autovacuum worker; subconjunto de auxiliares",
+    "peaks": "Máximos independientes muestreados cada 500 ms; no se suman ni equivalen a duración de solicitudes"
+  },
+  "transactionAgeContract": {
+    "mixedBackendTypes": true,
+    "otherDatabaseExcluded": true,
+    "emptyGroupsZero": true
+  },
+  "node": "24.19.0",
+  "fixturesPerDomain": 20000,
+  "poolMax": 10,
+  "secondsPerGroup": 120,
+  "relational": true,
+  "separateGenerator": true,
+  "schedulerJobs": 2,
+  "preflight": {
+    "throttler429": true,
+    "notificationJobExecuted": true,
+    "unauthorized401": true,
+    "invalidLimit400": true,
+    "invalidDate400": true,
+    "csvSixDomains": true
+  },
+  "groups": [
+    {
+      "business": {
+        "transfers": 116,
+        "assembled": 58,
+        "disassembled": 58,
+        "payments": 58,
+        "replays": 18
+      },
+      "financialCycles": 6,
+      "businessIntegrity": {
+        "stockPhysicalAligned": true,
+        "stockRestored": true,
+        "paymentBalanceCashAligned": true
+      },
+      "postgresProcesses": {
+        "samples": 23,
+        "availableSamples": 23,
+        "unavailableSamples": 0,
+        "workingSetSumPeakBytes": 671322112,
+        "cpuMillisecondsDelta": 23156.25,
+        "readTransferBytesDelta": 2162688,
+        "writeTransferBytesDelta": 174645248,
+        "maxDeadTuples": 10264,
+        "maxLiveTuples": 786520,
+        "autovacuumCountPeak": 17
+      },
+      "walBytesClusterWide": 42348712,
+      "readers": 8,
+      "generatorResources": {
+        "rssPeak": 69951488,
+        "heapPeak": 15650496,
+        "cpuMicroseconds": {
+          "user": 1750000,
+          "system": 312000
+        },
+        "eventLoopP95Ms": 34.832383
+      },
+      "postgres": {
+        "peak": {
+          "samples": 238,
+          "connections": 11,
+          "active": 5,
+          "waiting": 0,
+          "maxTransactionAgeSeconds": 16.48258,
+          "clientConnections": 10,
+          "auxiliaryConnections": 1,
+          "maxClientTransactionAgeSeconds": 0.260151,
+          "maxAuxiliaryTransactionAgeSeconds": 16.48258,
+          "maxAutovacuumTransactionAgeSeconds": 16.482581
+        },
+        "countersDelta": {
+          "xact_commit": 5415,
+          "xact_rollback": 22,
+          "blks_read": 25662,
+          "blks_hit": 2095996,
+          "temp_bytes": 0,
+          "deadlocks": 0
+        }
+      },
+      "requests": 624,
+      "writerCommits": 2698,
+      "elapsedMs": 123368.9748,
+      "rps": 5.057997774656064,
+      "p50": 27.126399999993737,
+      "p95": 78.19829999999638,
+      "max": 352.9321999999993,
+      "rssPeak": 177754112,
+      "heapPeak": 84569520,
+      "poolConnectionsPeak": 8,
+      "poolWaitingPeak": 0,
+      "cpuMicroseconds": {
+        "user": 9171000,
+        "system": 3703000
+      },
+      "eventLoopP95Ms": 33.357823,
+      "eventLoopMaxMs": 79.560703,
+      "idleTransactions": 0,
+      "cases": {
+        "cliente:": 25,
+        "cliente:Q04TARGET": 26,
+        "proveedor:": 29,
+        "proveedor:Q04TARGET": 30,
+        "cliente:Q04HTTPONLY": 28,
+        "proveedor:Q04HTTPONLY": 30,
+        "proveedor:%": 30,
+        "cliente:%": 27,
+        "producto:": 29,
+        "producto:Q04TARGET": 28,
+        "producto:%": 27,
+        "producto:Q04HTTPONLY": 26,
+        "cotizacion:": 25,
+        "cotizacion:Q04TARGET": 24,
+        "cotizacion:%": 24,
+        "cotizacion:Q04HTTPONLY": 24,
+        "compra:": 24,
+        "compra:Q04TARGET": 24,
+        "compra:%": 24,
+        "compra:Q04HTTPONLY": 24,
+        "venta:": 24,
+        "venta:Q04TARGET": 24,
+        "venta:%": 24,
+        "venta:Q04HTTPONLY": 24
+      },
+      "errors": 0
+    }
+  ],
+  "limitations": [
+    "AppModule completo; compra/venta PPD/REP/pedido facturado/orden y recepción por HTTP, fiscal mock. No sustituye regresión integral de NC, reversos ni cuentas proveedor.",
+    "Seis proyecciones reales; transferencias/kits/cobros por HTTP y mutación SQL de nombres para carreras total/página. Modalidad financiera indicada por financialHttpResults; escritores de caja coordinados. Imágenes como metadatos, no archivos.",
+    "Carga cerrada, caché caliente y ventanas de 120 segundos y 20000 registros por dominio: no certificación de capacidad máxima, SLA ni soak de horas.",
+    "CPU/memoria/event loop del padre incluyen servidor, escritor y monitor; generador en hijo separado. PostgreSQL: actividad, tuplas/autovacuum y CPU/working set/transferencia de procesos asociados a la copia muestreados con CIM Windows. Working sets sumados incluyen páginas compartidas; I/O de proceso incluye red y no equivale a disco. WAL global del cluster incluye otras bases; estadísticas pueden retrasarse. Pool de aplicación sin ajuste, observado máximo 10."
+  ]
+}

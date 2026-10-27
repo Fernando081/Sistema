@@ -1,0 +1,6 @@
+
+> db:check
+> node backend/run-migrations.js --check
+
+Verificada (se revertirá): 106_crm_consentimiento_campanas.sql
+Verificación terminada: cambios de esquema revertidos.

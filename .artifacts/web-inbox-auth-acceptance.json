@@ -1,0 +1,299 @@
+{
+  "phase": "WEB05.1-acceptance-local",
+  "startedAt": "2026-10-19T19:18:51.067Z",
+  "checks": [
+    "Respaldo restaurado; db:check antes de db:migrate solo en copia",
+    "AppModule completo, guards globales, fiscal mock y cron detenido en copia",
+    "Login PostgreSQL real; anónimo401, operador403, JWT alterado401 y UUID inválido400",
+    "Perfil explícito local y preflight firmado sin escrituras; formulario reintenta con adaptador preparado",
+    "Rotación legacy/v2 y segunda rotación v2; reintentos históricos estables y diagnóstico privado sin secretos",
+    "Formulario nativo sin JS → puente firmado → commit sin recibo → diagnóstico ADMIN → reintentos y conflicto",
+    "Angular producción claro1280/oscuro390: login, bandeja, diagnóstico, conversión, ficha, Axe y reflujo",
+    "093 preserva el indicador de movimiento gestionado true/false; un ajuste manual posterior conserva kardex y las sondas revierten inventario/caja/pólizas",
+    "093 en AppModule/copia: tres devoluciones API 3.33/3.34/3.33 con gasto/actor/póliza, caja y kardex exactos; 401/403 y exceso inválido sin cambios",
+    "WEB05.2e real: dos ventas/REP y notas API, reembolso15/cobro20/neto5/saldo a favor2; consulta privada no altera caja, inventario, documentos ni libro",
+    "Cancelación de nota API/fiscal mock anula su gasto, devuelve caja y recompone cobro neto conservando evidencia y saldo a favor",
+    "WEB05.2c con tablas completas/venta del respaldo: HTTP privado, importes/monedas y Angular producción claro/oscuro con login real",
+    "WEB05.2d en AppModule/copia: snapshots reales, cobertura de rentabilidad y panel Angular con desconocidos explícitos",
+    "WEB05.2e con venta histórica del respaldo y Angular producción claro/oscuro: cobertura de cobro neto y desconocidos sin asumir cero",
+    "WEB05.2b en AppModule/copia restaurada: cliente, cotización, dueño/tercero, reintento, métricas y retiro sin alterar el documento",
+    "Conversión única, autor/responsable, snapshot privado, vencimiento/purga y revocación/logout reales",
+    "Decisiones ADMIN idempotentes y sin sobrescribir huella/payload; historial sin contactos y resolución de purgado sin restaurar"
+  ],
+  "browser": [
+    {
+      "theme": "light",
+      "width": 1280,
+      "login": "real",
+      "bridgeStatus": "passed",
+      "receipt": "passed",
+      "resolution": "passed",
+      "conversionLink": "passed",
+      "snapshot": "passed",
+      "axeViolations": 0
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "login": "real",
+      "bridgeStatus": "passed",
+      "receipt": "passed",
+      "resolution": "passed",
+      "conversionLink": "passed",
+      "snapshot": "passed",
+      "axeViolations": 0
+    }
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "operationalCaptureEnabled": false,
+  "webCashBusiness": {
+    "passed": true,
+    "source": "isolated-restored-test-database",
+    "migration": "093",
+    "realBusinessApi": true,
+    "apiMocks": false,
+    "explicitFixtureLineage": true,
+    "returns": [
+      {
+        "amount": "3.33",
+        "id_gasto_reembolso": 5,
+        "expense": "3.33",
+        "anulado": false,
+        "id_user": 2,
+        "policies": 1
+      },
+      {
+        "amount": "3.34",
+        "id_gasto_reembolso": 6,
+        "expense": "3.34",
+        "anulado": false,
+        "id_user": 2,
+        "policies": 1
+      },
+      {
+        "amount": "3.33",
+        "id_gasto_reembolso": 7,
+        "expense": "3.33",
+        "anulado": false,
+        "id_user": 2,
+        "policies": 1
+      }
+    ],
+    "measured": {
+      "moneda": "MXN",
+      "documentos": 2,
+      "profit": {
+        "baseCosto": "snapshot-local-MXN",
+        "costoVentaNeto": null,
+        "utilidadBruta": null,
+        "margenBrutoPct": null,
+        "documentosConRentabilidad": 0,
+        "documentosRentabilidadDesconocida": 2,
+        "documentosSinCostoValido": 2,
+        "documentosMonedaCostoNoComparable": 0,
+        "documentosDetalleNoConciliado": 0
+      },
+      "cash": {
+        "baseMonetaria": "registros-locales-MXN",
+        "reembolsosEfectivo": "15.00",
+        "saldoAFavorGenerado": "2.00",
+        "cobrosNetosRegistrados": "5.00",
+        "documentosConCobroNeto": 2,
+        "documentosCobroNetoDesconocido": 0,
+        "documentosReembolsoDesconocido": 0,
+        "reembolsosSinGastoVinculado": 0,
+        "gastosNoConciliados": 0,
+        "documentosPagosNoConciliados": 0,
+        "documentosMonedaNoComparable": 0
+      },
+      "importeDocumentado": "20.00",
+      "ventasNetasSinImpuestos": "3.00",
+      "notasCredito": "7.00",
+      "devoluciones": "10.00",
+      "cobrosRegistrados": "20.00",
+      "saldoRegistrado": "0.00",
+      "documentosNetoDesconocido": 0,
+      "documentosCobroDesconocido": 0,
+      "documentosSaldoDesconocido": 0,
+      "documentosSinPagos": 0,
+      "documentosSaldoNoConciliado": 0
+    },
+    "afterCancellation": {
+      "moneda": "MXN",
+      "documentos": 2,
+      "profit": {
+        "baseCosto": "snapshot-local-MXN",
+        "costoVentaNeto": null,
+        "utilidadBruta": null,
+        "margenBrutoPct": null,
+        "documentosConRentabilidad": 0,
+        "documentosRentabilidadDesconocida": 2,
+        "documentosSinCostoValido": 2,
+        "documentosMonedaCostoNoComparable": 0,
+        "documentosDetalleNoConciliado": 0
+      },
+      "cash": {
+        "baseMonetaria": "registros-locales-MXN",
+        "reembolsosEfectivo": "10.00",
+        "saldoAFavorGenerado": "2.00",
+        "cobrosNetosRegistrados": "10.00",
+        "documentosConCobroNeto": 2,
+        "documentosCobroNetoDesconocido": 0,
+        "documentosReembolsoDesconocido": 0,
+        "reembolsosSinGastoVinculado": 0,
+        "gastosNoConciliados": 0,
+        "documentosPagosNoConciliados": 0,
+        "documentosMonedaNoComparable": 0
+      },
+      "importeDocumentado": "20.00",
+      "ventasNetasSinImpuestos": "8.00",
+      "notasCredito": "2.00",
+      "devoluciones": "10.00",
+      "cobrosRegistrados": "20.00",
+      "saldoRegistrado": "0.00",
+      "documentosNetoDesconocido": 0,
+      "documentosCobroDesconocido": 0,
+      "documentosSaldoDesconocido": 0,
+      "documentosSinPagos": 0,
+      "documentosSaldoNoConciliado": 0
+    },
+    "cohort": {
+      "desde": "2026-09-01",
+      "hasta": "2026-09-01"
+    }
+  },
+  "webFinancial": {
+    "passed": true,
+    "app": "complete-AppModule",
+    "source": "restored-test-database",
+    "privateHttp": true,
+    "productionAngular": true,
+    "realLogin": true,
+    "apiMocks": false,
+    "uiThemes": [
+      "light",
+      "dark"
+    ],
+    "finance": {
+      "currencies": [
+        {
+          "moneda": "MXN",
+          "documentos": 1,
+          "profit": {
+            "baseCosto": "snapshot-local-MXN",
+            "costoVentaNeto": null,
+            "utilidadBruta": null,
+            "margenBrutoPct": null,
+            "documentosConRentabilidad": 0,
+            "documentosRentabilidadDesconocida": 1,
+            "documentosSinCostoValido": 0,
+            "documentosMonedaCostoNoComparable": 0,
+            "documentosDetalleNoConciliado": 1
+          },
+          "cash": {
+            "baseMonetaria": "registros-locales-MXN",
+            "reembolsosEfectivo": null,
+            "saldoAFavorGenerado": null,
+            "cobrosNetosRegistrados": null,
+            "documentosConCobroNeto": 0,
+            "documentosCobroNetoDesconocido": 1,
+            "documentosReembolsoDesconocido": 1,
+            "reembolsosSinGastoVinculado": 0,
+            "gastosNoConciliados": 0,
+            "documentosPagosNoConciliados": 0,
+            "documentosMonedaNoComparable": 0
+          },
+          "importeDocumentado": "104.40",
+          "ventasNetasSinImpuestos": null,
+          "notasCredito": "0.00",
+          "devoluciones": null,
+          "cobrosRegistrados": "104.40",
+          "saldoRegistrado": "0.00",
+          "documentosNetoDesconocido": 1,
+          "documentosCobroDesconocido": 0,
+          "documentosSaldoDesconocido": 0,
+          "documentosSinPagos": 0,
+          "documentosSaldoNoConciliado": 0
+        }
+      ],
+      "coverage": {
+        "documentosVinculados": 1,
+        "documentosFinancieros": 1,
+        "globalesExcluidas": 0,
+        "monedaDesconocida": 0,
+        "importesInconsistentes": 0,
+        "notasCanceladasExcluidas": 0,
+        "repsCanceladosExcluidos": 0,
+        "pagosRepCompatibilidadOmitidos": 0
+      }
+    }
+  },
+  "webProfit": {
+    "passed": true,
+    "source": "restored-test-database",
+    "realLogin": true,
+    "apiMocks": false,
+    "currencies": [
+      {
+        "moneda": "MXN",
+        "documents": 1,
+        "profit": {
+          "baseCosto": "snapshot-local-MXN",
+          "costoVentaNeto": null,
+          "utilidadBruta": null,
+          "margenBrutoPct": null,
+          "documentosConRentabilidad": 0,
+          "documentosRentabilidadDesconocida": 1,
+          "documentosSinCostoValido": 0,
+          "documentosMonedaCostoNoComparable": 0,
+          "documentosDetalleNoConciliado": 1
+        }
+      }
+    ]
+  },
+  "webCashUI": {
+    "passed": true,
+    "realLogin": true,
+    "apiMocks": false,
+    "productionAngular": true,
+    "uiThemes": [
+      "light",
+      "dark"
+    ],
+    "currencies": [
+      {
+        "moneda": "MXN",
+        "cash": {
+          "baseMonetaria": "registros-locales-MXN",
+          "reembolsosEfectivo": null,
+          "saldoAFavorGenerado": null,
+          "cobrosNetosRegistrados": null,
+          "documentosConCobroNeto": 0,
+          "documentosCobroNetoDesconocido": 1,
+          "documentosReembolsoDesconocido": 1,
+          "reembolsosSinGastoVinculado": 0,
+          "gastosNoConciliados": 0,
+          "documentosPagosNoConciliados": 0,
+          "documentosMonedaNoComparable": 0
+        }
+      }
+    ]
+  },
+  "webCommercial": {
+    "passed": true,
+    "schema": "restored-with-092",
+    "app": "complete-AppModule",
+    "ownerAccess": true,
+    "userIsolation": true,
+    "clientMatch": true,
+    "idempotency": true,
+    "metrics": true,
+    "withdrawalPreservesQuote": true
+  },
+  "completedAt": "2026-10-19T19:19:19.142Z",
+  "passed": true,
+  "copyRemoved": true,
+  "lastStage": "Medición financiera WEB05.2c",
+  "cleanupPassed": true
+}

@@ -1,0 +1,119 @@
+
+> test:unit-expediente
+> node backend/verify-unit-expediente.js --backup=.backups/2026-10-20T01-38-13-312Z/database.dump
+
+{"type":"http_request","requestId":"92108f11-bf79-460f-b506-a3351f16ae54","method":"POST","path":"/api/v1/crm/clientes/2/unidades","statusCode":201,"durationMs":207.95,"idUser":2}
+{"type":"http_request","requestId":"54a8a781-954c-46ca-ba7e-6814a5689285","method":"POST","path":"/api/v1/crm/clientes/2/unidades","statusCode":201,"durationMs":7.85,"idUser":2}
+{"type":"http_request","requestId":"2a3827de-e39e-4aa1-9c9b-bd08b861a186","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":401,"durationMs":2.26,"idUser":null}
+{"type":"http_request","requestId":"cb473476-aea1-4bf2-9328-cd506c94fd7d","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":403,"durationMs":9.49,"idUser":3}
+{"type":"http_request","requestId":"244a5206-9821-4b96-85a3-02029fa2b60d","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":16.88,"idUser":2}
+{"type":"http_request","requestId":"1c46f885-c949-443f-824c-00d647844a0f","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":8.24,"idUser":2}
+{"type":"http_request","requestId":"079b6418-d476-440a-a86a-ead6de387573","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":400,"durationMs":5.43,"idUser":2}
+OK: 100 check/migrate en copia; VIN/ESN existentes conservados; acceso privado401/403, no-store y datos desconocidos sin ceros inventados
+{"type":"http_request","requestId":"76b00ed3-85e8-4e2a-83d0-e2297d2c2129","method":"PUT","path":"/api/v1/auth/users/3/permissions","statusCode":200,"durationMs":13.05,"idUser":2}
+{"type":"http_request","requestId":"3f4cdf1f-74ca-4acc-8def-0118f0603126","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":14.31,"idUser":3}
+{"type":"http_request","requestId":"3c1f71cb-9c82-4951-b71d-bc364d336693","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":403,"durationMs":3.37,"idUser":3}
+{"type":"http_request","requestId":"69945de9-88c2-4cc2-86e8-f19f900c3616","method":"PUT","path":"/api/v1/auth/users/3/permissions","statusCode":200,"durationMs":8.31,"idUser":2}
+OK: Delegación S01 efectiva: operador sin permiso denegado; consulta sola no permite escritura; gestión se concede explícitamente
+{"type":"http_request","requestId":"a08938c0-7b64-416d-948b-a3bc8ab3f7b3","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":201,"durationMs":17.98,"idUser":2}
+{"type":"http_request","requestId":"94747d3b-7625-4903-ae7c-d60d44eeec59","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":201,"durationMs":22.38,"idUser":2}
+{"type":"http_request","requestId":"9943f17b-f57c-405c-aea2-2a6e1062b298","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":10.17,"idUser":2}
+{"type":"http_request","requestId":"45094e4c-bc11-4b80-9c88-b8fd321d6032","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":7.49,"idUser":2}
+{"type":"http_request","requestId":"f2b7f77b-a2d9-474b-9a40-6a0b428c8a00","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":409,"durationMs":5.11,"idUser":2}
+{"type":"http_request","requestId":"282d1de5-318d-401e-9310-553f32b390cc","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":400,"durationMs":3.84,"idUser":2}
+{"type":"http_request","requestId":"32695d76-a8f2-4e44-91c0-b4f066b4886f","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":400,"durationMs":3.36,"idUser":2}
+{"type":"http_request","requestId":"723043aa-fc18-4258-8eaa-0fdde82b0f83","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":400,"durationMs":5.42,"idUser":2}
+{"type":"http_request","requestId":"86bc1d22-1e3d-4264-9174-5e45fa01ca24","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":400,"durationMs":3.48,"idUser":2}
+OK: Lectura cero explícita, idempotencia concurrente por UUID/huella y rechazo de contenido distinto, vacíos, fechas futuras/sin zona y negativos
+{"type":"http_request","requestId":"9fbdad90-e4b1-4dc8-92bc-17f3257dd9f1","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":201,"durationMs":8.98,"idUser":3}
+{"type":"http_request","requestId":"bbeca854-0143-4219-b225-f322a94b77b2","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":201,"durationMs":5.28,"idUser":2}
+{"type":"http_request","requestId":"44b1b519-c43f-4acd-a64c-6241c7245674","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":409,"durationMs":7.25,"idUser":2}
+{"type":"http_request","requestId":"45f77fa2-63dc-4e8e-b352-0013802b5bcc","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":409,"durationMs":4.74,"idUser":2}
+{"type":"http_request","requestId":"964821ad-c2b3-429f-a9e9-8382437b0941","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":201,"durationMs":5.34,"idUser":2}
+{"type":"http_request","requestId":"acfa2a75-6c6c-4ec1-89d5-bc20a5e1c4a2","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":6.33,"idUser":2}
+OK: Inserción intermedia respeta vecinos por fecha; reducción rechazada; lecturas parciales conservan último valor de cada medidor
+{"type":"http_request","requestId":"ee0f60aa-30b5-491b-b77e-540fb9388ee1","method":"POST","path":"/api/v1/crm/unidades/1/lecturas/2/anular","statusCode":403,"durationMs":2.07,"idUser":3}
+{"type":"http_request","requestId":"0dcf9524-e66c-4cd9-97f5-8cc878d10050","method":"POST","path":"/api/v1/crm/unidades/1/lecturas/2/anular","statusCode":201,"durationMs":7.66,"idUser":2}
+{"type":"http_request","requestId":"ce062097-cb44-43ee-953a-fe4ec97a2a42","method":"POST","path":"/api/v1/crm/unidades/1/lecturas/2/anular","statusCode":201,"durationMs":6.27,"idUser":2}
+{"type":"http_request","requestId":"cef8673d-a11a-4dc4-a59a-c48612b084b1","method":"POST","path":"/api/v1/crm/unidades/1/lecturas/2/anular","statusCode":409,"durationMs":8.39,"idUser":2}
+{"type":"http_request","requestId":"f2a87ecd-375c-474c-aa63-93fa6c57e81f","method":"POST","path":"/api/v1/crm/unidades/2/lecturas/2/anular","statusCode":404,"durationMs":6.12,"idUser":2}
+{"type":"http_request","requestId":"1c8df445-fa3c-44b4-844b-4b28fcdc0195","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":14.01,"idUser":2}
+{"type":"http_request","requestId":"7f927f3b-51d6-4ff9-b03b-4c0e401f2f0a","method":"DELETE","path":"/api/v1/crm/unidades/1","statusCode":409,"durationMs":5.85,"idUser":2}
+OK: Anulación ADMIN con motivo conserva historial/reintento y recalcula valores; IDs de otra unidad no operan; unidad con expediente no se elimina
+{"type":"http_request","requestId":"aeb6c38c-9bfe-4490-85de-5d948e4e25f3","method":"POST","path":"/api/v1/crm/unidades/2/mantenimientos","statusCode":201,"durationMs":7.29,"idUser":2}
+{"type":"http_request","requestId":"12c6c3ff-e61a-4b08-b44f-2a25b39ef59e","method":"GET","path":"/api/v1/crm/unidades/2/expediente","statusCode":200,"durationMs":6.17,"idUser":2}
+{"type":"http_request","requestId":"85b61b59-cac7-4a40-a51b-c6a22aa1146e","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos","statusCode":201,"durationMs":8.19,"idUser":2}
+{"type":"http_request","requestId":"e7e00f2d-5167-4377-8b17-1f81cf81674c","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos","statusCode":201,"durationMs":6.46,"idUser":2}
+{"type":"http_request","requestId":"2e122e32-bfa4-4f76-8b8c-30dff244558b","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos","statusCode":409,"durationMs":6.55,"idUser":2}
+{"type":"http_request","requestId":"47642511-8d36-4a87-80ff-d9dd6585a5d5","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos","statusCode":201,"durationMs":7.7,"idUser":2}
+{"type":"http_request","requestId":"1b60241f-6f75-431a-93a8-dcbad296b156","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos","statusCode":201,"durationMs":5.81,"idUser":2}
+{"type":"http_request","requestId":"95970136-cf09-4517-958e-5bffa0300d15","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos","statusCode":400,"durationMs":5.12,"idUser":2}
+{"type":"http_request","requestId":"70ea7b64-d14b-4793-bd8f-2f29d71ef7f2","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":8.24,"idUser":2}
+OK: Mantenimiento por fecha/km/horas con objetivos obligatorios, idempotencia y condiciones Vencido/Vence hoy/Sin lectura suficiente
+{"type":"http_request","requestId":"e7d64657-d803-4a0d-b194-714890cc5871","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos/2/cerrar","statusCode":409,"durationMs":6.78,"idUser":2}
+{"type":"http_request","requestId":"902b2eee-e786-4778-b2dd-682eb759f0dc","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos/2/cerrar","statusCode":400,"durationMs":7.45,"idUser":2}
+{"type":"http_request","requestId":"38ad6d58-4383-4bfa-8ba0-33c18f91a4cf","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos/2/cerrar","statusCode":201,"durationMs":11.91,"idUser":2}
+{"type":"http_request","requestId":"33f6b15f-c87f-4ac2-bf9a-1bee897c311d","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos/2/cerrar","statusCode":409,"durationMs":12.7,"idUser":2}
+{"type":"http_request","requestId":"e789567c-3d42-4b64-99ab-030372a2539d","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos/2/cerrar","statusCode":201,"durationMs":5.43,"idUser":2}
+{"type":"http_request","requestId":"b35d9168-0b8a-4756-9a10-e935d383be60","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":7.41,"idUser":2}
+OK: Cierre versionado con fecha/motivo: una decisión concurrente y un409, repetición idéntica no reabre ni duplica historial
+{"type":"http_request","requestId":"8b23ce54-afad-43b8-9554-092bef43fd94","method":"POST","path":"/api/v1/crm/unidades/1/archivos","statusCode":201,"durationMs":11.05,"idUser":2}
+{"type":"http_request","requestId":"108bf5c6-0ad2-4bab-960a-eadb07208e47","method":"POST","path":"/api/v1/crm/unidades/1/archivos","statusCode":201,"durationMs":4.7,"idUser":2}
+{"type":"http_request","requestId":"756aba87-849f-4dae-9b08-ccbaa99f7aaf","method":"POST","path":"/api/v1/crm/unidades/1/archivos","statusCode":409,"durationMs":6.06,"idUser":2}
+{"type":"http_request","requestId":"23a9f0cd-6213-406b-ba7e-06e3f064c32e","method":"POST","path":"/api/v1/crm/unidades/1/archivos","statusCode":201,"durationMs":8.23,"idUser":2}
+{"type":"http_request","requestId":"197ca7b7-793e-47e9-a45c-a149d976cca5","method":"GET","path":"/api/v1/crm/unidades/1/archivos/1","statusCode":401,"durationMs":0.89,"idUser":null}
+{"type":"http_request","requestId":"eb67d387-4eb0-4c1e-ba6e-900885f3d640","method":"GET","path":"/api/v1/crm/unidades/1/archivos/1","statusCode":200,"durationMs":6.86,"idUser":2}
+{"type":"http_request","requestId":"b4af1ec7-6ade-4231-936f-4c7fc07dbb80","method":"GET","path":"/api/v1/crm/unidades/2/archivos/1","statusCode":404,"durationMs":6.82,"idUser":2}
+{"type":"http_request","requestId":"39ffe8d9-5781-41f6-9701-a8955fb54dae","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":9.93,"idUser":2}
+OK: PDF/foto privados en BD: bytes íntegros, hash/metadata sin contenido, descarga autenticada attachment/no-store/nosniff, otra unidad404 y reintento único
+{"type":"http_request","requestId":"3ccb983f-f67f-44d9-a86e-469dce593e7d","method":"POST","path":"/api/v1/crm/unidades/1/archivos","statusCode":400,"durationMs":3.24,"idUser":2}
+{"type":"http_request","requestId":"98f45069-6108-49f2-81fd-ffb90bfc7cd1","method":"POST","path":"/api/v1/crm/unidades/1/archivos","statusCode":400,"durationMs":2.52,"idUser":2}
+{"type":"http_request","requestId":"4d72adae-325e-4fd2-a42d-017fbf8e7ad6","method":"POST","path":"/api/v1/crm/unidades/1/archivos","statusCode":413,"durationMs":20.68,"idUser":2}
+{"type":"http_request","requestId":"6cd0da8c-af23-48af-b7dd-bd4458ec9c60","method":"GET","path":"/api/v1/crm/unidades/1/archivos/1","statusCode":503,"durationMs":6.97,"idUser":2}
+{"type":"http_request","requestId":"a13866fc-01e4-42c9-9a65-a7a96360bdca","method":"POST","path":"/api/v1/crm/unidades/1/archivos/1/retirar","statusCode":403,"durationMs":3.53,"idUser":3}
+{"type":"http_request","requestId":"3c3856f8-6e4d-4ac3-b662-74095786fbbc","method":"POST","path":"/api/v1/crm/unidades/1/archivos/1/retirar","statusCode":201,"durationMs":6.71,"idUser":2}
+{"type":"http_request","requestId":"8bf2dfa5-3939-41c5-92a8-b458e785b556","method":"GET","path":"/api/v1/crm/unidades/1/archivos/1","statusCode":404,"durationMs":4.41,"idUser":2}
+OK: Rechazo de MIME falso/SVG/PDF truncado/tamaño; corrupción detectada por SHA; retiro ADMIN conserva bytes y bloquea nueva descarga
+{"type":"http_request","requestId":"879478cc-b856-465d-ad5d-1c96562a4c0b","method":"POST","path":"/api/v1/crm/unidades/2/archivos","statusCode":409,"durationMs":5.45,"idUser":2}
+{"type":"http_request","requestId":"a884d51a-55c3-4bdf-a4e2-51ffdef21ba5","method":"POST","path":"/api/v1/crm/unidades/2/mantenimientos","statusCode":409,"durationMs":6.35,"idUser":2}
+{"type":"http_request","requestId":"51945b76-887b-402a-89a1-7d101146fbd5","method":"GET","path":"/api/v1/crm/unidades/2/expediente","statusCode":200,"durationMs":9.01,"idUser":2}
+OK: Cuotas por unidad y paginación20 real; fixtures de cuota solo en copia sin desbordar respuesta o duplicar adjuntos
+{"type":"http_request","requestId":"98a81d85-b0dc-4827-9679-a395a29f2ebf","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":7.84,"idUser":2}
+{"type":"http_request","requestId":"2a245af1-e5cc-48c9-82d9-84f2beefe160","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":400,"durationMs":14.11,"idUser":2}
+{"type":"http_request","requestId":"27dd709c-9b21-412a-9f89-08daae4beec0","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":5.19,"idUser":2}
+OK: Fallo al auditar revierte lectura; eventos de metadata conservan actor y no copian archivos a bitácora
+{"type":"http_request","requestId":"26eb4b11-9fc8-4a3f-84f5-0b5e333cf6cb","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":6.55,"idUser":2}
+OK: Actor revocado durante espera de bloqueo no registra lecturas; comprobación dentro de transacción
+{"type":"http_request","requestId":"6c42c678-68ef-469a-af1d-8993c987f8bc","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":57.86,"idUser":null}
+{"type":"http_request","requestId":"fded58f9-7064-496a-8ad6-f52e45f02b23","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":54.95,"idUser":2}
+{"type":"http_request","requestId":"6c9b52de-ee9a-4e93-a6e6-2895091cb100","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":6.22,"idUser":2}
+{"type":"http_request","requestId":"a72a93d4-095e-4168-863c-25adfb41e96c","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":201,"durationMs":16.53,"idUser":2}
+{"type":"http_request","requestId":"aea3110b-4cf8-4de5-b980-c34a67f639ab","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":16.4,"idUser":2}
+{"type":"http_request","requestId":"12e00606-ca51-4a2b-97ad-dab097fc7ddc","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos","statusCode":201,"durationMs":18.61,"idUser":2}
+{"type":"http_request","requestId":"006cc300-1659-4df4-8b31-1e046cc7dc9f","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":9.82,"idUser":2}
+{"type":"http_request","requestId":"dc32893c-2311-45da-ba90-11a7d0694405","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos/104/cerrar","statusCode":201,"durationMs":10.77,"idUser":2}
+{"type":"http_request","requestId":"b45f76e6-3d52-4c1a-ad7a-b9b1f13bfad4","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":9.9,"idUser":2}
+{"type":"http_request","requestId":"533c12d5-096f-4e08-9c55-9a1698c3a44d","method":"POST","path":"/api/v1/crm/unidades/1/archivos","statusCode":201,"durationMs":18.94,"idUser":2}
+{"type":"http_request","requestId":"bc948495-6e47-409a-b115-5077a95e3443","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":7.24,"idUser":2}
+{"type":"http_request","requestId":"126942e1-90f0-4dc8-9f9e-5f83ca40c457","method":"GET","path":"/api/v1/crm/unidades/1/archivos/53","statusCode":200,"durationMs":14.33,"idUser":2}
+{"type":"http_request","requestId":"010b6c8e-eb9a-4094-ab40-52d222f358b5","method":"GET","path":"/api/v1/crm/unidades/1/archivos/53","statusCode":200,"durationMs":11.64,"idUser":2}
+{"type":"http_request","requestId":"0d539e87-0d31-4251-8f10-a31eb332567e","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":61.11,"idUser":null}
+{"type":"http_request","requestId":"223ad0aa-c496-49b2-bb7b-d2a213292c2b","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":15.04,"idUser":2}
+{"type":"http_request","requestId":"674223af-fbe8-48de-ae19-ac58be8c4edb","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":8.07,"idUser":2}
+{"type":"http_request","requestId":"26dde657-4ade-46d9-b173-a52a0ee47de4","method":"POST","path":"/api/v1/crm/unidades/1/lecturas","statusCode":201,"durationMs":7.83,"idUser":2}
+{"type":"http_request","requestId":"59d607ae-7989-4580-b5f2-faf61c7d7cb2","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":8.62,"idUser":2}
+{"type":"http_request","requestId":"1a4fa274-11d3-4007-96aa-2e4de0893456","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos","statusCode":201,"durationMs":10.56,"idUser":2}
+{"type":"http_request","requestId":"192de988-e815-410f-a7ca-ca0075804a2c","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":7.07,"idUser":2}
+{"type":"http_request","requestId":"deb4ad4e-89c6-479f-9a15-fc41094ae368","method":"POST","path":"/api/v1/crm/unidades/1/mantenimientos/105/cerrar","statusCode":201,"durationMs":5.65,"idUser":2}
+{"type":"http_request","requestId":"a252d996-3f84-4469-96bf-b1359f24a406","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":6.02,"idUser":2}
+{"type":"http_request","requestId":"c6d2f0c9-072d-436f-b479-4a7a461190e0","method":"POST","path":"/api/v1/crm/unidades/1/archivos","statusCode":201,"durationMs":18.32,"idUser":2}
+{"type":"http_request","requestId":"55d8fa78-173b-4013-aaac-246e31772380","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":7.22,"idUser":2}
+{"type":"http_request","requestId":"12afc79a-7892-44b0-956d-4ac7af34fd18","method":"GET","path":"/api/v1/crm/unidades/1/archivos/54","statusCode":200,"durationMs":10.22,"idUser":2}
+{"type":"http_request","requestId":"5de02ba4-e7f3-4315-89e6-1f106649c7e1","method":"GET","path":"/api/v1/crm/unidades/1/archivos/54","statusCode":200,"durationMs":3.7,"idUser":2}
+OK: Angular producción/login real: lectura, mantenimiento/cierre, subida/imagen decodificada/descarga privada; claro1280/oscuro390/axe/reflujo sin errores JS
+{"type":"http_request","requestId":"8f3417b8-71cf-49ab-9058-4bcaaa897f0c","method":"PUT","path":"/api/v1/auth/users/3/permissions","statusCode":200,"durationMs":7.74,"idUser":2}
+{"type":"http_request","requestId":"3e331c01-bb07-4e16-a5bb-d3f2e651c06f","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":63.54,"idUser":null}
+{"type":"http_request","requestId":"76d97da9-a961-431b-a7eb-9107727063bc","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":17.69,"idUser":3}
+{"type":"http_request","requestId":"f0032162-a06b-4b88-9fd6-cde7663875d9","method":"GET","path":"/api/v1/crm/unidades/1/expediente","statusCode":200,"durationMs":7.23,"idUser":3}
+{"type":"http_request","requestId":"745fc142-df25-4cfd-bf42-a0462216d76b","method":"GET","path":"/api/v1/crm/unidades/1/archivos/2","statusCode":200,"durationMs":4.8,"idUser":3}
+OK: Operador de solo consulta ve expediente/foto autenticada sin controles de gestión; no se confunde rol con permiso efectivo

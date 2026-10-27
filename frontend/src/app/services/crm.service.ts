@@ -54,7 +54,7 @@ export interface CrmCampana { idCampana:number;nombre:string;estado:string;fecha
 export interface CrmEncuesta { idEncuesta:number;calificacion:number;comentario?:string;createdAt:string;cliente?:string;empresa?:string; }
 export interface CrmMeta { idMeta:number;idUser:number;username:string;fechaInicio:string;fechaFin:string;montoObjetivo:number;oportunidadesObjetivo:number;montoLogrado:number;oportunidadesLogradas:number; }
 export type CrmTaskStatus = 'Pendiente'|'En progreso'|'Completada'|'Cancelada';
-export interface CrmTarea { idTarea:number;titulo:string;descripcion?:string;prioridad:'Baja'|'Media'|'Alta'|'Urgente';estado:CrmTaskStatus;fechaVencimiento:string;idResponsable:number;responsable:string;idCliente?:number;cliente?:string;idOportunidad?:number;empresa?:string;idUnidad?:number;vin?:string;esn?:string;idCotizacion?:number;idPedido?:number;version:number;createdAt:string; }
+export interface CrmTarea { idTarea:number;idSecuencia?:string|null;estadoSecuencia?:string|null;pasoSecuencia?:number|null;titulo:string;descripcion?:string;prioridad:'Baja'|'Media'|'Alta'|'Urgente';estado:CrmTaskStatus;fechaVencimiento:string;idResponsable:number;responsable:string;idCliente?:number;cliente?:string;idOportunidad?:number;empresa?:string;idUnidad?:number;vin?:string;esn?:string;idCotizacion?:number;idPedido?:number;version:number;createdAt:string; }
 export interface CrmComunicacion { idComunicacion:number;canal:string;direccion:string;resumen:string;fecha:string;idCliente?:number;cliente?:string;idOportunidad?:number;empresa?:string;username?:string; }
 
 @Injectable({ providedIn: 'root' })
@@ -66,6 +66,7 @@ export class CrmService {
     return this.http.get<CrmPage<Oportunidad>>(`${this.api}/oportunidades`, { params: this.params(filters) });
   }
   getOportunidad(id: number) { return this.http.get<Oportunidad>(`${this.api}/oportunidades/${id}`); }
+  getConsultaWeb(id: number) { return this.http.get<{ requestId: string; piezas: {code:string;brand?:string;quantity:number;application?:string}[] } | null>(`${this.api}/oportunidades/${id}/consulta-web`); }
   getResumen() { return this.http.get<CrmResumen>(`${this.api}/resumen`); }
   buscarGlobal(q: string) { return this.http.get<GlobalSearchResult>(`${this.api}/busqueda`, { params: { q } }); }
   crearOportunidad(dto: OportunidadDto) {

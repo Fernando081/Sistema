@@ -28,8 +28,8 @@ import { CompraResumen, DetalleCompraDb } from '../compra.interface';
         <ng-container matColumnDef="desc">
           <th mat-header-cell *matHeaderCellDef> Producto </th>
           <td mat-cell *matCellDef="let e"> 
-            {{e.descripcion_producto}} 
-            <span class="text-xs text-gray-400 block">{{e.codigo_producto}}</span>
+            {{e.descripcion}}
+            <span class="text-xs text-gray-400 block">{{e.codigo}}</span>
           </td>
         </ng-container>
         <ng-container matColumnDef="costo">

@@ -1,0 +1,123 @@
+{
+  "checkedAt": "2026-10-20T15:41:39.027Z",
+  "passed": true,
+  "checks": [
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/auth/browser-state",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/auth/sessions",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/auth/mfa/status",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/auth/password-recovery/status",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/login/recuperar",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/perfil",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/reportes/auditoria",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/comercial",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/crm/unidades/1/expediente",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/unidades/1/expediente",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/comercial/politica-aprobaciones",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/auditoria/estado",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/unidades/1/piezas",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/crm/unidades/1/piezas/origenes",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/garantias",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/garantias",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4600/catalogo",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "status": 503,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4600/solicitar",
+      "status": 503,
+      "passed": true
+    },
+    {
+      "name": "Preflight CORS http://127.0.0.1:4300",
+      "passed": true
+    },
+    {
+      "name": "Preflight CORS https://outside.example.test",
+      "passed": true
+    },
+    {
+      "name": "101 vigente, dos controles ALWAYS, siete tablas de acceso y administrador persistido activo; consulta solo lectura",
+      "passed": true
+    }
+  ]
+}

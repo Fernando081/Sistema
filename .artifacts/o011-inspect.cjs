@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require('node:crypto');
+const {Client}=require('../node_modules/pg'),{databaseConfig}=require('../backend/db-config');
+(async()=>{const c=new Client(databaseConfig()),report={phase:'O01.1',checkedAt:new Date().toISOString()};await c.connect();try{
+ report.checksums={};for(const file of['111_almacen_escaneo_picking.sql','112_crm_reportes_reintentos.sql']){const hash=crypto.createHash('sha256').update(fs.readFileSync('backend/migrations/'+file)).digest('hex');assert.equal((await c.query('SELECT checksum FROM schema_migration WHERE filename=$1',[file])).rows[0].checksum,hash);report.checksums[file]=true;}
+ report.sourceRows={};for(const table of['crm_reporte_reintento','crm_reporte_intento_evento','crm_reporte_recuperacion']){report.sourceRows[table]=(await c.query('SELECT count(*)::int n FROM '+table)).rows[0].n;assert.equal(report.sourceRows[table],0);}
+ report.remainingCopies=(await c.query("SELECT count(*)::int n FROM pg_database WHERE datname ~ '^verify_(retries|reports)_[a-f0-9]{16}$'")).rows[0].n;assert.equal(report.remainingCopies,0);
+ report.guard=(await c.query("SELECT tgenabled FROM pg_trigger WHERE tgname='crm_reporte_cola_control'")).rows[0].tgenabled;assert.equal(report.guard,'A');
+ report.http=[];for(const[url,status]of[['http://127.0.0.1:3100/api/v1/health',200],['http://127.0.0.1:3100/api/v1/crm/reportes-programados',401],['http://127.0.0.1:4300/crm/reportes-programados',200],['http://127.0.0.1:4300/api/v1/crm/reportes-programados',401],['http://127.0.0.1:4500/',200],['http://127.0.0.1:4500/solicitar',503],['http://127.0.0.1:4600/',200]]){const r=await fetch(url,{signal:AbortSignal.timeout(10000)});assert.equal(r.status,status,url);await r.body?.cancel();report.http.push({url,status});}
+ report.passed=true;fs.writeFileSync('.artifacts/o011-local-status.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
+}finally{await c.end();}})().catch(e=>{console.error(e.name,e instanceof assert.AssertionError?e.message:'Verificación local fallida');process.exitCode=1;});

@@ -1,5 +1,20 @@
 # Cuentas por pagar y conciliación de proveedores
 
+## Organización del backend — Q03.2
+
+Desde el 29 de septiembre de 2026, `CuentasProveedorService` conserva los métodos públicos del controlador y delega en cuatro servicios registrados en Nest:
+
+| Servicio | Responsabilidad |
+| --- | --- |
+| `FacturasProveedorService` | Captura, conciliación con recepciones, documentos XML/PDF, discrepancias, aprobación y cancelación |
+| `PagosProveedorService` | Programación, pago y reversión |
+| `SaldosProveedorService` | Anticipos, notas de crédito y aplicación de saldos |
+| `ConsultasProveedorService` | Listado, detalle y dashboard |
+
+Las filas internas están en `cuentas-proveedor.types.ts`. La fachada utiliza `Parameters` y `ReturnType` para mantener firmas sincronizadas. Las operaciones conservan sus transacciones, bloqueos y consultas SQL. La conciliación de partidas y aplicación de saldos reciben el manager de la transacción que las inicia; no abren otra transacción. La separación no agrega rutas ni requiere migraciones.
+
+Las pruebas de composición comprueban resolución de proveedores, pago con bloqueo de factura, actualización de obligación y saldos en una transacción y reintento sin repetir movimientos. La verificación sobre una base restaurada y desechable cubre el flujo operativo real; los datos de trabajo no se usan como destino de esas pruebas.
+
 ## Flujo operativo
 
 1. Emita la orden de compra desde **Abastecimiento**.
@@ -56,3 +71,21 @@ Las acciones de autorización y tesorería requieren además rol administrador.
 ## Compatibilidad
 
 Las compras históricas creadas por el flujo anterior continúan visibles y pagables en la pestaña **Compras anteriores**. Las nuevas operaciones deben usar orden, recepción y factura separadas.
+
+## Contrato JSON de identificadores — 2 de octubre de 2026
+
+Las respuestas JSON del controlador entregan IDs numéricos seguros, incluidos los IDs bigserial de PostgreSQL que el driver devuelve como texto. Esto permite reutilizar el ID de factura en los DTO de anticipo/nota y en los selectores del frontend. También normaliza IDs en partidas, pagos, programaciones y dashboard; importes y fechas conservan su representación anterior. Valores fuera del rango seguro de JavaScript se rechazan para evitar redondear identificadores. Descargas XML/PDF conservan sus respuestas de archivo.
+
+La regresión HTTP de Q04.5.3c2c3d4 comprueba conciliación, aprobación, anticipo/nota/pago, reversión y cancelación sobre copia aislada. Al cancelar se liberan saldos aplicados; liberar un anticipo no equivale a recibir efectivo de vuelta. Las conexiones/APIs bancarias permanecen excluidas.
+
+## Reintentos seguros — Q04.5.3c2c3d5
+
+Factura, anticipo, nota de crédito y pago requieren un requestId técnico. Dentro de la misma transacción se bloquea esa clave, se compara una huella SHA-256 del contenido normalizado y se conserva la respuesta original. Repetir la misma operación devuelve esa respuesta sin duplicar efectos; cambiar contenido, factura destino o tipo de operación con la misma clave devuelve 409. Las partidas de factura se ordenan por detalle para comparar contenido equivalente.
+
+Los registros históricos con UUID pero sin huella se rechazan con 409: revisar el registro y su historial antes de actuar; no asumir que basta generar otro UUID. La interfaz conserva la clave después de errores de red o resultado incierto y bloquea cambios de contenido hasta confirmar. Los errores definitivos de validación permiten corregir. La conservación es en memoria del componente: recargar o abandonar la página pierde esa clave; ante incertidumbre revisar historial antes de volver a registrar. El UUID no es un timbre fiscal.
+
+## Regresión documental HTTP — Q04.5.3c2c3d6
+
+`perf:documents-http` prueba en copia propia el resguardo PDF multipart y XML incorporado al registrar la factura. Compara descarga/bytes/hash almacenado, MIME y disposición de archivo; prueba ausencia, autenticación, permiso de carga, contenido inválido y límite de 10 MiB. Rechazar una carga no debe sustituir el PDF anterior. Ver README/reporte para resultados.
+
+La validación actual del PDF comprueba MIME, firma inicial y EOF; no es un parser completo ni antivirus. El XML comprueba estructura identificable, rechazo DTD/entidades y concordancia de metadatos; no certifica validez fiscal. Los fixtures no son documentos para producción.

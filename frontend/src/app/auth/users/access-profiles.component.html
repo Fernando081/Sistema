@@ -1,0 +1,24 @@
+<section aria-labelledby="profiles-title" class="profiles-panel">
+  <header><div><h2 id="profiles-title">Perfiles de acceso</h2><p>Define permisos una vez y reutilízalos entre operadores. Un perfil no convierte al empleado en administrador.</p></div>
+    <button mat-flat-button type="button" [disabled]="busy()" (click)="edit(null)">Nuevo perfil</button></header>
+  <p>Un perfil permite solamente sus permisos seleccionados. Las excepciones individuales tienen prioridad. Los módulos con acceso exclusivo de administrador conservan esa restricción.</p>
+  <div class="profiles-grid">@for(profile of profiles();track profile.idProfile){
+    <article><h3>{{profile.name}}</h3><p>{{profile.description || 'Sin descripción'}}</p><small>{{profile.permissions.length}} permisos · {{profile.assignedUsers}} usuarios asignados · versión {{profile.version}}</small>
+      <div class="actions"><button mat-button type="button" [disabled]="busy()" (click)="edit(profile)">Editar {{profile.name}}</button>
+        <button mat-button type="button" [disabled]="busy()" (click)="edit(profile,true)">Duplicar {{profile.name}}</button>
+        <button mat-button type="button" [disabled]="busy() || profile.assignedUsers > 0" (click)="remove(profile)">Eliminar {{profile.name}}</button></div>
+      @if(profile.assignedUsers){<small>Reasigna a sus usuarios para poder eliminarlo.</small>}</article>
+  }@empty{<p>Aún no hay perfiles. Los usuarios conservan sus permisos actuales.</p>}</div>
+  @if(editorOpen()){
+    <form [formGroup]="form" (ngSubmit)="save()" class="profile-editor" aria-labelledby="profile-editor-title">
+      <h3 id="profile-editor-title">{{editing() ? 'Editar perfil' : 'Crear perfil'}}</h3>
+      <div class="fields"><mat-form-field><mat-label>Nombre del perfil</mat-label><input matInput formControlName="name" maxlength="80"><mat-error>Escribe un nombre de hasta 80 caracteres.</mat-error></mat-form-field>
+        <mat-form-field><mat-label>Descripción del perfil</mat-label><textarea matInput formControlName="description" maxlength="500"></textarea></mat-form-field></div>
+      <fieldset [disabled]="busy()"><legend>Permisos permitidos ({{codes().length}})</legend><div class="permissions">@for(permission of catalog();track permission.permissionCode){
+        <label><input type="checkbox" [checked]="codes().includes(permission.permissionCode)" (change)="toggle(permission.permissionCode,$event)"><span><strong>{{permission.description}}</strong><small>{{permission.permissionCode}}</small></span></label>
+      }</div></fieldset>
+      @if(!codes().length){<p>Sin permisos seleccionados: el perfil no autorizará operaciones protegidas por permisos, salvo excepciones individuales.</p>}
+      <div class="actions"><button mat-flat-button type="submit" [disabled]="busy() || form.invalid">Guardar perfil</button><button mat-button type="button" [disabled]="busy()" (click)="editorOpen.set(false)">Cancelar edición</button></div>
+    </form>
+  }
+</section>

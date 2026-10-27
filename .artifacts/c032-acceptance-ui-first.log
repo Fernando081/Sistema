@@ -1,0 +1,45 @@
+{"type":"http_request","requestId":"4814fe0a-27cb-46af-9c80-647b619ba15c","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":201,"durationMs":53.27,"idUser":2}
+{"type":"http_request","requestId":"0f3d00cb-7e5c-4c66-b986-6ef32c164dfe","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":201,"durationMs":12.31,"idUser":2}
+{"type":"http_request","requestId":"5c9cde0b-bebb-48b6-a5fb-fea7e28e8291","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":201,"durationMs":9.92,"idUser":2}
+{"type":"http_request","requestId":"f3abb8fe-956c-4482-9e35-d7912e5ba65b","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":409,"durationMs":7.9,"idUser":2}
+{"type":"http_request","requestId":"204a16b1-4273-40bc-a90b-c46a2009e6c7","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":400,"durationMs":3.02,"idUser":2}
+{"type":"http_request","requestId":"9c48f382-4131-4c81-af85-aea0c0d4a5fd","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":400,"durationMs":3.87,"idUser":2}
+{"type":"http_request","requestId":"c09254e3-f332-42cb-9c02-211249a06367","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":400,"durationMs":4.46,"idUser":2}
+{"type":"http_request","requestId":"563d357b-e922-47bf-af84-55b8a5c03065","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":403,"durationMs":2.7,"idUser":3}
+{"type":"http_request","requestId":"b242481e-8414-4e13-8639-96f6a3f15587","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":401,"durationMs":1.45,"idUser":null}
+{"type":"http_request","requestId":"e5ada1bc-ebe7-45bc-a914-17ec381e6bd7","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":5.61,"idUser":2}
+{"type":"http_request","requestId":"612dad9e-46c4-435a-a131-17fe1beb16b1","method":"GET","path":"/api/v1/crm/reportes-programados/050890a3-6083-42c8-8fab-287b2e4a24c0/historial","statusCode":404,"durationMs":6.38,"idUser":4}
+{"type":"http_request","requestId":"393d424f-a3d0-4740-814f-623303a323ca","method":"PATCH","path":"/api/v1/crm/reportes-programados/050890a3-6083-42c8-8fab-287b2e4a24c0","statusCode":404,"durationMs":7.41,"idUser":4}
+{"type":"http_request","requestId":"02def753-358c-4909-a37b-101386b2f8ec","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":6.85,"idUser":4}
+OK: HTTP/SQL: configuración cerrada, validación cruzada, UUID/huella, caché privada, operador403 y ACL incluso entre administradores
+OK: Callback cron real y exclusión PostgreSQL entre instancias; diarios/semanales, sin retroactividad y un resultado por periodo
+OK: Snapshot reutiliza conteos completos de C03.1, conserva corte/filtros y no cambia al modificar el origen; sin datos de contacto o listas recortadas
+OK: Suspensión y reanudación versionadas, corte nuevo sin completar periodos anteriores, día semanal y siguiente diario
+OK: Fallo real registra resultado Error sin snapshot ni SQL; job/avisos existentes detectan fallo/recuperación sin repetir ese periodo
+OK: El ejecutor no genera para propietario sin rol actual autorizado y la consulta pierde acceso al revocar autoridad
+OK: Revocación del permiso efectivo bloquea consulta y generación aunque el propietario siga siendo ADMIN
+OK: Configuración/historial conservados con guardas ALWAYS y auditoría humana de configuración separada del cron sin autor humano inventado
+OK: Revocación durante espera de bloqueo real impide el control y revalida cuenta/version después de esperar
+{"type":"http_request","requestId":"e473c348-536f-4e2c-8b33-64f08f9a6acf","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":3.81,"idUser":2}
+{"type":"http_request","requestId":"c1f2e44c-1714-4e7c-a847-9da09b254685","method":"GET","path":"/api/v1/crm/reportes-programados/050890a3-6083-42c8-8fab-287b2e4a24c0/historial","statusCode":200,"durationMs":6.95,"idUser":2}
+OK: Lecturas no ejecutan reportes y paginación conserva totales/IDs sin duplicar
+{"type":"http_request","requestId":"36e6db6c-99b8-47fa-a9eb-42ee15618db7","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":57.03,"idUser":null}
+{"type":"http_request","requestId":"f16a08ec-2146-495c-b6f1-843422153cec","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":18.74,"idUser":2}
+{"type":"http_request","requestId":"5926dcfa-7de5-4d2d-a7f9-47238a5b7434","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":89.57,"idUser":2}
+{"type":"http_request","requestId":"5feaaa2c-105f-43ba-bf41-420fcf01cd8b","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":4.75,"idUser":2}
+{"type":"http_request","requestId":"2e0bbbe6-b9bf-4ad5-b5d7-550d341d997c","method":"POST","path":"/api/v1/crm/reportes-programados","statusCode":201,"durationMs":17.32,"idUser":2}
+{"type":"http_request","requestId":"7ec0af8b-7fc3-48ef-bf95-aadd15a9a4fb","method":"GET","path":"/api/v1/crm/reportes-programados","statusCode":200,"durationMs":5.27,"idUser":2}
+{"type":"http_request","requestId":"eb985b3a-eee0-4942-a431-2ef2ac3dae1a","method":"GET","path":"/api/v1/crm/reportes-programados/0cd886f1-b0a4-4d11-a810-c81e8ad0cf8c/historial","statusCode":200,"durationMs":7.06,"idUser":2}
+{"type":"http_request","requestId":"291e5a0f-f711-4bc3-97ca-565d678fbc66","method":"PATCH","path":"/api/v1/crm/reportes-programados/0cd886f1-b0a4-4d11-a810-c81e8ad0cf8c","statusCode":200,"durationMs":6.7,"idUser":2}
+{"type":"http_request","requestId":"39dcf4b7-f820-41a5-b0b6-96f66800fe03","method":"GET","path":"/api/v1/crm/reportes-programados/0cd886f1-b0a4-4d11-a810-c81e8ad0cf8c/historial","statusCode":200,"durationMs":5.85,"idUser":2}
+{"type":"http_request","requestId":"ad61d10b-2c7a-4b0a-befc-dd42d2172e3b","method":"PATCH","path":"/api/v1/crm/reportes-programados/0cd886f1-b0a4-4d11-a810-c81e8ad0cf8c","statusCode":200,"durationMs":4.3,"idUser":2}
+{"type":"http_request","requestId":"2ccd6a75-8560-40a0-8440-3e404bd64944","method":"GET","path":"/api/v1/crm/reportes-programados/0cd886f1-b0a4-4d11-a810-c81e8ad0cf8c/historial","statusCode":200,"durationMs":9.76,"idUser":2}
+{"type":"http_request","requestId":"a30151b1-b220-4183-9a94-67fb61c93127","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":3.03,"idUser":2}
+{"type":"http_request","requestId":"448ca5b3-32ac-4faf-aa1d-ca679d304789","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":25.21,"idUser":2}
+{"type":"http_request","requestId":"336e5c24-b6b5-4a2d-a986-5042598ba6a1","method":"GET","path":"/api/v1/crm/reportes-programados/0cd886f1-b0a4-4d11-a810-c81e8ad0cf8c/historial","statusCode":200,"durationMs":7.52,"idUser":2}
+{"type":"http_request","requestId":"cf5d0b93-95b3-4cf8-b289-b9151a99bba6","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":3.78,"idUser":2}
+{"type":"http_request","requestId":"c3a03064-4095-4cb5-9dfb-f2da73560ffd","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":25.66,"idUser":2}
+{"type":"http_request","requestId":"ea7660ef-e1d1-45ad-b25c-a9362c6a238f","method":"GET","path":"/api/v1/crm/reportes-programados/050890a3-6083-42c8-8fab-287b2e4a24c0/historial","statusCode":200,"durationMs":9.65,"idUser":2}
+Falló aceptación C03.2: Error     at captureRawStack (C:\Sistema\node_modules\playwright-core\lib\coreBundle.js:8588:17)
+    at callMatcherAsStep (C:\Sistema\node_modules\playwright\lib\matchers\expect.js:13310:57)
+    at Object.toHaveCount (C:\Sistema\node_modules\playwright\lib\matchers\expect.js:13302:23) Etapa en .artifacts/c032-reportes.json; sin secretos.

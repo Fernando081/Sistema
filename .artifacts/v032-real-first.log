@@ -1,0 +1,171 @@
+
+> test:portal-publications
+> node backend/verify-customer-portal.js --publications --backup=.backups/2026-10-21T00-21-11-370Z/database.dump
+
+{"type":"http_request","requestId":"61093ca7-2ea0-45ea-8794-95dd90cedf15","method":"PUT","path":"/api/v1/comercial/clientes/8","statusCode":200,"durationMs":28.11,"idUser":2}
+{"type":"http_request","requestId":"8cdca6e8-51e8-4fb4-8bb5-75dab042994f","method":"PUT","path":"/api/v1/comercial/clientes/9","statusCode":200,"durationMs":9.02,"idUser":2}
+{"type":"http_request","requestId":"0dd71658-c25c-41f8-8e72-f2d1173322ac","method":"GET","path":"/api/v1/clientes/8/portal-accesos","statusCode":401,"durationMs":1.01,"idUser":null}
+{"type":"http_request","requestId":"c2ca0932-8d48-4d61-8591-09d048b6c505","method":"GET","path":"/api/v1/clientes/8/portal-accesos","statusCode":403,"durationMs":6.62,"idUser":3}
+{"type":"http_request","requestId":"108a425f-e93d-4755-9854-ca70df699e44","method":"GET","path":"/api/v1/clientes/8/portal-accesos","statusCode":200,"durationMs":10.36,"idUser":2}
+{"type":"http_request","requestId":"e8e1447a-a361-4e71-b5bb-fdb0f268cd06","method":"POST","path":"/api/v1/clientes/8/portal-accesos","statusCode":201,"durationMs":12.94,"idUser":2}
+{"type":"http_request","requestId":"f47dab4b-d2e9-4b25-9f52-85c284fa2851","method":"POST","path":"/api/v1/clientes/9/portal-accesos","statusCode":201,"durationMs":10.05,"idUser":2}
+{"type":"http_request","requestId":"b7cc564d-8566-487a-b7ca-b28200e22a54","method":"POST","path":"/api/v1/clientes/8/portal-accesos","statusCode":201,"durationMs":6.44,"idUser":2}
+{"type":"http_request","requestId":"5a412538-bde7-45f0-a8bf-4ccc9bb46e6f","method":"POST","path":"/api/v1/clientes/8/portal-accesos","statusCode":409,"durationMs":6.45,"idUser":2}
+{"type":"http_request","requestId":"30f7c454-a0fb-40cc-81e3-2bde19411694","method":"GET","path":"/api/v1/clientes/8/portal-accesos","statusCode":200,"durationMs":5.73,"idUser":2}
+OK: 104 sólo en copia sin inscripción automática; administración401/403, permiso ADMIN, invitación UUID/huella idempotente y token sólo hash sin aparecer en listados
+{"type":"http_request","requestId":"8a0f5fd5-2fcb-4a02-9ab0-86ad24c3abcf","method":"GET","path":"/api/v1/portal/sesion","statusCode":401,"durationMs":0.81,"idUser":null}
+{"type":"http_request","requestId":"2c479380-014d-4533-84d1-6268569fda8a","method":"GET","path":"/api/v1/portal/sesion","statusCode":401,"durationMs":0.8,"idUser":null}
+{"type":"http_request","requestId":"5f823452-dd3b-4172-b125-fd5a43a466f0","method":"GET","path":"/api/v1/portal/sesion","statusCode":403,"durationMs":0.64,"idUser":null}
+{"type":"http_request","requestId":"c8314cd4-0ee1-4190-92f5-c027de27a635","method":"GET","path":"/api/v1/portal/sesion","statusCode":403,"durationMs":0.55,"idUser":null}
+{"type":"http_request","requestId":"682cfd12-e002-4e4d-8e6e-42a9acfa0c2a","method":"POST","path":"/api/v1/portal/activar","statusCode":201,"durationMs":213.41,"idUser":null}
+{"type":"http_request","requestId":"17c232b2-57c8-4119-b418-33677dfbbb25","method":"POST","path":"/api/v1/portal/activar","statusCode":401,"durationMs":210.36,"idUser":null}
+{"type":"http_request","requestId":"91bf8ec7-0d7f-4ad6-a83f-481c12456ac7","method":"POST","path":"/api/v1/portal/activar","statusCode":201,"durationMs":215.77,"idUser":null}
+{"type":"http_request","requestId":"f8489084-12cd-448b-8a72-3b193b1be8da","method":"POST","path":"/api/v1/portal/login","statusCode":201,"durationMs":217.56,"idUser":null}
+{"type":"http_request","requestId":"40c98929-efe0-41f2-84ee-f7caf29fcbcd","method":"POST","path":"/api/v1/portal/login","statusCode":201,"durationMs":214.38,"idUser":null}
+{"type":"http_request","requestId":"975a311a-452d-4109-b6c8-0ead80e8d4fc","method":"GET","path":"/api/v1/portal/sesion","statusCode":200,"durationMs":2.21,"idUser":null}
+{"type":"http_request","requestId":"1f9e4bda-d8f0-47ad-908f-1fc9b3d568e3","method":"GET","path":"/api/v1/portal/sesion","statusCode":200,"durationMs":2.66,"idUser":null}
+{"type":"http_request","requestId":"5f50876d-8159-4610-83d7-2944e58f734c","method":"GET","path":"/api/v1/cliente","statusCode":401,"durationMs":0.51,"idUser":null}
+{"type":"http_request","requestId":"3190060c-ef9b-4220-9f55-213933fc6c9b","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":0.54,"idUser":null}
+{"type":"http_request","requestId":"8b3587e9-71b8-4e6e-ba0b-fc7b21df637a","method":"GET","path":"/api/v1/portal/sesion","statusCode":200,"durationMs":2.41,"idUser":null}
+{"type":"http_request","requestId":"310e3013-183a-4de4-bc1b-0a574c4a54bc","method":"GET","path":"/api/v1/auth/me","statusCode":200,"durationMs":2.04,"idUser":2}
+{"type":"http_request","requestId":"ca12f4e8-5d14-4061-bbf5-94997ed8d5b5","method":"POST","path":"/api/v1/portal/salir","statusCode":403,"durationMs":0.77,"idUser":null}
+{"type":"http_request","requestId":"632566ab-78d8-4083-8d92-aa6445f64e96","method":"GET","path":"/api/v1/portal/sesion","statusCode":200,"durationMs":2.32,"idUser":null}
+OK: Activación única, cookies HttpOnly/Strict propias sin token JSON; dos clientes aislados, credencial del portal rechazada en ERP y coexistencia sin impersonación; origen/cabecera CSRF exigidos
+{"type":"http_request","requestId":"a2f5eb4e-bc1b-4f3e-912e-3768798b2acd","method":"POST","path":"/api/v1/crm/clientes/8/unidades","statusCode":201,"durationMs":9.65,"idUser":2}
+{"type":"http_request","requestId":"9a8d0d63-a639-4be1-94ff-b7bfe15d6f56","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":32.8,"idUser":2}
+{"type":"http_request","requestId":"f2d24853-bd48-4bd9-b69b-ece616257bd1","method":"POST","path":"/api/v1/cotizacion/24/versiones/sellar","statusCode":201,"durationMs":13.53,"idUser":2}
+{"type":"http_request","requestId":"3719a7c3-afc4-42ed-83f7-f45332d43b1a","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":10.23,"idUser":2}
+{"type":"http_request","requestId":"ff5704d2-8ecf-42c6-bfd6-093e1edd61b0","method":"POST","path":"/api/v1/pedidos/2/confirmar","statusCode":201,"durationMs":15.05,"idUser":2}
+{"type":"http_request","requestId":"8780b8b1-6cc8-43c8-ba33-05e73e2eddd9","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":77.23,"idUser":2}
+{"type":"http_request","requestId":"b73c56cc-ca99-447e-a7a2-cb972a5f2a4a","method":"POST","path":"/api/v1/garantias","statusCode":201,"durationMs":12.73,"idUser":2}
+{"type":"http_request","requestId":"efbd935e-10fe-4af4-82dd-87dc6e977241","method":"POST","path":"/api/v1/crm/clientes/9/unidades","statusCode":201,"durationMs":4.3,"idUser":2}
+{"type":"http_request","requestId":"c3ad55d6-a88e-467a-aff6-92d11fcc1d83","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":5.87,"idUser":2}
+{"type":"http_request","requestId":"57bc19fd-509b-40e1-ada3-5266d18f4102","method":"POST","path":"/api/v1/cotizacion/25/versiones/sellar","statusCode":201,"durationMs":4.5,"idUser":2}
+{"type":"http_request","requestId":"4ae143d6-2b76-4269-93c7-edaf839366cd","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":9.44,"idUser":2}
+{"type":"http_request","requestId":"4ea06a1e-23f0-4e66-b128-b048124e5d7e","method":"POST","path":"/api/v1/pedidos/3/confirmar","statusCode":201,"durationMs":5.01,"idUser":2}
+{"type":"http_request","requestId":"632e066d-b6e9-4418-a364-957e668ac1b3","method":"POST","path":"/api/v1/venta","statusCode":201,"durationMs":12.44,"idUser":2}
+{"type":"http_request","requestId":"85277c85-53b7-4666-a633-a0bd8c7ea472","method":"POST","path":"/api/v1/garantias","statusCode":201,"durationMs":3.71,"idUser":2}
+{"type":"http_request","requestId":"de9e32a6-6e11-491a-84d5-93c3b390770c","method":"GET","path":"/api/v1/clientes/8/portal-publicaciones","statusCode":401,"durationMs":0.67,"idUser":null}
+{"type":"http_request","requestId":"9c0976ef-1715-4c33-b305-d65a61b9fbb6","method":"GET","path":"/api/v1/clientes/8/portal-publicaciones","statusCode":403,"durationMs":2.71,"idUser":3}
+{"type":"http_request","requestId":"109071a3-d4cc-42d0-999b-1c07bc54f892","method":"GET","path":"/api/v1/clientes/8/portal-publicaciones","statusCode":200,"durationMs":7.59,"idUser":2}
+{"type":"http_request","requestId":"6f0a9ad2-d1b7-465d-bdc5-45c1852759d3","method":"GET","path":"/api/v1/portal/archivos","statusCode":200,"durationMs":4.01,"idUser":null}
+{"type":"http_request","requestId":"97a2b315-45bb-42f1-b0f9-bbf720590bb6","method":"GET","path":"/api/v1/clientes/8/portal-publicaciones/candidatos/firma","statusCode":404,"durationMs":3.75,"idUser":2}
+{"type":"http_request","requestId":"6725b99a-b521-4f44-8a1e-4c50d97851dc","method":"GET","path":"/api/v1/clientes/8/portal-publicaciones/candidatos/xml","statusCode":400,"durationMs":2.38,"idUser":2}
+{"type":"http_request","requestId":"3e13ea4c-156c-4ea5-9bd5-0ce4785a569b","method":"GET","path":"/api/v1/clientes/8/portal-publicaciones/candidatos/xml","statusCode":200,"durationMs":6.14,"idUser":2}
+{"type":"http_request","requestId":"1a357962-0ea2-45f6-b6f5-b879fd7e3b4f","method":"GET","path":"/api/v1/clientes/9/portal-publicaciones/candidatos/xml","statusCode":200,"durationMs":5.24,"idUser":2}
+{"type":"http_request","requestId":"752440b6-11a7-4073-8450-d0e841f4472d","method":"GET","path":"/api/v1/clientes/8/portal-publicaciones/candidatos/cotizacion","statusCode":200,"durationMs":8.89,"idUser":2}
+{"type":"http_request","requestId":"ccb4e0d6-560b-4d7d-8b58-c027ef8dec3a","method":"GET","path":"/api/v1/clientes/9/portal-publicaciones/candidatos/cotizacion","statusCode":200,"durationMs":5.95,"idUser":2}
+{"type":"http_request","requestId":"44ec78f9-23ad-49f9-84d3-7ff6ebd9348f","method":"GET","path":"/api/v1/clientes/8/portal-publicaciones/candidatos/entrega","statusCode":200,"durationMs":4.96,"idUser":2}
+{"type":"http_request","requestId":"7d311f4f-9604-40ce-8930-43eae35dcd11","method":"GET","path":"/api/v1/clientes/9/portal-publicaciones/candidatos/entrega","statusCode":200,"durationMs":4.49,"idUser":2}
+OK: 105 en copia sin backfill; permiso independiente401/403, tipos cerrados/DTO sin idCliente, candidatos y vistas previas ligados al cliente; V01/V02/PAC mock existentes reutilizados
+{"type":"http_request","requestId":"9a403afa-04f2-4453-ad81-8f89f3d06544","method":"POST","path":"/api/v1/clientes/8/portal-publicaciones","statusCode":201,"durationMs":9.51,"idUser":2}
+{"type":"http_request","requestId":"01aa5afb-16af-47f8-8c8c-cccab65b3035","method":"POST","path":"/api/v1/clientes/8/portal-publicaciones","statusCode":201,"durationMs":3.84,"idUser":2}
+{"type":"http_request","requestId":"bb4ce836-37f1-42bb-83a9-10d71738c3e1","method":"POST","path":"/api/v1/clientes/8/portal-publicaciones","statusCode":409,"durationMs":3.98,"idUser":2}
+{"type":"http_request","requestId":"50ce73ac-3e47-471c-944d-0a4af11ab791","method":"POST","path":"/api/v1/clientes/9/portal-publicaciones","statusCode":409,"durationMs":6.62,"idUser":2}
+{"type":"http_request","requestId":"67e86e26-8d93-43ea-9c9e-31d0cb265335","method":"POST","path":"/api/v1/clientes/8/portal-publicaciones","statusCode":400,"durationMs":2.6,"idUser":2}
+{"type":"http_request","requestId":"2f91c49e-2a4e-453e-9c04-72f041e7b8e7","method":"GET","path":"/api/v1/portal/archivos/1/descarga","statusCode":200,"durationMs":6.21,"idUser":null}
+{"type":"http_request","requestId":"5342f5f4-e38b-4790-ba50-621a073980e9","method":"GET","path":"/api/v1/portal/archivos/1/descarga","statusCode":404,"durationMs":2.48,"idUser":null}
+{"type":"http_request","requestId":"b18523f6-9d1b-47ef-94b0-7ee346434bcb","method":"GET","path":"/api/v1/portal/archivos/1/descarga","statusCode":401,"durationMs":0.64,"idUser":null}
+{"type":"http_request","requestId":"7d7a7494-932e-4499-85af-c51a0e281393","method":"GET","path":"/api/v1/portal/archivos/1/descarga","statusCode":401,"durationMs":1.37,"idUser":null}
+{"type":"http_request","requestId":"e3749d80-f374-43fe-8f1f-1f49071785e9","method":"GET","path":"/api/v1/portal/archivos","statusCode":403,"durationMs":1.18,"idUser":null}
+{"type":"http_request","requestId":"cf5d3669-3f97-41ac-8870-e3f054849eb6","method":"GET","path":"/api/v1/portal/archivos","statusCode":200,"durationMs":2.82,"idUser":null}
+{"type":"http_request","requestId":"edf8c6a8-5ad3-406f-8d63-4bb8efac5ce8","method":"GET","path":"/api/v1/portal/archivos","statusCode":200,"durationMs":4.36,"idUser":null}
+OK: Publicación deliberada/idempotente y revisión por huella; XML descargado idéntico al fiscal mock, SHA-256/attachment/nosniff/no-store; otro cliente404 y cookie ERP insuficiente
+{"type":"http_request","requestId":"fba722c5-b8e6-43c5-baef-1d84e1b8bf39","method":"GET","path":"/api/v1/portal/archivos/1/descarga","statusCode":404,"durationMs":10.74,"idUser":null}
+{"type":"http_request","requestId":"1bcbfbf7-4fec-48d8-9b48-04a75cfdd76d","method":"GET","path":"/api/v1/portal/archivos/1/descarga","statusCode":404,"durationMs":2.42,"idUser":null}
+{"type":"http_request","requestId":"4fe956e4-5a34-4c6d-b2fb-f80bbc778dcb","method":"GET","path":"/api/v1/portal/archivos/1/descarga","statusCode":404,"durationMs":2.14,"idUser":null}
+OK: Publicación concurrente única; PDF V01/V02 conservados y separados de originales; cambios de fuente o reasignación bloquean la descarga sin transferir permisos
+{"type":"http_request","requestId":"65b34e24-0369-483a-a7e1-a1a5c0621531","method":"POST","path":"/api/v1/clientes/8/portal-publicaciones/2/retirar","statusCode":201,"durationMs":9.78,"idUser":2}
+{"type":"http_request","requestId":"29fa62d2-60ba-4e51-8341-c214a65feae9","method":"POST","path":"/api/v1/clientes/8/portal-publicaciones/2/retirar","statusCode":201,"durationMs":4.35,"idUser":2}
+{"type":"http_request","requestId":"8095bba3-8a22-4539-ae12-0c5f713045ca","method":"GET","path":"/api/v1/portal/archivos/2/descarga","statusCode":404,"durationMs":2.28,"idUser":null}
+{"type":"http_request","requestId":"47b090d4-4b22-4436-8308-f577fa2f51b5","method":"GET","path":"/api/v1/portal/archivos","statusCode":200,"durationMs":3.23,"idUser":null}
+{"type":"http_request","requestId":"0ff0aa83-13ae-4c33-a6b1-6e95dfec50bc","method":"POST","path":"/api/v1/clientes/9/portal-publicaciones/3/retirar","statusCode":404,"durationMs":3.13,"idUser":2}
+OK: Retiro transaccional/idempotente, historial conservado y archivo desaparece del portal; reintentar la publicación original no resucita acceso; retiro cruzado404
+{"type":"http_request","requestId":"28f21338-4f6a-4401-bc02-ba4be7b1d948","method":"GET","path":"/api/v1/clientes/8/portal-publicaciones/candidatos/acuse","statusCode":200,"durationMs":5.83,"idUser":2}
+OK: Proveniencia del servidor: mock no se publica como producción; XML con DTD/ENTITY y mayores2MiB rechazados; acuse mock conservado admite publicación separada
+OK: Guardas ALWAYS de metadata/bytes/retiros y protección de auditoría sin archivos; actor nominal, fallo de auditoría revierte publicación/archivo juntos
+OK: Revocación efectiva de personal mientras espera bloqueo rechaza403 sin crear publicación; base de origen intacta
+{"type":"http_request","requestId":"c6f2c990-1402-4ec1-a17d-697cb947d249","method":"GET","path":"/api/v1/portal/documentos/unidades","statusCode":401,"durationMs":0.87,"idUser":null}
+{"type":"http_request","requestId":"e3bfebfc-330b-4466-89ef-43a21643eebd","method":"GET","path":"/api/v1/portal/documentos/unidades","statusCode":200,"durationMs":3.97,"idUser":null}
+{"type":"http_request","requestId":"38d45341-ec13-47f7-93d3-4a76ba1fc8f3","method":"GET","path":"/api/v1/portal/documentos/unidades/1","statusCode":200,"durationMs":2,"idUser":null}
+{"type":"http_request","requestId":"594f5c7a-b00d-40bd-8ca6-01e7692178de","method":"GET","path":"/api/v1/portal/documentos/unidades/2","statusCode":404,"durationMs":3.95,"idUser":null}
+{"type":"http_request","requestId":"d4c1d16b-2ce3-4b7e-af2b-eb3ad78e9623","method":"GET","path":"/api/v1/portal/documentos/unidades/2/resumen","statusCode":404,"durationMs":4.44,"idUser":null}
+{"type":"http_request","requestId":"cc2d09a0-7615-4b18-b6c8-3bf068695e7f","method":"GET","path":"/api/v1/portal/documentos/unidades","statusCode":400,"durationMs":1.02,"idUser":null}
+{"type":"http_request","requestId":"24764777-75c7-4b22-b50d-10a32a0f4732","method":"GET","path":"/api/v1/portal/documentos/unidades/1/resumen","statusCode":200,"durationMs":10.46,"idUser":null}
+{"type":"http_request","requestId":"fc866272-d6ab-4dca-8924-4ab8854ebd37","method":"GET","path":"/api/v1/portal/documentos/cotizaciones","statusCode":401,"durationMs":0.92,"idUser":null}
+{"type":"http_request","requestId":"d80324de-9062-44aa-86d4-83177d3e25cf","method":"GET","path":"/api/v1/portal/documentos/cotizaciones","statusCode":200,"durationMs":4.85,"idUser":null}
+{"type":"http_request","requestId":"c2cfcd1d-e93a-416a-9219-17859174616f","method":"GET","path":"/api/v1/portal/documentos/cotizaciones/24","statusCode":200,"durationMs":2.18,"idUser":null}
+{"type":"http_request","requestId":"8d57810e-412f-4619-957c-671929539f8b","method":"GET","path":"/api/v1/portal/documentos/cotizaciones/25","statusCode":404,"durationMs":5.81,"idUser":null}
+{"type":"http_request","requestId":"0f89c5bb-23ac-446e-8d7d-7d5b6f3b6c7f","method":"GET","path":"/api/v1/portal/documentos/cotizaciones/25/resumen","statusCode":404,"durationMs":2.19,"idUser":null}
+{"type":"http_request","requestId":"d23847b0-ef0b-44a8-8393-18d33e49b248","method":"GET","path":"/api/v1/portal/documentos/cotizaciones","statusCode":400,"durationMs":0.59,"idUser":null}
+{"type":"http_request","requestId":"1a8658e0-3e3b-4a88-af72-e12822016068","method":"GET","path":"/api/v1/portal/documentos/cotizaciones/24/resumen","statusCode":200,"durationMs":13.45,"idUser":null}
+{"type":"http_request","requestId":"73527038-489b-4a62-82c2-36e5c92afec3","method":"GET","path":"/api/v1/portal/documentos/pedidos","statusCode":401,"durationMs":1.37,"idUser":null}
+{"type":"http_request","requestId":"c77ecbe5-23e7-40d9-9ab6-736bb50b944d","method":"GET","path":"/api/v1/portal/documentos/pedidos","statusCode":200,"durationMs":3.16,"idUser":null}
+{"type":"http_request","requestId":"afffb0b8-ece7-46a4-a5c2-8e3c41dcd55d","method":"GET","path":"/api/v1/portal/documentos/pedidos/2","statusCode":200,"durationMs":3.47,"idUser":null}
+{"type":"http_request","requestId":"5ea8043d-cdda-42c5-a828-779d3cd15c14","method":"GET","path":"/api/v1/portal/documentos/pedidos/3","statusCode":404,"durationMs":5.65,"idUser":null}
+{"type":"http_request","requestId":"28b817a2-6a82-4c08-9e5c-0794685db02f","method":"GET","path":"/api/v1/portal/documentos/pedidos/3/resumen","statusCode":404,"durationMs":2.41,"idUser":null}
+{"type":"http_request","requestId":"c4aba80f-a6ae-4f76-b5cd-105b97edeeb2","method":"GET","path":"/api/v1/portal/documentos/pedidos","statusCode":400,"durationMs":1.08,"idUser":null}
+{"type":"http_request","requestId":"9432ebf4-fafe-4ab8-a501-3ed0afa27a1a","method":"GET","path":"/api/v1/portal/documentos/pedidos/2/resumen","statusCode":200,"durationMs":13.53,"idUser":null}
+{"type":"http_request","requestId":"d4df0586-ec4e-411c-8b6a-b7126787264b","method":"GET","path":"/api/v1/portal/documentos/facturas","statusCode":401,"durationMs":1.23,"idUser":null}
+{"type":"http_request","requestId":"30d35a57-2735-4af4-b749-ebe3c5ddaea5","method":"GET","path":"/api/v1/portal/documentos/facturas","statusCode":200,"durationMs":4.58,"idUser":null}
+{"type":"http_request","requestId":"4c3cc400-4b20-44e2-a817-ce81b97744b7","method":"GET","path":"/api/v1/portal/documentos/facturas/107","statusCode":200,"durationMs":2.64,"idUser":null}
+{"type":"http_request","requestId":"1b6edc7b-2c0b-4356-80da-e31f61905cc4","method":"GET","path":"/api/v1/portal/documentos/facturas/108","statusCode":404,"durationMs":2.9,"idUser":null}
+{"type":"http_request","requestId":"9aaa0d61-5fa9-402d-bc0b-18585897fcd9","method":"GET","path":"/api/v1/portal/documentos/facturas/108/resumen","statusCode":404,"durationMs":3.78,"idUser":null}
+{"type":"http_request","requestId":"41a6a11f-d49f-477d-86d6-14224ebb28f6","method":"GET","path":"/api/v1/portal/documentos/facturas","statusCode":400,"durationMs":0.62,"idUser":null}
+{"type":"http_request","requestId":"2ef4aa28-bbde-47e8-88a5-c188337df208","method":"GET","path":"/api/v1/portal/documentos/facturas/107/resumen","statusCode":200,"durationMs":11.97,"idUser":null}
+{"type":"http_request","requestId":"5e6435d6-1992-4d75-8c32-c5149766f077","method":"GET","path":"/api/v1/portal/documentos/garantias","statusCode":401,"durationMs":0.89,"idUser":null}
+{"type":"http_request","requestId":"503cebd1-72eb-4950-97d6-c17054656ad7","method":"GET","path":"/api/v1/portal/documentos/garantias","statusCode":200,"durationMs":3.45,"idUser":null}
+{"type":"http_request","requestId":"ea9f4e3f-f7ac-4be2-9c40-c12d28ffe33b","method":"GET","path":"/api/v1/portal/documentos/garantias/1","statusCode":200,"durationMs":2.82,"idUser":null}
+{"type":"http_request","requestId":"bb8174c1-80f9-45ca-829f-5218fe4cf5f0","method":"GET","path":"/api/v1/portal/documentos/garantias/2","statusCode":404,"durationMs":2.77,"idUser":null}
+{"type":"http_request","requestId":"d3c48540-0922-491b-bf54-bd86a6c8f09e","method":"GET","path":"/api/v1/portal/documentos/garantias/2/resumen","statusCode":404,"durationMs":3.18,"idUser":null}
+{"type":"http_request","requestId":"8d80c8a3-79b9-4d23-90ba-fa6bd0b110e1","method":"GET","path":"/api/v1/portal/documentos/garantias","statusCode":400,"durationMs":0.49,"idUser":null}
+{"type":"http_request","requestId":"ebcc95d7-4e81-4c98-a6f5-5cec1d4d5623","method":"GET","path":"/api/v1/portal/documentos/garantias/1/resumen","statusCode":200,"durationMs":17.45,"idUser":null}
+{"type":"http_request","requestId":"939318a1-0b7c-412f-ac24-18de21359855","method":"GET","path":"/api/v1/portal/documentos/usuarios","statusCode":404,"durationMs":0.74,"idUser":null}
+{"type":"http_request","requestId":"eb57757a-3268-4faa-93ef-e0b3debc0221","method":"GET","path":"/api/v1/portal/documentos/pedidos","statusCode":400,"durationMs":1.49,"idUser":null}
+{"type":"http_request","requestId":"09d99d42-320c-4919-8bf8-1d1563854609","method":"GET","path":"/api/v1/portal/documentos/unidades","statusCode":200,"durationMs":2.9,"idUser":null}
+{"type":"http_request","requestId":"9d667dfd-4af8-496e-bf0e-535663af85a1","method":"GET","path":"/api/v1/portal/documentos/unidades","statusCode":200,"durationMs":3.03,"idUser":null}
+OK: Cinco secciones con listados/detalle/PDF ligados a cliente del servidor: cruces devuelven404, idCliente inyectado400, proyección mínima sin costos/notas/proveedores/secretos y respuestas privadas
+{"type":"http_request","requestId":"adca6284-4216-459b-95e1-10f5632e85ba","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":9.28,"idUser":2}
+{"type":"http_request","requestId":"1bdcc33e-03e8-47ff-b669-2eea26636039","method":"GET","path":"/api/v1/portal/documentos/pedidos/4","statusCode":404,"durationMs":1.7,"idUser":null}
+{"type":"http_request","requestId":"061fb0f3-6e8f-44b8-a25f-0e9da1de6b1a","method":"POST","path":"/api/v1/cotizacion","statusCode":201,"durationMs":6.57,"idUser":2}
+{"type":"http_request","requestId":"a0d3b906-a4b6-42c8-8988-e4d677becd5a","method":"GET","path":"/api/v1/portal/documentos/cotizaciones/26","statusCode":404,"durationMs":5.16,"idUser":null}
+{"type":"http_request","requestId":"9b4c17e0-2e2c-464f-8b8b-7cf045faed59","method":"GET","path":"/api/v1/portal/documentos/unidades","statusCode":200,"durationMs":2.87,"idUser":null}
+{"type":"http_request","requestId":"cccd6056-93fa-4203-aed0-060543050aab","method":"GET","path":"/api/v1/portal/documentos/unidades","statusCode":200,"durationMs":7.58,"idUser":null}
+OK: Borradores de pedido/cotización no publicados; consultas paginadas20 con total, búsqueda literal y sección desconocida no amplían alcance
+{"type":"http_request","requestId":"c882d04b-ff93-4b46-ad22-5fbf9dceac10","method":"GET","path":"/api/v1/clientes/9/portal-accesos","statusCode":200,"durationMs":5.03,"idUser":2}
+{"type":"http_request","requestId":"316bed04-d395-49c8-8835-616d65ef26ee","method":"POST","path":"/api/v1/clientes/9/portal-accesos/2/restablecer","statusCode":201,"durationMs":7.19,"idUser":2}
+{"type":"http_request","requestId":"9b438508-4907-4084-95ff-9e43c7962211","method":"POST","path":"/api/v1/clientes/9/portal-accesos/2/restablecer","statusCode":201,"durationMs":17.73,"idUser":2}
+{"type":"http_request","requestId":"38f9f7b3-b667-497a-9d52-9dcf8b4cf227","method":"GET","path":"/api/v1/portal/sesion","statusCode":401,"durationMs":5.83,"idUser":null}
+{"type":"http_request","requestId":"7ac99e5a-b941-46ba-bd64-20e6beee92fd","method":"GET","path":"/api/v1/clientes/9/portal-accesos","statusCode":200,"durationMs":3.73,"idUser":2}
+{"type":"http_request","requestId":"51be34bd-ea25-4b60-9694-fc11c1db1221","method":"POST","path":"/api/v1/clientes/9/portal-accesos/2/suspender","statusCode":201,"durationMs":5.94,"idUser":2}
+{"type":"http_request","requestId":"cf74d327-f3fb-4333-a225-3030416602bf","method":"POST","path":"/api/v1/clientes/9/portal-accesos/2/suspender","statusCode":201,"durationMs":4.34,"idUser":2}
+{"type":"http_request","requestId":"fc19118c-1b54-4151-995d-4945a155fd24","method":"GET","path":"/api/v1/portal/sesion","statusCode":401,"durationMs":1.91,"idUser":null}
+{"type":"http_request","requestId":"15418c10-b09a-4ee7-9798-0477c4376ed2","method":"POST","path":"/api/v1/clientes/8/portal-accesos/2/restablecer","statusCode":404,"durationMs":5.2,"idUser":2}
+OK: Restablecer/suspender versionados e idempotentes revocan sesiones/enlaces y credencial; no se administra una cuenta desde otro cliente
+{"type":"http_request","requestId":"bcfc0051-fe73-453d-83cf-82edb19b4618","method":"POST","path":"/api/v1/clientes/8/portal-accesos","statusCode":201,"durationMs":9.08,"idUser":2}
+{"type":"http_request","requestId":"4eea4499-58be-4482-9768-a9c248f5748b","method":"GET","path":"/api/v1/portal/sesion","statusCode":401,"durationMs":1.65,"idUser":null}
+{"type":"http_request","requestId":"45d3b1f4-c684-49dd-aefd-702f05c484ca","method":"GET","path":"/api/v1/portal/sesion","statusCode":200,"durationMs":1.85,"idUser":null}
+{"type":"http_request","requestId":"d4498d9b-f62b-4bfc-91c2-bbc74e55a68a","method":"POST","path":"/api/v1/portal/password","statusCode":201,"durationMs":429.09,"idUser":null}
+{"type":"http_request","requestId":"be8cfcda-3d14-4592-b2dc-6d9c8863a995","method":"GET","path":"/api/v1/portal/sesion","statusCode":401,"durationMs":2.61,"idUser":null}
+OK: Cinco fallos bloquean15min de forma persistente, máximo5 sesiones vivas y cambio de contraseña revoca todas sin cambiar credenciales ERP
+OK: Cliente/alias inmutables, eventos conservados y auditoría sin hashes/tokens/contraseñas; activación externa no hereda actor ERP
+{"type":"http_request","requestId":"3313dc3a-8db0-463c-95a0-794495a7cc50","method":"POST","path":"/api/v1/clientes/8/portal-accesos","statusCode":400,"durationMs":8.57,"idUser":2}
+OK: Fallo real de auditoría revierte alta, credencial e invitación juntas
+{"type":"http_request","requestId":"53723357-0443-46aa-b6ac-7f4c72b2255e","method":"POST","path":"/api/v1/clientes/8/portal-accesos","statusCode":201,"durationMs":8.05,"idUser":2}
+{"type":"http_request","requestId":"fa991884-4dab-47db-a69b-9b6363a35d6a","method":"GET","path":"/api/v1/portal/sesion","statusCode":401,"durationMs":2.68,"idUser":null}
+OK: Invitación/sesión vencidas no autentican y revocación de personal mientras espera se revalida sin crear acceso
+{"type":"http_request","requestId":"69946b17-3d4f-41fc-b43b-6258ca4926c2","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":57.97,"idUser":null}
+{"type":"http_request","requestId":"e3d57435-5296-46dc-b78e-f61cd88242de","method":"GET","path":"/api/v1/cliente/pagina","statusCode":200,"durationMs":8.11,"idUser":2}
+{"type":"http_request","requestId":"8938dd3e-f724-4ca2-bd1a-3c6722f12612","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":51.21,"idUser":2}
+{"type":"http_request","requestId":"d5faafde-86f5-4eb2-af90-2cb9fd5157f1","method":"GET","path":"/api/v1/clientes/8/portal-accesos","statusCode":200,"durationMs":7.63,"idUser":2}
+{"type":"http_request","requestId":"8a3af311-3cc5-45f2-94c3-3f3c5e696fca","method":"POST","path":"/api/v1/clientes/8/portal-accesos","statusCode":201,"durationMs":14.09,"idUser":2}
+{"type":"http_request","requestId":"814ae7e6-2dde-402d-af63-5f2ee761ba3d","method":"GET","path":"/api/v1/clientes/8/portal-accesos","statusCode":200,"durationMs":18.47,"idUser":2}
+{"type":"http_request","requestId":"8095b27b-c207-43a9-a0c7-09ea28685729","method":"GET","path":"/api/v1/cliente/pagina","statusCode":200,"durationMs":26.59,"idUser":2}
+{"type":"http_request","requestId":"9c8dea63-b926-4923-8f69-7b002383f41d","method":"POST","path":"/api/v1/portal/activar","statusCode":201,"durationMs":229.08,"idUser":null}
+{"type":"http_request","requestId":"e75368ef-9963-4e1f-adda-301cde1da03d","method":"GET","path":"/api/v1/portal/sesion","statusCode":401,"durationMs":0.82,"idUser":null}
+{"type":"http_request","requestId":"6ee231fe-86ef-408f-a9ec-b33296d71e55","method":"POST","path":"/api/v1/portal/login","statusCode":201,"durationMs":219.42,"idUser":null}
+{"type":"http_request","requestId":"d8743a55-890b-4685-8dbb-eb8f5e66fe63","method":"GET","path":"/api/v1/portal/sesion","statusCode":200,"durationMs":1.61,"idUser":null}
+{"type":"http_request","requestId":"6502b776-1226-464a-b8b1-47eee300dd99","method":"GET","path":"/api/v1/portal/documentos/pedidos","statusCode":200,"durationMs":5.43,"idUser":null}
+{"type":"http_request","requestId":"769d99d6-f388-43ca-877b-53f445b2c3bc","method":"GET","path":"/api/v1/clientes/8/portal-publicaciones/candidatos/xml","statusCode":200,"durationMs":11.84,"idUser":2}
+Falló aceptación del portal: TimeoutError     at Object.verifyUi (C:\Sistema\backend\verify-portal-publications.js:96:58)
+    at async main (C:\Sistema\backend\verify-customer-portal.js:165:61) Revisar etapa en .artifacts/v03-portal.json; sin secretos en salida.

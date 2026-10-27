@@ -1,0 +1,22 @@
+import { readFile, realpath, lstat } from "node:fs/promises";
+import { join, sep } from "node:path";
+import { fileURLToPath } from "node:url";
+import { createPreviewServer } from "./server.mjs";
+import { inspectActiveRelease } from "./active-release.mjs";
+import { inspectRecoveryStatus } from "./recovery-status.mjs";
+import { hash } from "./release.mjs";
+
+if (Number(process.versions.node.split(".")[0]) !== 24 || process.argv.slice(2).length) throw new Error("Usa Node24 sin argumentos");
+const root = fileURLToPath(new URL("../", import.meta.url));
+const pointer = JSON.parse(await readFile(join(root, ".runtime/web-test-pilot-current.json"), "utf8"));
+if (pointer.schemaVersion !== 1 || pointer.kind !== "test-db-pilot" || !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(pointer.runId)) throw new Error("Piloto inválido");
+const runtime = await realpath(join(root, ".runtime")), run = join(runtime, `web-test-pilot-${pointer.runId}`);
+if ((await lstat(run)).isSymbolicLink() || !(await realpath(run)).startsWith(runtime + sep)) throw new Error("Piloto fuera del runtime");
+if (hash(await readFile(join(run, "catalog-test.json"))) !== pointer.manifestSha256) throw new Error("Manifiesto de piloto alterado");
+const site = join(run, "site");
+if ((await inspectRecoveryStatus(site)).status !== "ready") throw new Error("Coordinación de piloto pendiente");
+const active = await inspectActiveRelease(site);
+const approval = JSON.parse(await readFile(join(site, "releases", active.release, "approval.json"), "utf8"));
+if (approval.previewMode !== "test-db-pilot" || approval.commercialAccepted !== false || approval.verifiedReceipt !== null) throw new Error("Contexto de piloto incorrecto");
+const server = await createPreviewServer(site, { previewMode: "test-db-pilot" });
+server.listen(4600, "127.0.0.1", () => console.log("Piloto con datos de prueba: http://127.0.0.1:4600/catalogo"));

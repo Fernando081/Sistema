@@ -1,3 +1,6 @@
+import type { DirectoryQuery } from '../shared/remote-directory';
+import { ComisionSemanas, VentaResultado, FacturaPagina, CancelacionVenta, TicketsGlobales } from './venta-api.types';
+import { DetalleFacturaDb } from '../venta/venta.interface';
 // frontend/src/app/services/venta.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -16,23 +19,24 @@ export class VentaService {
 
   constructor(private http: HttpClient) { }
 
-  crearVenta(venta: Venta): Observable<any> {
-    return this.http.post(API_URL, venta);
+  crearVenta(venta: Venta): Observable<VentaResultado> {
+    return this.http.post<VentaResultado>(API_URL, venta);
   }
 
-  getComisiones(): Observable<any[]> {
-    return this.http.get<any[]>(`${API_URL}/comisiones`);
+  getComisiones(): Observable<ComisionSemanas[]> {
+    return this.http.get<ComisionSemanas[]>(`${API_URL}/comisiones`);
   }
 
-  getFacturas(page: number = 1, limit: number = 10, term: string = '', tipo: string = ''): Observable<any> {
-    const url = term 
-      ? `${API_URL}?page=${page}&limit=${limit}&term=${encodeURIComponent(term)}&tipo=${encodeURIComponent(tipo)}` 
-      : `${API_URL}?page=${page}&limit=${limit}&tipo=${encodeURIComponent(tipo)}`;
-    return this.http.get<any>(url);
+  getFacturas(page = 1, limit = 10, term = '', tipo = '', sortBy = 'id', sortOrder = 'desc', estado = '', desde = '', hasta = ''): Observable<FacturaPagina> {
+    return this.http.get<FacturaPagina>(API_URL, { params: { page, limit, term, tipo, sortBy, sortOrder, estado, desde, hasta } });
   }
 
-  getDetalleFactura(idFactura: number): Observable<any[]> {
-    return this.http.get<any[]>(`${API_URL}/${idFactura}/detalle`);
+  exportCsv(query: DirectoryQuery, tipo: string): Observable<Blob> {
+    return this.http.get(`${API_URL}/exportar`, { params: { ...query, tipo }, responseType: 'blob' });
+  }
+
+  getDetalleFactura(idFactura: number): Observable<DetalleFacturaDb[]> {
+    return this.http.get<DetalleFacturaDb[]>(`${API_URL}/${idFactura}/detalle`);
   }
 
 
@@ -40,13 +44,11 @@ export class VentaService {
     return this.http.get(`${API_URL}/${idFactura}/pdf`, { responseType: 'blob' });
   }
 
-  enviarCorreo(idFactura: number): Observable<any> {
-    return this.http.post(`${API_URL}/${idFactura}/enviar-correo`, {});
-  }
 
 
-  cancelarFactura(idFactura: number, fiscal: FiscalCancellation = {}): Observable<any> {
-    return this.http.post(`${API_URL}/${idFactura}/cancelar`, fiscal);
+
+  cancelarFactura(idFactura: number, fiscal: FiscalCancellation = {}): Observable<CancelacionVenta> {
+    return this.http.post<CancelacionVenta>(`${API_URL}/${idFactura}/cancelar`, fiscal);
   }
 
   devolver(idFactura: number, dto: { metodoReembolso: 'Efectivo' | 'Saldo a Favor'; articulos: { idProducto: number; cantidad: number }[] }): Observable<unknown> {
@@ -58,14 +60,14 @@ export class VentaService {
     return this.http.get<FacturaResumen[]>(`${environment.apiBaseUrl}/factura/cliente/${idCliente}/relacionables`);
   }
 
-  getTicketsPendientesGlobal(fechaInicio: string, fechaFin: string): Observable<any> {
-    return this.http.get<any>(`${environment.apiBaseUrl}/factura/global/tickets-pendientes`, {
+  getTicketsPendientesGlobal(fechaInicio: string, fechaFin: string): Observable<TicketsGlobales> {
+    return this.http.get<TicketsGlobales>(`${environment.apiBaseUrl}/factura/global/tickets-pendientes`, {
       params: { fechaInicio, fechaFin }
     });
   }
 
-  generarFacturaGlobal(fechaInicio: string, fechaFin: string, idsTickets: number[]): Observable<any> {
-    return this.http.post<any>(`${environment.apiBaseUrl}/factura/global/generar`, {
+  generarFacturaGlobal(fechaInicio: string, fechaFin: string, idsTickets: number[]): Observable<VentaResultado> {
+    return this.http.post<VentaResultado>(`${environment.apiBaseUrl}/factura/global/generar`, {
       fechaInicio,
       fechaFin,
       idsTickets

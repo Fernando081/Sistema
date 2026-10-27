@@ -1,0 +1,11 @@
+{
+  "phase": "C01.1",
+  "startedAt": "2026-10-21T01:12:58.821Z",
+  "checks": [],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "externalDeliveryEnabled": false,
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "fixtures"
+}

@@ -7,8 +7,8 @@ export interface Proveedor {
   rfc: string;
   razonSocial: string;
   pais: string;
-  idEstado: number;
-  idMunicipio: number;
+  idEstado: number | null;
+  idMunicipio: number | null;
   ciudad: string;
   colonia: string;
   calle: string;
@@ -16,9 +16,9 @@ export interface Proveedor {
   numeroExterior: string;
   numeroInterior: string;
   referencia: string;
-  idMetodoDePago: number;
-  idUsoCFDI: number;
-  idFormaPago: number;
+  idMetodoDePago: number | null;
+  idUsoCFDI: number | null;
+  idFormaPago: number | null;
   idRegimenFiscal: number;
 }
 

@@ -1,0 +1,37 @@
+[WebServer] (node:10296) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:10296) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 26 tests using 1 worker
+
+(node:8536) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium] › tests\web-inbox.spec.ts:5:7 › Puente privado: error y transición sin secretos light (7.0s)
+  ok  2 [chromium] › tests\web-inbox.spec.ts:5:7 › Puente privado: error y transición sin secretos dark (2.2s)
+  ok  3 [chromium] › tests\web-inbox.spec.ts:34:7 › Resolución conservadora: decisión incierta, reintento e historial light (2.5s)
+  ok  4 [chromium] › tests\web-inbox.spec.ts:34:7 › Resolución conservadora: decisión incierta, reintento e historial dark (2.4s)
+  ok  5 [chromium] › tests\web-inbox.spec.ts:111:5 › Ficha muestra piezas originales de consulta web (902ms)
+  ok  6 [chromium] › tests\web-inbox.spec.ts:129:7 › Bandeja web: error, revisión y vacío light (1.8s)
+  ok  7 [chromium] › tests\web-inbox.spec.ts:129:7 › Bandeja web: error, revisión y vacío dark (2.8s)
+  ok  8 [chromium] › tests\web-inbox.spec.ts:161:5 › Conversión conserva vínculo y retira acciones de modificación (1.3s)
+  ok  9 [chromium] › tests\web-inbox.spec.ts:194:7 › Comprobación privada de recepción: estados y errores light (2.4s)
+  ok 10 [chromium] › tests\web-inbox.spec.ts:194:7 › Comprobación privada de recepción: estados y errores dark (2.3s)
+  ok 11 [chromium] › tests\web-metrics.spec.ts:50:7 › Cobros netos web: efectivo, saldo a favor y accesibilidad light (2.1s)
+  ok 12 [chromium] › tests\web-metrics.spec.ts:82:7 › Cobros netos web: desconocidos, cero, cifras grandes y limpieza light (1.9s)
+  ok 13 [chromium] › tests\web-metrics.spec.ts:117:7 › Rentabilidad web: costo original, margen y moneda no comparable light (2.1s)
+  ok 14 [chromium] › tests\web-metrics.spec.ts:149:7 › Rentabilidad web: pérdida, cero, desconocido y limpieza light (2.6s)
+  ok 15 [chromium] › tests\web-metrics.spec.ts:193:7 › Medición financiera: monedas, cobros, cobertura y accesibilidad light (2.0s)
+  ok 16 [chromium] › tests\web-metrics.spec.ts:226:7 › Medición financiera: centavos grandes, desconocido y vacío light (2.1s)
+  ok 17 [chromium] › tests\web-metrics.spec.ts:264:7 › Medición web: periodo, cohortes, referencias y accesibilidad light (2.2s)
+  ok 18 [chromium] › tests\web-metrics.spec.ts:308:7 › Medición web: validación, fallo, carga bloqueada y vacío light (2.1s)
+  ok 19 [chromium] › tests\web-metrics.spec.ts:50:7 › Cobros netos web: efectivo, saldo a favor y accesibilidad dark (2.1s)
+  ok 20 [chromium] › tests\web-metrics.spec.ts:82:7 › Cobros netos web: desconocidos, cero, cifras grandes y limpieza dark (1.8s)
+  ok 21 [chromium] › tests\web-metrics.spec.ts:117:7 › Rentabilidad web: costo original, margen y moneda no comparable dark (2.0s)
+  ok 22 [chromium] › tests\web-metrics.spec.ts:149:7 › Rentabilidad web: pérdida, cero, desconocido y limpieza dark (2.5s)
+  ok 23 [chromium] › tests\web-metrics.spec.ts:193:7 › Medición financiera: monedas, cobros, cobertura y accesibilidad dark (1.9s)
+  ok 24 [chromium] › tests\web-metrics.spec.ts:226:7 › Medición financiera: centavos grandes, desconocido y vacío dark (2.1s)
+  ok 25 [chromium] › tests\web-metrics.spec.ts:264:7 › Medición web: periodo, cohortes, referencias y accesibilidad dark (2.1s)
+  ok 26 [chromium] › tests\web-metrics.spec.ts:308:7 › Medición web: validación, fallo, carga bloqueada y vacío dark (2.2s)
+
+  26 passed (1.3m)

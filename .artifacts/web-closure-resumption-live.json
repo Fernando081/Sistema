@@ -1,0 +1,69 @@
+{
+  "generatedAt": "2026-10-11T16:16:37.011Z",
+  "scope": "Sondeos HTTP locales sin autenticacion ni escrituras de negocio",
+  "checks": [
+    {
+      "url": "http://127.0.0.1:4500/",
+      "method": "GET",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4300/login",
+      "method": "GET",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "method": "GET",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/solicitar",
+      "method": "GET",
+      "expected": 503,
+      "actual": 503,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/v1/web-lead-bridge/check",
+      "method": "POST",
+      "expected": 503,
+      "actual": 503,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/closure-resumption.mjs",
+      "method": "GET",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/.artifacts/web-closure-resumption-status.json",
+      "method": "GET",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/publish-finalization.lock",
+      "method": "GET",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:4500/closure-resumption-00000000-0000-4000-8000-000000000000.intent.json",
+      "method": "GET",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "enabled": false,
+  "mode": "local",
+  "origin": "http://127.0.0.1:4500",
+  "bridgeOrigin": "http://127.0.0.1:3100",
+  "keyId": "",
+  "privacy": {
+    "approved": false,
+    "version": "",
+    "text": "",
+    "textSha256": "",
+    "reviewer": "",
+    "reviewedAt": ""
+  },
+  "retention": {
+    "approved": false,
+    "inboxDays": 90,
+    "crmPolicy": "",
+    "metadataPolicy": "",
+    "backupPolicy": "",
+    "reviewer": "",
+    "reviewedAt": ""
+  }
+}

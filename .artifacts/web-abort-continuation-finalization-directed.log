@@ -1,0 +1,23 @@
+✔ veintiséis contextos válidos cierran sólo el control residual y conservan bytes, recibos y decisiones (50121.5112ms)
+✔ campos exactos y UUID nuevos rechazan reutilizar cualquiera de los IDs originales sin mutar (5610.1475ms)
+✔ recibos originales, puntero, historia, fuentes independientes y trasplante desactualizan revisión (11909.9668ms)
+✔ controles activos ajenos antiguos ausentes sin vínculo o coordinación ocupada requieren revisión (31960.013ms)
+✔ propietario declarado ajeno en continuación completa conserva historia pero rechaza intervención local (6312.3866ms)
+✔ cinco cortes por tipo excluyen catorce herramientas y no certifican cierres parciales (29780.0925ms)
+✔ sustituciones durante archivo preservan control propio y evitan certificar resultado (11827.9841ms)
+✔ fallo de recibo después de retirar control conserva intención archivo y guarda con resultado pendiente (4567.5086ms)
+✔ resolución de admisión inválida no crea intención y libera sólo su control nuevo intacto (1636.3016ms)
+✔ alteración posterior de auditoría recibo archivo o enlace histórico invalida diagnóstico y replay (10086.7618ms)
+✔ dos cierres completos del mismo origen son ambiguos y un archivo huérfano bloquea ready (1680.7634ms)
+✔ límite de historial reserva tres destinos y rechaza saturación sin truncar (15894.3957ms)
+✔ CLI inspección y plan no intervienen; fallo reemplaza éxito anterior sin valores privados (2020.2442ms)
+✔ auditoría completa con proceso aún activo rechaza cierre hasta que termina (4050.7647ms)
+✔ concurrencia con IDs distintos admite un cierre y replay no retira una guarda posterior (4910.0263ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 192499.0575

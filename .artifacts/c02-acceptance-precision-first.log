@@ -1,0 +1,29 @@
+
+> test:crm-sequences
+> node backend/verify-crm-sequences.js --backup=.backups/2026-10-21T06-12-22-771Z/database.dump
+
+{"type":"http_request","requestId":"87443675-685a-404b-993a-bfb45d884ce7","method":"GET","path":"/api/v1/crm/secuencias","statusCode":401,"durationMs":8.37,"idUser":null}
+{"type":"http_request","requestId":"11775334-ae9e-4984-9fee-f601dc00560c","method":"GET","path":"/api/v1/crm/secuencias","statusCode":403,"durationMs":14.36,"idUser":3}
+{"type":"http_request","requestId":"b8ea00fe-f6df-49a5-ad51-e737401fd9c8","method":"GET","path":"/api/v1/crm/secuencias","statusCode":400,"durationMs":7.83,"idUser":2}
+{"type":"http_request","requestId":"540ea3e6-5e19-4031-a57f-5d252041abf8","method":"GET","path":"/api/v1/crm/secuencias","statusCode":400,"durationMs":4.71,"idUser":2}
+{"type":"http_request","requestId":"45167dcc-2617-496d-9ad6-04b77601487d","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":11.85,"idUser":2}
+{"type":"http_request","requestId":"082cc514-8826-4eb6-b408-c37790e2e0c5","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":5.23,"idUser":2}
+{"type":"http_request","requestId":"457739a9-1eaa-4160-a64c-c41584d50254","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":3.53,"idUser":2}
+{"type":"http_request","requestId":"0163f0aa-92c1-493f-9827-a6eeff6303a0","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":400,"durationMs":3.03,"idUser":2}
+{"type":"http_request","requestId":"f1506574-2243-4891-9151-47b5eadb1f86","method":"GET","path":"/api/v1/crm/secuencias","statusCode":200,"durationMs":12.53,"idUser":2}
+OK: HTTP real401/403, DTO cerrado con pasos1–8/plazos0–720 y consultas privadas; sin inscripción por migración
+{"type":"http_request","requestId":"25601834-005b-411a-adde-999aa41ec0ed","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":201,"durationMs":10.19,"idUser":2}
+{"type":"http_request","requestId":"3416627f-b18d-40eb-b41b-edeb78cc57c9","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":201,"durationMs":5.77,"idUser":2}
+{"type":"http_request","requestId":"7d9eb61b-61a6-492d-bd3a-bb0334dfed23","method":"POST","path":"/api/v1/crm/secuencias/modelos","statusCode":409,"durationMs":5.17,"idUser":2}
+{"type":"http_request","requestId":"423e52da-c9ea-4faf-b268-2e3ac8d71ce2","method":"GET","path":"/api/v1/crm/secuencias/clientes","statusCode":200,"durationMs":6.28,"idUser":2}
+{"type":"http_request","requestId":"401220d7-8bf3-4454-9917-a0dbede94421","method":"GET","path":"/api/v1/crm/secuencias/clientes","statusCode":200,"durationMs":5.29,"idUser":2}
+{"type":"http_request","requestId":"4ac7b9be-f4f7-4a7a-8803-d32b3bac8e53","method":"POST","path":"/api/v1/crm/secuencias","statusCode":409,"durationMs":14.52,"idUser":2}
+{"type":"http_request","requestId":"47f91c18-87cd-4aee-b04f-019258a5f3c3","method":"POST","path":"/api/v1/crm/secuencias","statusCode":400,"durationMs":3.3,"idUser":2}
+OK: Modelos conservados e idempotentes; búsqueda literal de cliente; inicio concurrente crea exactamente una tarea y rechaza duplicado activo
+{"type":"http_request","requestId":"ff5ff654-bfaa-4ae2-9b1b-0a25fcc78713","method":"GET","path":"/api/v1/crm/secuencias/e013efcf-e76d-44cf-8767-3a45ccc4bd5a","statusCode":200,"durationMs":11.18,"idUser":2}
+{"type":"http_request","requestId":"e1141861-cfb0-497c-b0eb-0a373d6cc71a","method":"PATCH","path":"/api/v1/crm/tareas/1","statusCode":409,"durationMs":5.69,"idUser":2}
+Falló aceptación C02: Expected values to be strictly equal:
+
+0 !== 1
+     at main (C:\Sistema\backend\verify-crm-sequences.js:56:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) Etapa en .artifacts/c02-secuencias.json; sin secretos.

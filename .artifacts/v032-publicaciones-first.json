@@ -1,0 +1,27 @@
+{
+  "phase": "V03.2",
+  "startedAt": "2026-10-21T00:25:22.855Z",
+  "checks": [
+    "104 sólo en copia sin inscripción automática; administración401/403, permiso ADMIN, invitación UUID/huella idempotente y token sólo hash sin aparecer en listados",
+    "Activación única, cookies HttpOnly/Strict propias sin token JSON; dos clientes aislados, credencial del portal rechazada en ERP y coexistencia sin impersonación; origen/cabecera CSRF exigidos",
+    "105 en copia sin backfill; permiso independiente401/403, tipos cerrados/DTO sin idCliente, candidatos y vistas previas ligados al cliente; V01/V02/PAC mock existentes reutilizados",
+    "Publicación deliberada/idempotente y revisión por huella; XML descargado idéntico al fiscal mock, SHA-256/attachment/nosniff/no-store; otro cliente404 y cookie ERP insuficiente",
+    "Publicación concurrente única; PDF V01/V02 conservados y separados de originales; cambios de fuente o reasignación bloquean la descarga sin transferir permisos",
+    "Retiro transaccional/idempotente, historial conservado y archivo desaparece del portal; reintentar la publicación original no resucita acceso; retiro cruzado404",
+    "Proveniencia del servidor: mock no se publica como producción; XML con DTD/ENTITY y mayores2MiB rechazados; acuse mock conservado admite publicación separada",
+    "Guardas ALWAYS de metadata/bytes/retiros y protección de auditoría sin archivos; actor nominal, fallo de auditoría revierte publicación/archivo juntos",
+    "Revocación efectiva de personal mientras espera bloqueo rechaza403 sin crear publicación; base de origen intacta",
+    "Cinco secciones con listados/detalle/PDF ligados a cliente del servidor: cruces devuelven404, idCliente inyectado400, proyección mínima sin costos/notas/proveedores/secretos y respuestas privadas",
+    "Borradores de pedido/cotización no publicados; consultas paginadas20 con total, búsqueda literal y sección desconocida no amplían alcance",
+    "Restablecer/suspender versionados e idempotentes revocan sesiones/enlaces y credencial; no se administra una cuenta desde otro cliente",
+    "Cinco fallos bloquean15min de forma persistente, máximo5 sesiones vivas y cambio de contraseña revoca todas sin cambiar credenciales ERP",
+    "Cliente/alias inmutables, eventos conservados y auditoría sin hashes/tokens/contraseñas; activación externa no hereda actor ERP",
+    "Fallo real de auditoría revierte alta, credencial e invitación juntas",
+    "Invitación/sesión vencidas no autentican y revocación de personal mientras espera se revalida sin crear acceso"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular publicaciones light"
+}

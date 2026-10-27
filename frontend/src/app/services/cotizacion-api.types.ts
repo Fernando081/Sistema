@@ -1,0 +1,4 @@
+export interface CotizacionResumen { id_cotizacion: number; folio: number; fecha_emision: string; nombre_receptor: string; rfc_receptor: string; total: number | string; estatus: string; id_pedido: number | null; }
+export interface CotizacionPagina { data: CotizacionResumen[]; total: number; page: number; totalPages: number; }
+export interface CotizacionDetalle { id_cotizacion: number; id_cliente: number; conceptos: { id_concepto: number; id_producto: number; descripcion: string; cantidad: number | string; precio: number | string; stock: number | string; estatus: string; motivo_rechazo: string | null; precio_cierre: number | string | null; }[]; }
+export interface ConvertirCotizacion { idFormaPago: number; idMetodoPago: number; articulosAceptados: { idConcepto: number; precioCierre: number; }[]; articulosRechazados: { idConcepto: number; motivoRechazo: string; }[]; }

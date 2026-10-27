@@ -1,0 +1,8 @@
+
+> lint
+> npm --workspace backend run lint -- --max-warnings=0
+
+
+> backend@0.0.1 lint
+> eslint "src/**/*.ts" "test/**/*.ts" --max-warnings=0
+

@@ -1,5 +1,6 @@
+import { FacturaQueryDto } from './factura-query';
 // backend/src/venta/venta.controller.ts
-import { Body, Controller, Get, Post, Param, Res, Query, DefaultValuePipe, ParseIntPipe, Req, UseGuards, ForbiddenException } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Res, Query, StreamableFile, ParseIntPipe, Req, UseGuards, ForbiddenException } from '@nestjs/common';
 import type { Response } from 'express';
 import { VentaService } from './venta.service';
 import { CreateVentaDto, ProcesarDevolucionDto } from './venta.dto';
@@ -22,7 +23,7 @@ export class VentaController {
       throw new ForbiddenException('Solo un administrador puede registrar notas de crédito');
     }
     const idVendedor = req.user?.idUser;
-    return this.ventaService.create(createVentaDto, idVendedor);
+    return this.ventaService.create(createVentaDto, idVendedor, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -33,13 +34,15 @@ export class VentaController {
   }
 
   @Get()
-  findAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
-    @Query('term') term?: string,
-    @Query('tipo') tipo?: string,
-  ) {
-    return this.ventaService.findAll(page, limit, term, tipo);
+  findAll(@Query() query: FacturaQueryDto) {
+    return this.ventaService.findAll(query.page, query.limit, query.term, query.tipo, query.sortBy, query.sortOrder, query.estado, query.desde, query.hasta);
+  }
+
+  @Get('exportar')
+  async exportCsv(@Query() query: FacturaQueryDto) {
+    return new StreamableFile(Buffer.from(await this.ventaService.exportCsv(query), 'utf8'), {
+      type: 'text/csv; charset=utf-8', disposition: 'attachment; filename="facturas.csv"',
+    });
   }
 
   @Get(':id/detalle')
@@ -58,11 +61,6 @@ export class VentaController {
     });
 
     res.end(buffer);
-  }
-
-  @Post(':id/enviar-correo')
-  enviarCorreo(@Param('id', ParseIntPipe) id: number) {
-    return this.ventaService.enviarFacturaPorCorreo(id);
   }
 
   @Post(':id/cancelar')

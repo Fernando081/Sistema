@@ -11,10 +11,15 @@ import {
   ArrayMaxSize,
   IsInt,
   IsDateString,
+  IsUUID,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class RegistrarPagoDto {
+  @IsOptional()
+  @IsUUID()
+  requestId?: string;
+
   @IsInt()
   @Min(1)
   @IsNotEmpty()
@@ -48,6 +53,10 @@ export class RepFacturaDto {
 }
 
 export class RegistrarRepDto {
+  @IsOptional()
+  @IsUUID()
+  requestId?: string;
+
   @IsInt()
   @Min(1)
   idCliente: number;

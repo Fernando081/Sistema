@@ -72,7 +72,7 @@ import { catchError, debounceTime, distinctUntilChanged, map, startWith, finaliz
 export class VentaComponent implements OnInit {
   @ViewChild('productSearchInput') productSearchInput?: ElementRef<HTMLInputElement>;
   readonly productImageUrl = productImageUrl;
-  readonly canEditPrice = inject(AuthService).getDecodedToken()?.role === 'admin';
+  readonly canEditPrice = inject(AuthService).getSessionIdentity()?.role === 'admin';
   // --- VARIABLES DE ESTADO ---
   carrito = signal<ConceptoVenta[]>([]);
   clienteSeleccionado: Cliente | null = null;

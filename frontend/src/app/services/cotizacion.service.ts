@@ -1,3 +1,6 @@
+import type { DirectoryQuery } from '../shared/remote-directory';
+import { CotizacionPagina, CotizacionDetalle, ConvertirCotizacion } from './cotizacion-api.types';
+import { VentaResultado } from './venta-api.types';
 // frontend/src/app/services/cotizacion.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -37,24 +40,27 @@ export interface CreateCotizacion {
 export class CotizacionService {
   constructor(private http: HttpClient) {}
 
-  crear(dto: CreateCotizacion): Observable<any> {
-    return this.http.post(API_URL, dto);
+  crear(dto: CreateCotizacion): Observable<{ message: string; id: number }> {
+    return this.http.post<{ message: string; id: number }>(API_URL, dto);
   }
 
-  getAll(page: number = 1, limit: number = 10, term: string = ''): Observable<any> {
-    const url = term ? `${API_URL}?page=${page}&limit=${limit}&term=${encodeURIComponent(term)}` : `${API_URL}?page=${page}&limit=${limit}`;
-    return this.http.get<any>(url);
+  getAll(page = 1, limit = 10, term = '', sortBy = 'id', sortOrder = 'desc', estado = '', desde = '', hasta = ''): Observable<CotizacionPagina> {
+    return this.http.get<CotizacionPagina>(API_URL, { params: { page, limit, term, sortBy, sortOrder, estado, desde, hasta } });
+  }
+
+  exportCsv(query: DirectoryQuery): Observable<Blob> {
+    return this.http.get(`${API_URL}/exportar`, { params: { ...query }, responseType: 'blob' });
   }
 
   descargarPdf(id: number): Observable<Blob> {
     return this.http.get(`${API_URL}/${id}/pdf`, { responseType: 'blob' });
   }
 
-  getById(id: number): Observable<any> {
-    return this.http.get<any>(`${API_URL}/${id}`);
+  getById(id: number): Observable<CotizacionDetalle> {
+    return this.http.get<CotizacionDetalle>(`${API_URL}/${id}`);
   }
 
-  convertirCRM(id: number, payload: any): Observable<any> {
-    return this.http.post(`${API_URL}/${id}/convertir`, payload);
+  convertirCRM(id: number, payload: ConvertirCotizacion): Observable<VentaResultado> {
+    return this.http.post<VentaResultado>(`${API_URL}/${id}/convertir`, payload);
   }
 }

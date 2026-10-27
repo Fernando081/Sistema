@@ -1,0 +1,5 @@
+
+> verify:web-saved-backup
+> node public-web/check-saved-backup.mjs --file=web-preview-***.json --sha256=1a8e288ac985752cad58dc3840e50253570898e6cdf3716bd5dcb89b6998b6ac
+
+Respaldo guardado: verified-local. Reporte: .artifacts/web-saved-backup-check.json

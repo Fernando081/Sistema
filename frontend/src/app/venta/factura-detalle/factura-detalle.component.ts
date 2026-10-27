@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, Inject, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -21,7 +22,7 @@ import { DetalleFacturaDb, FacturaResumen } from '../venta.interface';
   templateUrl: './factura-detalle.component.html',
 })
 export class FacturaDetalleComponent implements OnInit {
-  readonly isAdmin = inject(AuthService).getDecodedToken()?.role === 'admin';
+  readonly isAdmin = inject(AuthService).getSessionIdentity()?.role === 'admin';
   isCanceling = false;
   isStamping = false;
   fiscalDocument?: FiscalDocument;
@@ -69,14 +70,14 @@ export class FacturaDetalleComponent implements OnInit {
       if (!result) return;
       this.isCanceling = true;
       this.ventaService.cancelarFactura(this.data.id_factura, result).subscribe({
-        next: (response: any) => {
-          const message = response.data?.message || response.message || 'Solicitud procesada';
+        next: (response) => {
+          const message = response.message || 'Solicitud procesada';
           this.snackBar.open(message, 'OK', { duration: 6000 });
           this.isCanceling = false;
           if (response.cancelled && (!response.fiscal || response.state === 'Cancelado')) this.cerrar();
           else this.loadFiscalDocument();
         },
-        error: (error: any) => {
+        error: (error: HttpErrorResponse) => {
           this.isCanceling = false;
           this.snackBar.open(error.error?.message || error.message || 'Error al cancelar la factura', 'Cerrar', { duration: 6000 });
         },

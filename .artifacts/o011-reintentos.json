@@ -1,0 +1,25 @@
+{
+  "phase": "O01.1",
+  "startedAt": "2026-10-22T05:38:42.455Z",
+  "checks": [
+    "HTTP/login reales: contrato cerrado/confirmación/401/403/propietario incluso otro ADMIN, caché y puesta en cola histórica idempotente",
+    "Dos consumidores reales conservan una sola recuperación atómica y snapshot posterior; Error original inmutable y lecturas sin recalcular",
+    "Fallo real con rollback, espera10/20min adelantada sólo en copia, tres intentos y Agotado sin bucle ni SQL privado",
+    "Claim persistido, lease vencido, evento Interrumpido, token antiguo rechazado y recuperación con nuevo intento",
+    "Cancelación confirmada/versionada/idempotente pendiente y tras claim impide resultado tardío; bitácora conservada",
+    "Suspensión y pérdida de permiso efectivo cancelan sin exponer datos o generar snapshots",
+    "Revocación de permiso mientras espera bloqueo real se observa después de esperar; sin autoridad de snapshot antiguo",
+    "Fallo de auditoría revierte snapshot/éxito; recuperación posterior, guardas ALWAYS/terminal y auditoría humana separada del ejecutor",
+    "Cron/guardia/historial O02 existentes procesan cola aunque falle generación inicial, sin otro scheduler ni envíos",
+    "Angular/SQL reales light: confirmación, cola/bitácora/cancelación/recarga, respuesta perdida idempotente, resumen recuperado con Error original y agotado; Axe/reflujo 1280px",
+    "Angular/SQL reales dark: confirmación, cola/bitácora/cancelación/recarga, respuesta perdida idempotente, resumen recuperado con Error original y agotado; Axe/reflujo 390px"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "externalDeliveryEnabled": false,
+  "passed": true,
+  "completedAt": "2026-10-22T05:38:55.738Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular O01.1"
+}

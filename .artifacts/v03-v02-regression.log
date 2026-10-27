@@ -1,0 +1,102 @@
+
+> test:delivery-evidence
+> node backend/verify-delivery-evidence.js --backup=.backups/2026-10-21T00-00-16-142Z/database.dump
+
+{"type":"http_request","requestId":"2754042f-481b-4249-8369-319b3b3e78cc","method":"PUT","path":"/api/v1/comercial/clientes/2","statusCode":200,"durationMs":32.38,"idUser":2}
+{"type":"http_request","requestId":"ff2339f0-4b19-45ad-b8a9-97d2be61f07e","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":55.47,"idUser":2}
+{"type":"http_request","requestId":"07925236-31dd-4dbb-94b3-3f765c18c20e","method":"POST","path":"/api/v1/pedidos/2/confirmar","statusCode":201,"durationMs":16.63,"idUser":2}
+{"type":"http_request","requestId":"220e0d6f-ede2-40ec-b9e4-03fa219fb761","method":"POST","path":"/api/v1/pedidos/2/surtir","statusCode":201,"durationMs":16.92,"idUser":2}
+{"type":"http_request","requestId":"4a1da2b4-c9e8-4d96-91f1-a621fd796d4b","method":"GET","path":"/api/v1/pedidos/2","statusCode":200,"durationMs":6.82,"idUser":2}
+{"type":"http_request","requestId":"ba98f986-f787-4151-9c76-8e368717a8e7","method":"GET","path":"/api/v1/pedidos/2/entrega","statusCode":401,"durationMs":2.9,"idUser":null}
+{"type":"http_request","requestId":"8d9f1e47-b72f-460d-b5f7-23902444a74c","method":"GET","path":"/api/v1/pedidos/2/entrega","statusCode":403,"durationMs":6.84,"idUser":3}
+{"type":"http_request","requestId":"c937cd82-e29a-44e3-9520-91a892705ae2","method":"GET","path":"/api/v1/pedidos/2/entrega","statusCode":200,"durationMs":14.65,"idUser":2}
+{"type":"http_request","requestId":"a26798ee-f9d4-464d-8fc8-ea12989ee228","method":"GET","path":"/api/v1/pedidos/2/entrega","statusCode":200,"durationMs":6.3,"idUser":2}
+{"type":"http_request","requestId":"e16098c8-05d4-4e69-a21a-0af0f8b1fb9c","method":"POST","path":"/api/v1/pedidos/2/entrega/evidencia","statusCode":403,"durationMs":3.14,"idUser":3}
+{"type":"http_request","requestId":"74283d6e-f774-4353-b8bf-4b19a16157fc","method":"POST","path":"/api/v1/pedidos/2/entregar","statusCode":403,"durationMs":4.38,"idUser":3}
+OK: 103 restaurada/aplicada sólo en copia; sin backfill, lectura no-store, permiso nuevo y ruta anterior restringida
+{"type":"http_request","requestId":"bda1f3b4-c12d-4b79-ba55-da77597c0ad4","method":"POST","path":"/api/v1/pedidos/2/entrega/evidencia","statusCode":400,"durationMs":11.13,"idUser":2}
+{"type":"http_request","requestId":"a26f1c7d-07bf-4a63-b495-a5c11e58f930","method":"POST","path":"/api/v1/pedidos/2/entrega/evidencia","statusCode":400,"durationMs":4.92,"idUser":2}
+{"type":"http_request","requestId":"1f7039dd-7248-4816-9bc2-d09e4d6dc87d","method":"POST","path":"/api/v1/pedidos/2/entrega/evidencia","statusCode":400,"durationMs":4.59,"idUser":2}
+{"type":"http_request","requestId":"2a0df8bb-b3d0-4f87-8b6a-37ef8113db69","method":"POST","path":"/api/v1/pedidos/2/entrega/evidencia","statusCode":400,"durationMs":3.42,"idUser":2}
+{"type":"http_request","requestId":"9b0916e2-c4b0-4f89-a66d-eb93d8718b02","method":"POST","path":"/api/v1/pedidos/2/entrega/evidencia","statusCode":400,"durationMs":6.77,"idUser":2}
+{"type":"http_request","requestId":"bdec168f-6202-4c17-a6b5-9fe5c2eb9877","method":"GET","path":"/api/v1/pedidos/2/entrega","statusCode":200,"durationMs":4.87,"idUser":2}
+OK: Confirmación/receptor/evidencia o motivo, formato de imagen y ubicación completa/reciente se validan sin cambiar estado
+{"type":"http_request","requestId":"08586d34-d0e4-4159-941c-ae9ffbf2b24b","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":13.17,"idUser":2}
+{"type":"http_request","requestId":"eb2eb725-ed23-4fe1-aa6d-86c41d1cee8f","method":"GET","path":"/api/v1/pedidos/3","statusCode":200,"durationMs":3,"idUser":2}
+{"type":"http_request","requestId":"11203b8e-c9a4-4f5a-b06c-427effac7f56","method":"POST","path":"/api/v1/pedidos/3/entrega/evidencia","statusCode":409,"durationMs":4.9,"idUser":2}
+{"type":"http_request","requestId":"cbbd5ce7-afef-4941-b212-7dfe9d46e82b","method":"POST","path":"/api/v1/pedidos/2/entrega/evidencia","statusCode":409,"durationMs":6.03,"idUser":2}
+Esperando ventana real del limitador de entregas en la copia.
+{"type":"http_request","requestId":"dd2465d0-5daf-458a-986b-2fb0c37a04ee","method":"POST","path":"/api/v1/pedidos/2/entrega/evidencia","statusCode":201,"durationMs":116.52,"idUser":2}
+{"type":"http_request","requestId":"0b48700c-7210-4e0b-9acc-689bc681ee4a","method":"GET","path":"/api/v1/pedidos/2/entrega","statusCode":200,"durationMs":5.35,"idUser":2}
+{"type":"http_request","requestId":"7626af5b-df06-40a8-ba39-961dd1767533","method":"POST","path":"/api/v1/pedidos/2/entrega/evidencia","statusCode":201,"durationMs":10.26,"idUser":2}
+{"type":"http_request","requestId":"e589b803-5cd8-491a-8c1a-dd1abf3826be","method":"POST","path":"/api/v1/pedidos/2/entrega/evidencia","statusCode":409,"durationMs":5.11,"idUser":2}
+OK: Surtido/version exigidos; firma/foto/ubicación/snapshot y entrega atómicos, sin consumir stock otra vez; reintento idéntico y rechazo de UUID alterado
+{"type":"http_request","requestId":"64fc9b64-17c3-487f-b8ed-772e53a2757e","method":"GET","path":"/api/v1/pedidos/2/entrega/archivos/firma","statusCode":200,"durationMs":9.04,"idUser":2}
+{"type":"http_request","requestId":"0e993553-a9d1-4f9d-a78f-9cea6e01ec40","method":"GET","path":"/api/v1/pedidos/2/entrega/archivos/foto","statusCode":200,"durationMs":6.27,"idUser":2}
+{"type":"http_request","requestId":"b88a284a-bce6-41c4-ab02-0316cea74f4b","method":"GET","path":"/api/v1/pedidos/2/entrega/comprobante","statusCode":200,"durationMs":45.45,"idUser":2}
+{"type":"http_request","requestId":"89ff339f-368e-444c-948c-d77257571ca3","method":"GET","path":"/api/v1/pedidos/2/entrega/archivos/otro","statusCode":404,"durationMs":5.06,"idUser":2}
+OK: Descargas privadas autenticadas de originales/PDF, no-store/nosniff/attachment y auditoría de metadata atribuida sin duplicar bytes
+{"type":"http_request","requestId":"587f4784-481d-49b7-83e7-85ddc70dd53c","method":"GET","path":"/api/v1/pedidos/2/entrega","statusCode":200,"durationMs":12.85,"idUser":2}
+OK: Triggers ALWAYS bloquean UPDATE/DELETE/TRUNCATE y reescritura de entrega; cambios al cliente no alteran snapshot
+{"type":"http_request","requestId":"b882e65a-1ee1-480c-8279-3ea8b2db8c2e","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":70.74,"idUser":2}
+{"type":"http_request","requestId":"50a73e9e-7da5-4ae7-abbb-b5e3e7c02a2e","method":"POST","path":"/api/v1/pedidos/4/confirmar","statusCode":201,"durationMs":29.39,"idUser":2}
+{"type":"http_request","requestId":"8b4a8d5b-dae4-48f4-9934-d6fa486b7d3d","method":"POST","path":"/api/v1/pedidos/4/surtir","statusCode":201,"durationMs":26.25,"idUser":2}
+{"type":"http_request","requestId":"21af95ed-a8ac-4bf2-b3ad-6f91a345e5e2","method":"GET","path":"/api/v1/pedidos/4","statusCode":200,"durationMs":5.33,"idUser":2}
+{"type":"http_request","requestId":"93f6e0c2-7c1f-4946-afa4-45871953c0af","method":"POST","path":"/api/v1/pedidos/4/entrega/evidencia","statusCode":400,"durationMs":25.39,"idUser":2}
+{"type":"http_request","requestId":"fbac0206-8e85-4fbf-9404-4045c6de7939","method":"GET","path":"/api/v1/pedidos/4/entrega","statusCode":200,"durationMs":11.95,"idUser":2}
+{"type":"http_request","requestId":"8c9b8b8f-9b3a-4e37-aebc-b6f2b983db9f","method":"GET","path":"/api/v1/pedidos/4/entrega","statusCode":200,"durationMs":8.75,"idUser":2}
+OK: Fallo real de auditoría revierte entrega/estado/evidencia juntos
+{"type":"http_request","requestId":"f0561026-b648-4ca9-86e1-364c39cdfbdb","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":19,"idUser":2}
+{"type":"http_request","requestId":"b6bb824f-ee24-4922-a307-652b27c4fdf1","method":"POST","path":"/api/v1/pedidos/5/confirmar","statusCode":201,"durationMs":13.98,"idUser":2}
+{"type":"http_request","requestId":"64c64257-0891-4e25-9f54-7dfb0318d9a2","method":"POST","path":"/api/v1/pedidos/5/surtir","statusCode":201,"durationMs":10.15,"idUser":2}
+{"type":"http_request","requestId":"870ba244-7724-45ce-b0f3-f49aebc8cb34","method":"GET","path":"/api/v1/pedidos/5","statusCode":200,"durationMs":4,"idUser":2}
+{"type":"http_request","requestId":"be23564b-f7dd-4f7f-b2cc-114a7dd61220","method":"POST","path":"/api/v1/pedidos/5/entrega/evidencia","statusCode":201,"durationMs":16.1,"idUser":2}
+{"type":"http_request","requestId":"b1edc0f4-3d16-41fa-b5df-5a62f3ac7e7c","method":"POST","path":"/api/v1/pedidos/5/entrega/evidencia","statusCode":201,"durationMs":95.55,"idUser":2}
+{"type":"http_request","requestId":"2210860f-233a-473d-b8ec-33283aa03a4b","method":"POST","path":"/api/v1/pedidos/5/entrega/evidencia","statusCode":409,"durationMs":8.8,"idUser":2}
+{"type":"http_request","requestId":"acecb439-1933-40ac-a1a6-71f015817d31","method":"POST","path":"/api/v1/pedidos/2/entrega/evidencia","statusCode":409,"durationMs":8.89,"idUser":2}
+{"type":"http_request","requestId":"cf263b5c-edda-492e-a642-3f9d937158ad","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":80.81,"idUser":2}
+{"type":"http_request","requestId":"3c909760-bdb5-44d8-bc6a-298439d67c90","method":"POST","path":"/api/v1/pedidos/6/confirmar","statusCode":201,"durationMs":18.15,"idUser":2}
+{"type":"http_request","requestId":"063c2beb-7e0c-4017-8ade-84acc1d3b62f","method":"POST","path":"/api/v1/pedidos/6/surtir","statusCode":201,"durationMs":11.29,"idUser":2}
+{"type":"http_request","requestId":"10a2f381-932e-4712-96f3-e5e765dda243","method":"GET","path":"/api/v1/pedidos/6","statusCode":200,"durationMs":5.09,"idUser":2}
+{"type":"http_request","requestId":"f6ce0d5b-3d2a-4bd9-a5f8-a57e36955fad","method":"POST","path":"/api/v1/pedidos/6/entregar","statusCode":201,"durationMs":11.04,"idUser":2}
+{"type":"http_request","requestId":"5abba6aa-b4e1-4c94-9ec2-f995a60cea05","method":"GET","path":"/api/v1/pedidos/6/entrega","statusCode":200,"durationMs":5.95,"idUser":2}
+{"type":"http_request","requestId":"f3173ff5-0391-472d-97f7-670aa9f59b86","method":"GET","path":"/api/v1/pedidos/6/entrega/comprobante","statusCode":404,"durationMs":3.04,"idUser":2}
+OK: Una entrega por pedido, UUID global ligado al contenido/pedido y ruta anterior conservada sin inventar comprobante V02
+{"type":"http_request","requestId":"996eb262-2ec6-46de-bdc0-3df8f0a87973","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":10.13,"idUser":2}
+{"type":"http_request","requestId":"a206c224-0532-41eb-b7c5-969be8c35f01","method":"POST","path":"/api/v1/pedidos/7/confirmar","statusCode":201,"durationMs":9.11,"idUser":2}
+{"type":"http_request","requestId":"cd6e2cde-ab7e-4a59-85c1-48e8c8182143","method":"POST","path":"/api/v1/pedidos/7/surtir","statusCode":201,"durationMs":10.56,"idUser":2}
+{"type":"http_request","requestId":"8320c64f-2ff8-43a6-a10a-ae133bc6fbf9","method":"GET","path":"/api/v1/pedidos/7","statusCode":200,"durationMs":6.43,"idUser":2}
+{"type":"http_request","requestId":"dfeda303-a3ef-416e-814a-179a645cf26b","method":"GET","path":"/api/v1/pedidos/7/entrega","statusCode":200,"durationMs":6.29,"idUser":2}
+OK: Revocación mientras espera revalidada bajo bloqueo de cuenta; no entrega con actor obsoleto
+Esperando ventana real del limitador antes de UI.
+{"type":"http_request","requestId":"91ed530d-4216-49aa-a543-595777e50912","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":223.19,"idUser":2}
+{"type":"http_request","requestId":"f6d0b928-e52d-45e7-8425-4d70ece22de6","method":"POST","path":"/api/v1/pedidos/8/confirmar","statusCode":201,"durationMs":21.19,"idUser":2}
+{"type":"http_request","requestId":"ca5fceed-beb6-4bb6-a0e5-d8acaf8b579d","method":"POST","path":"/api/v1/pedidos/8/surtir","statusCode":201,"durationMs":10.72,"idUser":2}
+{"type":"http_request","requestId":"4b4ad065-eaa8-420e-ad41-397d62ce4d68","method":"GET","path":"/api/v1/pedidos/8","statusCode":200,"durationMs":2.68,"idUser":2}
+{"type":"http_request","requestId":"ec2ce597-bb4a-42b0-b10c-c09000f67494","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":77.75,"idUser":null}
+{"type":"http_request","requestId":"20e055f1-fce2-41f0-93c7-279dd8fbd6a8","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":91.1,"idUser":2}
+{"type":"http_request","requestId":"f82939a9-cc2f-4684-a913-b02a8390dff2","method":"GET","path":"/api/v1/pedidos","statusCode":200,"durationMs":87.54,"idUser":2}
+{"type":"http_request","requestId":"81854b22-9193-4b92-9ba2-563c7d0f9278","method":"GET","path":"/api/v1/pedidos/backorders","statusCode":200,"durationMs":122.56,"idUser":2}
+{"type":"http_request","requestId":"5d7f2575-b398-4b25-890b-0eb6a702a2a3","method":"GET","path":"/api/v1/pedidos/reservas/vencidas","statusCode":200,"durationMs":133.58,"idUser":2}
+{"type":"http_request","requestId":"94f97b4b-f7ab-4769-ae70-e2e99e44aa53","method":"GET","path":"/api/v1/pedidos/8","statusCode":200,"durationMs":33.3,"idUser":2}
+{"type":"http_request","requestId":"036bbee6-3c73-4255-abf5-f42a54eee0ca","method":"GET","path":"/api/v1/pedidos/8/entrega","statusCode":200,"durationMs":41.39,"idUser":2}
+{"type":"http_request","requestId":"33b3c494-8858-4df2-979d-77d3d8d68c49","method":"POST","path":"/api/v1/pedidos/8/entrega/evidencia","statusCode":201,"durationMs":23.8,"idUser":2}
+{"type":"http_request","requestId":"d763eae2-3c2a-4a27-81e3-e4f608292500","method":"GET","path":"/api/v1/pedidos/8/entrega","statusCode":200,"durationMs":4.57,"idUser":2}
+{"type":"http_request","requestId":"629e7c2f-25b1-42d9-8bfd-2c094b2df587","method":"GET","path":"/api/v1/pedidos/8/entrega/comprobante","statusCode":200,"durationMs":24.92,"idUser":2}
+{"type":"http_request","requestId":"d7ade55f-8134-42fa-aed2-dfea2c6d9032","method":"GET","path":"/api/v1/pedidos/8","statusCode":200,"durationMs":5.84,"idUser":2}
+{"type":"http_request","requestId":"02a284c0-f491-464c-883c-5a7434856c8d","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":39.31,"idUser":2}
+{"type":"http_request","requestId":"de868447-2df2-4dee-9c29-3def85ca5a57","method":"POST","path":"/api/v1/pedidos/9/confirmar","statusCode":201,"durationMs":11.92,"idUser":2}
+{"type":"http_request","requestId":"c13ef0ca-54df-466d-9dcc-d9b9e302f93c","method":"POST","path":"/api/v1/pedidos/9/surtir","statusCode":201,"durationMs":22.2,"idUser":2}
+{"type":"http_request","requestId":"da6e0c39-ad24-4d0e-9d4e-10f19bdd76bf","method":"GET","path":"/api/v1/pedidos/9","statusCode":200,"durationMs":12.7,"idUser":2}
+{"type":"http_request","requestId":"910b45d5-7e39-4d03-9ddc-fe0679871313","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":65.68,"idUser":null}
+{"type":"http_request","requestId":"5a2590d8-1e3c-408f-9b4b-03b75ad9115b","method":"GET","path":"/api/v1/pedidos/reservas/vencidas","statusCode":200,"durationMs":15.08,"idUser":2}
+{"type":"http_request","requestId":"a6dc2ca1-78f6-4625-8c67-902e3110c941","method":"GET","path":"/api/v1/pedidos/backorders","statusCode":200,"durationMs":24.32,"idUser":2}
+{"type":"http_request","requestId":"3f4a6c76-bf5e-48c8-8937-856840f47a3f","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":64.28,"idUser":2}
+{"type":"http_request","requestId":"cd447165-1ad5-4bc9-a219-c15790a3af92","method":"GET","path":"/api/v1/pedidos","statusCode":200,"durationMs":76.78,"idUser":2}
+{"type":"http_request","requestId":"b9a22181-28c9-47aa-bb99-a29bada9a543","method":"GET","path":"/api/v1/pedidos/9","statusCode":200,"durationMs":27.66,"idUser":2}
+{"type":"http_request","requestId":"ffded5c0-202a-4df2-b085-1515cc58a2c2","method":"GET","path":"/api/v1/pedidos/9/entrega","statusCode":200,"durationMs":11.73,"idUser":2}
+{"type":"http_request","requestId":"63b7299c-f4b1-40d9-aa8e-789f1e8957be","method":"POST","path":"/api/v1/pedidos/9/entrega/evidencia","statusCode":201,"durationMs":24.14,"idUser":2}
+{"type":"http_request","requestId":"0fe35aec-c134-4feb-9b88-a2fe8ddbce58","method":"GET","path":"/api/v1/pedidos/9/entrega","statusCode":200,"durationMs":4.48,"idUser":2}
+{"type":"http_request","requestId":"aedd5fc6-7798-4820-85f1-625fff581075","method":"GET","path":"/api/v1/pedidos/9/entrega/comprobante","statusCode":200,"durationMs":15.97,"idUser":2}
+{"type":"http_request","requestId":"be2b572c-f6fc-4ab2-93d2-28f576105708","method":"GET","path":"/api/v1/pedidos/9","statusCode":200,"durationMs":5.71,"idUser":2}
+OK: Angular producción/login/API/PostgreSQL reales: captura firma/foto, ubicación simulada explícita, registro/PDF/recarga; claro1280/oscuro390, axe y reflujo sin errores JS

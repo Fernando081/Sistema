@@ -1,0 +1,32 @@
+<section class="campaign-page" aria-labelledby="inbox-title" [attr.aria-busy]="busy()">
+ <header class="heading"><div><h1 id="inbox-title">Bandeja comercial</h1><p>Organiza los compromisos pendientes y continúa en su registro de origen.</p></div><a mat-stroked-button routerLink="/crm">Volver al CRM</a></header>
+ <p>Las tareas de secuencias pausadas y los asuntos cerrados no aparecen. Una oportunidad y su tarea son compromisos distintos.</p>
+ <form class="panel filters" (ngSubmit)="apply()">
+  <div><label for="inbox-q">Buscar cuenta, asunto, responsable o referencia</label><input id="inbox-q" name="q" [(ngModel)]="filters.q" maxlength="100"></div>
+  <div><label for="inbox-source">Origen</label><select id="inbox-source" name="tipo" [(ngModel)]="filters.tipo"><option value="todos">Todos los permitidos</option><option value="tarea">Tareas</option><option value="oportunidad">Oportunidades</option><option value="cotizacion">Cotizaciones · administración</option><option value="web">Solicitudes web · administración</option></select></div>
+  <div><label for="inbox-deadline">Plazo</label><select id="inbox-deadline" name="plazo" [(ngModel)]="filters.plazo"><option value="todos">Todos</option><option value="vencidas">Vencidas</option><option value="hoy">Para hoy, aún en plazo</option><option value="proximas">Próximos 7 días, después de hoy</option><option value="sin-fecha">Sin fecha</option></select></div>
+  <button mat-flat-button [disabled]="busy()">Aplicar filtros</button>
+ </form>
+ @if(error()){<div class="notice" role="alert">{{error()}} <button type="button" mat-button (click)="load()" [disabled]="busy()">Reintentar</button></div>}
+ @if(busy()){<p role="status">Consultando asuntos pendientes…</p>}
+ @if(result();as r){
+  @if(r.administrador){<p><a mat-stroked-button routerLink="/crm/reportes-programados">Reportes programados</a></p>}
+  <p>{{r.administrador?'Vista administrativa de las cuatro fuentes.':'Tus tareas asignadas o creadas y tus oportunidades asignadas.'}} Horarios de Tampico.</p>
+  <div class="metrics" aria-label="Resumen de los filtros aplicados"><article><strong>{{r.resumen.vencidas}}</strong>Vencidas</article><article><strong>{{r.resumen.hoy}}</strong>Para hoy</article><article><strong>{{r.resumen.proximas}}</strong>Próximos 7 días</article><article><strong>{{r.resumen.sinFecha}}</strong>Sin fecha</article></div>
+  <p role="status">{{r.total}} asuntos · Página {{page}} · Consulta {{date(r.consultadoEn)}}</p>
+  <small>El resumen respeta los filtros y cuenta todas sus páginas. Los plazos posteriores a siete días sólo están incluidos en el total. En solicitudes web, el plazo indica conservación del contenido, no un compromiso de respuesta. No se muestran contactos ni piezas en esta bandeja.</small>
+  <div class="recipients">@for(item of r.data;track item.tipo+':'+item.id){
+   <article class="panel"><div class="heading"><strong>{{labels[item.tipo]}}</strong><span class="deadline" [class.late]="item.plazo==='vencidas'">{{labels[item.plazo]}}</span></div><h2>{{item.titulo}}</h2>
+    <p>{{item.cuenta||'Sin cuenta vinculada'}} · {{item.estado}}</p><p>{{item.responsable||'Sin responsable asignado'}}</p>
+    <p>{{item.tipo==='web'?'Conservar hasta':'Vencimiento'}}: {{item.fecha?date(item.fecha):'Sin programar'}}</p><small>Referencia: {{item.id}}</small>
+    @switch(item.tipo){
+     @case('oportunidad'){<button type="button" mat-stroked-button [disabled]="opening()" (click)="openOpportunity(item)">Abrir oportunidad</button>}
+     @case('tarea'){<a mat-stroked-button routerLink="/crm" [queryParams]="{tab:'tareas',tarea:item.id}">Abrir tarea</a>}
+     @case('cotizacion'){<a mat-stroked-button [routerLink]="['/cotizacion',item.id,'versiones']">Ver cotización y revisiones</a>}
+     @case('web'){<a mat-stroked-button routerLink="/crm" [queryParams]="{tab:'web'}">Ir a solicitudes web</a>}
+    }
+   </article>
+  }@empty{<p class="notice">No hay asuntos con estos filtros. Puedes cambiar el origen, el plazo o la búsqueda.</p>}</div>
+  <nav class="actions pagination" aria-label="Páginas de la bandeja"><button type="button" mat-stroked-button (click)="paginate(-1)" [disabled]="busy()||page<=1">Anterior</button><span>Página {{page}}</span><button type="button" mat-stroked-button (click)="paginate(1)" [disabled]="busy()||page*r.limit>=r.total">Siguiente</button><button type="button" mat-button (click)="load()" [disabled]="busy()">Actualizar</button></nav>
+ }
+</section>

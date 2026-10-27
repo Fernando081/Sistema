@@ -18,18 +18,22 @@ import { EMPTY, Subject, catchError, debounceTime, distinctUntilChanged, finaliz
 import { CrmService, CrmResumen, ETAPAS_CRM, GlobalSearchItem, GlobalSearchResult, MOTIVOS_CRM, Oportunidad, VentaPerdida } from '../services/crm.service';
 import { CrmOportunidadDialogComponent, CrmOportunidadPrefill } from './crm-oportunidad-dialog.component';
 import { CrmVentaPerdidaDialogComponent } from './crm-venta-perdida-dialog.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CrmOperativoComponent } from './crm-operativo.component';
+import { CrmSolicitudesWebComponent } from './crm-solicitudes-web.component';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-crm-pipeline', standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatDialogModule,
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatDialogModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatPaginatorModule, MatSelectModule,
-    MatSnackBarModule, MatTableModule, MatTabsModule, MatButtonToggleModule, CrmOperativoComponent],
+    MatSnackBarModule, MatTableModule, MatTabsModule, MatButtonToggleModule, CrmOperativoComponent, CrmSolicitudesWebComponent],
   templateUrl: './crm-pipeline.component.html',
   styleUrl: './crm-pipeline.component.css',
 })
 export class CrmPipelineComponent implements OnInit {
+  readonly adminWeb = inject(AuthService).getSessionIdentity()?.role === 'admin';
+  readonly selectedTab = signal(0);
   private readonly fb = inject(FormBuilder);
   private readonly crm = inject(CrmService);
   private readonly snack = inject(MatSnackBar);
@@ -65,6 +69,7 @@ export class CrmPipelineComponent implements OnInit {
 
   ngOnInit() {
     const query = this.route.snapshot.queryParamMap;
+    this.selectedTab.set(query.get('tab') === 'tareas' ? 2 : query.get('tab') === 'web' && this.adminWeb ? 3 : 0);
     this.filtros.patchValue({ q: query.get('q') || '', agenda: query.get('agenda') || 'todas' }, { emitEvent: false });
     this.refresh.pipe(startWith(undefined), switchMap(() => {
       this.cargando.set(true); this.errorCarga.set(false);
@@ -92,6 +97,15 @@ export class CrmPipelineComponent implements OnInit {
     this.filtrosPerdidas.valueChanges.pipe(debounceTime(250), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => { this.pagePerdidas = 0; this.refreshPerdidas.next(); });
     this.cargarResumen();
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+      if (params.get('tab') === 'tareas') this.selectedTab.set(2);
+      if (params.get('tab') === 'web' && this.adminWeb) this.selectedTab.set(3);
+      const term = params.get('q') || '';
+      if (term !== this.filtros.controls.q.value) {
+        this.filtros.patchValue({ q: term, etapa: '', agenda: 'todas' });
+        this.selectedTab.set(0);
+      }
+    });
   }
   cargar() { this.refresh.next(); this.refreshPerdidas.next(); this.cargarResumen(); }
   cargarResumen() {

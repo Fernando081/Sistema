@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-10-02T18:05:18.221Z",
+  "node": "24.19.0",
+  "concurrentCallers": 8,
+  "controlRace23505": true,
+  "fivePayloadScopes409": true,
+  "resourceAndOperationMismatch409": true,
+  "canonicalPayloadAndUuid": true,
+  "historicalKeyWithoutHash409": true,
+  "requestOrderReceiptSingleEffect": true,
+  "rollbackAfterStockAndKardex": true,
+  "retryAfterRollback": true,
+  "competingOverReceiptRejected": true,
+  "finalState": {
+    "stock": 9,
+    "received": 10,
+    "kardex": 5,
+    "receipts": 4
+  },
+  "locationSync": true,
+  "manualStockAndPriceAudit": true,
+  "closedOrderRetry": true,
+  "costAndReturnSingleEffect": true,
+  "idleTransactions": 0,
+  "limitations": [
+    "Servicios TypeORM/PostgreSQL reales de abastecimiento; no HTTP ni carga prolongada.",
+    "No prueba pagos/ventas, backorders ni HTTP/UI; reintentos históricos sin huella requieren consulta del registro.",
+    "Fallo SQL controlado, no caída física de PostgreSQL/PAC."
+  ]
+}

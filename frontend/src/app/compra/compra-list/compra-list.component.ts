@@ -1,11 +1,14 @@
+import { MatSelectModule } from '@angular/material/select';
 // frontend/src/app/compra/compra-list/compra-list.component.ts
-import { Component, OnInit, ViewChild, AfterViewInit, DestroyRef, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, Subscription, debounceTime, distinctUntilChanged, finalize } from 'rxjs';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RemoteDirectory } from '../../shared/remote-directory';
+import { localDate } from '../../shared/document-download';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,7 +22,7 @@ import { CompraDetalleComponent } from '../compra-detalle/compra-detalle.compone
 @Component({
   selector: 'app-compra-list',
   standalone: true,
-  imports: [
+  imports: [MatSelectModule,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
@@ -29,57 +32,39 @@ import { CompraDetalleComponent } from '../compra-detalle/compra-detalle.compone
     MatInputModule,
     MatIconModule,
     MatButtonModule,
-    MatDialogModule,
+    MatDialogModule, MatSnackBarModule,
   ],
   templateUrl: './compra-list.component.html',
 })
-export class CompraListComponent implements OnInit, AfterViewInit {
+export class CompraListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['fecha', 'proveedor', 'folio', 'total', 'acciones'];
-  dataSource = new MatTableDataSource<CompraResumen>();
-  totalItems = 0;
-  isLoading = false;
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly search = new Subject<string>();
-  private request?: Subscription;
-  private term = '';
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  readonly directory: RemoteDirectory<CompraResumen>;
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  get dataSource() { return this.directory.dataSource; }
+  get totalItems() { return this.directory.total(); }
+  get isLoading() { return this.directory.loading(); }
 
   constructor(
     private compraService: CompraService,
     private dialog: MatDialog,
-  ) {}
+    private snackBar: MatSnackBar,
+  ) {
+    this.directory = new RemoteDirectory(query => this.compraService.getCompras(query.page, query.limit, query.term, this.compraService.sortKey(query.sortBy), query.sortOrder, query.estado || '', query.desde || '', query.hasta || ''),
+      message => this.snackBar.open(message, 'Cerrar', { duration: 5000 }), ['fecha', 'cliente', 'folio', 'total']);
+  }
 
   ngOnInit(): void {
-    this.load();
-    this.search.pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
-      this.term = term;
-      this.paginator.pageIndex = 0;
-      this.load();
-    });
-    this.destroyRef.onDestroy(() => this.request?.unsubscribe());
+    this.directory.connectUrl(this.route, this.router, false, ['Pendiente', 'Completada', 'Pagada']);
+    this.directory.start();
   }
-
-  ngAfterViewInit(): void {
-    this.paginator.page.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.load());
-    this.sort.sortChange.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => { this.paginator.pageIndex = 0; this.load(); });
+  ngOnDestroy(): void { this.directory.dispose(); }
+  load(): void { this.directory.reload(); }
+  applyFilter(event: Event): void {
+    if (event.target instanceof HTMLInputElement) this.directory.setTerm(event.target.value);
   }
-
-  load(): void {
-    this.request?.unsubscribe();
-    this.isLoading = true;
-    const columns: Record<string, string> = { fecha: 'fecha_compra', proveedor: 'nombre_proveedor', folio: 'folio_factura', total: 'total' };
-    this.request = this.compraService.getCompras((this.paginator?.pageIndex ?? 0) + 1, this.paginator?.pageSize || 10, this.term, columns[this.sort?.active] || '', this.sort?.direction || '')
-      .pipe(finalize(() => this.isLoading = false)).subscribe({
-        next: response => { this.dataSource.data = response.data; this.totalItems = response.total; },
-        error: () => { this.dataSource.data = []; this.totalItems = 0; },
-      });
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.search.next(filterValue.trim());
+  exportar(): void {
+    this.directory.export(query => this.compraService.exportCsv(query), 'compras_' + localDate() + '.csv');
   }
 
   verDetalle(compra: CompraResumen) {

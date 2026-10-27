@@ -1,0 +1,39 @@
+{
+  "phase": "S02.2",
+  "startedAt": "2026-10-19T23:45:34.877Z",
+  "checks": [
+    "Respaldo restaurado; check/migrate solo en copia, AppModule completo con guards, fiscal mock y cron detenido",
+    "Login HTTP bcrypt/JWT crea sesiones distintas; lista privada aislada, sesión actual correcta y metadata reducida sin tokens/IP/User-Agent completo",
+    "Cierre individual idempotente; sesión ajena404/UUID inválido400 y JWT revocado401 sin cerrar otras cuentas o sesiones",
+    "Actividad aproximada actualiza tras un minuto y evita escribir en cada solicitud",
+    "Logout normal cierra solo su sesión; vencimiento en PostgreSQL rechaza JWT todavía no vencido",
+    "Cerrar todas incrementa versión y revoca registros de la cuenta; nuevo login funciona y otra cuenta sigue activa",
+    "Cambios S01 de perfil y desactivación siguen invalidando sesiones; versiones anteriores no aparecen como activas",
+    "Veinticuatro logins concurrentes respetan límite20 y revocan accesos antiguos en servidor",
+    "Limpieza al login elimina solo sesiones propias vencidas con antigüedad mayor30 días",
+    "S02.2: cookie HttpOnly/Strict, sin JWT en JS/respuesta/Storage, restauración, CSRF/origen/cabecera, CORS externo y cookie ambigua rechazados",
+    "Dos navegadores con login real y Angular producción: sesiones correctas, claro1280/oscuro390 sin desbordamiento ni infracciones axe en panel",
+    "UI real cierra sesión actual móvil, otra sesión y todas las sesiones; confirmaciones, redirección y revocación SQL comprobadas",
+    "Cambio de contraseña revoca sesiones previas y exige nueva contraseña para crear una sesión"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "browserAuth": {
+    "passed": true,
+    "httpOnly": true,
+    "sameSite": "Strict",
+    "legacyStorageCleared": true,
+    "restoredAfterReload": true,
+    "csrfOriginAndHeader": true,
+    "crossSiteRejected": true,
+    "duplicateCookieRejected": true,
+    "untrustedCorsRejected": true,
+    "note": "HTTP loopback de desarrollo; atributos HTTPS/Host de producción probados por separado en unitarias",
+    "cookieClearedOnLogout": true
+  },
+  "passed": true,
+  "completedAt": "2026-10-19T23:45:50.710Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular"
+}

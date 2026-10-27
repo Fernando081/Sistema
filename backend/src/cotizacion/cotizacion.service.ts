@@ -1,7 +1,12 @@
+import { JwtPayload } from '../auth/auth.types';
+import { commercialActor } from '../comercial/commercial-actor';
+import { setAuditActor } from '../auth/audit-actor';
+import { CotizacionQueryDto, cotizacionPage, cotizacionCsv } from './cotizacion-query';
 // backend/src/cotizacion/cotizacion.service.ts
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
+import { requireAcceptedQuote } from './cotizacion-version-policy';
 import { CreateCotizacionDto, ConvertirCotizacionDto } from './cotizacion.dto';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import PdfPrinter from 'pdfmake';
@@ -10,7 +15,6 @@ import { consumeCommercialAuthorizations, validateCommercialPolicy } from '../co
 
 interface ProductoFiscalRow { id: number; objeto: string; iva: string | number; retiene: boolean; }
 interface IdRow { id: number; }
-interface CountRow { count: string | number; }
 interface CotizacionRow {
   id_cliente: number;
   rfc_receptor: string;
@@ -55,8 +59,11 @@ interface CotizacionPdfRow { datos: CotizacionPdfData; }
 export class CotizacionService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
-  async create(dto: CreateCotizacionDto) {
-    return this.dataSource.transaction(async manager => {
+  async create(dto: CreateCotizacionDto, actor?:JwtPayload) {
+    return this.dataSource.transaction(manager => this.createWithManager(manager,dto,actor));
+  }
+  async createWithManager(manager:EntityManager,dto:CreateCotizacionDto,actor?:JwtPayload){
+    if(actor)await commercialActor(manager,actor);
     const ids = [...new Set(dto.conceptos.map((c) => c.idProducto))];
     const products = await queryRows<ProductoFiscalRow>(manager,
       `SELECT "IdProducto" AS id, "ObjetoImpuesto" AS objeto,
@@ -85,6 +92,7 @@ export class CotizacionService {
     const json = JSON.stringify(conceptos);
     await validateCommercialPolicy(manager, {
       idCliente: dto.idCliente,
+      operacion: 'Cotizacion',
       total,
       validarCredito: false,
       lineas: conceptos.map((line) => ({
@@ -93,6 +101,7 @@ export class CotizacionService {
         precio: Number(line.valorUnitario),
       })),
     });
+    await manager.query("SELECT pg_advisory_xact_lock(hashtext('cotizacion-folio'))");
     const result = await queryRows<IdRow>(manager,
       `SELECT fn_crear_cotizacion($1, $2, $3, $4, $5, $6, $7, $8) as id`,
       [
@@ -107,35 +116,13 @@ export class CotizacionService {
       ],
     );
     return { message: 'Cotización creada', id: result[0].id };
-    });
   }
 
-  async findAll(page: number = 1, limit: number = 10, term: string = ''): Promise<{ data: Record<string, unknown>[], total: number, page: number, totalPages: number }> {
-    page = Math.max(1, page);
-    limit = Math.min(100, Math.max(1, limit));
-    const offset = (page - 1) * limit;
-
-    const [totalResult, dataResult] = await Promise.all([
-      queryRows<CountRow>(this.dataSource, 'SELECT COUNT(*) as count FROM fn_get_cotizaciones(NULL, NULL, $1)', [term]),
-      queryRows<Record<string, unknown>>(this.dataSource,
-        `SELECT f.*,pv.id_pedido
-           FROM fn_get_cotizaciones($1, $2, $3) f
-           LEFT JOIN pedido_venta pv ON pv.id_cotizacion=f.id_cotizacion`,
-        [limit, offset, term]
-      ),
-    ]);
-
-
-    const total = Number(totalResult[0].count);
-    const totalPages = Math.ceil(total / limit);
-
-    return {
-      data: dataResult,
-      total,
-      page,
-      totalPages,
-    };
+  async findAll(page = 1, limit = 10, term = '', sortBy = 'id', sortOrder = 'desc', estado = '', desde = '', hasta = '') {
+    return cotizacionPage(this.dataSource, Object.assign(new CotizacionQueryDto(), { page: Math.max(1, page), limit: Math.min(100, Math.max(1, limit)), term, sortBy, sortOrder, estado, desde, hasta }));
   }
+
+  exportCsv(query: CotizacionQueryDto) { return cotizacionCsv(this.dataSource, query); }
 
   async findOne(idCotizacion: number) {
     const cabecera = await queryRows<CotizacionRow>(this.dataSource, `SELECT * FROM cotizacion WHERE id_cotizacion = $1`, [idCotizacion]);
@@ -158,12 +145,16 @@ export class CotizacionService {
     idFormaPago: number,
     idMetodoPago: number,
     idVendedor?: number,
+    actor?:JwtPayload,
   ) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
+      if(actor)await commercialActor(queryRunner,actor);else await setAuditActor(queryRunner,idVendedor);
+      const revision=await requireAcceptedQuote(queryRunner,idCotizacion);
+      if(revision&&dto.articulosAceptados.some(a=>Number(revision.snapshot.conceptos.find(c=>c.idConcepto===a.idConcepto)?.precio)!==a.precioCierre))throw new BadRequestException('El precio difiere de la revisión aceptada; prepara una nueva revisión.');
       // 1. Extraer cabecera para re-calcular impuestos de los confirmados
       const cRows = await queryRows<CotizacionRow>(queryRunner,
         `SELECT * FROM cotizacion WHERE id_cotizacion = $1 FOR UPDATE`,
@@ -294,6 +285,7 @@ export class CotizacionService {
       if (conceptosAceptadosJson.length > 0) {
         const commercialAuthorizationIds = await validateCommercialPolicy(queryRunner, {
           idCliente: cot.id_cliente,
+          operacion: 'Venta',
           idMetodoPago,
           total: nuevoTotal,
           validarCredito: true,
@@ -370,6 +362,7 @@ export class CotizacionService {
       'SELECT fn_get_datos_cotizacion_pdf($1) as datos',
       [id],
     );
+    if (!res[0]?.datos || res[0].datos.folio == null) throw new NotFoundException('Cotización no encontrada');
     const datos = res[0].datos;
 
     const fonts = {

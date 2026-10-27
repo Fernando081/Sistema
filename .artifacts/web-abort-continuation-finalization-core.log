@@ -1,0 +1,11 @@
+✔ veintiséis contextos válidos cierran sólo el control residual y conservan bytes, recibos y decisiones (53733.002ms)
+✔ auditoría completa con proceso aún activo rechaza cierre hasta que termina (4024.0279ms)
+✔ concurrencia con IDs distintos admite un cierre y replay no retira una guarda posterior (4827.9491ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 62888.2111

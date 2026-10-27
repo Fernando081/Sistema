@@ -1,0 +1,74 @@
+<details class="commercial-documents" (toggle)="opened($event)">
+  <summary>Cliente ERP, cotizaciones y ventas vinculadas</summary>
+  <section [attr.aria-busy]="loading() || saving() || searching()">
+    <h3>Origen comercial de esta oportunidad</h3>
+    <p>Asocia el cliente y las cotizaciones que corresponden a esta oportunidad. Una cotización sólo puede pertenecer a una oportunidad.</p>
+    <button mat-stroked-button type="button" (click)="load()" [disabled]="loading() || saving() || searching()">Actualizar vínculos</button>
+    <button mat-stroked-button type="button" (click)="reload.emit()" [disabled]="locked() || saving() || loading() || !!intent()">Recargar oportunidad completa</button>
+    @if (loading()) { <p role="status">Consultando documentos…</p> }
+    @if (saving()) { <p role="status">Actualizando relación…</p> }
+    @if (searching()) { <p role="status">Buscando…</p> }
+    @if (error()) { <p role="alert">{{error()}}</p> }
+    @if (notice()) { <p role="status">{{notice()}}</p> }
+    @if (intent() && !saving()) {
+      <button mat-stroked-button type="button" (click)="retry()" [disabled]="loading() || locked()">Reintentar la misma operación</button>
+    }
+    @if (data(); as state) {
+      @if (locked()) { <p class="hint">Guarda los cambios de la oportunidad antes de cambiar sus vínculos.</p> }
+      @if (stale()) { <p role="status">Cambió la versión de la oportunidad. Recarga la ficha completa y después actualiza los vínculos.</p> }
+      <p>Cliente ERP: <strong>{{state.opportunity.cliente || 'Sin asociar'}}</strong></p>
+      <details class="client-link">
+        <summary>{{state.opportunity.idCliente ? 'Cambiar cliente asociado' : 'Asociar cliente existente'}}</summary>
+        <p class="hint">Busca una cuenta existente por nombre o RFC. El vínculo no copia contactos ni crea otro cliente.</p>
+        <label [for]="'commercial-client-'+oportunidadId()">Nombre o RFC del cliente</label>
+        <input [id]="'commercial-client-'+oportunidadId()" [ngModel]="customerTerm()" (ngModelChange)="customerTerm.set($event);customers.set([]);selectedCustomer.set(0);clientConfirmed.set(false)"
+          maxlength="100" [disabled]="searching() || saving() || !!intent()">
+        <button mat-stroked-button type="button" (click)="search('cliente')" [disabled]="searching() || saving() || !!intent()">Buscar cliente ERP</button>
+        @if (customers().length) {
+          <label [for]="'commercial-customer-select-'+oportunidadId()">Cliente encontrado</label>
+          <select [id]="'commercial-customer-select-'+oportunidadId()" [ngModel]="selectedCustomer()" (ngModelChange)="selectedCustomer.set($event);clientConfirmed.set(false)" [disabled]="saving() || !!intent()">
+            <option [ngValue]="0">Elige un cliente</option>
+            @for (customer of customers(); track customer.IdCliente) { <option [ngValue]="customer.IdCliente">{{customer.RazonSocial}} · {{customer.RFC}}</option> }
+          </select>
+          <label class="confirmation"><input type="checkbox" [ngModel]="clientConfirmed()" (ngModelChange)="clientConfirmed.set($event)" [disabled]="saving() || !!intent()">Confirmo que este cliente corresponde a la oportunidad.</label>
+          <button mat-flat-button type="button" (click)="operate('cliente',selectedCustomer(),clientConfirmed())"
+            [disabled]="!selectedCustomer() || !clientConfirmed() || locked() || stale() || saving() || !!intent()">Asociar cliente ERP</button>
+        }
+      </details>
+      @if (state.opportunity.idCliente) {
+        <label [for]="'commercial-quote-'+oportunidadId()">Folio de cotización (opcional)</label>
+        <input [id]="'commercial-quote-'+oportunidadId()" [ngModel]="term()" (ngModelChange)="term.set($event);candidates.set([]);selected.set(0);confirmed.set(false)"
+          maxlength="100" placeholder="C-123" [disabled]="searching() || saving() || !!intent()">
+        <button mat-stroked-button type="button" (click)="search('cotizacion')" [disabled]="searching() || saving() || !!intent()">Buscar cotizaciones del cliente</button>
+        <p class="hint">Hasta 20 resultados, sólo del cliente asociado y sin vínculo con otra oportunidad.</p>
+        @if (candidates().length) {
+          <label [for]="'commercial-selection-'+oportunidadId()">Cotización a vincular</label>
+          <select [id]="'commercial-selection-'+oportunidadId()" [ngModel]="selected()" (ngModelChange)="selected.set($event);confirmed.set(false)" [disabled]="saving() || !!intent()">
+            <option [ngValue]="0">Elige una cotización</option>
+            @for (quote of candidates(); track quote.idCotizacion) { <option [ngValue]="quote.idCotizacion">C-{{quote.folio}} · {{quote.estatus}}</option> }
+          </select>
+          <label class="confirmation"><input type="checkbox" [ngModel]="confirmed()" (ngModelChange)="confirmed.set($event)" [disabled]="saving() || !!intent()">Confirmo que esta cotización proviene de esta oportunidad.</label>
+          <button mat-flat-button type="button" (click)="operate('vincular',selected(),confirmed())"
+            [disabled]="!selected() || !confirmed() || locked() || stale() || saving() || !!intent()">Vincular cotización</button>
+        }
+      }
+      <h4>Cotizaciones vinculadas</h4>
+      <ul class="linked-quotes">
+        @for (quote of state.quotes; track quote.idCotizacion) {
+          <li><strong>C-{{quote.folio}}</strong> · {{quote.estatus}} · {{quote.fechaEmision | date:'shortDate'}}
+            <p>Documentos de venta vigentes: {{quote.documentosVenta}} · Cancelados: {{quote.cancelados}} · Inconsistentes: {{quote.inconsistentes}}</p>
+            <a [routerLink]="['/cotizacion/historial']" [queryParams]="{q:'C-'+quote.folio}" target="_blank" rel="noopener">Abrir cotización C-{{quote.folio}}</a>
+            <button mat-stroked-button type="button" (click)="removeTarget.set(quote.idCotizacion);removeConfirmed.set(false)" [disabled]="locked() || stale() || saving() || !!intent()">Retirar vínculo C-{{quote.folio}}</button>
+            @if (removeTarget() === quote.idCotizacion) {
+              <label class="confirmation"><input type="checkbox" [ngModel]="removeConfirmed()" (ngModelChange)="removeConfirmed.set($event)" [disabled]="saving() || !!intent()">Confirmo retirar este vínculo. La cotización y sus ventas se conservan.</label>
+              <button mat-stroked-button type="button" (click)="operate('retirar',quote.idCotizacion,removeConfirmed())" [disabled]="!removeConfirmed() || locked() || stale() || saving() || !!intent()">Confirmar retiro del vínculo</button>
+            }
+          </li>
+        } @empty { <li>No hay cotizaciones vinculadas.</li> }
+      </ul>
+      @if (state.truncated) { <p role="status">Se muestran las primeras 100 cotizaciones vinculadas.</p> }
+      <p class="hint">El conteo usa documentos de ingreso internos vigentes del mismo cliente, por cotización directa o pedido.
+        Excluye cancelados, notas de crédito y relaciones inconsistentes; no confirma cobros, ingresos netos, utilidad o timbrado real.</p>
+    }
+  </section>
+</details>

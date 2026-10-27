@@ -1,0 +1,29 @@
+{
+  "phase": "A01",
+  "startedAt": "2026-10-21T17:46:55.773Z",
+  "checks": [
+    "Pedido/confirmación/surtido reales; permiso delegable, caché privada, cantidades de seis decimales, UUID/reintento y revisión obsoleta",
+    "Códigos ajenos/URLs/ubicación sin almacén, cero, escala, bigint y DTO cerrado no generan registros",
+    "Concurrencia serial real impide exceder cantidad; anulación con autor/motivo/reintento y nueva verificación, sin cambiar stock/reserva/surtido/kardex/facturas",
+    "Etiquetas QR PDF reales autenticadas, sin precios/datos del cliente, para producto y ubicación existentes",
+    "Cancelación comercial libera el picking existente; bloquea nuevas verificaciones y conserva historia/reintento original",
+    "Pertenencia a pedido, operador delegado y corrección ADMIN; revocación real durante espera impide escribir",
+    "Auditoría nominal, rollback íntegro ante fallo de auditoría e historial conservado por guardas ALWAYS",
+    "Consultas sin escrituras y permiso efectivo revocado bloquea consultas de operador",
+    "Ubicación inactiva bloqueada;22 asignaciones creadas por surtidos reales y21 verificaciones con paginación completa sin duplicados",
+    "Angular/SQL reales light: revisión de códigos/Enter seguro/confirmación/cantidad exacta, persistencia/anulación/recarga y descarga PDF; Axe/reflujo 1280px",
+    "Angular/SQL reales dark: revisión de códigos/Enter seguro/confirmación/cantidad exacta, persistencia/anulación/recarga y descarga PDF; Axe/reflujo 390px",
+    "Cámara simulada: no compatible, lectura QR, parada, permiso tardío, pestaña oculta y salida liberan todos los tracks; sin cámara física"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "externalDeliveryEnabled": false,
+  "cameraApiSimulated": true,
+  "cameraHardwareTested": false,
+  "keyboardHardwareTested": false,
+  "passed": true,
+  "completedAt": "2026-10-21T17:47:11.847Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular A01"
+}

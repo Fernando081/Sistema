@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-12T02:22:07.382Z",
+  "status": "prepared-test-pilot",
+  "stage": "completed",
+  "sourceKind": "test-database",
+  "commercialAccepted": false,
+  "erpApprovalRecorded": false,
+  "scope": "Piloto técnico local con lectura PostgreSQL y copias de medios; no aprobación comercial, publicación externa o modificación del ERP.",
+  "runId": "4385d3f4-0dbb-4ae3-9344-dcffaecc5710",
+  "media": {
+    "selected": 2,
+    "copied": 2,
+    "existing": 0
+  },
+  "backup": {
+    "filename": "web-test-pilot-4385d3f4-0dbb-4ae3-9344-dcffaecc5710.json",
+    "sha256": "bd3c6a76b116bba44a96cb28620d0d6c6669b8645b1745ee03f9adb67343ff2b",
+    "bytes": 1998096
+  },
+  "recovery": {
+    "status": "verified-test-pilot-recovery",
+    "files": 79,
+    "damageDetected": true,
+    "restoredHttp": {
+      "release": "70b0b67c-9ba9-42ba-b817-44bd77cc1b68",
+      "checks": 45,
+      "passed": 45
+    },
+    "rolledBackHttp": {
+      "release": "d89b20b2-eabd-4e1f-a5f2-be3c77bd8e6a",
+      "checks": 47,
+      "passed": 47
+    },
+    "elapsedMs": 1898.87,
+    "commercialAccepted": false,
+    "erpReceiptVerified": false
+  },
+  "active": {
+    "status": "verified-local",
+    "mode": "versioned-preview",
+    "release": "d89b20b2-eabd-4e1f-a5f2-be3c77bd8e6a",
+    "integrityVerified": true,
+    "routes": 32,
+    "sealedFiles": 39,
+    "erpReceiptPresent": false,
+    "erpReceiptFreshnessVerified": false
+  },
+  "sourceUnchanged": true,
+  "publicPreviewUnchanged": true,
+  "productCount": 6,
+  "withImages": 2,
+  "selection": [
+    {
+      "productId": 3,
+      "code": "CD40020W50",
+      "slug": "chevron-cd40020w50-3",
+      "images": 1,
+      "sources": [
+        {
+          "name": "images-1772840415729-130789096.png",
+          "sha256": "abd0ff7bb01ef8a477567669f82fdd261444d6323db2533cb324bb5ded4302f1",
+          "bytes": 605618
+        }
+      ],
+      "needsCommercialReview": true
+    },
+    {
+      "productId": 4,
+      "code": "HM212049",
+      "slug": "timken-hm212049-4",
+      "images": 1,
+      "sources": [
+        {
+          "name": "images-1773038443840-818716693.jpeg",
+          "sha256": "f633369541a4d395e87aeb82898bbe0511ad77aa6885e05f66aa207554cd6b2a",
+          "bytes": 7297
+        }
+      ],
+      "needsCommercialReview": true
+    },
+    {
+      "productId": 2,
+      "code": "4300123",
+      "slug": "eaton-4300123-2",
+      "images": 0,
+      "sources": [],
+      "needsCommercialReview": true
+    },
+    {
+      "productId": 5,
+      "code": "8pk123",
+      "slug": "gates-8pk123-5",
+      "images": 0,
+      "sources": [],
+      "needsCommercialReview": true
+    },
+    {
+      "productId": 6,
+      "code": "MX20W50",
+      "slug": "mexlub-mx20w50-6",
+      "images": 0,
+      "sources": [],
+      "needsCommercialReview": true
+    },
+    {
+      "productId": 10,
+      "code": "SKF212049",
+      "slug": "skf-skf212049-10",
+      "images": 0,
+      "sources": [],
+      "needsCommercialReview": true
+    }
+  ],
+  "versions": [
+    "d89b20b2-eabd-4e1f-a5f2-be3c77bd8e6a",
+    "70b0b67c-9ba9-42ba-b817-44bd77cc1b68"
+  ],
+  "manifestSha256": "8eabf3e1a428a378b55de3aa78346230cde73bc8e4d1dffbe317706446de2f24"
+}

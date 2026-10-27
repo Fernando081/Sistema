@@ -1,0 +1,81 @@
+{"type":"http_request","requestId":"779a0e7c-fdf9-4559-862e-58930e515387","method":"GET","path":"/api/v1/almacen/movil/pedidos","statusCode":401,"durationMs":9.93,"idUser":null}
+{"type":"http_request","requestId":"af28a6e5-3d37-4e25-a84f-6b9eb8e3b27c","method":"GET","path":"/api/v1/almacen/movil/pedidos","statusCode":403,"durationMs":12.76,"idUser":3}
+{"type":"http_request","requestId":"0d0eae01-fc02-4772-b440-42b67d5bedd9","method":"GET","path":"/api/v1/almacen/movil/pedidos","statusCode":200,"durationMs":21.28,"idUser":3}
+{"type":"http_request","requestId":"b125f86c-8c22-4db5-8a2b-a01145f8bef0","method":"PUT","path":"/api/v1/comercial/clientes/2","statusCode":200,"durationMs":22.26,"idUser":2}
+{"type":"http_request","requestId":"29fb4a5b-6d4d-4812-aff7-573f16dcb5db","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":32.05,"idUser":2}
+{"type":"http_request","requestId":"c8672b71-5de0-4d14-854a-6b3e9c1f4c12","method":"POST","path":"/api/v1/pedidos/2/confirmar","statusCode":201,"durationMs":14.45,"idUser":2}
+{"type":"http_request","requestId":"69bb78be-e05c-4e85-b7bb-80046f443f02","method":"POST","path":"/api/v1/pedidos/2/surtir","statusCode":201,"durationMs":26.32,"idUser":2}
+{"type":"http_request","requestId":"a70bce01-a570-4e25-b7cd-918138cf24e4","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":11.18,"idUser":2}
+{"type":"http_request","requestId":"22fc708e-35ee-400f-9423-4fb8c9f02853","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":8.44,"idUser":2}
+{"type":"http_request","requestId":"746d481d-5583-451d-b987-ad17b4ab90cd","method":"GET","path":"/api/v1/almacen/movil/pedidos","statusCode":200,"durationMs":7.22,"idUser":2}
+{"type":"http_request","requestId":"87f923de-35b3-42a4-a216-9ffcbfa3d24b","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":201,"durationMs":11.94,"idUser":2}
+{"type":"http_request","requestId":"24c43155-e971-479e-a9c2-631ceb6be6d1","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":201,"durationMs":5.18,"idUser":2}
+{"type":"http_request","requestId":"d2b753ef-6c37-4e96-bc8e-825699984a10","method":"GET","path":"/api/v1/almacen/movil/pedidos/2/historial","statusCode":200,"durationMs":9.19,"idUser":2}
+{"type":"http_request","requestId":"8ef6371e-40da-4a2d-87c8-02b95d328c5c","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":5.4,"idUser":2}
+{"type":"http_request","requestId":"6c9ddc3c-9151-4dc2-b2d9-ea1a2524afff","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":409,"durationMs":5.37,"idUser":2}
+{"type":"http_request","requestId":"5abc7fc7-5bfd-49fd-a0ac-101de1076ee9","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":409,"durationMs":7.48,"idUser":2}
+OK: Pedido/confirmación/surtido reales; permiso delegable, caché privada, cantidades de seis decimales, UUID/reintento y revisión obsoleta
+{"type":"http_request","requestId":"8b69cdc5-7afe-4163-afc7-9e5d22431d2c","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":8.64,"idUser":2}
+{"type":"http_request","requestId":"31b302fa-8962-40c5-b017-1f91fc5e29d8","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":400,"durationMs":8.95,"idUser":2}
+{"type":"http_request","requestId":"f7edcff0-dd93-4dff-9dfb-c3b81bedbb65","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":400,"durationMs":7.94,"idUser":2}
+{"type":"http_request","requestId":"e1ea85a9-5ea3-4ba8-8443-9bca956398db","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":409,"durationMs":12.59,"idUser":2}
+{"type":"http_request","requestId":"f216dcbe-7f8a-4453-ad83-b8ac2e4e77e1","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":400,"durationMs":4.1,"idUser":2}
+{"type":"http_request","requestId":"5f39ddf5-930b-4364-ab4e-138a88853e87","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":400,"durationMs":3.31,"idUser":2}
+{"type":"http_request","requestId":"e1d77f19-9fda-414c-b3d0-0ab499e563d8","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":400,"durationMs":4.44,"idUser":2}
+{"type":"http_request","requestId":"9568fa57-9306-4d92-896d-49b930cbcd88","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":400,"durationMs":3.19,"idUser":2}
+{"type":"http_request","requestId":"50443d7f-f08f-4ca3-94ae-d92ea0d6e29f","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":400,"durationMs":3.26,"idUser":2}
+{"type":"http_request","requestId":"7522784b-d3db-43fa-b304-860d85b9ae9f","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":400,"durationMs":4.47,"idUser":2}
+{"type":"http_request","requestId":"65e2da9b-1719-4ef8-ba29-627b4402b7b8","method":"GET","path":"/api/v1/almacen/movil/pedidos/2/historial","statusCode":200,"durationMs":5.85,"idUser":2}
+OK: Códigos ajenos/URLs/ubicación sin almacén, cero, escala, bigint y DTO cerrado no generan registros
+{"type":"http_request","requestId":"88dab622-f919-44f9-b92f-6a6c7ee28e67","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":201,"durationMs":9.89,"idUser":2}
+{"type":"http_request","requestId":"98f30f6d-b995-40c5-862a-abd103faf8ea","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":409,"durationMs":32.44,"idUser":2}
+{"type":"http_request","requestId":"4ce529bd-54b9-49d9-8f65-9c9f3d127506","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":7.83,"idUser":2}
+{"type":"http_request","requestId":"6efca293-3ad6-4e07-84ba-299dd82897df","method":"GET","path":"/api/v1/almacen/movil/pedidos/2/historial","statusCode":200,"durationMs":6.64,"idUser":2}
+{"type":"http_request","requestId":"3502011d-282d-4c09-9a2d-cc4176c9533d","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":10.21,"idUser":2}
+{"type":"http_request","requestId":"b529627d-be47-42d6-8f63-dc1b620cbc1d","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":409,"durationMs":13.44,"idUser":2}
+{"type":"http_request","requestId":"4367fd6a-2793-4064-a911-fa7b38af437e","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/anular","statusCode":404,"durationMs":8.93,"idUser":3}
+{"type":"http_request","requestId":"d68206fd-258f-416f-a812-2175baaee8a7","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/anular","statusCode":201,"durationMs":12.9,"idUser":2}
+{"type":"http_request","requestId":"5738b1ab-6789-46cc-a88d-2de2422376a4","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/anular","statusCode":201,"durationMs":6.6,"idUser":2}
+{"type":"http_request","requestId":"9e8e273f-95b4-420d-93fa-e091a1927da9","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":6.44,"idUser":2}
+{"type":"http_request","requestId":"a1ea3080-0a7b-474b-a7c9-5963bad9dfd8","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/anular","statusCode":409,"durationMs":6.41,"idUser":2}
+{"type":"http_request","requestId":"2c79dfc5-6979-43c0-b7da-b54c48afaac5","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":6.64,"idUser":2}
+{"type":"http_request","requestId":"d2f2a1fd-1735-434c-b304-ca06de14ec41","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":201,"durationMs":6.73,"idUser":2}
+{"type":"http_request","requestId":"78820619-09ca-4947-8a00-8ec9f4fcd971","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":6.04,"idUser":2}
+OK: Concurrencia serial real impide exceder cantidad; anulación con autor/motivo/reintento y nueva verificación, sin cambiar stock/reserva/surtido/kardex/facturas
+{"type":"http_request","requestId":"2b09b2b0-12fd-40b3-9829-064d984854cd","method":"GET","path":"/api/v1/almacen/movil/etiquetas/producto/11","statusCode":200,"durationMs":49.28,"idUser":2}
+{"type":"http_request","requestId":"1e17673d-689c-4581-ba0b-2456acf1785a","method":"GET","path":"/api/v1/almacen/movil/etiquetas/ubicacion/1","statusCode":200,"durationMs":16.15,"idUser":2}
+OK: Etiquetas QR PDF reales autenticadas, sin precios/datos del cliente, para producto y ubicación existentes
+{"type":"http_request","requestId":"a51751a6-fbed-4d60-9892-a1c818587363","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":6.14,"idUser":2}
+{"type":"http_request","requestId":"5d3c0cce-2ece-451c-8e64-ed8e6f4534d5","method":"POST","path":"/api/v1/pedidos/2/cancelar","statusCode":201,"durationMs":12.25,"idUser":2}
+{"type":"http_request","requestId":"1e6dc91b-dc06-4498-9dfe-cdb563b3d616","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":409,"durationMs":7.24,"idUser":2}
+{"type":"http_request","requestId":"b9a591aa-ad3c-490b-9935-ac9d9cd650fe","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":201,"durationMs":5.32,"idUser":2}
+{"type":"http_request","requestId":"f2b0b350-d47a-4437-8b80-544a8688443e","method":"GET","path":"/api/v1/almacen/movil/pedidos/2/historial","statusCode":200,"durationMs":4.49,"idUser":2}
+{"type":"http_request","requestId":"784e9da9-97a7-47d1-81b4-18dfe411b769","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":5.44,"idUser":2}
+{"type":"http_request","requestId":"374d0b63-5079-499e-800d-4076e07f4635","method":"GET","path":"/api/v1/almacen/movil/pedidos/2","statusCode":200,"durationMs":3.63,"idUser":2}
+OK: Cancelación comercial libera el picking existente; bloquea nuevas verificaciones y conserva historia/reintento original
+{"type":"http_request","requestId":"a39a1f69-ced0-4613-ab13-066f548d96f1","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":25.55,"idUser":2}
+{"type":"http_request","requestId":"f6f7185a-70c7-478e-9c1f-f5b81150ed98","method":"POST","path":"/api/v1/pedidos/3/confirmar","statusCode":201,"durationMs":7.44,"idUser":2}
+{"type":"http_request","requestId":"cadd91a8-8783-4b44-a8ff-63fec8825600","method":"POST","path":"/api/v1/pedidos/3/surtir","statusCode":201,"durationMs":12.93,"idUser":2}
+{"type":"http_request","requestId":"e8a9282a-9b13-4ea8-b97f-3b59ecdbf398","method":"GET","path":"/api/v1/almacen/movil/pedidos/3","statusCode":200,"durationMs":3.57,"idUser":2}
+{"type":"http_request","requestId":"0fd4415a-b7de-4f42-a09d-718a49d5fb9b","method":"POST","path":"/api/v1/almacen/movil/pedidos/2/verificar","statusCode":404,"durationMs":4.28,"idUser":2}
+{"type":"http_request","requestId":"57789f6e-120b-48cc-bb89-510a04a55d55","method":"POST","path":"/api/v1/almacen/movil/pedidos/3/verificar","statusCode":201,"durationMs":6.23,"idUser":3}
+{"type":"http_request","requestId":"8f745ea1-4cd3-4d1d-a3d1-4a2a488f3fda","method":"POST","path":"/api/v1/almacen/movil/pedidos/3/anular","statusCode":201,"durationMs":9.58,"idUser":2}
+{"type":"http_request","requestId":"8db0f712-85b3-4072-a1a9-a58144c52537","method":"GET","path":"/api/v1/almacen/movil/pedidos/3","statusCode":200,"durationMs":5.92,"idUser":2}
+OK: Pertenencia a pedido, operador delegado y corrección ADMIN; revocación real durante espera impide escribir
+{"type":"http_request","requestId":"2359ce3b-b39b-49b7-b6b7-f00c1643a8ea","method":"GET","path":"/api/v1/almacen/movil/pedidos/3","statusCode":200,"durationMs":6.89,"idUser":2}
+{"type":"http_request","requestId":"c7a7cf3b-a73e-4332-94af-6b3e03052324","method":"GET","path":"/api/v1/almacen/movil/pedidos/3","statusCode":200,"durationMs":9.16,"idUser":2}
+OK: Auditoría nominal, rollback íntegro ante fallo de auditoría e historial conservado por guardas ALWAYS
+{"type":"http_request","requestId":"766247f0-932d-4432-8428-4d57b3213734","method":"GET","path":"/api/v1/almacen/movil/pedidos/3","statusCode":200,"durationMs":6.55,"idUser":2}
+{"type":"http_request","requestId":"4624d2ca-0978-4af9-8ef6-bbff480d0ea4","method":"GET","path":"/api/v1/almacen/movil/pedidos/3/historial","statusCode":200,"durationMs":5.4,"idUser":2}
+{"type":"http_request","requestId":"ae3970c1-68c1-47b9-a41e-7ae9e6c35454","method":"GET","path":"/api/v1/almacen/movil/pedidos/3","statusCode":403,"durationMs":2.62,"idUser":3}
+OK: Consultas sin escrituras y permiso efectivo revocado bloquea consultas de operador
+{"type":"http_request","requestId":"0f2e2a08-a953-4838-9e4f-42f16f24932f","method":"POST","path":"/api/v1/pedidos","statusCode":201,"durationMs":12.8,"idUser":2}
+{"type":"http_request","requestId":"aba1095d-b607-4be5-a45f-1ce8566770e6","method":"POST","path":"/api/v1/pedidos/4/confirmar","statusCode":201,"durationMs":9.84,"idUser":2}
+{"type":"http_request","requestId":"a56a99c2-1204-4510-a1dd-c8f6c0566b6f","method":"POST","path":"/api/v1/pedidos/4/surtir","statusCode":201,"durationMs":10.48,"idUser":2}
+{"type":"http_request","requestId":"d6ac23f0-9ee8-42ee-b737-1d42981f7d6a","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":60.24,"idUser":null}
+{"type":"http_request","requestId":"100e53df-b910-42ab-b045-50d374777364","method":"GET","path":"/api/v1/almacen/movil/pedidos/4","statusCode":200,"durationMs":26.74,"idUser":2}
+{"type":"http_request","requestId":"5642cb6b-8d6d-4089-826c-50286de7eefe","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":83.03,"idUser":2}
+{"type":"http_request","requestId":"4b8c2f39-8ae1-440d-966f-1806dcaf08d7","method":"GET","path":"/api/v1/almacen/movil/pedidos/4/historial","statusCode":200,"durationMs":171.13,"idUser":2}
+Falló aceptación A01: Error     at captureRawStack (C:\Sistema\node_modules\playwright-core\lib\coreBundle.js:8588:17)
+    at callMatcherAsStep (C:\Sistema\node_modules\playwright\lib\matchers\expect.js:13310:57)
+    at Object.toBeEnabled (C:\Sistema\node_modules\playwright\lib\matchers\expect.js:13302:23) Etapa en .artifacts/a01-mobile.json; sin secretos.

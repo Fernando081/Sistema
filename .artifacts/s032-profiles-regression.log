@@ -1,0 +1,125 @@
+
+> test:access-profiles
+> node backend/verify-access-profiles.js --backup=.backups/2026-10-20T00-44-40-972Z/database.dump
+
+OK: Respaldo restaurado y migración verificada/aplicada en copia; accesos anteriores sin asignaciones nuevas
+{"type":"http_request","requestId":"b25cdff6-4761-4692-8339-cfec1fec20b8","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":98,"idUser":null}
+{"type":"http_request","requestId":"ec7fd572-6389-491f-a0db-77d58da77a51","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":65.7,"idUser":null}
+{"type":"http_request","requestId":"30490267-7bc4-4780-baff-c892cb27a06e","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":401,"durationMs":1.64,"idUser":null}
+{"type":"http_request","requestId":"4aae0dd7-387b-4105-a128-37201de93543","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":403,"durationMs":2.87,"idUser":4}
+{"type":"http_request","requestId":"ce747283-9986-4427-a9d9-05c081d20145","method":"POST","path":"/api/v1/auth/access-profiles","statusCode":403,"durationMs":3.02,"idUser":4}
+{"type":"http_request","requestId":"4f22af0f-3798-4e16-942b-e27f7f367930","method":"GET","path":"/api/v1/auth/permission-catalog","statusCode":403,"durationMs":2.43,"idUser":4}
+{"type":"http_request","requestId":"bd629443-4ac6-4bae-83c9-1ae78aa27945","method":"GET","path":"/api/v1/auth/permission-catalog","statusCode":200,"durationMs":4.13,"idUser":2}
+{"type":"http_request","requestId":"9380daf1-57be-4c2e-94e9-cbecd55ae751","method":"POST","path":"/api/v1/venta","statusCode":400,"durationMs":13.23,"idUser":4}
+OK: Login real bcrypt/JWT: anónimo401, operador403 en administración; permisos base conservados
+{"type":"http_request","requestId":"d4b731ca-05c9-4271-8ad5-3e8e97ee8d5b","method":"POST","path":"/api/v1/auth/access-profiles","statusCode":201,"durationMs":13.07,"idUser":2}
+{"type":"http_request","requestId":"ebe2e758-c1ac-4c1e-8c3a-8f8e0d38609f","method":"POST","path":"/api/v1/auth/access-profiles","statusCode":409,"durationMs":8.83,"idUser":2}
+{"type":"http_request","requestId":"c9ade2b5-c949-4306-b746-2adfa33c9f51","method":"POST","path":"/api/v1/auth/access-profiles","statusCode":400,"durationMs":2.98,"idUser":2}
+{"type":"http_request","requestId":"042a7bdb-bad1-4f72-bc02-d68fbae45cf1","method":"POST","path":"/api/v1/auth/access-profiles","statusCode":400,"durationMs":5.41,"idUser":2}
+{"type":"http_request","requestId":"94425868-2921-4f74-abdb-7dc3231dab65","method":"POST","path":"/api/v1/auth/access-profiles","statusCode":400,"durationMs":2.95,"idUser":2}
+{"type":"http_request","requestId":"07d9c2bf-e99c-473e-b8e4-872b1226ca29","method":"POST","path":"/api/v1/auth/access-profiles","statusCode":400,"durationMs":3.52,"idUser":2}
+{"type":"http_request","requestId":"0b7d03f9-b51e-4334-8bb4-c6bbdef43707","method":"PUT","path":"/api/v1/auth/users/4/access-profile","statusCode":400,"durationMs":3.14,"idUser":2}
+{"type":"http_request","requestId":"a0c1b803-d305-427f-a53b-cf245c436242","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":3.48,"idUser":2}
+{"type":"http_request","requestId":"134e7da7-90e8-44cb-b0e6-b7426bbfb76d","method":"PUT","path":"/api/v1/auth/users/2/access-profile","statusCode":400,"durationMs":4.42,"idUser":2}
+OK: Catálogo privado y validación de nombres, duplicados, permisos desconocidos, DTO y perfil prohibido para administradores
+{"type":"http_request","requestId":"80a9dc41-65fd-4a74-b78c-887d3d15f19a","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":2.71,"idUser":2}
+{"type":"http_request","requestId":"9bcf6b1f-31ae-4a0d-ac36-11d2f0835e4a","method":"PUT","path":"/api/v1/auth/users/4/access-profile","statusCode":200,"durationMs":10.88,"idUser":2}
+{"type":"http_request","requestId":"4136da0b-db7f-4618-bd59-fa5d4ab8dd4c","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":5.27,"idUser":2}
+{"type":"http_request","requestId":"515411ac-561e-4112-900c-d533e7244070","method":"PUT","path":"/api/v1/auth/users/5/access-profile","statusCode":200,"durationMs":7.28,"idUser":2}
+{"type":"http_request","requestId":"efc164e8-04bd-410e-8f04-b7410af96c09","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.31,"idUser":null}
+{"type":"http_request","requestId":"871a5c78-e825-419a-995e-6915858043f1","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.31,"idUser":null}
+{"type":"http_request","requestId":"714dd035-e28f-4514-b6cf-043e3d0ed435","method":"POST","path":"/api/v1/venta","statusCode":400,"durationMs":4.14,"idUser":4}
+{"type":"http_request","requestId":"6ea94ebb-0f63-4939-96d3-5e173d88378b","method":"GET","path":"/api/v1/caja","statusCode":403,"durationMs":3.34,"idUser":4}
+{"type":"http_request","requestId":"c0bb328d-ded1-41ba-ba93-803978671513","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":200,"durationMs":2.8,"idUser":2}
+{"type":"http_request","requestId":"66360441-ab63-4015-821c-67eb049b7595","method":"DELETE","path":"/api/v1/auth/access-profiles/1","statusCode":409,"durationMs":4.09,"idUser":2}
+{"type":"http_request","requestId":"28a10819-21c8-4617-96b6-bea3e3a6119e","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":1.84,"idUser":2}
+{"type":"http_request","requestId":"4d46d113-915c-453a-a740-b6bcb8821c27","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":2.41,"idUser":2}
+{"type":"http_request","requestId":"f15a206b-0fef-4ac8-aa6c-78daff411862","method":"PUT","path":"/api/v1/auth/users/4/access-profile","statusCode":200,"durationMs":5.15,"idUser":2}
+{"type":"http_request","requestId":"0314ee98-c064-40ef-8e7e-af0c058bc1e3","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":3.27,"idUser":2}
+{"type":"http_request","requestId":"4e566ed2-2ac4-4d89-849e-41d278f2982e","method":"PUT","path":"/api/v1/auth/users/4/access-profile","statusCode":409,"durationMs":5.54,"idUser":2}
+OK: Perfil reutilizado por dos operadores; asignación revoca sesiones, no escala a administrador y bloquea eliminación con usuarios
+{"type":"http_request","requestId":"32aaaa3c-0dd3-4c1d-b1db-07d7d8741d4c","method":"PUT","path":"/api/v1/auth/access-profiles/1","statusCode":200,"durationMs":10.89,"idUser":2}
+{"type":"http_request","requestId":"7f11fbd3-b2d0-421d-8f32-c37df84a5928","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":1.71,"idUser":null}
+{"type":"http_request","requestId":"57abf94b-fa88-479c-8429-8b27aac4d8e2","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":1.34,"idUser":null}
+{"type":"http_request","requestId":"b92dd77a-4b39-4486-a57e-1341513e1d2a","method":"POST","path":"/api/v1/venta","statusCode":403,"durationMs":2.19,"idUser":4}
+{"type":"http_request","requestId":"defede01-432a-4db3-a565-77ada7b8d798","method":"PUT","path":"/api/v1/auth/access-profiles/1","statusCode":409,"durationMs":3.55,"idUser":2}
+{"type":"http_request","requestId":"a0f0aaa4-968b-4448-90e3-124ad0b9e512","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":3.1,"idUser":2}
+{"type":"http_request","requestId":"ef9886cc-6d22-4225-9366-fff3e52d0f11","method":"PUT","path":"/api/v1/auth/users/4/permissions","statusCode":200,"durationMs":6.36,"idUser":2}
+{"type":"http_request","requestId":"08ffe597-ce6f-44db-af81-cbe8924b92d3","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":1.21,"idUser":null}
+{"type":"http_request","requestId":"df955441-a801-4610-9112-b5c41505dbe3","method":"POST","path":"/api/v1/venta","statusCode":400,"durationMs":3.28,"idUser":4}
+{"type":"http_request","requestId":"049ede5e-a94b-43b9-bf5b-1f77bea32bb1","method":"GET","path":"/api/v1/auth/users/4/permissions","statusCode":200,"durationMs":3.21,"idUser":2}
+{"type":"http_request","requestId":"43538379-926d-449a-bc70-659c39b309d2","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":2.08,"idUser":2}
+{"type":"http_request","requestId":"20ac108a-f22f-46ad-b678-3a8942d0913f","method":"PUT","path":"/api/v1/auth/users/4/permissions","statusCode":409,"durationMs":4.24,"idUser":2}
+{"type":"http_request","requestId":"4f761c0f-dd4e-4a00-8dfa-b758517cd60c","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":2.05,"idUser":2}
+{"type":"http_request","requestId":"e393dccc-030e-4ecc-9035-87ed072ead62","method":"PUT","path":"/api/v1/auth/users/4/permissions","statusCode":200,"durationMs":4.4,"idUser":2}
+{"type":"http_request","requestId":"ed1a3e15-9c45-49a3-bbf5-4c6d334c0bde","method":"POST","path":"/api/v1/venta","statusCode":403,"durationMs":2.3,"idUser":4}
+OK: Lista vacía deniega permisos base; excepción concede sobre perfil, retirarla restaura herencia; JWT revocado y editor viejo409
+{"type":"http_request","requestId":"efb295bf-a532-4ccb-8804-e9aa62555387","method":"PUT","path":"/api/v1/auth/access-profiles/1","statusCode":200,"durationMs":6.84,"idUser":2}
+{"type":"http_request","requestId":"35389db0-4559-43b8-ac59-e1b167631c1a","method":"PUT","path":"/api/v1/auth/access-profiles/1","statusCode":409,"durationMs":36.83,"idUser":2}
+{"type":"http_request","requestId":"9a4dc63d-a637-4515-a7f2-52ba93658adc","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":4.63,"idUser":2}
+{"type":"http_request","requestId":"b4f3f02e-89e4-4ef5-bd3e-9607e83f2548","method":"PUT","path":"/api/v1/auth/users/4/permissions","statusCode":200,"durationMs":14.08,"idUser":2}
+{"type":"http_request","requestId":"0cff8613-c730-47bd-bac2-4b1c7777198c","method":"POST","path":"/api/v1/venta","statusCode":403,"durationMs":4.6,"idUser":4}
+{"type":"http_request","requestId":"71be52f7-fb32-4f8d-a7b7-1009fc659d40","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":2.42,"idUser":2}
+{"type":"http_request","requestId":"a6deb57b-056c-4406-bc79-81700b637ff3","method":"PUT","path":"/api/v1/auth/users/4/permissions","statusCode":200,"durationMs":4.47,"idUser":2}
+{"type":"http_request","requestId":"fb2c2a17-2e30-4042-bdc6-26cf4fa10073","method":"POST","path":"/api/v1/venta","statusCode":400,"durationMs":4.69,"idUser":4}
+OK: Ediciones concurrentes: un commit y un409; denegación individual prevalece sobre perfil permitido
+{"type":"http_request","requestId":"67970abb-8440-45e8-ad09-14210603456a","method":"PATCH","path":"/api/v1/auth/users/5","statusCode":200,"durationMs":17.25,"idUser":2}
+{"type":"http_request","requestId":"39a545f4-771b-4c2d-9100-35eafd136e57","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":3.52,"idUser":2}
+{"type":"http_request","requestId":"5fe15709-94c1-44fb-a10d-71d2a3c543b3","method":"GET","path":"/api/v1/auth/me","statusCode":401,"durationMs":2.77,"idUser":null}
+OK: Promoción explícita conserva rol base protegido, retira perfil y revoca JWT previo
+{"type":"http_request","requestId":"936dc07e-f73c-4840-845a-1d1381fbb773","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":2.9,"idUser":2}
+OK: Administrador revocado durante la operación rechazado dentro de transacción de perfiles y excepciones
+{"type":"http_request","requestId":"72d61531-9c30-4569-96ad-92ba9c89d5f1","method":"POST","path":"/api/v1/auth/login","statusCode":201,"durationMs":67,"idUser":null}
+{"type":"http_request","requestId":"3b814450-683c-4c8a-bee8-438652c7e0a1","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":17.43,"idUser":2}
+{"type":"http_request","requestId":"3d61cf6d-4a53-412a-9830-e779c7f2d4dd","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":104.39,"idUser":2}
+{"type":"http_request","requestId":"0ea79520-9678-4a3c-9180-34ac78533278","method":"GET","path":"/api/v1/auth/permission-catalog","statusCode":200,"durationMs":80.01,"idUser":2}
+{"type":"http_request","requestId":"3d48d956-c4e3-4f31-b99c-2b844e7b48d3","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":200,"durationMs":85.39,"idUser":2}
+{"type":"http_request","requestId":"b5d29fb7-ba3a-495e-96fc-fb4ca084ccdd","method":"POST","path":"/api/v1/auth/access-profiles","statusCode":201,"durationMs":20.38,"idUser":2}
+{"type":"http_request","requestId":"306b5514-21d4-4052-ba7b-cef98918cd21","method":"GET","path":"/api/v1/auth/permission-catalog","statusCode":200,"durationMs":5.07,"idUser":2}
+{"type":"http_request","requestId":"73e8c7f1-4c4e-4039-9310-f6423a89be43","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":10.2,"idUser":2}
+{"type":"http_request","requestId":"372f5336-2dfc-490b-83a3-98c0368e7bfd","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":200,"durationMs":14.8,"idUser":2}
+{"type":"http_request","requestId":"be99755e-3f9e-4d1b-b538-c5c08f872bd6","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":2.84,"idUser":2}
+{"type":"http_request","requestId":"69aef2ab-63b0-48d3-b9b8-a732ba369fe1","method":"PUT","path":"/api/v1/auth/users/4/access-profile","statusCode":200,"durationMs":16.26,"idUser":2}
+{"type":"http_request","requestId":"7bcc62c5-43c4-4459-b47d-953015e685f1","method":"GET","path":"/api/v1/auth/permission-catalog","statusCode":200,"durationMs":5.05,"idUser":2}
+{"type":"http_request","requestId":"b31abaca-36a1-4edc-92c6-7e915b0c4089","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":200,"durationMs":7.63,"idUser":2}
+{"type":"http_request","requestId":"3ffd4e1b-608b-44db-a4a5-91ade2db6676","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":11.86,"idUser":2}
+{"type":"http_request","requestId":"0cb84b1b-fd96-4820-929f-2b6e4a997bf7","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":3.54,"idUser":2}
+{"type":"http_request","requestId":"4928df8f-b2b0-4693-8a02-c494c3d1818f","method":"GET","path":"/api/v1/auth/users/4/permissions","statusCode":200,"durationMs":14.69,"idUser":2}
+{"type":"http_request","requestId":"5009f268-5a9a-4c3f-ac65-4a4000a9041c","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":4.25,"idUser":2}
+{"type":"http_request","requestId":"057c1028-1d25-4cc6-83d0-88c37a208781","method":"PUT","path":"/api/v1/auth/users/4/permissions","statusCode":200,"durationMs":11.55,"idUser":2}
+{"type":"http_request","requestId":"25a97674-2503-46cb-8a82-df391a3b84a9","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":11.08,"idUser":2}
+{"type":"http_request","requestId":"5b133e75-c01d-437b-9570-5cf0fe675200","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":200,"durationMs":7.2,"idUser":2}
+{"type":"http_request","requestId":"eade2141-aa84-418a-8fae-9912967377f2","method":"GET","path":"/api/v1/auth/permission-catalog","statusCode":200,"durationMs":5.5,"idUser":2}
+{"type":"http_request","requestId":"3d0bf609-e077-4055-9dca-cf135d0a08b2","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":3.87,"idUser":2}
+{"type":"http_request","requestId":"489bebd8-55d5-419f-afd0-87485f887526","method":"GET","path":"/api/v1/auth/users/4/permissions","statusCode":200,"durationMs":6.02,"idUser":2}
+{"type":"http_request","requestId":"d2196571-7913-4e78-86eb-7debac8a9e89","method":"PUT","path":"/api/v1/auth/users/4/permissions","statusCode":200,"durationMs":9.39,"idUser":2}
+{"type":"http_request","requestId":"77f51e70-c466-4596-96d5-855015bf66e3","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":11.57,"idUser":2}
+{"type":"http_request","requestId":"e37333aa-ce9f-4f74-bc4e-7e7f26b58411","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":10.13,"idUser":2}
+{"type":"http_request","requestId":"88d13294-cbb4-4ea7-805b-c1311f86db07","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":200,"durationMs":9.02,"idUser":2}
+OK: Angular producción sin mocks: login, crear perfil, asignar operador y guardar/retirar solo excepciones
+{"type":"http_request","requestId":"0a3a47d4-b96c-4c27-a291-334cba8b17a8","method":"GET","path":"/api/v1/auth/permission-catalog","statusCode":200,"durationMs":8.53,"idUser":2}
+{"type":"http_request","requestId":"c35cfd3f-96d9-4942-9f23-2d86e3ec14d9","method":"POST","path":"/api/v1/auth/access-profiles","statusCode":201,"durationMs":9.18,"idUser":2}
+{"type":"http_request","requestId":"6b2d4b7b-5196-4393-860d-0921df577788","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":8.98,"idUser":2}
+{"type":"http_request","requestId":"a590a691-73c5-49a7-a25b-40df148f13be","method":"GET","path":"/api/v1/auth/permission-catalog","statusCode":200,"durationMs":3.47,"idUser":2}
+{"type":"http_request","requestId":"4bf3c94c-fa75-45ca-9923-abee35d222b6","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":200,"durationMs":6,"idUser":2}
+{"type":"http_request","requestId":"bf6b0ef5-7c68-4547-9c61-c3e1ab3900ed","method":"DELETE","path":"/api/v1/auth/access-profiles/4","statusCode":200,"durationMs":10.34,"idUser":2}
+{"type":"http_request","requestId":"c520ea66-e117-4e8c-9d34-b615fc437c0f","method":"GET","path":"/api/v1/auth/permission-catalog","statusCode":200,"durationMs":3.76,"idUser":2}
+{"type":"http_request","requestId":"193b2784-bb7e-4bd3-83ce-90164c3f8ffe","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":8.17,"idUser":2}
+{"type":"http_request","requestId":"73790b64-3e45-40bf-b945-c8ddab5f6610","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":200,"durationMs":6.62,"idUser":2}
+OK: Duplicar y eliminar perfil sin asignaciones desde UI real
+{"type":"http_request","requestId":"0e487193-1d8f-4a8a-8601-eb203c0ff7b6","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.84,"idUser":2}
+{"type":"http_request","requestId":"c7fd3fbb-71c7-494c-8daa-92d3a3b85945","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":11.43,"idUser":2}
+{"type":"http_request","requestId":"e614fb08-bda0-43d9-870a-26dd48b89cab","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":200,"durationMs":10.43,"idUser":2}
+{"type":"http_request","requestId":"035487f5-72af-49cb-a6c6-a71b0f3cbcc4","method":"GET","path":"/api/v1/auth/permission-catalog","statusCode":200,"durationMs":6.67,"idUser":2}
+{"type":"http_request","requestId":"dca944a0-62dc-49c8-acbf-4db6fac62183","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":114.04,"idUser":2}
+{"type":"http_request","requestId":"0add4074-c943-4efa-8d52-979d864356b3","method":"GET","path":"/api/v1/auth/browser-state","statusCode":200,"durationMs":2.68,"idUser":2}
+{"type":"http_request","requestId":"2da286b6-657d-4a22-ad59-94cfb62b5fcf","method":"GET","path":"/api/v1/notifications","statusCode":200,"durationMs":29.57,"idUser":2}
+{"type":"http_request","requestId":"658ff06a-c9a8-4de6-8c61-9132608d524d","method":"GET","path":"/api/v1/auth/permission-catalog","statusCode":200,"durationMs":5.13,"idUser":2}
+{"type":"http_request","requestId":"59579050-d232-4874-8e6e-9311467cb2c4","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":12.2,"idUser":2}
+{"type":"http_request","requestId":"ea0c3f4b-f4c9-46dd-b521-dda1257f9962","method":"GET","path":"/api/v1/auth/access-profiles","statusCode":200,"durationMs":10.43,"idUser":2}
+OK: Editor claro/1280 y oscuro/390 sin desbordamiento de página, errores JS ni infracciones axe en panel de perfiles
+{"type":"http_request","requestId":"71a8c02e-d4cd-4339-bdaa-6b37e02c01b5","method":"GET","path":"/api/v1/auth/users","statusCode":200,"durationMs":3.43,"idUser":2}
+{"type":"http_request","requestId":"8ca4b4e2-fc3d-44c2-937d-c275d08cb742","method":"PUT","path":"/api/v1/auth/users/4/access-profile","statusCode":200,"durationMs":3.68,"idUser":2}
+{"type":"http_request","requestId":"d869c21d-335e-4ca5-9d7a-42473a06e70a","method":"DELETE","path":"/api/v1/auth/access-profiles/1","statusCode":200,"durationMs":5.13,"idUser":2}
+{"type":"http_request","requestId":"c58baf63-9374-4e4d-875b-f9e771a8df2e","method":"DELETE","path":"/api/v1/auth/access-profiles/1","statusCode":404,"durationMs":4.39,"idUser":2}
+OK: Retiro del perfil restaura rol base; perfil sin usuarios eliminable, borrado repetido404

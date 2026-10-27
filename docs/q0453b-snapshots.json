@@ -1,0 +1,108 @@
+{
+  "generatedAt": "2026-10-01T23:49:51.712Z",
+  "node": "24.19.0",
+  "domains": [
+    {
+      "domain": "cliente",
+      "control": {
+        "total": 0,
+        "rows": 1
+      },
+      "snapshot": {
+        "total": 0,
+        "rows": 0
+      },
+      "fresh": {
+        "total": 1,
+        "rows": 1
+      }
+    },
+    {
+      "domain": "proveedor",
+      "control": {
+        "total": 0,
+        "rows": 1
+      },
+      "snapshot": {
+        "total": 0,
+        "rows": 0
+      },
+      "fresh": {
+        "total": 1,
+        "rows": 1
+      }
+    },
+    {
+      "domain": "producto",
+      "control": {
+        "total": 0,
+        "rows": 1
+      },
+      "snapshot": {
+        "total": 0,
+        "rows": 0
+      },
+      "fresh": {
+        "total": 1,
+        "rows": 1
+      }
+    },
+    {
+      "domain": "factura",
+      "control": {
+        "total": 0,
+        "rows": 1
+      },
+      "snapshot": {
+        "total": 0,
+        "rows": 0
+      },
+      "fresh": {
+        "total": 1,
+        "rows": 1
+      }
+    },
+    {
+      "domain": "cotizacion",
+      "control": {
+        "total": 0,
+        "rows": 1
+      },
+      "snapshot": {
+        "total": 0,
+        "rows": 0
+      },
+      "fresh": {
+        "total": 1,
+        "rows": 1
+      }
+    },
+    {
+      "domain": "compra",
+      "control": {
+        "total": 0,
+        "rows": 1
+      },
+      "snapshot": {
+        "total": 0,
+        "rows": 0
+      },
+      "fresh": {
+        "total": 1,
+        "rows": 1
+      }
+    }
+  ],
+  "fiscalSnapshot": true,
+  "transactionConfig": {
+    "isolation": "repeatable read",
+    "readOnly": "on"
+  },
+  "errorRecovery": true,
+  "readOnlyRejectedWrite": true,
+  "idleTransactions": 0,
+  "limitations": [
+    "Métodos reales con TypeORM/PostgreSQL y proyección sintética de productos/compras; no HTTP ni carga sostenida.",
+    "Intercalación de cambio tras conteo y estado fiscal tras página; no todas las escrituras del ERP."
+  ]
+}

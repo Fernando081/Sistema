@@ -7,8 +7,8 @@
     <mat-form-field appearance="outline" class="w-full sm:w-auto flex-1">
       <mat-label>Proveedor</mat-label>
       <mat-select [(ngModel)]="nuevaCotizacion.idProveedor">
-        <mat-option *ngFor="let prov of proveedores" [value]="prov.IdProveedor">
-          {{ prov.RazonSocial }}
+        <mat-option *ngFor="let prov of proveedores" [value]="prov.idProveedor">
+          {{ prov.razonSocial }}
         </mat-option>
       </mat-select>
     </mat-form-field>

@@ -1,0 +1,22 @@
+{
+  "phase": "V02",
+  "startedAt": "2026-10-21T00:01:31.159Z",
+  "checks": [
+    "103 restaurada/aplicada sólo en copia; sin backfill, lectura no-store, permiso nuevo y ruta anterior restringida",
+    "Confirmación/receptor/evidencia o motivo, formato de imagen y ubicación completa/reciente se validan sin cambiar estado",
+    "Surtido/version exigidos; firma/foto/ubicación/snapshot y entrega atómicos, sin consumir stock otra vez; reintento idéntico y rechazo de UUID alterado",
+    "Descargas privadas autenticadas de originales/PDF, no-store/nosniff/attachment y auditoría de metadata atribuida sin duplicar bytes",
+    "Triggers ALWAYS bloquean UPDATE/DELETE/TRUNCATE y reescritura de entrega; cambios al cliente no alteran snapshot",
+    "Fallo real de auditoría revierte entrega/estado/evidencia juntos",
+    "Una entrega por pedido, UUID global ligado al contenido/pedido y ruta anterior conservada sin inventar comprobante V02",
+    "Revocación mientras espera revalidada bajo bloqueo de cuenta; no entrega con actor obsoleto",
+    "Angular producción/login/API/PostgreSQL reales: captura firma/foto, ubicación simulada explícita, registro/PDF/recarga; claro1280/oscuro390, axe y reflujo sin errores JS"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "passed": true,
+  "completedAt": "2026-10-21T00:03:51.858Z",
+  "copyRemoved": true,
+  "cleanupPassed": true,
+  "lastStage": "Angular"
+}

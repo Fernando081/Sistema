@@ -1,7 +1,7 @@
 import { Component, signal, inject, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FinanzasService, Gasto } from '../finanzas.service';
+import { FinanzasService, Gasto, GastoRegistro, SaldoActual } from '../finanzas.service';
 import { downloadDocument, localDate } from '../../shared/document-download';
 import { MatTableModule } from '@angular/material/table';
 
@@ -40,8 +40,8 @@ export class GastosComponent implements OnInit {
   ];
   metodos = ['Transferencia', 'Efectivo', 'Tarjeta de Débito', 'Tarjeta de Crédito'];
 
-  gastosList = signal<any[]>([]);
-  saldos = signal<any[]>([]);
+  gastosList = signal<GastoRegistro[]>([]);
+  saldos = signal<SaldoActual[]>([]);
   displayedColumnsGastos = ['fecha', 'concepto', 'categoria', 'metodoPago', 'monto'];
 
   ngOnInit() {

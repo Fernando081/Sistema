@@ -1,0 +1,5 @@
+
+> db:backup
+> node backend/backup.js
+
+Respaldo creado y legible: C:\Sistema\.backups\2026-10-21T17-40-44-113Z
