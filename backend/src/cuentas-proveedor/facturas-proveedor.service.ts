@@ -56,7 +56,24 @@ export class FacturasProveedorService {
                 tasaIva: p.tasaIva ?? 0.16,
               })),
           },
-          async () => {
+          () => this.createInvoiceIn(manager, dto, idUser),
+        ),
+      );
+    } catch (error) {
+      if ((error as { code?: string }).code === '23505')
+        throw new ConflictException(
+          'El UUID o folio de esta factura ya fue registrado',
+        );
+      throw error;
+    }
+  }
+
+  /** Registra y concilia la factura dentro de una transacción existente (también la usa la compra directa). */
+  async createInvoiceIn(
+    manager: EntityManager,
+    dto: CreateFacturaProveedorDto,
+    idUser?: number,
+  ): Promise<{ idFacturaProveedor: number; estado: string; discrepancias: number }> {
             await manager.query(
               `SELECT pg_advisory_xact_lock(hashtext('supplier-invoice:' || $1))`,
               [dto.requestId],
@@ -231,16 +248,6 @@ export class FacturasProveedorService {
               estado: state,
               discrepancias: Number(pending[0].count),
             };
-          },
-        ),
-      );
-    } catch (error) {
-      if ((error as { code?: string }).code === '23505')
-        throw new ConflictException(
-          'El UUID o folio de esta factura ya fue registrado',
-        );
-      throw error;
-    }
   }
 
   private async matchLine(
@@ -424,7 +431,13 @@ export class FacturasProveedorService {
   }
 
   async approveInvoice(id: number, idUser?: number) {
-    return this.dataSource.transaction(async (manager) => {
+    return this.dataSource.transaction((manager) =>
+      this.approveInvoiceIn(manager, id, idUser),
+    );
+  }
+
+  /** Aprueba la factura y crea su programación inicial dentro de una transacción existente. */
+  async approveInvoiceIn(manager: EntityManager, id: number, idUser?: number) {
       const invoices = await queryRows<InvoiceRow>(
         manager,
         `SELECT id_factura_proveedor AS "idFactura",id_proveedor AS "idProveedor",saldo_pendiente AS saldo,total,estado,tipo_cambio AS "tipoCambio"
@@ -457,7 +470,6 @@ export class FacturasProveedorService {
         [id, idUser ?? null],
       );
       return { message: 'Factura aprobada y cuenta por pagar liberada' };
-    });
   }
 
   cancelInvoice(id: number, reason: string, idUser?: number) {

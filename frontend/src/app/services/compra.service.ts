@@ -31,7 +31,7 @@ export class CompraService {
     return Object.hasOwn(columns, key) ? columns[key] : 'id_compra';
   }
 
-  getDetalleCompra(id: number): Observable<DetalleCompraDb[]> {
-    return this.http.get<DetalleCompraDb[]>(`${API_URL}/${id}/detalle`);
+  getDetalleCompra(id: number, fuente: 'compra' | 'orden' = 'compra'): Observable<DetalleCompraDb[]> {
+    return this.http.get<DetalleCompraDb[]>(`${API_URL}/${id}/detalle`, { params: { fuente } });
   }
 }

@@ -14,11 +14,18 @@ export class CompraQueryDto extends DateRangeQueryDto {
   @IsOptional() @IsIn(['', 'id_compra', 'fecha_compra', 'total', 'estatus', 'folio_factura', 'nombre_proveedor']) sortBy = '';
   @IsOptional() @IsIn(['', 'asc', 'desc']) sortOrder = '';
 }
-// Misma proyección que fn_get_compras; el subquery SQL permite aplicar filtros/límite en el plan.
-export const COMPRA_SOURCE = `(SELECT base.id_compra,base.fecha_compra,
+// Compras anteriores (tabla compra, misma proyección que fn_get_compras) y, desde H02-b, compras directas
+// registradas como orden → recepción → factura de proveedor. `fuente` indica de dónde leer el detalle.
+export const COMPRA_SOURCE = `(SELECT base.id_compra,'compra'::text AS fuente,base.fecha_compra,
   base.folio_factura_proveedor AS folio_factura,base.total,base.estatus,
   p."RazonSocial" AS nombre_proveedor,p."RFC" AS rfc_proveedor
-  FROM compra base JOIN proveedor p ON base.id_proveedor=p."IdProveedor")`;
+  FROM compra base JOIN proveedor p ON base.id_proveedor=p."IdProveedor"
+  UNION ALL
+  SELECT o.id_orden,'orden'::text,o.created_at,f.folio,f.total,
+  CASE WHEN f.saldo_pendiente=0 THEN 'Pagada' ELSE 'Pendiente' END,
+  p."RazonSocial",p."RFC"
+  FROM orden_compra o JOIN factura_proveedor f ON f.id_orden=o.id_orden AND f.estado<>'Cancelada'
+  JOIN proveedor p ON o.id_proveedor=p."IdProveedor" WHERE o.origen='Compra directa')`;
 async function parts(source: QueryExecutor, query: CompraQueryDto) {
   const columns: Record<string, string> = { id_compra: 'id_compra', fecha_compra: 'fecha_compra', total: 'total', estatus: 'estatus', folio_factura: 'folio_factura', nombre_proveedor: 'nombre_proveedor' };
   const column = Object.hasOwn(columns, query.sortBy) ? columns[query.sortBy] : 'id_compra';
@@ -40,5 +47,5 @@ export async function compraCsv(source: QueryExecutor, query: CompraQueryDto) {
   const { from, order, parameters } = await parts(source, query);
   const rows = await queryRows<Record<string, unknown>>(source, `SELECT c.* ${from} ${order} LIMIT 5001`, parameters);
   if (rows.length > 5000) throw new BadRequestException('La exportación supera 5000 registros. Reduce la búsqueda y vuelve a exportar.');
-  return csvDocument(['id_compra', 'fecha_compra', 'nombre_proveedor', 'rfc_proveedor', 'folio_factura', 'total', 'estatus'], rows.map(row => ({ ...row, fecha_compra: row.fecha_compra instanceof Date ? row.fecha_compra.toISOString() : row.fecha_compra })));
+  return csvDocument(['id_compra', 'fuente', 'fecha_compra', 'nombre_proveedor', 'rfc_proveedor', 'folio_factura', 'total', 'estatus'], rows.map(row => ({ ...row, fecha_compra: row.fecha_compra instanceof Date ? row.fecha_compra.toISOString() : row.fecha_compra })));
 }

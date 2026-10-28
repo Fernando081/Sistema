@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 import { queryRows } from '../common/database/typed-query';
 import {
   PaySupplierInvoiceDto,
@@ -77,7 +77,18 @@ export class PagosProveedorService {
           referencia: dto.referencia || null,
           notas: dto.notas || null,
         },
-        async () => {
+        () => this.payIn(manager, id, dto, idUser),
+      ),
+    );
+  }
+
+  /** Registra el pago dentro de una transacción existente (también lo usa la compra directa de contado). */
+  async payIn(
+    manager: EntityManager,
+    id: number,
+    dto: PaySupplierInvoiceDto,
+    idUser?: number,
+  ): Promise<{ idPago: number; saldo: number }> {
           const old = await queryRows<IdRow>(
             manager,
             'SELECT id_pago AS id FROM factura_proveedor_pago WHERE request_id=$1',
@@ -157,9 +168,6 @@ export class PagosProveedorService {
             [mxnAmount, dto.formaPago],
           );
           return { idPago: payment[0].id, saldo: balance };
-        },
-      ),
-    );
   }
 
   reversePayment(id: number, reason: string, idUser?: number) {

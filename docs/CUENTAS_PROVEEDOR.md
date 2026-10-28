@@ -70,7 +70,9 @@ Las acciones de autorización y tesorería requieren además rol administrador.
 
 ## Compatibilidad
 
-Las compras históricas creadas por el flujo anterior continúan visibles y pagables en la pestaña **Compras anteriores**. Desde H01 (27/10/2026) ese pago exige ADMIN + `compras.pagar`, registra actor y usa `requestId` idempotente como los demás pagos; su fusión con el flujo de facturas queda en H02-b. Las nuevas operaciones deben usar orden, recepción y factura separadas.
+Las compras históricas creadas por el flujo anterior continúan visibles y pagables en la pestaña **Compras anteriores**. Desde H01 (27/10/2026) ese pago exige ADMIN + `compras.pagar`, registra actor y usa `requestId` idempotente como los demás pagos.
+
+**H02-b (27/10/2026):** "Nueva compra" (`POST /compra`) ya no crea saldos en el modelo anterior. Registra en una transacción la orden (`origen='Compra directa'`), la recepción completa, la factura de proveedor conciliada y **aprobada** (folio capturado u `OC-<folio>`, vence el mismo día en contado o a 30 días en crédito, sin desglose de IVA como antes) y, si es de contado, su pago. Exige ADMIN + `compras.recibir` + `compras.pagar`. Las facturas resultantes aparecen en **Facturas** como cualquier otra. Los saldos anteriores se pagan en **Compras anteriores** hasta llegar a cero; después se podrán retirar esa pestaña y `POST /pago-proveedor`. Aceptación: `npm run test:direct-purchase`.
 
 ## Contrato JSON de identificadores — 2 de octubre de 2026
 

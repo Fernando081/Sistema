@@ -10,7 +10,7 @@ describe('Búsqueda de compras', () => {
     for(const count of [256,257]) {
       const query=jest.fn().mockResolvedValue(Array.from({length:count},()=>({})));
       const result=await compraSearch({query},"RFC%_'");
-      expect(result).toBe(count===257?COMPRA_LEGACY:`${COMPRA_LEGACY} AND c.id_compra IN (${COMPRA_CANDIDATES})`);
+      expect(result).toBe(count===257?COMPRA_LEGACY:`${COMPRA_LEGACY} AND (c.fuente='orden' OR c.id_compra IN (${COMPRA_CANDIDATES}))`);
       expect(query.mock.calls[0][1]).toEqual(["RFC%_'"]);
       expect(query.mock.calls[0][0]).toContain('UNION ALL');
       expect(query.mock.calls[0][0]).toContain('ESCAPE chr(92)');

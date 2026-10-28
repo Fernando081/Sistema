@@ -19,5 +19,6 @@ export async function compraSearch(source: QueryExecutor, term: string): Promise
   if (rows.length >= 257) return COMPRA_LEGACY;
   // Proveedor es un superconjunto. El filtro final descarta ID/CP extra.
   // Reconsultar candidatos evita congelar los IDs obtenidos en el sondeo.
-  return `${COMPRA_LEGACY} AND c.id_compra IN (${COMPRA_CANDIDATES})`;
+  // Los candidatos indexados sólo cubren compras anteriores; las directas (fuente orden) usan el filtro textual.
+  return `${COMPRA_LEGACY} AND (c.fuente='orden' OR c.id_compra IN (${COMPRA_CANDIDATES}))`;
 }

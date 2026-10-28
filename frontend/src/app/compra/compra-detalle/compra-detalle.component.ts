@@ -63,6 +63,6 @@ export class CompraDetalleComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.compraService.getDetalleCompra(this.data.id_compra).subscribe(res => this.detalles = res);
+    this.compraService.getDetalleCompra(this.data.id_compra, this.data.fuente ?? 'compra').subscribe(res => this.detalles = res);
   }
 }

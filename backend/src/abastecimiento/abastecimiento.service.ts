@@ -82,7 +82,11 @@ export class AbastecimientoService {
   }
 
   async createOrder(dto:CreateOrdenDto,idUser?:number){
-    return this.transactionRequest('orden',dto.requestId,{idSolicitud:dto.idSolicitud||null,idProveedor:dto.idProveedor,fechaPromesa:dto.fechaPromesa||null,notas:dto.notas||null,partidas:dto.partidas.map(x=>({idProducto:x.idProducto,cantidad:x.cantidad,costoUnitario:x.costoUnitario,tasaIva:x.tasaIva??0.16})).sort((a,b)=>a.idProducto-b.idProducto)},idUser,async manager=>{
+    return this.transactionRequest('orden',dto.requestId,{idSolicitud:dto.idSolicitud||null,idProveedor:dto.idProveedor,fechaPromesa:dto.fechaPromesa||null,notas:dto.notas||null,partidas:dto.partidas.map(x=>({idProducto:x.idProducto,cantidad:x.cantidad,costoUnitario:x.costoUnitario,tasaIva:x.tasaIva??0.16})).sort((a,b)=>a.idProducto-b.idProducto)},idUser,manager=>this.createOrderIn(manager,dto,idUser));
+  }
+
+  /** Crea la orden dentro de una transacción existente (también la usa la compra directa de 'Nueva compra'). */
+  async createOrderIn(manager:EntityManager,dto:CreateOrdenDto,idUser?:number,origen:'Abastecimiento'|'Compra directa'='Abastecimiento'):Promise<{idOrden:number}>{
       const repeated=await queryRows<{idOrden:number}>(manager,'SELECT id_orden AS "idOrden" FROM orden_compra WHERE request_id=$1',[dto.requestId]);
       if(repeated.length)return repeated[0];
       const providers=await queryRows<{id:number}>(manager,'SELECT "IdProveedor" AS id FROM proveedor WHERE "IdProveedor"=$1',[dto.idProveedor]);
@@ -103,18 +107,21 @@ export class AbastecimientoService {
       const money=(n:number)=>Math.round((n+Number.EPSILON)*100)/100;
       const subtotal=money(dto.partidas.reduce((s,x)=>s+x.cantidad*x.costoUnitario,0));
       const taxes=money(dto.partidas.reduce((s,x)=>s+x.cantidad*x.costoUnitario*x.tasaIva,0));
-      const rows=await queryRows<{idOrden:number}>(manager,`INSERT INTO orden_compra(request_id,id_solicitud,id_proveedor,fecha_promesa,notas,subtotal,impuestos,total,id_user)
-        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id_orden AS "idOrden"`,[dto.requestId,dto.idSolicitud||null,dto.idProveedor,dto.fechaPromesa||null,dto.notas||null,subtotal,taxes,money(subtotal+taxes),idUser??null]);
+      const rows=await queryRows<{idOrden:number}>(manager,`INSERT INTO orden_compra(request_id,id_solicitud,id_proveedor,fecha_promesa,notas,subtotal,impuestos,total,id_user,origen)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id_orden AS "idOrden"`,[dto.requestId,dto.idSolicitud||null,dto.idProveedor,dto.fechaPromesa||null,dto.notas||null,subtotal,taxes,money(subtotal+taxes),idUser??null,origen]);
       const byId=new Map(products.map(x=>[Number(x.id),x]));
       for(const line of dto.partidas)await manager.query(`INSERT INTO orden_compra_detalle(id_orden,id_producto,descripcion,cantidad,costo_unitario,tasa_iva)
         VALUES($1,$2,$3,$4,$5,$6)`,[rows[0].idOrden,line.idProducto,byId.get(line.idProducto)?.descripcion,line.cantidad,line.costoUnitario,line.tasaIva]);
       if(dto.idSolicitud)await manager.query(`UPDATE solicitud_compra SET estado='Ordenada',updated_at=now() WHERE id_solicitud=$1`,[dto.idSolicitud]);
       return rows[0];
-    });
   }
 
   async receive(idOrden:number,dto:CreateRecepcionDto,idUser?:number){
-    return this.transactionRequest('recepcion',dto.requestId,{idOrden,referencia:dto.referencia||null,notas:dto.notas||null,partidas:[...dto.partidas].sort((a,b)=>a.idDetalle-b.idDetalle)},idUser,async manager=>{
+    return this.transactionRequest('recepcion',dto.requestId,{idOrden,referencia:dto.referencia||null,notas:dto.notas||null,partidas:[...dto.partidas].sort((a,b)=>a.idDetalle-b.idDetalle)},idUser,manager=>this.receiveIn(manager,idOrden,dto,idUser));
+  }
+
+  /** Registra la recepción dentro de una transacción existente: inventario, kárdex y backorders. */
+  async receiveIn(manager:EntityManager,idOrden:number,dto:CreateRecepcionDto,idUser?:number):Promise<{idRecepcion:number;estadoOrden?:string}>{
       const repeated=await queryRows<{idRecepcion:number}>(manager,'SELECT id_recepcion AS "idRecepcion" FROM recepcion_compra WHERE request_id=$1',[dto.requestId]);
       if(repeated.length)return repeated[0];
       const orders=await queryRows<{estado:string}>(manager,'SELECT estado FROM orden_compra WHERE id_orden=$1 FOR UPDATE',[idOrden]);
@@ -143,7 +150,6 @@ export class AbastecimientoService {
       const next=Number(pending[0].total)>0?'Parcialmente recibida':'Recibida';
       await manager.query('UPDATE orden_compra SET estado=$2,updated_at=now() WHERE id_orden=$1',[idOrden,next]);
       return {...receipt[0],estadoOrden:next};
-    });
   }
 
   requests(){return queryRows<Record<string,unknown>>(this.dataSource,`SELECT s.id_solicitud AS "idSolicitud",s.folio,s.estado,s.motivo,s.created_at AS "createdAt",

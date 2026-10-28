@@ -48,7 +48,7 @@
           <mat-label>ID de compra (prorrateo de flete)</mat-label>
           <input matInput type="number" name="idCompra" placeholder="Ej. 1024" [ngModel]="idCompra()" (ngModelChange)="idCompra.set($event)" />
         </mat-form-field>
-        <p><mat-icon>info</mat-icon>Introduce el ID de una compra para distribuir este flete sobre el costo unitario de sus productos.</p>
+        <p><mat-icon>info</mat-icon>ID de una compra registrada antes del 27/10/2026 para distribuir este flete sobre sus costos. Para compras nuevas usa Abastecimiento → Recepciones → Agregar costo.</p>
       </div>
     }
     <div class="form-actions wide">

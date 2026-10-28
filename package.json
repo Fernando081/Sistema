@@ -101,6 +101,7 @@
     "test:document-outbox": "node backend/verify-document-outbox.js",
     "test:access-profiles": "node backend/verify-access-profiles.js",
     "test:route-permissions": "npm --workspace backend run build && node backend/verify-route-permissions.js",
+    "test:direct-purchase": "npm --workspace backend run build && node backend/verify-direct-purchase.js",
     "test:account-sessions": "node backend/verify-account-sessions.js",
     "test:browser-auth": "node backend/verify-account-sessions.js --browser-auth",
     "test:mfa": "node backend/verify-mfa.js",

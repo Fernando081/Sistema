@@ -82,8 +82,10 @@ describe('Permisos de rutas operativas (H01/H02)', () => {
     expect(metadata(PERMISSIONS_KEY, handler)).toEqual(['compras.pagar']);
   });
 
-  it('compra directa exige compras.recibir', () => {
-    expect(metadata(PERMISSIONS_KEY, CompraController.prototype.create)).toEqual(['compras.recibir']);
+  it('compra directa (H02-b) exige ADMIN, compras.recibir y compras.pagar', () => {
+    // Aprueba la factura del proveedor y, si es de contado, la paga: mismo control que Cuentas por pagar.
+    expect(metadata(ROLES_KEY, CompraController.prototype.create)).toEqual(['admin']);
+    expect(metadata(PERMISSIONS_KEY, CompraController.prototype.create)).toEqual(['compras.recibir', 'compras.pagar']);
   });
 
   it('operaciones de pedido exigen su permiso', () => {

@@ -207,8 +207,9 @@ export class CompraComponent implements OnInit {
       .crearCompra(compraPayload)
       .pipe(finalize(() => this.isSaving.set(false)))
       .subscribe({
-        next: () => {
-          this.mostrarNotificacion('✅ Compra registrada correctamente.');
+        next: (res) => {
+          // H02-b: el backend registra orden, recepción y factura del proveedor (y el pago si es de contado).
+          this.mostrarNotificacion(res?.message || 'Compra registrada.');
           this.pendingRequestId = null;
           this.limpiarTodo();
         },

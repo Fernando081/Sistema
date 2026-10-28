@@ -49,7 +49,7 @@
       <ng-container matColumnDef="proveedor">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="cliente">Proveedor</th>
         <td mat-cell *matCellDef="let row" class="stack-wide" data-label="Proveedor">
-          <span class="party"><strong>{{ row.nombre_proveedor }}</strong><small>RFC {{ row.rfc_proveedor }}</small></span>
+          <span class="party"><strong>{{ row.nombre_proveedor }}</strong><small>RFC {{ row.rfc_proveedor }} · {{ row.fuente === 'orden' ? 'Compra directa' : 'Registro anterior' }}</small></span>
         </td>
       </ng-container>
       <ng-container matColumnDef="folio">

@@ -140,6 +140,8 @@ export const AUTHENTICATED_ROUTES: Routes = [
   {
     path: 'compra',
     canActivate: [authGuard],
+    // H02-b: aprueba la factura del proveedor y, si es de contado, la paga (ADMIN + compras.pagar en el backend).
+    data: { roles: ['admin'] },
     loadComponent: () => import('./compra/compra.component').then((m) => m.CompraComponent),
   },
   {

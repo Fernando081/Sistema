@@ -1,0 +1,18 @@
+{
+  "phase": "H02-g",
+  "startedAt": "2026-10-27T07:34:28.509Z",
+  "checks": [
+    "Respaldo restaurado y 114/115 presentes en la copia; permisos nuevos concedidos a admin y user",
+    "Cuatro cuentas propias con login real por HTTP (admin, admin sin compras.pagar, user, user con negaciones individuales)",
+    "10 rutas: admin/user pasan el guard y el usuario con permiso negado recibe 403 con el código exacto",
+    "Cancelar pedido y liberar apartados vencidos exigen pedidos.cancelar",
+    "Pago a compra anterior: user/admin sin compras.pagar 403; admin paga una vez ante reintento y concurrencia, otro monto 409, actor registrado",
+    "Cuota por cliente detrás de loopback: cliente A recibe 429 y cliente B sigue en 200"
+  ],
+  "isolatedDatabase": true,
+  "apiMocked": false,
+  "passed": true,
+  "completedAt": "2026-10-27T07:34:41.164Z",
+  "copyRemoved": true,
+  "lastStage": "cuota"
+}

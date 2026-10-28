@@ -44,18 +44,19 @@ describe('Contratos de productos y compras', () => {
       .flush({ data: [producto], total: 1, page: 1, totalPages: 1 });
   });
 
-  it('conserva requestId y asignación de backorders al registrar una compra', () => {
+  it('conserva requestId y devuelve la orden, recepción y factura de la compra directa (H02-b)', () => {
     const compra = {
       requestId: '18dc62cd-1f5c-4b8e-8e98-aa29842b3013', idProveedor: 4,
       esCredito: true, total: 250, conceptos: [{ idProducto: 8, descripcion: 'Filtro',
         codigo: 'ISX-8', cantidad: 2, costoUnitario: 125, importe: 250 }],
     };
     TestBed.inject(CompraService).crearCompra(compra).subscribe(result => {
-      expect(result.idCompra).toBe(6);
-      expect(result.backordersAsignados).toBe(2);
+      expect(result.idOrden).toBe(6);
+      expect(result.idFacturaProveedor).toBe(8);
+      expect(result.idPago).toBeNull();
     });
     const request = http.expectOne(`${environment.apiBaseUrl}/compra`);
     expect(request.request.body).toEqual(compra);
-    request.flush({ message: 'Registrada', idCompra: 6, backordersAsignados: 2 });
+    request.flush({ message: 'Registrada', idOrden: 6, folioOrden: '120', idRecepcion: 7, idFacturaProveedor: 8, idPago: null });
   });
 });

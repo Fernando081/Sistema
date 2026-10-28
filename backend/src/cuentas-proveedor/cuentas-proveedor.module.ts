@@ -15,6 +15,6 @@ import { ConsultasProveedorService } from './consultas-proveedor.service';
     SaldosProveedorService,
     ConsultasProveedorService,
   ],
-  exports: [CuentasProveedorService],
+  exports: [CuentasProveedorService, FacturasProveedorService, PagosProveedorService],
 })
 export class CuentasProveedorModule {}

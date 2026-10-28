@@ -1,6 +1,8 @@
 import { CompraQueryDto } from './compra-query';
 import { Body, Controller, Post, Get, Param, Query, StreamableFile, ParseIntPipe, Req } from '@nestjs/common';
 import { Permissions } from '../auth/permissions.decorator';
+import { Roles } from '../auth/roles.decorator';
+import { RolUsuario } from '../common/enums/app.enums';
 import { JwtPayload } from '../auth/auth.types';
 import { CompraService } from './compra.service';
 import { CreateCompraDto } from './compra.dto';
@@ -9,9 +11,11 @@ import { CreateCompraDto } from './compra.dto';
 export class CompraController {
   constructor(private readonly compraService: CompraService) {}
 
-  // Compra directa: ingresa mercancía y genera saldo por pagar, igual que una recepción.
+  // H02-b · Compra directa: orden + recepción + factura aprobada (y pago si es de contado).
+  // Aprueba la cuenta por pagar, por eso exige lo mismo que Cuentas por pagar: ADMIN + compras.pagar.
   @Post()
-  @Permissions('compras.recibir')
+  @Roles(RolUsuario.ADMIN)
+  @Permissions('compras.recibir', 'compras.pagar')
   create(@Body() createCompraDto: CreateCompraDto, @Req() req: { user: JwtPayload }) {
     return this.compraService.create(createCompraDto, req.user?.idUser);
   }
@@ -28,7 +32,7 @@ export class CompraController {
   }
 
   @Get(':id/detalle')
-  findDetalle(@Param('id', ParseIntPipe) id: number) {
-    return this.compraService.findDetalle(id);
+  findDetalle(@Param('id', ParseIntPipe) id: number, @Query('fuente') fuente?: string) {
+    return this.compraService.findDetalle(id, fuente === 'orden' ? 'orden' : 'compra');
   }
 }

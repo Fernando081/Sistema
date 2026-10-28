@@ -134,7 +134,7 @@ export class AuthenticatedShellComponent {
       ['/operaciones/smart-restock', 'Reabastecimiento', 'Sugerencias basadas en demanda y existencias'],
       ['/abastecimiento', 'Abastecimiento', 'Solicitudes, órdenes y recepciones de mercancía'],
       ['/compra/historial', 'Compras', 'Historial de entradas de mercancía'],
-      ['/compra', 'Nueva compra', 'Registra mercancía y costos'],
+      ['/compra', 'Nueva compra', 'Registra mercancía, factura del proveedor y pago en un solo paso'],
       ['/crm/campanas', 'Campañas', 'Autorizaciones, bajas y destinatarios; el envío permanece deshabilitado'],
       ['/crm/secuencias', 'Secuencias de seguimiento', 'Un compromiso a la vez para cada cliente'],
       ['/crm/reglas-secuencias', 'Reglas de seguimiento', 'Altas, cambios de etapa y asignaciones que inician un seguimiento'],

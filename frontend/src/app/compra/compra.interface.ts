@@ -27,6 +27,8 @@ export interface CompraResumen {
   estatus: string;
   nombre_proveedor: string;
   rfc_proveedor: string;
+  /** H02-b: 'compra' = registro anterior; 'orden' = compra directa registrada como orden, recepción y factura. */
+  fuente?: 'compra' | 'orden';
 }
 
 export interface DetalleCompraDb {
