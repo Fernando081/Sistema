@@ -4,11 +4,15 @@ import { queryRows } from './database/typed-query';
 import { syncScheduledJobAlerts } from './scheduled-job-alerts';
 
 export type ScheduledJobName =
-  'operational_alerts' | 'dashboard_freshness' | 'crm_reports';
+  | 'operational_alerts'
+  | 'dashboard_freshness'
+  | 'crm_reports'
+  | 'document_mail';
 const locks: Record<ScheduledJobName, number> = {
   operational_alerts: 2,
   dashboard_freshness: 3,
   crm_reports: 5,
+  document_mail: 6,
 };
 
 // The guard transaction owns only the lock. Run history is committed separately.

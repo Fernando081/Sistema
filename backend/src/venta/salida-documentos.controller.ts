@@ -16,6 +16,7 @@ import { JwtPayload } from '../auth/auth.types';
 import { SalidaDocumentosService } from './salida-documentos.service';
 import {
   SalidaCancelarDto,
+  SalidaConciliarDto,
   SalidaCerrarDto,
   SalidaPrepararDto,
   SalidaQuery,
@@ -69,6 +70,17 @@ export class SalidaDocumentosController {
     @Req() r: { user: JwtPayload },
   ) {
     return this.service.close(id, request, d, r.user, true);
+  }
+  /** O01.2b · Decisión de un administrador sobre un envío Incierto (respuesta del servidor perdida). */
+  @Post(':id/correos/:request/conciliar')
+  @Header('Cache-Control', 'private, no-store')
+  reconcile(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('request', new ParseUUIDPipe({ version: '4' })) request: string,
+    @Body() d: SalidaConciliarDto,
+    @Req() r: { user: JwtPayload },
+  ) {
+    return this.service.conciliar(id, request, d, r.user);
   }
   @Get(':id/correos/:request/pdf')
   @Header('Cache-Control', 'private, no-store')

@@ -133,7 +133,7 @@ export interface DashboardRefreshStatus {
 }
 
 export interface ScheduledJobStatus {
-  name: 'operational_alerts' | 'dashboard_freshness' | 'crm_reports';
+  name: 'operational_alerts' | 'dashboard_freshness' | 'crm_reports' | 'document_mail';
   checkedAt: string;
   expectedAt: string;
   lastSuccessAt: string | null;

@@ -18,7 +18,8 @@ export async function syncScheduledJobAlerts(
         SELECT value->>'name' AS name,(value->>'overdue')::boolean AS overdue,
           CASE value->>'name' WHEN 'operational_alerts' THEN 'Generación de alertas'
             WHEN 'dashboard_freshness' THEN 'Revisión de frescura'
-            WHEN 'crm_reports' THEN 'Reportes comerciales' END AS label,
+            WHEN 'crm_reports' THEN 'Reportes comerciales'
+            WHEN 'document_mail' THEN 'Envío de documentos por correo' END AS label,
           terminal.status,terminal.finished_at
         FROM checked CROSS JOIN LATERAL jsonb_array_elements(fn_scheduled_job_status(checked.at))
         LEFT JOIN LATERAL (
@@ -26,7 +27,7 @@ export async function syncScheduledJobAlerts(
           WHERE job_name=value->>'name' AND status IN ('success','failed')
           ORDER BY started_at DESC,id DESC LIMIT 1
         ) terminal ON true
-        WHERE value->>'name' IN ('operational_alerts','dashboard_freshness','crm_reports')
+        WHERE value->>'name' IN ('operational_alerts','dashboard_freshness','crm_reports','document_mail')
       ), resolved AS (
         UPDATE app_notification n SET type='scheduled_job_recovered',severity='info',
           title=j.label || ': proceso recuperado',

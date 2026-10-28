@@ -17,8 +17,8 @@
   <details #automaticProcesses class="scheduled-jobs"><summary>Procesos automáticos</summary>
     @if (scheduledJobs(); as jobs) {
       @for (job of jobs; track job.name) {
-        <section [attr.aria-label]="job.name === 'operational_alerts' ? 'Generación de alertas' : job.name === 'crm_reports' ? 'Reportes comerciales' : 'Revisión de frescura'">
-          <strong>{{ job.name === 'operational_alerts' ? 'Generación de alertas' : job.name === 'crm_reports' ? 'Reportes comerciales' : 'Revisión de frescura' }}</strong>
+        <section [attr.aria-label]="job.name === 'operational_alerts' ? 'Generación de alertas' : job.name === 'crm_reports' ? 'Reportes comerciales' : job.name === 'document_mail' ? 'Envío de documentos por correo' : 'Revisión de frescura'">
+          <strong>{{ job.name === 'operational_alerts' ? 'Generación de alertas' : job.name === 'crm_reports' ? 'Reportes comerciales' : job.name === 'document_mail' ? 'Envío de documentos por correo' : 'Revisión de frescura' }}</strong>
           <p>{{ job.overdue ? 'Sin éxito para la ejecución esperada' : (job.lastSuccessAt ? 'Ejecución reciente registrada' : 'Sin éxito registrado') }}.</p>
           <p>Último éxito: {{ job.lastSuccessAt ? (job.lastSuccessAt | date:'dd/MM/yyyy HH:mm':'-0600') + ' · hora de México' : 'Sin registro' }}.</p>
           @if (job.lastRun?.status === 'failed') { <p>El último intento falló.</p> }

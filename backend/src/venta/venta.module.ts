@@ -15,6 +15,8 @@ import { FacturaGlobalService } from './factura-global.service';
 import { DescargasVentaService } from './descargas-venta.service';
 import { SalidaDocumentosService } from './salida-documentos.service';
 import { SalidaDocumentosController } from './salida-documentos.controller';
+import { SalidaCorreoEjecutorService } from './salida-correo-ejecutor.service';
+import { CORREO_TRANSPORTE, NodemailerTransporte } from './correo-transporte';
 @Module({
   imports: [AuthModule, FiscalModule],
   providers: [
@@ -27,6 +29,8 @@ import { SalidaDocumentosController } from './salida-documentos.controller';
     FacturaGlobalService,
     DescargasVentaService,
     SalidaDocumentosService,
+    SalidaCorreoEjecutorService,
+    { provide: CORREO_TRANSPORTE, useClass: NodemailerTransporte },
   ],
   controllers: [VentaController, FacturaController, SalidaDocumentosController],
   exports: [VentaService],

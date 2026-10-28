@@ -1,6 +1,6 @@
 {
   "phase": "O01.2a",
-  "startedAt": "2026-10-22T15:52:46.918Z",
+  "startedAt": "2026-10-28T20:32:57.209Z",
   "checks": [
     "Venta real y revisión pura: HTTP401/403, permiso nuevo, DTO cerrado/confirmación, sin función histórica con escrituras ni SMTP",
     "Preparación atómica de metadatos/PDF/destinatario, UUID/huella y recibo idempotente sin duplicar",
@@ -21,7 +21,7 @@
   "externalDeliveryEnabled": false,
   "smtpCalls": 0,
   "passed": true,
-  "completedAt": "2026-10-22T15:53:02.663Z",
+  "completedAt": "2026-10-28T20:33:14.590Z",
   "copyRemoved": true,
   "cleanupPassed": true,
   "lastStage": "Angular O01.2a"

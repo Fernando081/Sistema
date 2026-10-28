@@ -76,3 +76,92 @@ Exigir `passed/cleanupPassed/copyRemoved=true`, `apiMocked=false`, `smtpCalls=0`
 - **O01.3:** operación/retención/capacidad/recuperación, canales/proveedores/destinatarios verificados y configuración real. Decisiones externas siguen pendientes, sin comprar servicios ni activar envíos durante esta fase.
 
 Cámara/QR diferidos, IA sin nueva prioridad, modo fiscal mock e identificadores técnicos conservados. APIs/conexiones bancarias excluidas.
+
+# O01.2b — Envío real por correo con ejecutor persistente (28/10/2026)
+
+## Qué cambia
+
+- **Dos modos al preparar.**
+  - **Local** (O01.2a, sin cambios): nunca se envía y su huella e idempotencia son las mismas que antes.
+  - **Correo**: sólo existe si la configuración SMTP es válida y el dominio del destinatario está permitido. Encola un envío real.
+- Una solicitud Local histórica **no se puede convertir** en envío. La base lo impide: un cierre `Aceptado`/`Fallido` sólo es posible en modo Correo y `Simulado` sólo en Local (trigger ALWAYS).
+- **Estados de un envío por correo:**
+  - **En cola**: esperando su turno.
+  - **Enviando**: reserva de 5 minutos con token.
+  - **Reintento**: el servidor respondió 4xx o no se pudo conectar; espera 1, 5, 15 y 60 minutos, hasta `MAIL_MAX_ATTEMPTS` (4 por defecto).
+  - **Aceptado**: el servidor respondió 250 al contenido. **No es constancia de entrega al buzón.**
+  - **Fallido**: rechazo 5xx o intentos agotados, con motivo.
+  - **Incierto**: se perdió la conexión o la respuesta después de enviar el contenido, o el proceso se cayó con la reserva activa.
+  - **Cancelado**: sólo mientras está En cola o en Reintento.
+  - **Obsoleto**: el documento o el destinatario cambió antes de enviar; no se envía.
+- **Incierto nunca se reenvía solo.** Un administrador, con motivo, elige una de tres opciones; la decisión queda en `documento_salida_conciliacion`, inmutable y auditada:
+  - *Confirmar que sí llegó*: cierre Aceptado con su nombre.
+  - *Reintentar envío*: aviso de posible duplicado.
+  - *Dar por fallido*.
+- Cada solicitud tiene un `Message-ID` fijo (`<salida-UUID@dominio-del-remitente>`). Un reintento lleva el mismo, así el cliente de correo del destinatario puede reconocer duplicados. Esto no lo garantiza.
+
+## Ejecutor
+
+- `SalidaCorreoEjecutorService` revisa cada minuto (`@Cron`). Registra la ejecución en Procesos automáticos (`document_mail`, intervalo de 10 minutos y 5 de tolerancia) sólo cuando hay trabajo o como latido cada 9 minutos. Sus fallos y atrasos avisan como los demás jobs.
+- Ciclo:
+  1. Marca como Incierto las reservas vencidas.
+  2. Reserva hasta 5 envíos con `FOR UPDATE SKIP LOCKED`.
+  3. Por cada uno, en una transacción con bloqueo, comprueba la reserva, el archivo (tamaño y huellas) y el origen. Si cambió, cierra Obsoleto.
+  4. Envía fuera de la transacción.
+  5. Registra el intento (`documento_salida_intento`, inmutable) y el nuevo estado. Si la reserva ya no es suya, conserva el intento sin pisar el estado.
+- El transporte usa la conexión SMTP de bajo nivel de nodemailer (`SMTPConnection` + `MailComposer`) para saber **en qué fase falló**. Su transporte de alto nivel informa `command: "CONN"` incluso si la conexión se cortó después del contenido: se comprobó con el servidor local, y clasificarlo como temporal habría causado duplicados.
+  - Conectar o autenticar → temporal.
+  - Envío con respuesta 4xx → temporal; 5xx → permanente.
+  - Envío sin respuesta → incierto.
+- Con la configuración desactivada o inválida, las solicitudes esperan en cola sin enviarse ni fallar.
+
+## Configuración (`backend/.env`, ver `.env.example`)
+
+| Variable | Uso |
+|---|---|
+| `MAIL_MODE` | `desactivado` (por defecto) o `smtp`. |
+| `SMTP_HOST`, `SMTP_PORT` | Servidor. Un servidor que no sea `localhost`/`127.0.0.1` exige `SMTP_SECURE=true` (465) o `SMTP_REQUIRE_TLS=true` (STARTTLS). En producción se exige además verificar el certificado. |
+| `SMTP_USER`, `SMTP_PASSWORD` | Van juntos. La contraseña nunca se muestra; la pantalla sólo indica si hay autenticación. |
+| `MAIL_FROM`, `MAIL_REPLY_TO` | Una sola dirección válida cada una. |
+| `MAIL_RECIPIENT_DOMAINS` | Lista de dominios permitidos para un piloto controlado. Vacío = cualquiera. |
+| `MAIL_MAX_ATTEMPTS` | De 1 a 10 (por defecto 4). |
+
+La pantalla muestra el servidor, el tipo de TLS, el remitente, los dominios y los problemas de configuración.
+
+## API nueva
+
+- `POST /venta/:id/enviar-correo` acepta `modo: "Correo"`; sin `modo` es Local, como antes.
+- `POST /venta/:id/correos/:solicitud/conciliar` con `{requestId, confirmacion: true, accion: ConfirmarAceptado|Reintentar|DarPorFallido, motivo}`. Sólo ADMIN; es idempotente por `requestId`.
+- El historial agrega `modo`, `envioEstado`, `intentos`, `maxIntentos`, `proximoIntento`, `ultimoError` y `respuestaSmtp`. La revisión y el historial devuelven `correo` con el estado público de la configuración.
+
+## Migración 119
+
+- `documento_salida.modo` admite `Correo`.
+- Cierres `Aceptado` y `Fallido`; `Fallido` lleva motivo y el `id_actor` es opcional para los cierres automáticos.
+- Trigger de coherencia entre modo y cierre.
+- Tablas `documento_salida_envio` (estado de trabajo), `documento_salida_intento` y `documento_salida_conciliacion` (inmutables, ALWAYS).
+- Job `document_mail`.
+
+## Verificación
+
+- `npm run test:mail-outbox` (`backend/verify-mail-outbox.js`, **31/31**). Restaura el respaldo más reciente en una base aislada `verify_mail_*`, migra y usa los servicios reales con `SmtpLocalPrueba`, un servidor SMTP propio en 127.0.0.1 que no reenvía nada. Destinatarios `example.invalid`. Al final borra la base. Cubre:
+  - Local intacto y su guarda en la base;
+  - aceptado (destinatario, Message-ID y PDF recibidos), sin reenvío;
+  - 4xx con espera y segundo intento;
+  - intentos agotados → Fallido; 5xx inmediato;
+  - incierto sin reenvío automático, no cancelable, sólo un administrador concilia y sus tres decisiones (idempotentes);
+  - reserva vencida → Incierto;
+  - destinatario cambiado → Obsoleto sin envío;
+  - Correo no se simula; cancelar en cola;
+  - configuración ausente, dominio no permitido y cola en espera con el correo desactivado;
+  - historial e inmutabilidad.
+- Pruebas unitarias: transporte real contra el servidor local (aceptado, 5xx, 4xx, corte tras el contenido, servidor apagado), configuración y decisiones del ejecutor.
+- UI: `tests/mail-outbox.spec.ts` (envío, estados, conciliación con motivo, sin configuración; Axe).
+
+## Límites
+
+- No se probó con un servidor SMTP real de un proveedor, ni con SPF/DKIM/DMARC; tampoco hay entrega comprobada ni rebotes asíncronos.
+- No hay bandeja global de envíos: el historial es por factura.
+- El ejecutor corre dentro del backend: si este no está encendido, no se envía (la cola espera).
+- `test:document-outbox` de O01.2a no se volvió a ejecutar; el modo Local conserva su contrato.
+- **O01.2c** (consumidores PAC/campañas) y **O01.3** (operación real) siguen pendientes.
