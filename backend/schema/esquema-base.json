@@ -1,0 +1,483 @@
+{
+  "generado": "2026-10-28T17:54:41.689Z",
+  "postgres": "18.2",
+  "esquema_sha256": "c5e19268d9df09b452a067ca5bb0db272ce46f39b2632e358f8f7a7d6203f397",
+  "datos_sha256": "eab3324dffc6e84ca73e5d7d0135e5af093aa8d4aa2e86fe2fb4926cbbb0606a",
+  "tablas_semilla": {
+    "claveproductooservicio": 52513,
+    "claveunidad": 2418,
+    "colonia": 145366,
+    "estado": 32,
+    "municipio": 2463,
+    "localidad": 664,
+    "formadepago": 22,
+    "metododepago": 2,
+    "moneda": 183,
+    "objetoimpuesto": 8,
+    "regimenfiscal": 19,
+    "tasaocuota": 19,
+    "tipocomprobante": 5,
+    "tipofactor": 3,
+    "tiporelacion": 7,
+    "usocfdi": 24,
+    "impuesto": 3,
+    "meses": 18,
+    "periodicidad": 5,
+    "unidad": 23,
+    "cuenta_contable": 20,
+    "app_permission": 33,
+    "app_role_permission": 40,
+    "comercial_regla_aprobacion": 9,
+    "operational_job": 4,
+    "almacen": 1,
+    "almacen_ubicacion": 1,
+    "centro_costo": 1,
+    "lista_precio": 1
+  },
+  "migraciones": [
+    {
+      "archivo": "001_create_auth_user_table.sql",
+      "checksum": "b040c016f17103a1a06adea775981c739153e2e4c572cc8eaff71c3dd9db5ba7"
+    },
+    {
+      "archivo": "002_add_role_check_constraint.sql",
+      "checksum": "0e098f8ce54d64e3aab0ccfb2b7b80602c186c19f58d7ae8b4c3ae863cf877a9"
+    },
+    {
+      "archivo": "003_create_fn_get_utilidad_productos.sql",
+      "checksum": "6218638cbfc13abde86ee3da5308604f6a3d47364f7d9c51a2da7d2772b62709"
+    },
+    {
+      "archivo": "004_create_analytics_views.sql",
+      "checksum": "75b62a1fa7b4cf3a94eb7397ff05771a929d3bc88796ae14d428ca8b770ce6f0"
+    },
+    {
+      "archivo": "005_refactor_analytics_views.sql",
+      "checksum": "ae275af05fa19a091ef263c57025c80af663d174a0f6156c7654073117c74194"
+    },
+    {
+      "archivo": "006_create_finanzas_module.sql",
+      "checksum": "03dc1dc6038a45f22e24d81730df32b9ad47d376a1c5db07e78d4f75b90ef7f6"
+    },
+    {
+      "archivo": "007_create_sp_cancelar_factura.sql",
+      "checksum": "269c62415964b1c1327aca2016152dc9f09b3c0baac3721c7fc1ace300d6b1f5"
+    },
+    {
+      "archivo": "008_create_vw_smart_restock.sql",
+      "checksum": "289832cac7a604ad58a5f91803ec7e698c0a418fa9fe79bfb85880fb02ebb496"
+    },
+    {
+      "archivo": "009_add_imagen_producto.sql",
+      "checksum": "1c1969d9d51cd44e0420881fd58e6c0f0d55f2b0534e92c8da7e85e4c6ec0eb5"
+    },
+    {
+      "archivo": "010_setup_audit_triggers.sql",
+      "checksum": "78e470068c40128e58ba4f7056ab27b060e65d84c99c901bb03e49c84ec8f6bf"
+    },
+    {
+      "archivo": "011_add_imagen_to_producto_functions.sql",
+      "checksum": "39cfb19aedf766948a5ef45c7f218a5922d4dde0b3665abac76e573f9c2f9076"
+    },
+    {
+      "archivo": "012_add_imagen_to_get_productos_functions.sql",
+      "checksum": "f0bb539d31c635ee19f4f7be641ee0dd9ae835748397513d27b4b7e15d562eba"
+    },
+    {
+      "archivo": "013_add_multiple_images_producto.sql",
+      "checksum": "3d1c167a4224dad4a4f673c54aa9fc787c504cb6b150c1c8f868d6c2fa4a7c1f"
+    },
+    {
+      "archivo": "013_create_rep_tables.js",
+      "checksum": "cf99d39f8b71e58b6e5776bf242a86d8a19726dbd4d51b2abd86e6a3834d9c2c"
+    },
+    {
+      "archivo": "014_add_estado_rep.js",
+      "checksum": "7310085c9e863007610e51dfceaa9bd8b3b5d112992910acad2ca1f0309f561c"
+    },
+    {
+      "archivo": "015_create_producto_cotizacion_prov.sql",
+      "checksum": "2873edcdeb7b1ad92492338378a3135e1e2be2077445725ccaf011d46b1ff869"
+    },
+    {
+      "archivo": "016_create_producto_cruce.sql",
+      "checksum": "af3de045f9b1ef77a46e2f8476b405dbb33f86d55e022926165d894439e4630c"
+    },
+    {
+      "archivo": "017_add_crm_cotizaciones.sql",
+      "checksum": "591e57dd61aa2f866655ab013aa309388346bc03cbcb62a525e2b50a854c7e07"
+    },
+    {
+      "archivo": "018_create_devoluciones_module.sql",
+      "checksum": "5cbd5cc1ed47c05cf050130a964ce4f1529123ad7cd9b0aadd2e5ee58b7bd5d9"
+    },
+    {
+      "archivo": "019_pagination_db.sql",
+      "checksum": "db0e4d9d2db976f1b0419bbb736a0c03fbc911c6f7f76208dcf5a0ca0a5bb17d"
+    },
+    {
+      "archivo": "020_create_vw_prediccion_demanda.sql",
+      "checksum": "af0f887996fdaa28fcf80d5f90b8781c85e5e20cca30c65d9a8ec8c6509d45a9"
+    },
+    {
+      "archivo": "021_cfdi_40.sql",
+      "checksum": "43103246a8062a66e7c6d6d428159bba129d646304eaf8ab6661aa1c09f9d3cb"
+    },
+    {
+      "archivo": "022_fix_kardex_venta_egreso.sql",
+      "checksum": "88d3beed4cee5a8449d7f027373f45d51efd8539744def33a2d627139ec4a5dc"
+    },
+    {
+      "archivo": "023_fix_kpis_egreso.sql",
+      "checksum": "8b3af25d0dbae7bbc53f1273d93a33374a446da7ff8d2ae2abb913429145c526"
+    },
+    {
+      "archivo": "024_add_tipo_filtro_facturas.sql",
+      "checksum": "c97e42fd68abb3b4aeacaa1636d21fe644e618a81c3b3add6eb464f63f9a71f6"
+    },
+    {
+      "archivo": "025_add_factura_global.sql",
+      "checksum": "5bb272c27a36d8ce9229158743200a36bd6bd7026dd46137174d1918d201518c"
+    },
+    {
+      "archivo": "026_ajuste_inventario.sql",
+      "checksum": "3f621408b9517898b3ff3a56fe0ff83217754f0afb784054963dfb87794b44ee"
+    },
+    {
+      "archivo": "027_integridad_operativa.sql",
+      "checksum": "69bb0823023a76ecf80bcc5f158826f29ec0e0e2776801d03cfdb301bc92bfa4"
+    },
+    {
+      "archivo": "028_costo_historico_venta.sql",
+      "checksum": "f72dd0879c22466ba35c68d3f8fb7f2d7056a4c605a2c0cecd4c29b136bd694b"
+    },
+    {
+      "archivo": "029_prediccion_demanda_consistente.sql",
+      "checksum": "f99b5a3389398205f04dd5e8af1804299f0dacb6077acef7b09b5d62785c2cd1"
+    },
+    {
+      "archivo": "030_idempotencia_operaciones.sql",
+      "checksum": "b6afd328fbf56be20cad8aedaf574d5150480265eec4c0d6854a67515e37cf73"
+    },
+    {
+      "archivo": "031_crm_pipeline.sql",
+      "checksum": "c8ba0018598dd8e13ed82187d1d20dcd32e129ce71d434e05a8fbb1b92bd8a45"
+    },
+    {
+      "archivo": "032_catalogo_diesel_y_garantias.sql",
+      "checksum": "0d3cc4e628ec8807b09f144e2374b47ece408dbc9365ec38450fd98ae1ac94ba"
+    },
+    {
+      "archivo": "033_cancelaciones_devoluciones_seguras.sql",
+      "checksum": "e608605fa97c92b1c74d313ae163261bd2d84bf7af9a0c69ec968f3fa8cdaf26"
+    },
+    {
+      "archivo": "034_garantias_operativas.sql",
+      "checksum": "f97de28d410cc2e74973c43161e02d89c7eb46473b17808ffb655a609dc4b1e4"
+    },
+    {
+      "archivo": "035_integridad_cobros_y_devoluciones.sql",
+      "checksum": "3cee8344d2e00ef0f77301511ca3bf0c95723d288c7d2b6fd43065716b4698a0"
+    },
+    {
+      "archivo": "036_margen_neto_y_reembolso_exacto.sql",
+      "checksum": "2d739ee284f485f886107883a586b0b0457cfd41450962176426d71c8f6b4cf5"
+    },
+    {
+      "archivo": "040_crm_agenda.sql",
+      "checksum": "a2868ebbdd849dec4b7c5671757a1909a6ea7c480cc0278df0ab5106ba2fdd16"
+    },
+    {
+      "archivo": "045_sesiones_revocables.sql",
+      "checksum": "4c85e13859682cf4fc326678d2f3263743602734457aa0622a11be36455acd48"
+    },
+    {
+      "archivo": "046_caja_turnos_y_movimientos.sql",
+      "checksum": "8c658b5087ea41faf343271c8f7b938a79c4a568f4e18c882f1ba2457a0f6ad2"
+    },
+    {
+      "archivo": "047_crm_unidades_cliente.sql",
+      "checksum": "49d8480a52c35a86960204b8f23402e6ced63aa0a08636a289a8941f644b57e6"
+    },
+    {
+      "archivo": "048_pedidos_reservas_backorders.sql",
+      "checksum": "b7e5d0380b61910487250f98ddb57d7b57405f583008418e7cf3f63f6e667bc4"
+    },
+    {
+      "archivo": "049_pedido_unico_por_cotizacion.sql",
+      "checksum": "205266f42e89b19c519007add762b91b36421bff9529f2062c23a2ce860113e3"
+    },
+    {
+      "archivo": "050_entrega_pedido.sql",
+      "checksum": "314d87b7cecf9d12de9109871db537185602d62e32d262b60f05ab5df12a1b77"
+    },
+    {
+      "archivo": "051_factura_desde_pedido.sql",
+      "checksum": "44ed9433987981020a9717ebd25c9e7fabe24de60f0553f90feffb422f9e777c"
+    },
+    {
+      "archivo": "052_reservas_vencimiento.sql",
+      "checksum": "2d9ae3aabc3a5eff074bab36c35c7a37e0955e2ce776f75bcf2e2f8a0073a754"
+    },
+    {
+      "archivo": "053_cliente_360.sql",
+      "checksum": "f12f6462860ef89afd60c6abbbeaa6761821f7cd91e559fe01fdbf108b4791c3"
+    },
+    {
+      "archivo": "054_abastecimiento.sql",
+      "checksum": "7d8be852694f93a2b178928e90b8dbf94a39c647ea931568b2641c1a86c7519e"
+    },
+    {
+      "archivo": "055_precios_credito_autorizaciones.sql",
+      "checksum": "bd9b1f4b9e19ce240672dda39a73e73c27ec823533a8f9350b6d2b09406eebc2"
+    },
+    {
+      "archivo": "056_almacen_profesional.sql",
+      "checksum": "84ebd331a46436751dcefbd1f94dd01bd236d73d0e1872e66cff71ee28114200"
+    },
+    {
+      "archivo": "057_sincronizar_existencia_ubicaciones.sql",
+      "checksum": "0290a5e7ea9fb14019d4326d1446911120418d1f0ec6ab8322f0ff696ea4baf4"
+    },
+    {
+      "archivo": "058_consumo_autorizaciones_comerciales.sql",
+      "checksum": "014fed6cedc2a226d45d9caa3a933cf354a4b302b7de725401e5f37b82d18a56"
+    },
+    {
+      "archivo": "059_picking_por_ubicacion.sql",
+      "checksum": "49e0e9514605fadabaac9913a33cfee1d6525c97ae237e312c76e6cb9acc9428"
+    },
+    {
+      "archivo": "060_contabilidad_libro_mayor.sql",
+      "checksum": "c84456e1b4a1bf64b9a1ecfbe5dcd3241b3447ea865bef9f8caaadcf0e707acc"
+    },
+    {
+      "archivo": "061_tesoreria_conciliacion.sql",
+      "checksum": "e422ed73334ee02a1e646c4914148bbd5b6183ac1740e5caca00687d4fe05d15"
+    },
+    {
+      "archivo": "062_control_financiero.sql",
+      "checksum": "825571bacdcf37f97038e754eb60104b85a288b312f409557c1a3fa978e20f24"
+    },
+    {
+      "archivo": "063_permisos_granulares.sql",
+      "checksum": "e1777fa99c52dbc2362eefbce58ad952d4b454651c6b5c1cba687f1db03e5733"
+    },
+    {
+      "archivo": "064_centro_notificaciones.sql",
+      "checksum": "f55be2f3d08928e2319076b6f42e63d4f0204de44eaac331b9f450f2d10d497a"
+    },
+    {
+      "archivo": "065_proveedores_costos_devoluciones.sql",
+      "checksum": "fdc472590d82acf0b7c6ca0aebe77919adde5c5fc5bf4d98d4d17da200cb826f"
+    },
+    {
+      "archivo": "066_almacen_conteos_kits_cascos.sql",
+      "checksum": "5d21d1968128cdd60c39dafacf29f39402a6a70f755791aef6ff584eec8a23cf"
+    },
+    {
+      "archivo": "067_crm_operativo.sql",
+      "checksum": "a5022ecfb08eb161982d8788d26c9aa96a3d4c23ed2ef6dc819d171d5ed60fbd"
+    },
+    {
+      "archivo": "068_crm_tareas_comunicaciones.sql",
+      "checksum": "c3ffe549fdc1d931700200648c206a4d67dcfc99524a7cb7eb2f0dde9aeac816"
+    },
+    {
+      "archivo": "069_alertas_operativas.sql",
+      "checksum": "cce0478bf18c1292affd28424d9516303a60a828d9562cda897fa749bfeeeaa7"
+    },
+    {
+      "archivo": "070_fiscal_pac.sql",
+      "checksum": "38a22f68c00cd45fd1590b562d7dd5b3f84fe665bc542d26bba42b86e21b228a"
+    },
+    {
+      "archivo": "071_cuentas_proveedor_profesionales.sql",
+      "checksum": "cad80d6b68b8a0b6382942e8fa15fef6f2489f61f8f699690881700703a91484"
+    },
+    {
+      "archivo": "072_conciliacion_bancaria_automatica.sql",
+      "checksum": "20a003552a2d135f4896a48452c719fde05b620180bc3a2b6608fada2d782004"
+    },
+    {
+      "archivo": "073_tesoreria_avanzada_local.sql",
+      "checksum": "bef077bcdc14a2690e54810dfe9a6cc083b24c061c6ec71765a9381f4112cedd"
+    },
+    {
+      "archivo": "074_corregir_bloqueo_cierre_tesoreria.sql",
+      "checksum": "7cfb16ee12b4dffb91e9872d30e1f8f5ccdcb7ccbd4d9bb503e5f0eeabff2ad3"
+    },
+    {
+      "archivo": "075_conservar_historial_vinculos_tesoreria.sql",
+      "checksum": "ed252f2076c75a228d457ab4ea5b336908447a86550a8d467717c44e433d697f"
+    },
+    {
+      "archivo": "076_cancelacion_factura_proveedor.sql",
+      "checksum": "b9b6d568918660a97bd267543c2d6f902ac2e03f995cf52c50ef0d147ad38ad1"
+    },
+    {
+      "archivo": "077_indicadores_inventario_honestos.sql",
+      "checksum": "e51d9f661d8202cdba24d3a3f69cff7950b16326c39c845e6dc3dc147fd062d8"
+    },
+    {
+      "archivo": "078_metricas_operativas_verificables.sql",
+      "checksum": "4c33b0a45db0b8054ab61a8b847596bedf6c092401cce071b8625cb3452dd736"
+    },
+    {
+      "archivo": "079_historial_valoracion_gmroi.sql",
+      "checksum": "613342c4af4c9c8cafd919a4b3c704091d4adc718a7e44f608babe09d1813647"
+    },
+    {
+      "archivo": "080_valoracion_y_margen_sin_costos_supuestos.sql",
+      "checksum": "b889f160fbb08ae179a450d196ad6af056f97ed5019f5bb54ca9949e9aac557d"
+    },
+    {
+      "archivo": "081_busqueda_directorios_trigram.sql",
+      "checksum": "0a492c213d10e025ed4fe98dd2e534a786a2552a2f1d4871743a45cfe185b516"
+    },
+    {
+      "archivo": "082_busqueda_productos_trigram.sql",
+      "checksum": "124d15d3afe36b570507230d15db6568d53216acff037dfc4f88c4fa38bb410a"
+    },
+    {
+      "archivo": "083_busqueda_documentos_trigram.sql",
+      "checksum": "bd53e42450dde7ceace84d60a791bde2438918fcfb78b50f590a9a87ac392008"
+    },
+    {
+      "archivo": "084_busqueda_compras_trigram.sql",
+      "checksum": "9d4801bd101791bfa01d267b687d9267e5d7f9f4dd6598ec1b38362bbaa16fd4"
+    },
+    {
+      "archivo": "085_kardex_movimiento_gestionado.sql",
+      "checksum": "3d5ff4d46491c0570f77856a14c4330f809ed514c838f667c74b0642202b4832"
+    },
+    {
+      "archivo": "086_estado_refresco_dashboard.sql",
+      "checksum": "6df661b20b8b1556586b4a20405dd1e121d743d2a9840d4a43efaa8a579141b6"
+    },
+    {
+      "archivo": "087_estado_jobs_operativos.sql",
+      "checksum": "3138bc8cda0f9054aa2330c5ec409b9e40c7ab03478a166868bd115b3f2eb6ad"
+    },
+    {
+      "archivo": "088_preparacion_catalogo_web.sql",
+      "checksum": "0d4d905a9778ac6bf30627a529bac8a5f4ead45fdedfe29499397162b871feaa"
+    },
+    {
+      "archivo": "089_solicitudes_web.sql",
+      "checksum": "274a6450c4fe820428c8daa7cf206bb507dd43083f40278a72611c54dee18c7f"
+    },
+    {
+      "archivo": "090_conversion_solicitud_web.sql",
+      "checksum": "3c64fb89eefa0c84a63f06068513c9b3dec9f3a3361082e8fef1e4fb2dc0a197"
+    },
+    {
+      "archivo": "091_resolucion_solicitudes_web.sql",
+      "checksum": "bd6268c640116dc5dd42ec23153f3dc0f2704a6a78a593b05910a827c2f72388"
+    },
+    {
+      "archivo": "092_vinculos_comerciales_crm.sql",
+      "checksum": "5dd0f2f62fd8b22e5d03d41451d18ad718bd36f3f4a651c35103bb0d7a5a3f50"
+    },
+    {
+      "archivo": "093_gasto_reembolso_devolucion.sql",
+      "checksum": "d6212432a2f30d0bc0398b1cf022661ef3a5304b9639b84b75dadaf546638520"
+    },
+    {
+      "archivo": "094_roles_personalizados.sql",
+      "checksum": "02e96b732d6a48bb3c7c5feeff756a04b6eba87aec47f8a9ffafd1a0ef6133df"
+    },
+    {
+      "archivo": "095_sesiones_por_navegador.sql",
+      "checksum": "09fef6afc9ca027d5d4108b8fd43a32364af9a1e1066bf6263a3494681971f55"
+    },
+    {
+      "archivo": "096_autenticacion_dos_pasos.sql",
+      "checksum": "997fc488300bff8aa5f72762126d5d21395c5bf0ea76b425ffbb0d077e5f0533"
+    },
+    {
+      "archivo": "097_recuperacion_cuenta_local.sql",
+      "checksum": "e58bfb79d2d3db14e395f5967e0903735781a564ab2e242bfcdd82180bb7bdcf"
+    },
+    {
+      "archivo": "098_auditoria_append_only.sql",
+      "checksum": "035a087c539e63a6742c29fa75acb85d207e20bbcab2d28fe6943e153bc68a0a"
+    },
+    {
+      "archivo": "099_aprobaciones_por_operacion.sql",
+      "checksum": "84d44533bd57c63075681ca564683364668ba1c392a83af106b1a61d37586961"
+    },
+    {
+      "archivo": "100_expediente_unidades.sql",
+      "checksum": "4b16c85cf0a7afc0202310c742dd29dc1b95ff57e239be0bb6c1ce61d2ae40ff"
+    },
+    {
+      "archivo": "101_piezas_unidades.sql",
+      "checksum": "77a2c3b4f87650d5a778f1ac9461e66d8c2b73498b834fd1e8341dfb18e32fad"
+    },
+    {
+      "archivo": "102_versiones_cotizacion.sql",
+      "checksum": "0f9d0b3e459c4da6a3afffde8eef7f15ad118fd3734d77edf81662a2de6e9cdd"
+    },
+    {
+      "archivo": "103_entrega_evidencia.sql",
+      "checksum": "3b61469034c86a3a65a8cf5fe7b42fba8db19d55f84faa488fd3ea72998d70bc"
+    },
+    {
+      "archivo": "104_portal_clientes.sql",
+      "checksum": "1efde02d60b5045d34e1cd7753cd65d522f5d6b1caf01c852d98b1e9554abf7d"
+    },
+    {
+      "archivo": "105_portal_publicaciones.sql",
+      "checksum": "167e31652e98401efa71c9597bab71afe87efc281a7663d4a330b69df86614e6"
+    },
+    {
+      "archivo": "106_crm_consentimiento_campanas.sql",
+      "checksum": "51059f88dd8d3ccf204001316fae44b1a8cce5cdcb0a451b77a053d4244e3748"
+    },
+    {
+      "archivo": "107_crm_secuencias_internas.sql",
+      "checksum": "9aab9e2f895e4eda807bb3760f9c155185df1e70728ed59a839af9d376dec9b7"
+    },
+    {
+      "archivo": "108_crm_secuencias_control.sql",
+      "checksum": "ad297b73c733d1b98574f95736b2dcf0e2170749defbbc028aab0affac051eb6"
+    },
+    {
+      "archivo": "109_crm_secuencias_reglas.sql",
+      "checksum": "d9926d72f8cb4021afa0735940e9881b888abfcd0953a3ac2170e3568499315d"
+    },
+    {
+      "archivo": "110_crm_reportes_programados.sql",
+      "checksum": "44113b64069c0095f40a39105451e7ebf9e058908b08698ce26e36ddc561b11f"
+    },
+    {
+      "archivo": "111_almacen_escaneo_picking.sql",
+      "checksum": "850c1f4d4eee6c714bbf34a0e6d4817391ac79a8c91f6ce7e5d34be22aa8822c"
+    },
+    {
+      "archivo": "112_crm_reportes_reintentos.sql",
+      "checksum": "8e14f47124e368cf611c0bfeb95df45dcb7db1ae5a0f428366e3d3a9c38b0695"
+    },
+    {
+      "archivo": "113_salida_documentos_local.sql",
+      "checksum": "033cdd33c373f840ef65ff2769985908c1919317d198402cf82333fc5de7b589"
+    },
+    {
+      "archivo": "114_permisos_pedidos_operacion.sql",
+      "checksum": "bd350954e6607e40b14b18d76daaf3457cf454d31b8b5d131dbda4ab1a4ed658"
+    },
+    {
+      "archivo": "115_permisos_cobranza_trazabilidad.sql",
+      "checksum": "a5234b7bc979d422ca7a846a56d309b0e2741bfc264f3b1716e64686abdf75fa"
+    },
+    {
+      "archivo": "116_compra_directa_flujo_formal.sql",
+      "checksum": "d0afd8c5bc896b80dfceb77eec78a6b959697ed411069403078a1a1ca4ebf86d"
+    },
+    {
+      "archivo": "117_iva_acreditable_compras.sql",
+      "checksum": "190798e74cc6796c5129e066e2e33276c9690f7b241b3672f9a355b5eea22fef"
+    }
+  ]
+}

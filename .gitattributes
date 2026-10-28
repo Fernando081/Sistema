@@ -15,3 +15,6 @@
 *.woff binary
 *.woff2 binary
 *.zip binary
+
+# O05: el esquema base se versiona byte por byte (funciones con CRLF y datos COPY con LF); git no debe convertirlo.
+backend/schema/*.sql -text
