@@ -34,7 +34,7 @@ for(const theme of ['light','dark']) {
     const insideViewport=()=>panel.evaluate(element=>{const box=element.getBoundingClientRect();return box.left>=0&&box.right<=innerWidth&&box.bottom<=innerHeight;});
     await expect.poll(insideViewport).toBe(true);
     expect((await new AxeBuilder({page}).include('.notification-panel').analyze()).violations).toEqual([]);
-    await panel.screenshot({path:`../.artifacts/o024-notifications-${theme}.png`});
+    await panel.screenshot({path:`../.artifacts/local/o024-notifications-${theme}.png`});
     await page.setViewportSize({width:320,height:640});await expect.poll(insideViewport).toBe(true);
     await panel.getByRole('button',{name:/Generación de alertas: falló el proceso/}).click();
     await expect(page).toHaveURL(/dashboard\?procesos=1$/);expect(reads).toBe(1);

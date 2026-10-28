@@ -90,7 +90,7 @@ for (const theme of ['light', 'dark']) {
       const result = await new AxeBuilder({ page }).include('.dashboard-freshness').analyze();
       expect(result.violations).toEqual([]);
       if (state === 'overdue')
-        await panel.screenshot({ path: `../.artifacts/o023-dashboard-${theme}.png` });
+        await panel.screenshot({ path: `../.artifacts/local/o023-dashboard-${theme}.png` });
     });
   }
 }

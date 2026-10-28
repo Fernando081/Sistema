@@ -27,7 +27,7 @@ for (const theme of ['light', 'dark']) {
     await expect(panel).toContainText('Fuera del intervalo');
     expect((await new AxeBuilder({ page }).include('app-crm-solicitudes-web').analyze()).violations).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await page.screenshot({ path: `../.artifacts/web-bridge-${theme}.png`, fullPage: true });
+    await page.screenshot({ path: `../.artifacts/local/web-bridge-${theme}.png`, fullPage: true });
   });
 }
 for (const theme of ['light', 'dark']) {
@@ -103,7 +103,7 @@ for (const theme of ['light', 'dark']) {
     await expect(panel.locator('li')).toHaveCount(1);
     expect((await new AxeBuilder({ page }).include('app-crm-solicitudes-web').analyze()).violations).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await page.screenshot({ path: `../.artifacts/web-resolution-${theme}.png`, fullPage: true });
+    await page.screenshot({ path: `../.artifacts/local/web-resolution-${theme}.png`, fullPage: true });
     await receipt.getByRole('button', { name: 'Limpiar consulta' }).click();
     await expect(panel).toHaveCount(0);
   });
@@ -152,7 +152,7 @@ for (const theme of ['light', 'dark']) {
     await expect(page.getByText('Cantidad: 3', { exact: false })).toBeVisible();
     expect((await new AxeBuilder({ page }).include('app-crm-solicitudes-web').analyze()).violations).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await page.screenshot({ path: `../.artifacts/web-inbox-${theme}.png`, fullPage: true });
+    await page.screenshot({ path: `../.artifacts/local/web-inbox-${theme}.png`, fullPage: true });
     await page.getByRole('button', { name: 'Marcar revisada: Contacto fixture' }).click();
     await expect(page.getByText('No hay solicitudes vigentes en esta página.')).toBeVisible();
     await expect(page.locator('app-crm-solicitudes-web').getByRole('status')).toContainText('no crea una oportunidad');
@@ -250,7 +250,7 @@ for (const theme of ['light', 'dark']) {
       await expect(panel.getByRole('status')).toContainText('Oportunidad vinculada en CRM: #12');
       expect((await new AxeBuilder({ page }).include('app-crm-solicitudes-web').analyze()).violations).toEqual([]);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      await page.screenshot({ path: `../.artifacts/web-receipt-${theme}.png`, fullPage: true });
+      await page.screenshot({ path: `../.artifacts/local/web-receipt-${theme}.png`, fullPage: true });
       await input.fill('otro-identificador');
       await expect(panel.getByRole('status')).toHaveCount(0);
       await panel.getByRole('button', { name: 'Limpiar consulta' }).click();

@@ -104,7 +104,7 @@ for (const theme of ['light', 'dark']) {
           (issue) => issue.impact === 'serious' || issue.impact === 'critical',
         ),
       ).toEqual([]);
-      await page.screenshot({ path: `../.artifacts/web012-${theme}-${width}.png`, fullPage: true });
+      await page.screenshot({ path: `../.artifacts/local/web012-${theme}-${width}.png`, fullPage: true });
       await page.getByRole('button', { name: 'Cerrar ficha de producto' }).click();
       await page.getByRole('button', { name: 'Editar producto', exact: true }).click();
       await page.getByRole('tab', { name: 'Ficha web', exact: true }).click();

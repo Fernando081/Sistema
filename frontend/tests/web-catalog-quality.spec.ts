@@ -78,7 +78,7 @@ for (const theme of ['light', 'dark']) {
           .locator('.quality')
           .evaluate((element) => element.scrollWidth > element.clientWidth + 1),
       ).toBe(false);
-      await page.screenshot({ path: `../.artifacts/web013-${theme}-${width}.png`, fullPage: true });
+      await page.screenshot({ path: `../.artifacts/local/web013-${theme}-${width}.png`, fullPage: true });
       await page.getByRole('button', { name: 'Revisar ficha ABC-42' }).click();
       await expect(
         page.getByRole('heading', { name: 'Ficha comercial web', exact: true }),

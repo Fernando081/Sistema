@@ -76,7 +76,7 @@ for (const theme of ['light', 'dark']) {
     expect((await new AxeBuilder({ page }).include('app-crm-documentos').analyze()).violations).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await panel.evaluate(element => element.scrollIntoView({ block: 'start' }));
-    await page.screenshot({ path: `../.artifacts/crm-commercial-${theme}.png`, fullPage: true });
+    await page.screenshot({ path: `../.artifacts/local/crm-commercial-${theme}.png`, fullPage: true });
     await panel.getByRole('button', { name: 'Retirar vínculo C-801' }).click();
     await panel.getByRole('checkbox', { name: /Confirmo retirar este vínculo/ }).check();
     await panel.getByRole('button', { name: 'Confirmar retiro del vínculo' }).click();

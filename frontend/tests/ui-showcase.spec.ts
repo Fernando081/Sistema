@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { installErpApiMock, login } from './helpers/erp-api.mock';
 
 // U01: capturas de referencia del sistema visual (claro/oscuro, escritorio/móvil)
-// con API simulada. UI_SHOT_PREFIX=ui01-before|ui01-after guarda PNG en ../.artifacts.
+// con API simulada. UI_SHOT_PREFIX=ui01-before|ui01-after guarda PNG en ../.artifacts/local (no se versiona, H02-c).
 const prefix = process.env.UI_SHOT_PREFIX;
 const days = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
 
@@ -270,7 +270,7 @@ async function mockCatalog(page: Page) {
 }
 
 async function capture(page: Page, name: string) {
-  if (prefix) await page.screenshot({ path: `../.artifacts/${prefix}-${name}.png` });
+  if (prefix) await page.screenshot({ path: `../.artifacts/local/${prefix}-${name}.png` });
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow, `${name}: desbordamiento horizontal`).toBeLessThanOrEqual(1);
   const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();

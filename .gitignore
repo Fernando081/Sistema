@@ -23,3 +23,11 @@ public-web/capture-profile.local.json
 .vs/
 /test-results/
 /*.log
+
+# H02-c (27/10/2026): las capturas de pruebas se quedan sólo en disco. Las pruebas escriben en
+# .artifacts/local/; las imágenes nuevas no se versionan. Los reportes JSON/log sí se versionan y las
+# imágenes ya registradas (evidencia citada en el README) se conservan.
+/.artifacts/local/
+/.artifacts/*.png
+/.artifacts/*.jpg
+/.artifacts/*.webp

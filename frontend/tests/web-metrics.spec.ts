@@ -76,7 +76,7 @@ for (const theme of ['light', 'dark']) {
     await mxn.evaluate(element => element.scrollIntoView({ block: 'start' }));
     expect((await new AxeBuilder({ page }).include('app-crm-web-metrics').analyze()).violations).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await mxn.screenshot({ path: `../.artifacts/web-cash-${theme}.png` }); expect(calls).toBe(1);
+    await mxn.screenshot({ path: `../.artifacts/local/web-cash-${theme}.png` }); expect(calls).toBe(1);
   });
 
   test(`Cobros netos web: desconocidos, cero, cifras grandes y limpieza ${theme}`, async ({ page }) => {
@@ -142,7 +142,7 @@ for (const theme of ['light', 'dark']) {
     await mxn.evaluate(element => element.scrollIntoView({ block: 'start' }));
     expect((await new AxeBuilder({ page }).include('app-crm-web-metrics').analyze()).violations).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await mxn.screenshot({ path: `../.artifacts/web-profit-${theme}.png` });
+    await mxn.screenshot({ path: `../.artifacts/local/web-profit-${theme}.png` });
     expect(calls).toBe(1);
   });
 
@@ -219,7 +219,7 @@ for (const theme of ['light', 'dark']) {
     await panel.locator('.finance').evaluate(element => element.scrollIntoView({ block: 'start' }));
     expect((await new AxeBuilder({ page }).include('app-crm-solicitudes-web').analyze()).violations).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await page.screenshot({ path: `../.artifacts/web-financial-${theme}.png`, fullPage: true });
+    await page.screenshot({ path: `../.artifacts/local/web-financial-${theme}.png`, fullPage: true });
     expect(calls).toBe(1); // Expanding financial detail reuses the same snapshot.
   });
 
@@ -292,14 +292,14 @@ for (const theme of ['light', 'dark']) {
     await expect(panel).toContainText('no confirma una venta');
     await expect(panel).toContainText('Si son de prueba, los resultados también lo son');
     await panel.evaluate(element => element.scrollIntoView({ block: 'start' }));
-    await page.screenshot({ path: `../.artifacts/web-metrics-${theme}-overview.png`, fullPage: true });
+    await page.screenshot({ path: `../.artifacts/local/web-metrics-${theme}-overview.png`, fullPage: true });
     await panel.getByText('Tendencia diaria del periodo', { exact: true }).click();
     await expect(panel.locator('.daily li')).toHaveCount(3);
     await panel.getByText('Vigencia del contenido', { exact: true }).click();
     await expect(panel).toContainText('Vencidas sin purgar: 2');
     expect((await new AxeBuilder({ page }).include('app-crm-solicitudes-web').analyze()).violations).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await page.screenshot({ path: `../.artifacts/web-metrics-${theme}.png`, fullPage: true });
+    await page.screenshot({ path: `../.artifacts/local/web-metrics-${theme}.png`, fullPage: true });
     await panel.getByLabel('Recibidas desde').fill('2026-10-02');
     await expect(panel.locator('dl')).toHaveCount(0); // Never leave results attributed to edited dates.
     expect(calls).toBe(1);
