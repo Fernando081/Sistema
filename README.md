@@ -2,6 +2,18 @@
 
 **U01.1 — sistema visual "Industrial premium" (27/10/2026):** tokens claro/oscuro (grafito, tinta y latón), Inter variable autoalojada, Material 3 alineado (botones, campos, pestañas, tablas, diálogos, insignias), shell nuevo (riel grafito, barra superior clara con avatar y cierre de sesión separado, encabezado con sección), login y centro de operación rediseñados. Corrige botones del dashboard sin estilo, texto invisible en oscuro, botón deshabilitado invisible y contrastes. Capturas antes/después y Axe en `tests/ui-showcase.spec.ts`. **U01 sigue parcial:** U01.2 migrar pantallas de alto uso, U01.3 gráficas, U01.4 limpieza de overrides. [Reglas y estado](docs/SISTEMA_VISUAL.md).
 
+**O01.2b — envío de documentos por correo (28/10/2026):** modo "Correo" junto al Local de O01.2a, ejecutor persistente con reserva y token, reintentos 1/5/15/60 min, clasificación por fase SMTP (aceptado, temporal, permanente, **incierto** sin reenvío automático) y conciliación por un administrador. Configuración validada y **desactivada por defecto**. Migración 119. Aceptación real con servidor SMTP local **31/31**. [Manual](docs/SALIDA_DOCUMENTOS.md#o012b--envío-real-por-correo-con-ejecutor-persistente-28102026).
+
+**F03 — DPO contable (28/10/2026):** Contabilidad → "Días de pago (DPO)", con saldo medio diario de Proveedores sobre costo y sobre compras, conciliación del mayor contra el auxiliar y de inventario contra costo, y advertencias. **Hallazgo:** el mayor de Proveedores supera al auxiliar por 595,441.00, explicado por completo por 9 compras anteriores de contado sin pago contable; requiere póliza de ajuste del contador (F02). [Manual](docs/CONTABILIDAD_Y_TESORERIA.md#f03--dpo-contable-28102026).
+
+**U02 — navegación rápida, vistas guardadas y acciones en lote (28/10/2026), completo:** Ctrl K también lleva a pantallas, con filtro por rol, recientes y navegación con flechas. Los seis listados con filtros en la URL tienen el menú "Vistas" para guardar, abrir y eliminar filtros propios (migración 118). Se corrigió `queryRows` ante `UPDATE`/`DELETE … RETURNING`, lo que arregla 5 servicios. U02.3, elegidas por el propietario: descargar varias facturas en ZIP (PDF + XML timbrado), precio por porcentaje o categoría en lote con vista previa, y pago agrupado de facturas de proveedor. [Manual](docs/NAVEGACION_Y_VISTAS.md), sesiones [U02.1/U02.2](#sesión-28102026--u021u022-navegación-rápida-y-vistas-guardadas) y [U02.3](#sesión-28102026--u023-acciones-en-lote).
+
+**O05 — base de datos desde cero (28/10/2026):** esquema completo congelado en `backend/schema/` (estructura + catálogos de sistema, sin datos de negocio ni secretos), `npm run db:init -- --database=NOMBRE`, `npm run db:create-admin` para el primer administrador y `npm run test:fresh-database`, que crea una base temporal, la compara con la actual y corre el arnés de operaciones (12/12). [Manual](docs/BASE_DESDE_CERO.md), [sesión](#sesión-28102026--o05-base-de-datos-desde-cero).
+
+**O03.1 — respaldos protegidos (28/10/2026), parcial:** archivo cifrado AES-256-GCM con clave fuera del proyecto, copia verificada a destinos externos, retención diaria/semanal/mensual con vista previa, prueba de restauración del archivo cifrado en base aislada, estado con avisos y tarea diaria opcional de Windows. Falta la puesta en marcha del propietario (clave, USB, tarea, aplicar retención). [Manual](docs/RESPALDOS.md), [sesión](#sesión-28102026--o031-respaldos-protegidos).
+
+**H03 — IVA de compras y días de crédito por proveedor (28/10/2026):** "Nueva compra" captura la tasa de IVA por renglón (16 %, 8 % o 0 %/exento) y el proveedor tiene días de crédito (por defecto 30). Migración117: el IVA de toda factura de proveedor aprobada (también Abastecimiento) va a **1160 IVA acreditable pendiente de pago** en lugar de inventario, y cada pago o anticipo aplicado traspasa su parte proporcional a **1170 IVA acreditable pagado**. [Sesión H03](#sesión-28102026--h03-iva-de-compras-y-días-de-crédito-por-proveedor).
+
 **H02 — auditoría de rutas y calidad del repositorio (27/10/2026), completo:** auditoría de las 408 rutas; se cerraron conversión de cotización a venta sin `ventas.crear`, facturar pedido, liberar apartados, cobros/REP (`cobranza.registrar`) y lotes/series/cascos (`inventario.trazabilidad`), migración115. Prueba que falla ante escrituras nuevas sin control y aceptación real en copia aislada (`test:route-permissions`). Checksums de migraciones independientes del fin de línea (corrige seis que habrían bloqueado `db:migrate` en un clon nuevo), `.gitattributes`, lint del frontend en cero, formateo gradual con Prettier y presupuesto Angular con error en 525 kB. **H02-b (decidido 27/10/2026):** "Nueva compra" registra orden → recepción → factura de proveedor aprobada (y pago si es de contado) en una transacción, migración116; las deudas anteriores se pagan en "Compras anteriores" hasta llegar a cero. **H02-c:** las capturas de pruebas ya no se versionan (`.artifacts/local/`). [Sesión H02](#sesión-27102026--h02-auditoría-de-rutas-y-calidad-del-repositorio).
 
 **H01 — endurecimiento de seguridad, fechas y repositorio (27/10/2026):** cierra rutas que cualquier sesión podía usar: pago a compras anteriores (`POST /pago-proveedor`, ahora ADMIN + `compras.pagar`, actor e idempotencia), compra directa (`compras.recibir` + actor) y surtir/cancelar pedidos (`pedidos.surtir`/`pedidos.cancelar`, migración114 concedida a user/admin). Fechas por defecto en hora de Tampico (corte financiero, contabilidad, cierre de tesorería, ticket PDF, Cuentas por pagar); un solo generador de XML de REP. Cuota de peticiones por cliente detrás del proxy local. IDE/resultados de pruebas/uploads fuera de git. **Pendientes exactos en H02** (plan de mejoras). [Sesión H01](#sesión-27102026--h01-endurecimiento-de-seguridad-fechas-y-repositorio).
@@ -602,22 +614,23 @@ IDs estables. Cada cierre exige código, migración si aplica, validación y act
 | A01.2 | Diferido por propietario,21/10/2026 | Sin planes actuales de cámara o QR para ningún flujo. No ampliar ni priorizar hardware/impresión/HTTPS para esas funciones; código opcional conservado, sin requisito para avanzar. Piloto/procedimiento pendiente si se retoma |
 | O01 | Parcial | O01.1 recupera reportes internos con cola durable; O01.2 conserva salida transaccional/otros consumidores y O01.3 operación/capacidad/retención/canales reales |
 | O01.1 | Implementado/verificado local,21/10/2026 | Migración112: Error+cola atómicos, tres intentos con espera10/20min, reserva5min/token, interrupción, cancelación, recuperación única separada e historial inmutable/ACL; sin efectos externos. [Manual](docs/COLA_REPORTES.md) |
-| O01.2 | Parcial | O01.2a conserva solicitudes/PDF privados y consumidor manual local; O01.2b mantiene ejecutor/adaptador de correo y O01.2c otros consumidores. No implica entrega real |
+| O01.2 | Parcial | O01.2a conserva solicitudes/PDF privados y consumidor manual local; O01.2b ya envía por correo con ejecutor persistente (desactivado por defecto); O01.2c otros consumidores pendiente. "Aceptado" no implica entrega al buzón |
 | O01.2a | Implementado/verificado local,22/10/2026 | Migración113: revisión pura, permiso/ACL, destinatario registrado, UUID/huellas/PDF exacto, preparación atómica, simulación/cancelación/obsolescencia conservadas, sin SMTP ni cambios fiscales/financieros. [Manual](docs/SALIDA_DOCUMENTOS.md) |
-| O01.2b | Pendiente técnico local; siguiente | Ejecutor persistente/adaptador de correo, reintentos y aceptación incierta/conciliación/configuración; probar con transporte local controlado sin mensajes externos. No convertir Simulado en enviado |
+| O01.2b | Implementado/verificado local 28/10/2026 | Modo Correo, ejecutor `document_mail` (reserva/token, `SKIP LOCKED`, reintentos con espera, Incierto sin reenvío y conciliación ADMIN), transporte por fases con `SMTPConnection`, configuración validada y desactivada por defecto, migración 119. Aceptación `npm run test:mail-outbox` 31/31 con SMTP local; O01.2a sigue en 13 grupos. Sin envíos reales ni proveedor SMTP probado. [Manual](docs/SALIDA_DOCUMENTOS.md#o012b--envío-real-por-correo-con-ejecutor-persistente-28102026) |
 | O01.2c | Pendiente técnico local | Consumidores PAC/campañas reutilizando proveedores/idempotencia fiscal y C01/consentimientos existentes, primero mock/local y revalidando bajas/configuración; sin PAC real o campañas externas |
 | O01.3 | Pendiente operativo/externo | Acumulación/retención/capacidad/recuperación, aceptación del procedimiento, destinatarios/canales/configuración/proveedores reales; no confundir salud del cron con ausencia de Agotado |
 | O02 | Parcial: O02.1–O02.4 implementados/verificados en alcance local | Refresco dashboard y dos cron originales con historial/resultado/estado (086–087); C03.2 agrega crm_reports con110 y reutiliza la observabilidad/avisos existentes. Avisos internos de fallo/atraso, lectura sin falsa recuperación, deduplicación por proceso/ADMIN activo y reapertura tras nuevo incidente. O02.4 no añadió migración; esquema actual113, sin reescribir086–087. Pendientes: monitor externo, retención, observabilidad centralizada y avisos fuera de la app |
-| O03 | Pendiente | Archivos externos, copias cifradas, retención y restauración |
+| O03 | Parcial: O03.1 implementado/verificado local 28/10/2026 | O03.1: `backup:key/protect/verify/restore-test/prune/status/daily`, formato `.sbk` AES-256-GCM con manifiesto sha256, copia externa verificada, retención 14 d/8 sem/12 meses con vista previa y prueba de restauración aislada. Pendiente del propietario: crear y resguardar la clave, configurar `BACKUP_EXTERNAL_DIRS`, registrar la tarea y activar `BACKUP_RETENTION_APPLY`. Pendiente técnico: copia fuera de la oficina, aviso de antigüedad dentro del ERP. [Manual](docs/RESPALDOS.md) |
 | O04 | Pendiente | Staging, despliegue y rollback |
-| O05 | Pendiente | Esquema inicial versionado y preparación reproducible de una base desde cero |
+| O05 | Implementado/verificado local 28/10/2026 | Esquema base (`esquema-base.sql`, `datos-base.sql` con 29 catálogos, manifiesto con sha256 y 111 migraciones incluidas hasta la 117), `db:init`, `db:create-admin`, `db:schema:export` y `test:fresh-database` 12/12. Límites: las migraciones 001–117 no corren solas sobre una base vacía (el camino soportado es esquema base + posteriores); probado sólo en PostgreSQL 18.2. [Manual](docs/BASE_DESDE_CERO.md) |
 | H01 | Implementado/verificado local 27/10/2026 | Permisos/actor/idempotencia en `POST /pago-proveedor` (ADMIN+`compras.pagar`) y actor+`compras.recibir` en `POST /compra`; `pedidos.surtir`/`pedidos.cancelar` (114, user/admin); helper de fecha de Tampico en backend/frontend aplicado a corte financiero (`AT TIME ZONE`), contabilidad, cierre de tesorería, ticket PDF y Cuentas por pagar; `RepXmlService` delega al único generador fiscal; `ClientThrottlerGuard` + `xfwd` del proxy; puerto por defecto 3100; `.vs`, `frontend/.vs`, `test-results`, `backend/uploads` fuera de git. [Sesión](#sesión-27102026--h01-endurecimiento-de-seguridad-fechas-y-repositorio) |
-| H02 | Implementado 27/10/2026: a, d, e, f, g; b y c tras decisión del propietario (sesión "H02-b y H02-c") | (a) Hecho: inventario de 408 rutas, cinco grupos de escrituras cerrados (conversión a venta, facturar, liberar apartados, cobros/REP, trazabilidad) con migración115 y lista revisada `OPEN_WRITE_ROUTES` en prueba. (b) **Pendiente decisión:** "Nueva compra" (`POST /compra`, `fn_crear_compra`) sigue generando saldo en `compra.saldo_pendiente`, que sólo se paga por `/pago-proveedor`; retirar ese endpoint exige antes retirar o convertir "Nueva compra" al flujo orden→recepción→factura. (c) **Pendiente decisión:** `.artifacts/` (906 archivos, referenciados como evidencia; ~150 MiB de historia). (d) Hecho: lint frontend y formateo gradual (shared/pago, common/pago-proveedor/salida-documentos); resto de carpetas se incorpora gradualmente. (e) Hecho: `.gitattributes`, checksums tolerantes y re-sellado de 019/077/080/081/082/085. (f) Hecho: análisis y error de presupuesto en 525 kB; reducción real requiere migrar Tailwind/Material. (g) Hecho: `test:route-permissions` 6 grupos reales |
+| H02 | Implementado 27/10/2026: a, d, e, f, g; b y c tras decisión del propietario (sesión "H02-b y H02-c") | (a) Hecho: inventario de 408 rutas, cinco grupos de escrituras cerrados (conversión a venta, facturar, liberar apartados, cobros/REP, trazabilidad) con migración115 y lista revisada `OPEN_WRITE_ROUTES` en prueba. (b) Hecho tras decisión del propietario: "Nueva compra" registra orden→recepción→factura aprobada (y pago de contado) con migración116; ya no genera saldo en `compra.saldo_pendiente`. Las deudas anteriores se pagan por `/pago-proveedor` hasta llegar a cero; después se puede retirar ese endpoint y la pestaña "Compras anteriores". (c) Hecho: se conservan los 906 archivos ya versionados en `.artifacts/` y las capturas nuevas van a `.artifacts/local/` (ignorada). (d) Hecho: lint frontend y formateo gradual (shared/pago, common/pago-proveedor/salida-documentos); resto de carpetas se incorpora gradualmente. (e) Hecho: `.gitattributes`, checksums tolerantes y re-sellado de 019/077/080/081/082/085. (f) Hecho: análisis y error de presupuesto en 525 kB; reducción real requiere migrar Tailwind/Material. (g) Hecho: `test:route-permissions` 6 grupos reales |
+| H03 | Implementado/verificado local 28/10/2026 | IVA por renglón en "Nueva compra" (16/8/0 %), `proveedor."DiasCredito"` (0–365, defecto 30) con campo en la ficha, pólizas de factura/pago/aplicación con 1160→1170 (migración117). Límites en la [sesión](#sesión-28102026--h03-iva-de-compras-y-días-de-crédito-por-proveedor) |
 | U01 | Implementado U01.1–U01.6 (U01.2: venta, facturas, cotizaciones, cobranza, cuentas por pagar, productos, CRM, caja, gastos, contabilidad, abastecimiento, reabastecimiento, almacén móvil, auditoría, cliente 360, política comercial, campañas, secuencias, reglas, reportes programados, expediente de unidad, factura global, revisiones de cotización, catálogo web, salida de documentos) 27/10/2026 | U01.1: sistema visual "Industrial premium" (tokens, Inter, Material, shell, login, centro de operación) con `ui-showcase` (Axe/desbordamiento 1440/390 claro/oscuro). U01.2 parcial: venta, facturas, historial y nueva cotización, cobranza, cuentas por pagar, productos, pipeline y bandeja de CRM, caja, gastos, contabilidad, abastecimiento, reabastecimiento, almacén móvil, auditoría, cliente 360, política comercial, pantallas secundarias de CRM, factura global, revisiones de cotización, catálogo web y salida de documentos migradas (y estilos compartidos de formularios CRM en tokens); ninguna pantalla del shell conserva `h1` propio; listas principales en modo tarjeta en móvil y precio de venta con dos decimales; vistas internas (pestañas de contabilidad, predicción, recepción, cliente 360, política comercial, revisiones, expediente) revisadas con captura; diálogos con `h2` y diálogos propios migrados a `MatDialog` (U01.2 completa), U01.3 paleta de gráficas ECharts y U01.4 retirar overrides históricos de modo oscuro. [Manual](docs/SISTEMA_VISUAL.md) |
-| U02 | Pendiente | Vistas guardadas, acciones masivas y navegación rápida |
+| U02 | Implementado/verificado local 28/10/2026 (U02.1, U02.2, U02.3) | U02.1: navegación rápida a pantallas en Ctrl K (rol, recientes, teclado). U02.2: vistas guardadas por usuario en 6 listados (migración 118, máximo 20 por listado). U02.3: ZIP de facturas (100), precio/categoría de productos con vista previa y rechazo si cambió (200, ADMIN) y pago agrupado a proveedor por vencimiento (2–50, ADMIN + `compras.pagar`). [Manual](docs/NAVEGACION_Y_VISTAS.md) |
 | F01 | Externo pendiente | PAC sandbox con CSD y escenarios del emisor |
 | F02 | Externo pendiente | Validación contable y saldos iniciales |
-| F03 | Pendiente | DPO contable con saldos medios y costo/compras conciliados; no confundir con plazo efectivo de pago |
+| F03 | Implementado/verificado local 28/10/2026 | `GET /finanzas/contabilidad/dpo` y pestaña "Días de pago (DPO)": saldo medio diario de 2100, DPO sobre costo (5000) y sobre compras a crédito, conciliación mayor/auxiliar (al día de hoy) e inventario/costo, plazo efectivo Q02 sólo como contraste. Sin migración ni escrituras. La diferencia de 595,441.00 en Proveedores espera la decisión contable de F02. [Manual](docs/CONTABILIDAD_Y_TESORERIA.md#f03--dpo-contable-28102026) |
 | E01 | Por definir | Empresas/sucursales si se requieren |
 | E02 | Por definir | Activos fijos/reportes fiscales con requisitos del contador |
 | E03 | Por definir | Importación, deduplicación y calidad de maestros |
@@ -2940,3 +2953,156 @@ Sesión iniciada el11 y cerrada el12 de octubre (America/Mexico_City). Implement
 - **H02-c:** las pruebas Playwright escriben capturas en `.artifacts/local/` (ignorada); `.gitignore` excluye imágenes nuevas en `.artifacts/`. Las 906 rutas ya versionadas (evidencia citada) se conservan sin cambios; los reportes JSON/log se siguen versionando. Las 32 capturas versionadas que las pruebas habían regenerado volvieron a su versión del repositorio (las nuevas quedaron copiadas en `.artifacts/local/`). Las capturas citadas en las sesiones U01 (`.artifacts/u01*`) existen sólo en el equipo local.
 - **Pruebas:** backend **421 unitarias/71 suites** (nuevas: compra directa contado/crédito, folio automático, vencimiento, conciliación, idempotencia, conflicto de folio; permisos de `POST /compra`; búsqueda con compras directas), lint backend+frontend y format:check, `check:repository` y `check:no-any`. **Aceptación real** `npm run test:direct-purchase` (`backend/verify-direct-purchase.js`): ejecuta el servicio contra la base configurada dentro de una transacción que se revierte; **20/20 comprobaciones** (orden/recepción/factura/pago, inventario, kárdex, pólizas, caja, sin saldo en el modelo anterior, reintentos, historial y detalle) y verifica que no quedan datos. Frontend **98 unitarias**, **211 UI Playwright**; inicial 439.17 kB. Sin cambios en la web pública.
 - **Límites:** la aceptación no prueba permisos por HTTP con cuentas reales (cubiertos por metadatos en `route-permissions.spec.ts`; la base sólo tiene admin); no se desglosa IVA en compras directas; el plazo de crédito es fijo (30 días) porque el proveedor no tiene días de crédito registrados.
+
+### Sesión 28/10/2026 — H03: IVA de compras y días de crédito por proveedor
+
+- **Motivo:** límites que dejó H02-b. Además se encontró que la póliza de toda factura de proveedor cargaba el total con IVA a Inventarios (1130) y que no existía cuenta de IVA acreditable. La base no tenía facturas de proveedor ni partidas de orden con IVA, por lo que no había pólizas históricas que corregir.
+- **Decisión del propietario:** IVA acreditable pendiente → pagado (acreditamiento por flujo de efectivo); 30 días como plazo para proveedores sin días capturados.
+- **Migración117 aplicada** (`117_iva_acreditable_compras.sql`): cuentas 1160 "IVA acreditable pendiente de pago" y 1170 "IVA acreditable pagado" (bajo 1000); columna `proveedor."DiasCredito"` (0–365, defecto 30); función `fn_iva_proporcional_factura_proveedor`; nuevas versiones de `fn_poliza_factura_proveedor` (1130 = total − IVA, 1160 = IVA, 2100 = total), `fn_poliza_factura_proveedor_pago` (además 1170 debe / 1160 haber por la parte proporcional del pago) y `fn_poliza_aplicacion_proveedor` (anticipo aplicado: traspaso 1160→1170; nota de crédito: abono a 1130 sin IVA y a 1160 por su IVA). No reescribe pólizas existentes. Previo legible `.backups/2026-10-28T16-29-08-319Z` → `db:check` revertido → `db:migrate`; posterior legible `.backups/2026-10-28T16-29-20-426Z`.
+- **Backend:** `DetalleCompraDto.tasaIva` opcional (0, 0.08 o 0.16; sin valor = 0, compatible con clientes anteriores); `total` ahora es subtotal + IVA y se valida con el mismo cálculo que la orden y la conciliación de la factura. La orden y la factura llevan la tasa por renglón; el inventario y el kárdex siguen con el costo sin IVA. El vencimiento a crédito usa `proveedor."DiasCredito"`. La respuesta agrega `subtotal`, `impuestos` y `total`; el detalle de compra directa agrega `tasa_iva`. Proveedores: `diasCredito` en DTO/entidad, guardado en alta y edición.
+- **Frontend:** columna IVA por renglón (toma la tasa del producto si es 16/8/0 %, si no 16 %), encabezados "sin IVA", subtotal/IVA/total en el resumen, días de crédito del proveedor en el recuadro y en el interruptor de crédito; campo "Días de crédito" en el diálogo de proveedor.
+- **Pruebas:** backend unitarias nuevas (IVA por renglón con totales y pago con IVA; días del proveedor; total sin IVA rechazado). Aceptación real `npm run test:direct-purchase`: **22/22** (agrega póliza 1130 sin IVA + 1160, traspaso 1160→1170 en el pago de contado, vencimiento a 45 días del proveedor y pago parcial con IVA proporcional), dentro de una transacción revertida. Frontend: pruebas de servicio actualizadas (payload con `tasaIva`, `diasCredito` y su valor por defecto). Verificación completa: `check:repository`, `check:no-any`, build (inicial 439.19 kB), lint backend+frontend y format:check, backend **423 unitarias/71 suites** + 19 e2e, frontend **98 unitarias** y **211 UI Playwright**. No hay prueba UI dedicada que llene la columna IVA o el campo de días de crédito.
+- **Límites:** la aplicación de anticipos y notas de crédito con IVA está cubierta por diseño de la función, sin prueba de aceptación propia; con varios pagos parciales el redondeo proporcional puede dejar centavos en 1160; las retenciones siguen dentro de 1130 como antes; no se distingue 0 % de exento (ambos sin IVA); la declaración de IVA y el traspaso contra IVA trasladado no se automatizan; la validación con el contador sigue en F02.
+
+### Sesión 28/10/2026 — O03.1: respaldos protegidos
+
+- **Situación encontrada:** 81 carpetas en `.backups` (~610 MB) en el mismo disco, sin cifrar, sin retención y sin copia fuera del equipo.
+- **Implementado:** `backend/backup-protect.js` (sin dependencias nuevas) y comandos `backup:key`, `backup:protect`, `backup:verify`, `backup:restore-test`, `backup:prune`, `backup:status`, `backup:daily` y `test:backup-protect`; `scripts/register-backup-task.ps1` (no ejecutado: lo registra el propietario); variables `BACKUP_*` en `backend/.env.example` sin valores secretos; manual [docs/RESPALDOS.md](docs/RESPALDOS.md). `db:backup` no cambia.
+- **Corrección encontrada al probar:** el arnés `backend/scratch/verify-operaciones-2026-09-16.js` que usa `verify:release`/`verify-isolated-database.js` seguía construyendo `CompraService(ds)` con la firma anterior a H02-b y fallaba. Ahora usa los servicios formales y comprueba la misma orden y factura en los reintentos concurrentes. En `backend/scratch/full-app-financial-http.js` se cambió `idCompra` (siempre undefined desde H02-b, la comparación pasaba en vacío) por `idOrden`; ese arnés de carga no se volvió a ejecutar.
+- **Pruebas:** `test:backup-protect` **5/5**: ida y vuelta byte por byte, sin texto claro, archivo alterado, clave distinta y truncado sin dejar extracción, clave no reemplazable, copia externa con destino ausente, retención. **Ejecución real** con clave y "USB" temporales del área de trabajo: `db:backup` → cifrado de 12 archivos (8.4 MB) verificado → copia externa verificada y destino desconectado informado (código 2) → `backup:verify` de la copia externa → `backup:restore-test` desde la copia externa: restauración en base aislada, `db:check`/`db:migrate`, caja y operaciones aisladas aprobadas, base y carpeta eliminadas → `backup:daily` completo → `backup:status` sin avisos. Vista previa de retención sobre los respaldos reales: conservar 57 y eliminar 24; **no se eliminó nada**. Los `.sbk` de prueba se borraron porque usan una clave temporal. `check:repository` y `check:no-any` aprobados.
+- **Límites:** ver [manual](docs/RESPALDOS.md#límites). Las carpetas locales siguen sin cifrar; no hay copia en la nube; la clave queda en el equipo y su resguardo aparte depende del propietario; el aviso no se muestra en el ERP; la tarea de Windows no se registró ni se probó programada.
+
+### Sesión 28/10/2026 — O05: base de datos desde cero
+
+- **Situación encontrada:** las tablas y funciones originales (`producto`, `cliente`, `factura`, catálogos SAT, `fn_get_proveedores`, etc.) no estaban en ninguna migración. Faltan las migraciones 013, 040 y 045. No había forma de crear el primer administrador sin `ALLOW_ENV_AUTH`, que está prohibido en producción. La base actual proviene de un volcado con esquemas de Supabase (`auth`, `storage`…), pero `public` no depende de ellos.
+- **Implementado:** `backend/schema-baseline.js` (`export`, `init`, `verify`), `backend/create-admin.js` y `backend/schema/` generado desde la base actual. Comandos `db:init`, `db:create-admin`, `db:schema:export` y `test:fresh-database`. `.gitattributes` versiona `backend/schema/*.sql` sin conversión de fin de línea. Manual [docs/BASE_DESDE_CERO.md](docs/BASE_DESDE_CERO.md).
+- **Problemas resueltos al probar:**
+  - `pg_dump` en Windows escribe en modo texto (
+). Se deshace una sola vez para conservar los  propios de funciones creadas con CRLF.
+  - `pg_trgm` no viene en un volcado por esquema y se agrega antes de los índices.
+  - La llave aleatoria de `estrict` se quita para que el archivo sea estable.
+  - Los catálogos se cargan con `--disable-triggers`, porque `cuenta_contable` tiene una llave foránea circular y así no se generan registros de auditoría.
+  - La comparación de esquemas tolera sólo dos reescrituras equivalentes que PostgreSQL hace al restaurar: `ARRAY` con cast y agrupación de `AND` en `CHECK` (107 líneas).
+- **Pruebas:** `test:fresh-database` **12/12** sobre una base temporal eliminada al final. Cubre:
+  - manifiesto y huellas;
+  - `init` sin errores;
+  - esquema equivalente;
+  - 29 catálogos con las mismas filas;
+  - sin datos de negocio, usuarios ni auditoría;
+  - saldos en cero;
+  - sin migraciones pendientes;
+  - `create-admin` con bcrypt y su rechazo con administrador existente;
+  - permisos del rol admin;
+  - el **arnés completo de operaciones** de `verify:release` (ventas, compras, caja, NC/REP, fiscal mock, pedidos, backorder, abastecimiento, cuentas por pagar, tesorería) con un cliente y un proveedor de prueba sólo en la base temporal.
+
+  Revisión de secretos en los archivos generados: sin hashes ni credenciales. `check:repository` y `check:no-any` aprobados.
+- **Límites:**
+  - Las migraciones 001–117 no corren solas sobre una base vacía; el camino soportado es esquema base + migraciones posteriores.
+  - 2 colonias con caracteres dañados (U+FFFD) vienen de la base original.
+  - Sólo se probó en PostgreSQL 18.2.
+  - No configura emisor fiscal, CSD/PAC ni saldos iniciales (F02).
+  - `datos-base.sql` pesa 7.5 MB por los catálogos SAT y de colonias.
+
+### Sesión 28/10/2026 — U02.1/U02.2: navegación rápida y vistas guardadas
+
+- **Contraste previo:**
+  - Ctrl K ya existía y buscaba productos, clientes y unidades.
+  - Q04.3/Q04.4 ya guardan los filtros de seis listados en la URL.
+  - No había selección múltiple en esos listados ni vistas guardadas.
+- **U02.1:**
+  - `frontend/src/app/layout/app-pages.ts` concentra las 37 pantallas (título, descripción, icono) y se usa en el encabezado y en la búsqueda.
+  - La búsqueda no distingue acentos, admite varias palabras y considera nombre, descripción, sección y ruta.
+  - Filtra por los `data.roles` de las rutas hijas del shell.
+  - Recientes en `localStorage` (`erp.recent-pages`), protegido con try/catch.
+  - Flechas, Enter y Escape. El panel ya no se cierra al mover el foco a un resultado (`focusout` del formulario).
+- **U02.2:**
+  - Migración 118 (`vista_guardada`), con respaldo previo `.backups/2026-10-28T18-23-44-859Z`, `db:check` revertido, `db:migrate` y respaldo posterior `.backups/2026-10-28T18-23-50-954Z`.
+  - Módulo `backend/src/vistas-guardadas` con `GET`/`POST`/`DELETE`. Las rutas de escritura están revisadas en `OPEN_WRITE_ROUTES` como datos propios.
+  - Componente `app-saved-views` en Clientes, Proveedores, Productos, Facturas, Cotizaciones y Compras.
+  - El mock de UI por defecto responde `[]` a `/vistas-guardadas`.
+- **Corrección transversal:** `queryRows` desempaca `[filas, afectadas]` de TypeORM en `UPDATE`/`DELETE … RETURNING`. Afectaba a:
+  - `cliente.deleteContacto` (ahora usa `queryRows`);
+  - `producto.deleteNumeroParte` y `producto.deleteAplicacion`: 404 de registros inexistentes;
+  - `unidad-piezas`: la respuesta `{version}`;
+  - `almacen.updateCore`: el conflicto concurrente;
+  - `proveedor.create` con días de crédito (H03);
+  - `vistas-guardadas`.
+
+  Las pruebas simuladas no lo detectaban; lo encontró la prueba real.
+- **Pruebas:**
+  - Backend: **431 unitarias en 73 suites** (nuevas: vistas guardadas y `queryRows`) y 19 e2e.
+  - Frontend: **101 unitarias** (nuevas: búsqueda de pantallas, roles, encabezado y consulta de vista) y **214 UI Playwright**. Las 3 nuevas cubren Ctrl K con flechas, Enter, recientes, Escape y Axe en la barra; un operador sin pantallas de administrador; y guardar, aplicar y eliminar una vista en Facturas.
+  - Prueba real dentro de una transacción revertida, **9/9**: consulta limpia, actualización por nombre, aislamiento entre usuarios, eliminación ajena rechazada, `CHECK` de ruta, límite de 20, borrado en cascada y alta de proveedor H03.
+  - `test:direct-purchase` 22/22.
+  - `test:fresh-database` 12/12, con la migración 118 aplicada después del esquema base.
+  - Build (inicial 439.19 kB), lint y format:check, `check:repository` y `check:no-any`.
+- **Límites:**
+  - Vistas no compartidas y sólo en los seis listados.
+  - Eliminar sólo la vista activa.
+  - Recientes por navegador.
+  - Sin atajos de una tecla ni acciones en Ctrl K.
+  - **U02.3 sin implementar:** requiere que el propietario defina qué operaciones en lote necesita.
+
+### Sesión 28/10/2026 — U02.3: acciones en lote
+
+- **Decisión del propietario:** facturas (descargar varias), productos (precios en lote) y cuentas por pagar (pagar varias).
+- **Común:** `frontend/src/app/shared/bulk-selection.ts` (selección por fila y por página, conservada entre páginas, con máximo y filtro de seleccionables) y la barra `.bulk-bar`.
+- **Facturas:**
+  - `GET /venta/documentos-lote?ids=` (`DescargasVentaService`) devuelve un ZIP con el PDF, el XML timbrado sin modificar y `LEEME-descarga.txt`.
+  - Generador ZIP propio `backend/src/common/zip.ts`, sin dependencias.
+  - Comprobado con 3 facturas reales y `Expand-Archive` de Windows: PDF válidos, XML de la timbrada, LEEME con las 2 sin XML y el ID inexistente.
+- **Productos:**
+  - `POST /producto/lote/vista-previa` y `/lote/aplicar` (ADMIN, `ProductoLoteService`).
+  - Porcentaje con redondeo a centavos o pesos, o categoría.
+  - Aplicación en una transacción, idempotente (`operation_type='producto_lote'`). Se rechaza si cambió algún valor desde la vista previa.
+  - Kárdex `CAMBIO_PRECIO` y auditoría con el usuario.
+  - Diálogo `producto-lote-dialog`.
+- **Cuentas por pagar:**
+  - `POST /cuentas-proveedor/pagos-agrupados` (ADMIN + `compras.pagar`, `payGrouped`): mismo proveedor y moneda, un pago por factura con la misma referencia, reutilizando `payIn` (póliza, IVA 1160→1170, caja o banco).
+  - Monto parcial repartido por vencimiento más próximo (`distributeGroupedPayment`).
+  - Idempotente (`supplier-payment-batch`).
+  - Casillas en la lista de Facturas y diálogo "Pago agrupado" con el registro de intentos existente.
+- **Accesibilidad:** `[attr.aria-label]` en `mat-checkbox` no llega al `input`; las casillas de fila usan el input `aria-label`. Lo detectó la prueba UI.
+- **Pruebas:**
+  - Backend: **441 unitarias en 76 suites** (nuevas: ZIP, precios en lote y reparto del pago agrupado) y 19 e2e.
+  - Aceptación real **`npm run test:bulk-actions` 17/17** (transacción revertida).
+  - Frontend: **103 unitarias** (nuevas: selección en lote) y **217 UI** (nuevas: las tres acciones).
+  - `test:direct-purchase` 22/22 y `test:fresh-database` 12/12.
+  - Build (inicial 439.19 kB), lint y format:check, `check:repository` y `check:no-any`.
+  - Sin migración nueva.
+- **Límites:** ver el [manual](docs/NAVEGACION_Y_VISTAS.md#pruebas-y-límites).
+  - ZIP en memoria, hasta 100 facturas.
+  - El lote no toca costos ni listas especiales.
+  - El pago agrupado no aplica anticipos ni notas de crédito, y se revierte factura por factura.
+
+### Sesión 28/10/2026 — O01.2b (envío por correo) y F03 (DPO contable)
+
+- **O01.2b:**
+  - **Implementado:**
+    - backend: `correo-config.ts` (validación sin secretos), `correo-transporte.ts`, `salida-correo-ejecutor.service.ts` y el servidor de pruebas `common/smtp-local-prueba.ts`, que sólo usan las pruebas;
+    - `SalidaDocumentosService` con modo, cancelación en cola, historial con estado del envío, `conciliar` y `validarParaEnvio`;
+    - ruta `POST /venta/:id/correos/:solicitud/conciliar`;
+    - job `document_mail` en Procesos automáticos y en sus avisos;
+    - pantalla de salida con modo, estados y conciliación;
+    - variables `MAIL_*`/`SMTP_*` en `.env.example`.
+  - **Migración 119 aplicada.** Respaldo previo `.backups/2026-10-28T20-03-42-818Z`, `db:check` revertido, `db:migrate` y respaldo posterior `.backups/2026-10-28T20-03-48-951Z`.
+  - **Hallazgos al probar:**
+    - El transporte de alto nivel de nodemailer reporta `command: "CONN"` aunque la conexión se cortó **después** de entregar el contenido. Clasificarlo como temporal habría duplicado correos, así que se cambió a `SMTPConnection` con fases propias.
+    - La recuperación de reservas vencidas leía `reserva_hasta` ya en NULL en el `RETURNING`; se corrigió con un CTE previo.
+    - El verificador O01.2a estaba roto desde U01: hay dos encabezados "Salida de documentos" (h1 del shell y h2 oculto). Se usa `.first()` y ahora imprime el mensaje del error.
+    - Sus capturas se escriben en `.artifacts/local/` (H02-c). Las versionadas se restauraron y las nuevas se conservaron localmente.
+- **F03:**
+  - `DpoContableService` (`finanzas/dpo-contable.service.ts`, sólo lectura en snapshot) y pestaña "Días de pago (DPO)" en Contabilidad.
+  - **Hallazgo contable:** `fn_reconstruir_poliza_compra` del modelo anterior abonaba 2100 incluso en compras de contado, y nunca se registró su pago. Por eso el mayor (674,091.00) excede al auxiliar (78,650.00) en 595,441.00, que son 9 compras "Completada" sin `pago_proveedor`. Por la misma razón, el ledger tampoco descontó esa salida de caja o bancos.
+  - No se corrigió: requiere una póliza de ajuste aprobada por el contador (F02).
+  - Con el mayor actual, el DPO sobre costo de 90 días es 9,759 días y la pantalla lo marca como no confiable.
+- **base desde cero (O05):** la comparación de catálogos ahora usa la base configurada, porque la migración 119 agrega el job `document_mail` después del esquema base. Sigue en 12/12 con 118 y 119 aplicadas sobre el esquema congelado.
+- **Pruebas:**
+  - Backend: **453 unitarias en 79 suites** (nuevas: transporte contra SMTP local, configuración, decisiones del ejecutor y DPO) y 19 e2e.
+  - Aceptaciones reales: `test:mail-outbox` **31/31**, `test:document-outbox` (O01.2a) **13 grupos**, `smtpCalls=0`, copia eliminada, `test:bulk-actions` 17/17, `test:direct-purchase` 22/22 y `test:fresh-database` 12/12.
+  - Frontend: **103 unitarias** y **220 UI**. Nuevas: `mail-outbox.spec.ts` (2) y `dpo-contable.spec.ts` (1); `ui-showcase` simula `/contabilidad/dpo`.
+  - Build (inicial 439.19 kB), lint y format:check.
+- **Límites:**
+  - O01.2b: sin proveedor SMTP real, SPF/DKIM, constancia de entrega ni rebotes; el ejecutor vive en el backend encendido; sin bandeja global de envíos.
+  - F03: el auxiliar sólo se compara al día de hoy; DPO por empresa, no por proveedor.
+  - Siguen pendientes O01.2c, O01.3 y F02.
