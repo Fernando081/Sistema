@@ -38,7 +38,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     MatIconModule, MatTableModule, MatAutocompleteModule, MatSelectModule, MatSnackBarModule, MatTooltipModule,
     MatDialogModule,
   ],
-  templateUrl: './rep-create.component.html'
+  templateUrl: './rep-create.component.html',
+  styleUrls: ['../../shared/list-page.css', './rep-create.component.css'],
 })
 export class RepCreateComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
@@ -163,7 +164,7 @@ export class RepCreateComponent implements OnInit {
         }));
         this.cdr.detectChanges();
       },
-      error: (e: unknown) => this.snackBar.open('Error al cargar facturas PPD', 'Ok', {duration: 3000})
+      error: () => this.snackBar.open('Error al cargar facturas PPD', 'Ok', {duration: 3000})
     });
   }
 
@@ -272,7 +273,7 @@ export class RepCreateComponent implements OnInit {
       next: (blob: Blob) => {
         downloadDocument(blob, `REP_${idRep}.pdf`);
       },
-      error: (err) => this.snackBar.open('Error al descargar el PDF', 'Ok', {duration: 3000})
+      error: () => this.snackBar.open('Error al descargar el PDF', 'Ok', {duration: 3000})
     });
   }
 
@@ -284,7 +285,7 @@ export class RepCreateComponent implements OnInit {
       next: (blob: Blob) => {
         downloadDocument(blob, rep.tiene_xml_fiscal ? `REP_${rep.id_rep}.xml` : `REP_${rep.id_rep}_borrador.xml`);
       },
-      error: (err) => this.snackBar.open('Error al descargar el XML', 'Ok', {duration: 3000})
+      error: () => this.snackBar.open('Error al descargar el XML', 'Ok', {duration: 3000})
     });
   }
 

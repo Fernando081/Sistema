@@ -33,6 +33,7 @@ import { PedidoService } from '../../services/pedido.service';
     MatDialogModule, RouterLink
   ],
   templateUrl: './cotizacion-list.component.html',
+  styleUrls: ['../../shared/list-page.css'],
 })
 export class CotizacionListComponent implements OnInit, OnDestroy {
   
@@ -117,7 +118,7 @@ export class CotizacionListComponent implements OnInit, OnDestroy {
           }
         });
       },
-      error: (err) => {
+      error: () => {
         this.snackBar.open('Error cargando catálogos de pago.', 'Cerrar');
       }
     });

@@ -1,118 +1,90 @@
 <!-- frontend/src/app/cotizacion/cotizacion-list/cotizacion-list.component.html -->
- <div class="p-6">
-  <mat-card>
-    <mat-card-header class="flex justify-between items-center mb-4">
-      <mat-card-title class="text-xl font-bold">Historial de Cotizaciones</mat-card-title>
-      <button mat-flat-button color="primary" routerLink="/cotizacion/nueva">
-        <mat-icon>add</mat-icon> Nueva Cotización
-      </button>
-    </mat-card-header>
-
-    <mat-card-content>
+<section class="list-surface">
+  <header class="list-head">
+    <div><h2>Historial de cotizaciones</h2><p>{{ totalItems | number }} propuestas con los filtros actuales</p></div>
+    <div class="list-head-actions">
       <button mat-stroked-button type="button" [disabled]="directory.exporting()" (click)="exportar()"><mat-icon>download</mat-icon>Exportar CSV filtrado</button>
-      <p *ngIf="directory.loading()" role="status">Cargando cotizaciones...</p>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Buscar cotización</mat-label>
-        <input matInput (input)="applyFilter($event)" [value]="directory.term()" placeholder="Buscar por folio o cliente..." #input>
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
+      <a mat-flat-button routerLink="/cotizacion/nueva"><mat-icon>add</mat-icon>Nueva cotización</a>
+    </div>
+  </header>
 
-      <div class="flex flex-wrap gap-4 items-center mb-4">
-        <mat-form-field appearance="outline">
-          <mat-label>Estado comercial</mat-label>
-          <mat-select [value]="directory.query().estado || ''" (selectionChange)="directory.setEstado($event.value)">
-            <mat-option value="">Todos los estados</mat-option>
-            <mat-option value="Vigente">Vigente</mat-option>
-            <mat-option value="Pendiente">Pendiente</mat-option>
-            <mat-option value="Convertida">Convertida</mat-option>
-            <mat-option value="Rechazada">Rechazada</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Desde</mat-label><input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().desde || ''" #desde></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Hasta</mat-label><input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().hasta || ''" #hasta></mat-form-field>
-        <button mat-stroked-button type="button" (click)="directory.setDates(desde.value, hasta.value)">Aplicar fechas</button>
-        <button mat-button type="button" (click)="desde.value = ''; hasta.value = ''; directory.setDates('', '')">Limpiar fechas</button>
-        <span>Hora de Tampico; Hasta incluye el día completo.</span>
-      </div>
-      <div class="overflow-auto" [hidden]="directory.loading()">
-        <table mat-table [dataSource]="dataSource" matSort [matSortActive]="directory.query().sortBy === 'id' ? '' : directory.query().sortBy" [matSortDirection]="directory.query().sortOrder" matSortDisableClear (matSortChange)="directory.sort($event)" class="w-full">
+  <div class="list-filters">
+    <mat-form-field appearance="outline" class="grow" subscriptSizing="dynamic">
+      <mat-label>Buscar cotización</mat-label>
+      <input matInput (input)="applyFilter($event)" [value]="directory.term()" placeholder="Folio, cliente o RFC" #input>
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Estado comercial</mat-label>
+      <mat-select [value]="directory.query().estado || ''" (selectionChange)="directory.setEstado($event.value)">
+        <mat-option value="">Todos los estados</mat-option>
+        <mat-option value="Vigente">Vigente</mat-option>
+        <mat-option value="Pendiente">Pendiente</mat-option>
+        <mat-option value="Convertida">Convertida</mat-option>
+        <mat-option value="Rechazada">Rechazada</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-          <ng-container matColumnDef="folio">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Folio </th>
-            <td mat-cell *matCellDef="let row"> C-{{row.folio}} </td>
-          </ng-container>
+  <div class="list-dates" aria-label="Rango de fecha de emisión">
+    <span class="label"><mat-icon aria-hidden="true">event</mat-icon>Emisión</span>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Desde</mat-label><input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().desde || ''" #desde></mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Hasta</mat-label><input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().hasta || ''" #hasta></mat-form-field>
+    <button mat-stroked-button type="button" (click)="directory.setDates(desde.value, hasta.value)">Aplicar fechas</button>
+    <button mat-button type="button" (click)="desde.value = ''; hasta.value = ''; directory.setDates('', '')">Limpiar fechas</button>
+    <small>Hora de Tampico; Hasta incluye el día completo.</small>
+  </div>
 
-          <ng-container matColumnDef="fecha">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
-            <td mat-cell *matCellDef="let row"> {{row.fecha_emision | date:'mediumDate'}} </td>
-          </ng-container>
+  <p *ngIf="directory.loading()" role="status" class="list-status">Cargando cotizaciones...</p>
+  <div class="list-table stack" [hidden]="directory.loading()">
+    <table mat-table [dataSource]="dataSource" matSort [matSortActive]="directory.query().sortBy === 'id' ? '' : directory.query().sortBy" [matSortDirection]="directory.query().sortOrder" matSortDisableClear (matSortChange)="directory.sort($event)">
+      <ng-container matColumnDef="folio">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Folio</th>
+        <td mat-cell *matCellDef="let row" class="folio" data-label="Folio">C-{{row.folio}}</td>
+      </ng-container>
+      <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
+        <td mat-cell *matCellDef="let row" class="muted" data-label="Fecha">{{row.fecha_emision | date:'mediumDate'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="cliente">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Cliente</th>
+        <td mat-cell *matCellDef="let row" class="stack-wide" data-label="Cliente"><div class="party"><strong>{{row.nombre_receptor}}</strong><small>{{row.rfc_receptor}}</small></div></td>
+      </ng-container>
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="amount">Total</th>
+        <td mat-cell *matCellDef="let row" class="amount" data-label="Total">{{row.total | currency:'MXN'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="estatus">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Estatus</th>
+        <td mat-cell *matCellDef="let row" data-label="Estatus">
+          <span class="badge" [ngClass]="{
+            'badge-success': row.estatus === 'Vigente',
+            'badge-info': row.estatus === 'Convertida',
+            'badge-danger': row.estatus === 'Rechazada',
+            'badge-warning': row.estatus !== 'Vigente' && row.estatus !== 'Convertida' && row.estatus !== 'Rechazada'
+          }">{{row.estatus}}</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef><span class="sr-only">Acciones</span></th>
+        <td mat-cell *matCellDef="let row" class="stack-wide">
+          <div class="row-actions">
+            <a mat-button [routerLink]="['/cotizacion',row.id_cotizacion,'versiones']">Revisiones y respuesta</a>
+            <button mat-icon-button (click)="descargarPdf(row.id_cotizacion)" matTooltip="Ver PDF" aria-label="Descargar cotización en PDF"><mat-icon>picture_as_pdf</mat-icon></button>
+            <button mat-icon-button (click)="crearPedido(row)" [disabled]="!!row.id_pedido || row.estatus === 'Convertida' || row.estatus === 'Rechazada'" [matTooltip]="row.id_pedido ? 'Pedido ya generado' : 'Crear pedido de venta'" aria-label="Crear pedido desde cotización"><mat-icon>assignment_add</mat-icon></button>
+            <button mat-icon-button (click)="convertir(row)" [disabled]="row.estatus === 'Convertida'" matTooltip="Convertir a venta" aria-label="Convertir cotización a venta"><mat-icon>shopping_cart_checkout</mat-icon></button>
+          </div>
+        </td>
+      </ng-container>
 
-          <ng-container matColumnDef="cliente">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </th>
-            <td mat-cell *matCellDef="let row"> 
-              <div class="font-medium">{{row.nombre_receptor}}</div>
-              <div class="text-xs text-gray-500">{{row.rfc_receptor}}</div>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right pr-6"> Total </th>
-            <td mat-cell *matCellDef="let row" class="font-bold font-mono text-right pr-6"> {{row.total | currency}} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="estatus">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Estatus </th>
-            <td mat-cell *matCellDef="let row">
-              <span class="badge"
-                [ngClass]="{
-                  'badge-success': row.estatus === 'Vigente',
-                  'badge-info': row.estatus === 'Convertida',
-                  'badge-warning': row.estatus !== 'Vigente' && row.estatus !== 'Convertida'
-                }">
-                {{row.estatus}}
-              </span>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="acciones">
-            <th mat-header-cell *matHeaderCellDef> Acciones </th>
-            <td mat-cell *matCellDef="let row">
-              <a mat-button [routerLink]="['/cotizacion',row.id_cotizacion,'versiones']">Revisiones y respuesta</a>
-              <button mat-icon-button color="primary" (click)="descargarPdf(row.id_cotizacion)" matTooltip="Ver PDF" aria-label="Descargar cotización en PDF">
-                <mat-icon>picture_as_pdf</mat-icon>
-              </button>
-
-              <button mat-icon-button color="primary"
-                      (click)="crearPedido(row)"
-                      [disabled]="!!row.id_pedido || row.estatus === 'Convertida' || row.estatus === 'Rechazada'"
-                      [matTooltip]="row.id_pedido ? 'Pedido ya generado' : 'Crear pedido de venta'"
-                      aria-label="Crear pedido desde cotización">
-                <mat-icon>assignment_add</mat-icon>
-              </button>
-
-              <button mat-icon-button color="accent" 
-                      (click)="convertir(row)" 
-                      [disabled]="row.estatus === 'Convertida'"
-                      matTooltip="Convertir a Venta" aria-label="Convertir cotización a venta">
-                <mat-icon>shopping_cart_checkout</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-              <div class="flex flex-col items-center justify-center p-12 text-gray-400">
-                <mat-icon class="!w-16 !h-16 text-6xl mb-4 opacity-50">request_quote</mat-icon>
-                <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-1">No hay registros aún</h3>
-                <p class="text-gray-500 text-sm">Comprueba tus filtros de búsqueda o agrega nuevos datos.</p>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <mat-paginator [length]="totalItems" [pageSize]="directory.query().limit" [pageIndex]="directory.query().page - 1" (page)="directory.page($event)" [pageSizeOptions]="[5, 10, 25, 100]" class="!bg-transparent"></mat-paginator>
-    </mat-card-content>
-  </mat-card>
-</div>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          <div class="erp-empty-state list-empty"><mat-icon>request_quote</mat-icon><strong>Sin cotizaciones con estos filtros</strong><span>Ajusta la búsqueda o crea una nueva propuesta.</span></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <mat-paginator [length]="totalItems" [pageSize]="directory.query().limit" [pageIndex]="directory.query().page - 1" (page)="directory.page($event)" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</section>

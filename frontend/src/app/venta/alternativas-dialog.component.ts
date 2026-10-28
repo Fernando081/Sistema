@@ -15,44 +15,44 @@ export interface AlternativasDialogData {
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
   template: `
-    <h2 mat-dialog-title class="font-bold flex items-center gap-2">
-      <mat-icon class="text-yellow-600">swap_horiz</mat-icon> Alternativas Disponibles
+    <h2 mat-dialog-title class="flex items-center gap-2">
+      <mat-icon class="text-[var(--c-warning)]">swap_horiz</mat-icon> Alternativas disponibles
     </h2>
     <mat-dialog-content class="!pb-6">
-      <p class="mb-4 text-sm dark:text-gray-300">
+      <p class="mb-4 text-sm">
         El producto <strong>"{{ data.productoOriginal.descripcion }}"</strong> está agotado. Estas opciones tienen un cruce registrado; verifica la aplicación, el motor y las restricciones antes de sustituir la pieza.
       </p>
 
-      <div class="overflow-x-auto w-full border dark:border-slate-700 rounded-lg shadow-sm">
+      <div class="overflow-x-auto w-full border rounded-lg shadow-sm">
         <table class="w-full text-sm text-left whitespace-nowrap">
-          <thead class="bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-gray-300 uppercase text-xs border-b dark:border-slate-700">
+          <thead class="bg-[var(--c-surface-2)] text-[var(--c-text-2)] uppercase text-xs border-b">
             <tr>
               <th scope="col" class="px-4 py-3">Código</th>
               <th scope="col" class="px-4 py-3">Descripción</th>
               <th scope="col" class="px-4 py-3">Marca</th>
-              <th scope="col" class="px-4 py-3">Precio</th>
-              <th scope="col" class="px-4 py-3 text-center">Stock</th>
+              <th scope="col" class="px-4 py-3 text-right">Precio</th>
+              <th scope="col" class="px-4 py-3 text-center">Existencia</th>
               <th scope="col" class="px-4 py-3 text-right">Sustitución rápida</th>
             </tr>
           </thead>
           <tbody>
             @for (alt of data.alternativas; track alt.id_producto) {
-              <tr class="border-b dark:border-slate-700 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-                <td class="px-4 py-3 font-mono text-xs">{{ alt.codigo }}</td>
+              <tr class="border-b hover:bg-[var(--c-surface-sunken)] transition-colors">
+                <td class="px-4 py-3"><span class="code-chip">{{ alt.codigo }}</span></td>
                 <td class="px-4 py-3 font-medium">{{ alt.descripcion }}</td>
                 <td class="px-4 py-3">
-                   <span class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">{{ alt.marca }}</span>
+                   <span class="bg-[var(--c-surface-sunken)] px-2 py-0.5 rounded text-xs">{{ alt.marca }}</span>
                 </td>
-                <td class="px-4 py-3 font-bold text-blue-600 dark:text-blue-400">{{ alt.precio | currency }}</td>
+                <td class="px-4 py-3 font-semibold text-right tabular-nums text-[var(--c-text)]">{{ alt.precio | currency }}</td>
                 <td class="px-4 py-3 font-bold text-center">
                    @if (alt.stock > 0) {
-                     <span class="text-green-600 bg-green-50 dark:bg-green-900/40 px-2 py-1 rounded">{{ alt.stock }}</span>
+                     <span class="badge badge-success">{{ alt.stock }}</span>
                    } @else {
-                     <span class="text-red-600 bg-red-50 dark:bg-red-900/40 px-2 py-1 rounded">{{ alt.stock }}</span>
+                     <span class="badge badge-danger">{{ alt.stock }}</span>
                    }
                 </td>
                 <td class="px-4 py-3 text-right">
-                  <button mat-flat-button color="accent" (click)="sustituir(alt)" [disabled]="alt.stock <= 0" class="!rounded-full shadow-md">
+                  <button mat-flat-button (click)="sustituir(alt)" [disabled]="alt.stock <= 0" [attr.aria-label]="'Sustituir por ' + alt.descripcion">
                     <mat-icon class="!mr-1">add_shopping_cart</mat-icon> Sustituir
                   </button>
                 </td>
@@ -62,8 +62,8 @@ export interface AlternativasDialogData {
         </table>
       </div>
     </mat-dialog-content>
-    <mat-dialog-actions align="end" class="!px-6 !py-4 border-t dark:border-slate-700">
-      <button mat-stroked-button mat-dialog-close>Cerrar Ventana</button>
+    <mat-dialog-actions align="end" class="!px-6 !py-4 border-t">
+      <button mat-stroked-button mat-dialog-close>Cerrar</button>
     </mat-dialog-actions>
   `
 })

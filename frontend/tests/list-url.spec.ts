@@ -5,7 +5,7 @@ for (const [path, resource, label, sort, apiSort] of [
   ['/cliente', 'cliente/pagina', 'Buscar cliente', 'razonSocial', 'razonSocial'],
   ['/proveedor', 'proveedores/pagina', 'Buscar proveedor', 'razonSocial', 'razonSocial'],
   ['/cotizacion/historial', 'cotizacion', 'Buscar cotización', 'total', 'total'],
-  ['/compra/historial', 'compra', 'Buscar compra...', 'total', 'total'],
+  ['/compra/historial', 'compra', 'Buscar compra', 'total', 'total'],
 ]) {
   test(`${path}: restaura página, tamaño, filtro y orden desde URL`, async ({ page }) => {
     await installErpApiMock(page);

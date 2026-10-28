@@ -1,9 +1,6 @@
 :host {
   display: block;
-  color: var(--text-main);
-}
-.quality {
-  padding: 24px;
+  color: var(--c-text);
 }
 header,
 .filters,
@@ -16,10 +13,6 @@ header,
 header {
   justify-content: space-between;
 }
-h1 {
-  font-size: 1.7rem;
-  font-weight: 700;
-}
 h2 {
   font-size: 1.15rem;
   font-weight: 600;
@@ -30,7 +23,7 @@ h3 {
 }
 .notice {
   padding: 16px;
-  border-left: 3px solid var(--wrap-primary);
+  border-left: 3px solid var(--c-info);
   margin: 16px 0;
 }
 .filters label {
@@ -38,15 +31,15 @@ h3 {
   gap: 8px;
 }
 .filters button {
-  background-color: #0b3650 !important;
-  color: #fff !important;
+  background-color: var(--c-primary) !important;
+  color: var(--c-on-primary) !important;
 }
 .filters input,
 .filters select {
-  color: var(--text-main);
-  background: var(--bg-card);
-  border: 1px solid var(--wrap-border);
-  border-radius: 8px;
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
   padding: 12px;
   min-height: 44px;
 }
@@ -57,8 +50,8 @@ h3 {
   margin: 20px 0;
 }
 .cards article {
-  background: var(--bg-card);
-  border: 1px solid var(--wrap-border);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
   border-radius: 12px;
   padding: 20px;
   overflow-wrap: anywhere;

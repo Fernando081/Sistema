@@ -1,5 +1,5 @@
 <header class="page-head">
-  <div><h1>Cuentas por pagar</h1><p>Conciliación orden–recepción–factura, vencimientos y pagos a proveedores.</p></div>
+  <div><h2 class="sr-only">Cuentas por pagar</h2><p>Conciliación orden–recepción–factura, vencimientos y pagos a proveedores.</p></div>
   <div class="actions"><button mat-stroked-button (click)="showAdvance.set(true)"><mat-icon>account_balance_wallet</mat-icon>Anticipo</button><button mat-stroked-button (click)="showCredit.set(true)"><mat-icon>receipt</mat-icon>Nota de crédito</button><button mat-flat-button (click)="showInvoice.set(true)"><mat-icon>post_add</mat-icon>Capturar factura</button></div>
 </header>
 @if(dashboard();as d){<section class="metrics">

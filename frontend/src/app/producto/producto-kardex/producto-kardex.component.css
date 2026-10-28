@@ -1,0 +1,10 @@
+/* frontend/src/app/producto/producto-kardex/producto-kardex.component.css · U01.6 (usa shared/list-page.css) */
+.kardex-title{display:flex;align-items:center;gap:.5rem}.kardex-title mat-icon{color:var(--c-text-3)}
+.summary{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;margin-bottom:1rem;padding:.8rem 1rem;border:1px solid var(--c-border);border-radius:var(--radius-md);background:var(--c-surface-2)}
+.summary div{display:flex;flex-direction:column;gap:.25rem}.summary small{color:var(--c-text-3);font-size:.76rem}
+.summary .stock{align-items:flex-end}.summary strong{color:var(--c-text);font-size:1.4rem;font-weight:650;font-variant-numeric:tabular-nums}
+.kardex-table{max-height:400px;border:1px solid var(--c-border);border-radius:var(--radius-md)}
+.nowrap{white-space:nowrap}.reference{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.secondary{color:var(--c-text-3)!important;font-weight:500}
+td.in{color:var(--c-success)!important}td.out{color:var(--c-danger)!important}
+.kardex-actions{justify-content:space-between}

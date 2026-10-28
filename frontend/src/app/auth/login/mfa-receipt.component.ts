@@ -5,7 +5,7 @@ import { MfaReceiptService } from '../mfa-receipt.service';
 
 @Component({
   selector:'app-mfa-receipt',standalone:true,imports:[MatButtonModule],
-  styles:[`:host{display:block;min-height:100vh;background:var(--wrap-bg);color:var(--wrap-text-title);padding:1.5rem}main{max-width:40rem;margin:2rem auto;padding:1.5rem;border-radius:1rem;background:var(--wrap-card-bg);border:1px solid var(--wrap-border)}h1{font-size:1.5rem;font-weight:700;color:var(--wrap-text-title)}p{margin:1rem 0;color:var(--wrap-text-muted)}ul{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:.5rem;margin:1rem 0}code{display:block;overflow-wrap:anywhere;user-select:all;padding:.5rem;border:1px solid var(--wrap-border);border-radius:.5rem}button{white-space:normal;height:auto!important;min-height:3rem}`],
+  styles:[`:host{display:block;min-height:100vh;background:var(--c-canvas);color:var(--c-text);padding:1.5rem}main{max-width:40rem;margin:2rem auto;padding:1.5rem;border-radius:1rem;background:var(--c-surface);border:1px solid var(--c-border)}h1{font-size:1.5rem;font-weight:700;color:var(--c-text)}p{margin:1rem 0;color:var(--c-text-3)}ul{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:.5rem;margin:1rem 0}code{display:block;overflow-wrap:anywhere;user-select:all;padding:.5rem;border:1px solid var(--c-border);border-radius:.5rem}button{white-space:normal;height:auto!important;min-height:3rem}`],
   template:`<main>
     <h1>Guarda tus códigos de respaldo</h1>
     @if(codes().length){

@@ -4,6 +4,7 @@ import anime from 'animejs';
 import { CommonModule, CurrencyPipe, PercentPipe, DecimalPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import type { EChartsCoreOption as EChartsOption } from 'echarts/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -16,7 +17,6 @@ import {
   RentabilidadProveedor,
   HistoricoDato,
 } from '../services/dashboard.service';
-import { ThemeService } from '../services/theme.service';
 import { ErpEchartsDirective } from '../shared/echarts.provider';
 import { CrmService } from '../services/crm.service';
 import { ActivatedRoute, NavigationEnd, NavigationSkipped, Router, RouterLink } from '@angular/router';
@@ -24,14 +24,13 @@ import { ActivatedRoute, NavigationEnd, NavigationSkipped, Router, RouterLink } 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatIconModule, MatTableModule, ErpEchartsDirective, RouterLink],
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatTableModule, ErpEchartsDirective, RouterLink],
   providers: [CurrencyPipe, PercentPipe, DecimalPipe],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.css',
 })
 export class DashboardComponent {
   private dashboardService = inject(DashboardService);
-  private themeService = inject(ThemeService);
   private crmService = inject(CrmService);
   private readonly route = inject(ActivatedRoute);
   private readonly automaticProcesses = viewChild<ElementRef<HTMLDetailsElement>>('automaticProcesses');
@@ -61,7 +60,6 @@ export class DashboardComponent {
   descuentoPromedioOtorgadoAnimado = signal(0);
   costoAterrizadoAnimado = signal(0);
 
-  theme = this.themeService.isDarkMode;
   readonly loadError = signal(false);
   readonly refreshStatus = toSignal(timer(0, 60000).pipe(
     switchMap(() => this.dashboardService.getRefreshStatus().pipe(catchError(() => of(null)))),
@@ -169,11 +167,9 @@ export class DashboardComponent {
           name: 'Ventas ($)',
           type: 'line',
           data: values,
-          areaStyle: {
-            opacity: 0.5,
-            color: '#118dff',
-          },
-          itemStyle: { color: '#118dff' },
+          areaStyle: { opacity: 0.14, color: 'var(--c-chart-1)' },
+          itemStyle: { color: 'var(--c-chart-1)' },
+          lineStyle: { color: 'var(--c-chart-1)', width: 2.5 },
           smooth: true,
         },
       ],
@@ -184,15 +180,15 @@ export class DashboardComponent {
     return {
       tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
       grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-      xAxis: { type: 'category', data: ['Por Cobrar', 'Por Pagar'] },
+      xAxis: { type: 'category', data: ['Por cobrar', 'Por pagar'] },
       yAxis: { type: 'value' },
       series: [
         {
           name: 'Flujo',
           type: 'bar',
           data: [
-            { value: porCobrar, itemStyle: { color: '#FFC107' } },
-            { value: porPagar, itemStyle: { color: '#9C27B0' } },
+            { value: porCobrar, itemStyle: { color: 'var(--c-chart-3)', borderRadius: [6, 6, 0, 0] } },
+            { value: porPagar, itemStyle: { color: 'var(--c-chart-5)', borderRadius: [6, 6, 0, 0] } },
           ],
           label: { show: true, position: 'top' },
         },
@@ -215,7 +211,7 @@ export class DashboardComponent {
           name: 'Cantidad Vendida',
           type: 'bar',
           data: data.map((d) => Number(d.value)),
-          itemStyle: { color: '#64B5F6' },
+          itemStyle: { color: 'var(--c-chart-2)', borderRadius: [0, 6, 6, 0] },
         },
       ],
     };
@@ -237,13 +233,15 @@ export class DashboardComponent {
         {
           name: 'Ventas',
           type: 'bar',
-          data: combined.map((d) => d.ventas).reverse(),
-          itemStyle: {
-            color: (params: { dataIndex: number }) => {
-              // Color top 5 differently from bottom 5
-              return params.dataIndex >= 5 ? '#ff4d4f' : '#118dff';
-            },
-          },
+          data: combined
+            .map((d, index) => ({
+              value: d.ventas,
+              itemStyle: { color: data.length > 10 && index >= 5 ? 'var(--c-chart-6)' : 'var(--c-chart-1)' },
+            }))
+            .reverse(),
+          // Con más de 10 categorías se muestran las 5 mayores (latón) y las 5 menores (pizarra).
+          colorBy: 'data',
+          itemStyle: { borderRadius: [0, 6, 6, 0] },
         },
       ],
     };
@@ -262,16 +260,18 @@ export class DashboardComponent {
 
     return {
       tooltip: { position: 'top' },
-      grid: { height: '70%', top: '10%' },
-      xAxis: { type: 'category', data: hours, splitArea: { show: true } },
-      yAxis: { type: 'category', data: days, splitArea: { show: true } },
+      grid: { top: 8, left: 8, right: 12, bottom: 64, containLabel: true },
+      xAxis: { type: 'category', data: hours, splitArea: { show: false } },
+      yAxis: { type: 'category', data: days, splitArea: { show: false } },
       visualMap: {
         min: 0,
         max: Math.max(...data.map((d) => d[2] as number), 100),
         calculable: true,
         orient: 'horizontal',
         left: 'center',
-        bottom: '1%',
+        bottom: 0,
+        itemHeight: 160,
+        inRange: { color: ['var(--c-brass-soft)', 'var(--c-chart-1)'] },
       },
       series: [
         {
@@ -280,7 +280,7 @@ export class DashboardComponent {
           data: data,
           label: { show: false },
           emphasis: {
-            itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0, 0, 0, 0.5)' },
+            itemStyle: { borderColor: 'var(--c-text)', borderWidth: 1 },
           },
         },
       ],
@@ -303,6 +303,7 @@ export class DashboardComponent {
           name: 'Rentabilidad',
           type: 'bar',
           data: data.map(item => item.value),
+          itemStyle: { color: 'var(--c-chart-3)', borderRadius: [0, 6, 6, 0] },
         },
       ],
     };
@@ -330,7 +331,7 @@ export class DashboardComponent {
           type: 'line',
           data: meses.map((m) => Number(devoluciones.find((d) => d.mes === m)?.valor || 0)),
           smooth: true,
-          itemStyle: { color: '#FFC107' },
+          itemStyle: { color: 'var(--c-chart-5)' },
         },
       ],
     };

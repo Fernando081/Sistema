@@ -1,167 +1,124 @@
-<div class="p-6 h-full flex flex-col max-h-screen">
-  <div class="mb-4">
-    <h1 class="text-2xl font-bold dark:text-white flex items-center gap-2">
-      <mat-icon class="text-blue-500">psychology</mat-icon>
-      Asistente Inteligente de Reabastecimiento
-    </h1>
-    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-      Analíticas de demanda y sugerencias de compra basadas en regresión lineal y promedios móviles.
-    </p>
-  </div>
+<h2 class="sr-only">Asistente de reabastecimiento</h2>
+<p class="lead">Analíticas de demanda y sugerencias de compra basadas en regresión lineal y promedios móviles.</p>
 
-  <mat-tab-group class="flex-1" animationDuration="200ms">
-    <!-- ═══ TAB 1: RESTOCK BÁSICO ═══ -->
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon class="mr-2">inventory</mat-icon> Restock Básico (30d)
-      </ng-template>
+<mat-tab-group class="restock-tabs" animationDuration="200ms">
+  <mat-tab>
+    <ng-template mat-tab-label><mat-icon class="tab-icon">inventory</mat-icon>Reabasto básico (30 días)</ng-template>
+    <section class="list-surface">
+      <header class="list-head">
+        <div><h3>Productos con rotación</h3><p>{{ dataSource.length }} productos · ventas de los últimos 30 días</p></div>
+      </header>
+      @if (isLoading) {
+        <div class="loading"><mat-spinner diameter="36"></mat-spinner></div>
+      } @else {
+        <div class="list-table stack">
+          <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="codigo">
+              <th mat-header-cell *matHeaderCellDef>Código</th>
+              <td mat-cell *matCellDef="let el" data-label="Código"><span class="code-chip">{{ el.codigo }}</span></td>
+            </ng-container>
+            <ng-container matColumnDef="descripcion">
+              <th mat-header-cell *matHeaderCellDef>Descripción</th>
+              <td mat-cell *matCellDef="let el" class="stack-wide" data-label="Descripción"><span class="party"><strong>{{ el.descripcion }}</strong></span></td>
+            </ng-container>
+            <ng-container matColumnDef="vendidas">
+              <th mat-header-cell *matHeaderCellDef class="amount">Ventas 30 d</th>
+              <td mat-cell *matCellDef="let el" class="amount" data-label="Ventas 30 d">{{ el.unidades_vendidas_30d }} uds</td>
+            </ng-container>
+            <ng-container matColumnDef="stock">
+              <th mat-header-cell *matHeaderCellDef>Existencia</th>
+              <td mat-cell *matCellDef="let el" data-label="Existencia"><span class="badge" [ngClass]="stockClass(el.stock_actual)">{{ el.stock_actual }}</span></td>
+            </ng-container>
+            <ng-container matColumnDef="precio">
+              <th mat-header-cell *matHeaderCellDef class="amount">Precio unitario</th>
+              <td mat-cell *matCellDef="let el" class="amount" data-label="Precio unitario">{{ el.precio_unitario | currency: 'MXN' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="margen">
+              <th mat-header-cell *matHeaderCellDef class="amount">Margen</th>
+              <td mat-cell *matCellDef="let el" class="amount" [ngClass]="marginClass(el.margen)" data-label="Margen">{{ el.margen | number: '1.0-2' }}%</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                <div class="erp-empty-state list-empty"><mat-icon>shopping_basket</mat-icon><strong>No hay sugerencias disponibles</strong></div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      }
+    </section>
+  </mat-tab>
 
-      <div *ngIf="isLoading" class="flex justify-center p-8">
-        <mat-spinner diameter="40"></mat-spinner>
-      </div>
-
-      <div class="mat-elevation-z4 overflow-auto rounded-md mt-4" *ngIf="!isLoading" style="background-color: var(--wrap-card-bg, #fff)">
-        <table mat-table [dataSource]="dataSource" class="w-full">
-          <ng-container matColumnDef="codigo">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> Código </th>
-            <td mat-cell *matCellDef="let el" class="dark:text-gray-300"> {{el.codigo}} </td>
-          </ng-container>
-          <ng-container matColumnDef="descripcion">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> Descripción </th>
-            <td mat-cell *matCellDef="let el" class="dark:text-gray-300"> {{el.descripcion}} </td>
-          </ng-container>
-          <ng-container matColumnDef="vendidas">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> Ventas 30d </th>
-            <td mat-cell *matCellDef="let el">
-              <span class="font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/50 px-2 py-1 rounded">
-                {{el.unidades_vendidas_30d}} uds
-              </span>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="stock">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> Stock </th>
-            <td mat-cell *matCellDef="let el">
-              <span [ngClass]="{'text-red-500 font-bold bg-red-50 dark:bg-red-900/50': el.stock_actual <= 0, 'text-orange-500 font-semibold bg-orange-50 dark:bg-orange-900/50': el.stock_actual > 0 && el.stock_actual <= 5, 'text-green-600 dark:text-green-400': el.stock_actual > 5}" class="px-2 py-1 rounded">
-                {{el.stock_actual}}
-              </span>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="precio">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> Precio U. </th>
-            <td mat-cell *matCellDef="let el" class="dark:text-gray-300"> {{el.precio_unitario | currency}} </td>
-          </ng-container>
-          <ng-container matColumnDef="margen">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> Margen </th>
-            <td mat-cell *matCellDef="let el">
-              <span [ngClass]="{'text-green-600 dark:text-green-400 font-bold': el.margen > 30, 'text-orange-500': el.margen > 10 && el.margen <= 30, 'text-red-500 font-bold': el.margen <= 10}">
-                {{el.margen | number:'1.0-2'}}%
-              </span>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"></tr>
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell text-center p-6 text-gray-500 dark:text-gray-400" colspan="6">
-              <mat-icon class="text-4xl text-gray-300 dark:text-gray-600 mb-2">shopping_basket</mat-icon>
-              <p>No hay sugerencias disponibles.</p>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </mat-tab>
-
-    <!-- ═══ TAB 2: PREDICCIÓN IA ═══ -->
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon class="mr-2">auto_graph</mat-icon> IA Predicción de Demanda
-      </ng-template>
-
-      <div class="mt-4 flex items-center justify-between mb-3">
-        <p class="text-sm text-gray-500 dark:text-gray-400">
-          Regresión lineal sobre ventas semanales. Promedios móviles de 30/60/90 días. Solo productos con sugerencia de compra > 0.
-        </p>
-        <button mat-stroked-button color="primary" (click)="refreshPrediccion()" [disabled]="isRefreshing">
-          <mat-icon class="mr-1">refresh</mat-icon>
-          {{ isRefreshing ? 'Actualizando...' : 'Recalcular' }}
-        </button>
-      </div>
-
-      <div *ngIf="isPredLoading" class="flex justify-center p-8">
-        <mat-spinner diameter="40"></mat-spinner>
-      </div>
-
-      <div class="mat-elevation-z4 overflow-auto rounded-md" *ngIf="!isPredLoading" style="background-color: var(--wrap-card-bg, #fff)">
-        <table mat-table [dataSource]="predDataSource" class="w-full">
-          <ng-container matColumnDef="codigo">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> Código </th>
-            <td mat-cell *matCellDef="let el" class="dark:text-gray-300 text-sm"> {{el.codigo}} </td>
-          </ng-container>
-          <ng-container matColumnDef="descripcion">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> Producto </th>
-            <td mat-cell *matCellDef="let el" class="dark:text-gray-300 text-sm font-medium"> {{el.descripcion}} </td>
-          </ng-container>
-          <ng-container matColumnDef="tendencia">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> Tendencia </th>
-            <td mat-cell *matCellDef="let el">
-              <span [ngClass]="{
-                'bg-green-100 text-green-800 dark:bg-green-900/60 dark:text-green-300': el.tendencia === 'ALTA',
-                'bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-300': el.tendencia === 'BAJA',
-                'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300': el.tendencia === 'ESTABLE'
-              }" class="px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wide"
-              [matTooltip]="'Pendiente: ' + el.pendiente_regresion + ' | R²: ' + el.r_cuadrado">
-                <mat-icon class="text-sm !w-4 !h-4 align-middle mr-1" *ngIf="el.tendencia === 'ALTA'">trending_up</mat-icon>
-                <mat-icon class="text-sm !w-4 !h-4 align-middle mr-1" *ngIf="el.tendencia === 'BAJA'">trending_down</mat-icon>
-                <mat-icon class="text-sm !w-4 !h-4 align-middle mr-1" *ngIf="el.tendencia === 'ESTABLE'">trending_flat</mat-icon>
-                {{el.tendencia}}
-              </span>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="vendido30">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> V. 30d </th>
-            <td mat-cell *matCellDef="let el" class="dark:text-gray-300 text-sm text-center"> {{el.vendido_30d}} </td>
-          </ng-container>
-          <ng-container matColumnDef="vendido60">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> V. 60d </th>
-            <td mat-cell *matCellDef="let el" class="dark:text-gray-300 text-sm text-center"> {{el.vendido_60d}} </td>
-          </ng-container>
-          <ng-container matColumnDef="vendido90">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> V. 90d </th>
-            <td mat-cell *matCellDef="let el" class="dark:text-gray-300 text-sm text-center"> {{el.vendido_90d}} </td>
-          </ng-container>
-          <ng-container matColumnDef="stock">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> Stock </th>
-            <td mat-cell *matCellDef="let el">
-              <span [ngClass]="{'text-red-500 font-bold': el.stock_actual <= 0, 'text-orange-500 font-semibold': el.stock_actual > 0 && el.stock_actual <= 5, 'text-green-600 dark:text-green-400': el.stock_actual > 5}" class="text-sm">
-                {{el.stock_actual}}
-              </span>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="proyectada">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> Dem. 30d </th>
-            <td mat-cell *matCellDef="let el" class="text-sm">
-              <span class="text-blue-600 dark:text-blue-400 font-semibold">{{el.demanda_proyectada_30d}}</span>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="sugerida">
-            <th mat-header-cell *matHeaderCellDef class="font-bold dark:text-gray-300"> 🛒 Comprar </th>
-            <td mat-cell *matCellDef="let el">
-              <span class="bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 px-3 py-1 rounded-full font-bold text-sm">
-                {{el.cantidad_sugerida_compra}} uds
-              </span>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="predColumns; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: predColumns;" class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"></tr>
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell text-center p-6 text-gray-500 dark:text-gray-400" colspan="9">
-              <div class="flex flex-col items-center justify-center">
-                <mat-icon class="text-4xl text-gray-300 dark:text-gray-600 mb-2">auto_graph</mat-icon>
-                <p>No hay predicciones con sugerencias de compra. Todos los productos tienen stock suficiente.</p>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
-</div>
+  <mat-tab>
+    <ng-template mat-tab-label><mat-icon class="tab-icon">auto_graph</mat-icon>Predicción de demanda</ng-template>
+    <section class="list-surface">
+      <header class="list-head">
+        <div>
+          <h3>Sugerencias de compra</h3>
+          <p>Regresión lineal sobre ventas semanales y promedios móviles de 30/60/90 días. Solo productos con compra sugerida.</p>
+        </div>
+        <div class="list-head-actions">
+          <button mat-stroked-button (click)="refreshPrediccion()" [disabled]="isRefreshing">
+            <mat-icon>refresh</mat-icon>{{ isRefreshing ? 'Actualizando…' : 'Recalcular' }}
+          </button>
+        </div>
+      </header>
+      @if (isPredLoading) {
+        <div class="loading"><mat-spinner diameter="36"></mat-spinner></div>
+      } @else {
+        <div class="list-table stack">
+          <table mat-table [dataSource]="predDataSource">
+            <ng-container matColumnDef="codigo">
+              <th mat-header-cell *matHeaderCellDef>Código</th>
+              <td mat-cell *matCellDef="let el" data-label="Código"><span class="code-chip">{{ el.codigo }}</span></td>
+            </ng-container>
+            <ng-container matColumnDef="descripcion">
+              <th mat-header-cell *matHeaderCellDef>Producto</th>
+              <td mat-cell *matCellDef="let el" class="stack-wide" data-label="Producto"><span class="party"><strong>{{ el.descripcion }}</strong></span></td>
+            </ng-container>
+            <ng-container matColumnDef="tendencia">
+              <th mat-header-cell *matHeaderCellDef>Tendencia</th>
+              <td mat-cell *matCellDef="let el" data-label="Tendencia">
+                <span class="badge trend" [ngClass]="trendClass(el.tendencia)" [matTooltip]="'Pendiente: ' + el.pendiente_regresion + ' · R²: ' + el.r_cuadrado">
+                  <mat-icon>{{ el.tendencia === 'ALTA' ? 'trending_up' : el.tendencia === 'BAJA' ? 'trending_down' : 'trending_flat' }}</mat-icon>{{ el.tendencia }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="vendido30">
+              <th mat-header-cell *matHeaderCellDef class="amount">V. 30 d</th>
+              <td mat-cell *matCellDef="let el" class="amount" data-label="V. 30 d">{{ el.vendido_30d }}</td>
+            </ng-container>
+            <ng-container matColumnDef="vendido60">
+              <th mat-header-cell *matHeaderCellDef class="amount">V. 60 d</th>
+              <td mat-cell *matCellDef="let el" class="amount" data-label="V. 60 d">{{ el.vendido_60d }}</td>
+            </ng-container>
+            <ng-container matColumnDef="vendido90">
+              <th mat-header-cell *matHeaderCellDef class="amount">V. 90 d</th>
+              <td mat-cell *matCellDef="let el" class="amount" data-label="V. 90 d">{{ el.vendido_90d }}</td>
+            </ng-container>
+            <ng-container matColumnDef="stock">
+              <th mat-header-cell *matHeaderCellDef>Existencia</th>
+              <td mat-cell *matCellDef="let el" data-label="Existencia"><span class="badge" [ngClass]="stockClass(el.stock_actual)">{{ el.stock_actual }}</span></td>
+            </ng-container>
+            <ng-container matColumnDef="proyectada">
+              <th mat-header-cell *matHeaderCellDef class="amount">Demanda 30 d</th>
+              <td mat-cell *matCellDef="let el" class="amount" data-label="Demanda 30 d">{{ el.demanda_proyectada_30d }}</td>
+            </ng-container>
+            <ng-container matColumnDef="sugerida">
+              <th mat-header-cell *matHeaderCellDef class="amount">Comprar</th>
+              <td mat-cell *matCellDef="let el" class="amount" data-label="Comprar"><span class="buy">{{ el.cantidad_sugerida_compra }} uds</span></td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="predColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: predColumns"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="predColumns.length">
+                <div class="erp-empty-state list-empty"><mat-icon>auto_graph</mat-icon><strong>Sin sugerencias de compra</strong><span>Todos los productos tienen existencia suficiente.</span></div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      }
+    </section>
+  </mat-tab>
+</mat-tab-group>

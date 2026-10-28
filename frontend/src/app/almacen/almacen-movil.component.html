@@ -1,5 +1,5 @@
 <section class="campaign-page" aria-labelledby="mobile-title" [attr.aria-busy]="busy()">
- <header class="heading"><div><h1 id="mobile-title">Escaneo de almacén</h1><p>Verifica producto, ubicación y cantidad del picking ya asignado.</p></div><a mat-stroked-button routerLink="/almacen">Volver al almacén</a></header>
+ <header class="heading"><div><h2 id="mobile-title" class="sr-only">Escaneo de almacén</h2><p>Verifica producto, ubicación y cantidad del picking ya asignado.</p></div><a mat-stroked-button routerLink="/almacen">Volver al almacén</a></header>
  <p>Esta verificación conserva evidencia de la recogida. No registra otro surtido, entrega o descuento de inventario.</p>
  @if(error()){<p class="notice" role="alert">{{error()}} <button mat-button (click)="refresh()" [disabled]="busy()">Actualizar</button><button mat-button (click)="back()" [disabled]="busy()">Volver a pedidos</button></p>}
  @if(notice()){<p class="notice" role="status">{{notice()}}</p>}

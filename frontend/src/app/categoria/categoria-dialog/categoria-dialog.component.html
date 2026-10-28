@@ -1,7 +1,7 @@
 <!-- frontend/src/app/categoria/categoria-dialog/categoria-dialog.component.html (REEMPLAZAR) -->
 
-<div class="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50">
-  <h1 mat-dialog-title class="!m-0">{{ isEditMode ? 'Editar Categoría' : 'Nueva Categoría' }}</h1>
+<div class="flex justify-between items-center px-6 py-4 border-b border-[var(--c-border)] bg-[var(--c-surface-2)]">
+  <h2 mat-dialog-title class="!m-0">{{ isEditMode ? 'Editar Categoría' : 'Nueva Categoría' }}</h2>
   <button mat-icon-button type="button" (click)="cerrar()" aria-label="Cerrar formulario de categoría">
     <mat-icon>close</mat-icon>
   </button>
@@ -9,7 +9,7 @@
 
 <form [formGroup]="form" (ngSubmit)="guardar()">
   <div mat-dialog-content class="!p-6 !pt-4">
-    <p class="mb-4 text-gray-600">Introduce el nombre de la categoría.</p>
+    <p class="mb-4 text-[var(--c-text-2)]">Introduce el nombre de la categoría.</p>
     <mat-form-field class="w-full">
       <mat-label>Descripción</mat-label>
       <input matInput formControlName="descripcion" required placeholder="Ej. Ferretería">
@@ -17,7 +17,7 @@
     </mat-form-field>
   </div>
 
-  <div mat-dialog-actions align="end" class="!px-6 !py-4 border-t border-gray-100 bg-gray-50/30">
+  <div mat-dialog-actions align="end" class="!px-6 !py-4 border-t border-[var(--c-border)] bg-[var(--c-surface-2)]">
     <button mat-stroked-button type="button" class="!rounded-lg" (click)="cerrar()">Cancelar</button>
     <button mat-flat-button color="primary" type="submit" class="!rounded-lg" [disabled]="isSaving() || form.invalid">Guardar</button>
   </div>

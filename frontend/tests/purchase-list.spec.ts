@@ -19,11 +19,11 @@ test('compras: página/orden remotos y CSV conservan el término visible', async
   await page.getByRole('columnheader', { name: 'Proveedor', exact: true }).click();
   await expect.poll(() => queries.at(-1)?.get('sortBy')).toBe('nombre_proveedor');
   expect(queries.at(-1)?.get('page')).toBe('1');
-  await page.getByLabel('Buscar compra...').fill('F1');
+  await page.getByLabel('Buscar compra').fill('F1');
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Exportar CSV filtrado' }).click();
   expect((await download).suggestedFilename()).toMatch(/^compras_.*\.csv$/);
   await page.goto('/compra/historial?q=RFC');
-  await expect(page.getByLabel('Buscar compra...')).toHaveValue('RFC');
+  await expect(page.getByLabel('Buscar compra')).toHaveValue('RFC');
   await expect.poll(() => queries.at(-1)?.get('term')).toBe('RFC');
 });

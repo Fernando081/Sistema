@@ -3,7 +3,13 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-export interface ConfirmDialogData { title?: string; message: string; confirmLabel?: string; cancelLabel?: string; tone?: 'danger' | 'primary'; }
+export interface ConfirmDialogData {
+  title?: string;
+  message: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  tone?: 'danger' | 'primary';
+}
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -16,14 +22,20 @@ export interface ConfirmDialogData { title?: string; message: string; confirmLab
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="onDismiss()">{{ data.cancelLabel || 'Cancelar' }}</button>
-      <button mat-flat-button [color]="data.tone === 'primary' ? 'primary' : 'warn'" (click)="onConfirm()">{{ data.confirmLabel || 'Confirmar' }}</button>
+      <button
+        mat-flat-button
+        [color]="data.tone === 'primary' ? 'primary' : 'warn'"
+        (click)="onConfirm()"
+      >
+        {{ data.confirmLabel || 'Confirmar' }}
+      </button>
     </mat-dialog-actions>
-  `
+  `,
 })
 export class ConfirmDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData,
   ) {}
 
   onConfirm(): void {

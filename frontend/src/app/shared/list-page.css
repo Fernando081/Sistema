@@ -1,0 +1,41 @@
+/* U01.2 · Patrón de página de lista (facturas, cotizaciones…). Se incluye en cada
+   componente con styleUrls para que viaje en su chunk diferido y no en el CSS inicial. */
+.list-surface{border:1px solid var(--c-border);border-radius:var(--radius-lg);background:var(--c-surface);box-shadow:var(--shadow-xs);overflow:hidden}
+.list-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.25rem .9rem}
+.list-head h2{margin:0;color:var(--c-text);font-size:1rem;font-weight:650;letter-spacing:-.01em}
+.list-head p{margin:.15rem 0 0;color:var(--c-text-3);font-size:.8rem;font-variant-numeric:tabular-nums}
+.list-head-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+.list-head-actions a,.list-head-actions button{height:38px}
+.list-filters{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;padding:0 1.25rem .75rem}
+.list-filters .grow{flex:1 1 320px}
+.list-filters mat-form-field:not(.grow){flex:0 1 220px}
+.list-dates{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;padding:.75rem 1.25rem;border-top:1px solid var(--c-border);background:var(--c-surface-2)}
+.list-dates mat-form-field{width:170px}
+.list-dates small{color:var(--c-text-3);font-size:.76rem}
+.list-dates .label{display:inline-flex;align-items:center;gap:.35rem;margin-right:.25rem;color:var(--c-text-2);font-size:.82rem;font-weight:600}
+.list-dates .label mat-icon{width:18px;height:18px;font-size:18px;color:var(--c-text-3)}
+.list-status{margin:0;padding:.75rem 1.25rem;color:var(--c-text-3)}
+.list-table{overflow:auto;border-top:1px solid var(--c-border)}
+.list-table table{width:100%}
+.list-table th.mat-mdc-header-cell:first-child,.list-table td.mat-mdc-cell:first-child{padding-left:1.25rem!important}
+.list-table th.mat-mdc-header-cell:last-child,.list-table td.mat-mdc-cell:last-child{padding-right:1rem!important}
+.folio{color:var(--c-text)!important;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap}
+.party{display:flex;flex-direction:column;min-width:0}
+.party strong{color:var(--c-text);font-weight:550}
+.party small,.muted{color:var(--c-text-3);font-size:.76rem;font-variant-numeric:tabular-nums}
+td.amount{text-align:right!important;color:var(--c-text)!important;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap}
+th.amount{text-align:right!important}th.amount .mat-sort-header-container{justify-content:flex-end}
+.row-actions{display:flex;align-items:center;justify-content:flex-end;gap:.15rem;white-space:nowrap}
+.row-actions .mat-mdc-icon-button{color:var(--c-text-3)}
+.row-actions .mat-mdc-icon-button:hover:not(:disabled){color:var(--c-text)}
+.list-table tr.mat-mdc-row:hover .row-actions .mat-mdc-icon-button:not(:disabled){color:var(--c-text-2)}
+.list-surface .mat-mdc-paginator{border-top:1px solid var(--c-border);background:var(--c-surface)}
+.list-empty{padding:2.5rem 1rem}
+@media(max-width:760px){.list-head{align-items:flex-start;flex-direction:column}.list-head-actions{width:100%}.list-head-actions>*{flex:1 1 auto;white-space:nowrap}.list-filters mat-form-field:not(.grow),.list-dates mat-form-field{flex:1 1 100%;width:100%}.list-filters mat-button-toggle-group{width:100%}.list-filters mat-button-toggle{flex:1}}
+/* Modo tarjeta en móvil: .list-table.stack + data-label (encabezado) en cada celda; .stack-wide ocupa la fila completa. */
+@media(max-width:760px){.list-table.stack{overflow:visible;max-height:none}.list-table.stack table,:host ::ng-deep .list-table.stack tbody{display:block;width:100%}.list-table.stack tr.mat-mdc-header-row{display:none}
+.list-table.stack tr.mat-mdc-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem 1rem;height:auto;padding:.9rem 1.1rem;border-bottom:1px solid var(--c-border)}.list-table.stack tr.mat-mdc-row:last-child{border-bottom:0}
+.list-table.stack td.mat-mdc-cell{background:transparent!important;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:.15rem;min-width:0;min-height:0;padding:0!important;border:0!important;text-align:left!important;white-space:normal}
+.list-table.stack td.mat-mdc-cell[data-label]::before{content:attr(data-label);color:var(--c-text-3);font-size:.66rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.list-table.stack td.stack-wide{grid-column:1/-1}.list-table.stack td.stack-wide .row-actions{justify-content:flex-start;margin-left:-.5rem}
+.list-table.stack .party,.list-table.stack .truncate{max-width:none}}

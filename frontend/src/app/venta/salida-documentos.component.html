@@ -1,5 +1,5 @@
 <section class="campaign-page" aria-labelledby="outbox-title" [attr.aria-busy]="busy()">
- <header class="heading"><div><h1 id="outbox-title">Salida de documentos</h1><p>@if(validId){Factura {{id}} · }Preparación y simulación local</p></div><a mat-stroked-button routerLink="/facturas">Volver a facturas</a></header>
+ <header class="heading"><div><h2 id="outbox-title" class="sr-only">Salida de documentos</h2><p>@if(validId){Factura {{id}} · }Preparación y simulación local</p></div><a mat-stroked-button routerLink="/facturas">Volver a facturas</a></header>
  <p class="notice"><strong>Envío externo desactivado.</strong> Preparado o Simulado no significa enviado, aceptado por un proveedor ni entregado. Este flujo no envía correos ni conecta al PAC.</p>
  @if(error()){<p role="alert" class="notice">{{error()}}</p>}
  @if(notice()){<p role="status" class="notice">{{notice()}}</p>}

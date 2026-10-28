@@ -4,12 +4,27 @@ import { FormsModule } from '@angular/forms';
 import { FinanzasService, Gasto, GastoRegistro, SaldoActual } from '../finanzas.service';
 import { downloadDocument, localDate } from '../../shared/document-download';
 import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-gastos',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatTableModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatTableModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule,
+  ],
   templateUrl: './gastos.component.html',
+  styleUrls: ['../../shared/list-page.css', './gastos.component.css'],
 })
 export class GastosComponent implements OnInit {
   private finanzasService = inject(FinanzasService);

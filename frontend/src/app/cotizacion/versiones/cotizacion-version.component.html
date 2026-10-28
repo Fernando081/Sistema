@@ -1,4 +1,4 @@
-<section class="quote-version" aria-labelledby="version-title"><a mat-button routerLink="/cotizacion/historial">Volver a cotizaciones</a><h1 id="version-title">Revisiones y respuesta de cotización</h1>
+<section class="quote-version" aria-labelledby="version-title"><a mat-button routerLink="/cotizacion/historial">Volver a cotizaciones</a><h2 id="version-title" class="sr-only">Revisiones y respuesta de cotización</h2>
 <p>Conserva cada propuesta y registra una respuesta sobre su contenido exacto. La aceptación del cliente no sustituye autorizaciones de precios/crédito ni crea pedidos o cargos automáticamente.</p>
 @if(error()){<p role="alert">{{error()}}</p>}@if(loading()){<p role="status">Cargando revisión…</p>}
 @if(data();as d){<section><h2>Cotización C-{{d.snapshot.folio}} · {{d.snapshot.nombre}}</h2><p>Vence {{d.snapshot.vencimiento|date:'medium'}} · Total {{d.snapshot.total|currency:'MXN'}}</p>

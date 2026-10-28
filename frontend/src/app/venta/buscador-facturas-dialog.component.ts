@@ -65,7 +65,7 @@ import { FacturaResumen } from './venta.interface';
 
             <ng-container matColumnDef="uuid">
               <th mat-header-cell *matHeaderCellDef> UUID </th>
-              <td mat-cell *matCellDef="let element" class="text-xs text-gray-500"> {{element.uuid}} </td>
+              <td mat-cell *matCellDef="let element" class="text-xs text-[var(--c-text-3)]"> {{element.uuid}} </td>
             </ng-container>
 
             <ng-container matColumnDef="acciones">
@@ -114,7 +114,7 @@ export class BuscadorFacturasDialogComponent implements OnInit {
         this.dataSource = data;
         this.isLoading.set(false);
       },
-      error: (err) => {
+      error: () => {
         this.snackBar.open('Error al cargar facturas', 'Cerrar', { duration: 3000 });
         this.isLoading.set(false);
       }

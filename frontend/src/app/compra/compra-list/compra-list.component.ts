@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
-import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,7 +27,7 @@ import { CompraDetalleComponent } from '../compra-detalle/compra-detalle.compone
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatCardModule,
+    MatTooltipModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
@@ -35,6 +35,7 @@ import { CompraDetalleComponent } from '../compra-detalle/compra-detalle.compone
     MatDialogModule, MatSnackBarModule,
   ],
   templateUrl: './compra-list.component.html',
+  styleUrls: ['../../shared/list-page.css'],
 })
 export class CompraListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['fecha', 'proveedor', 'folio', 'total', 'acciones'];

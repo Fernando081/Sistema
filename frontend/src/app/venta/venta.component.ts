@@ -685,15 +685,13 @@ export class VentaComponent implements OnInit {
     return [...coincidenciasDirectas, ...equivalentesEncontrados];
   }
 
-  // Función auxiliar para obtener la clave string del catálogo
-  private _obtenerClaveUso(id: number): string {
-    // OJO: Esto es una solución rápida. Lo ideal es guardar la CLAVE en la lista 'usosCfdi$'
-    // y buscarla aquí. Asumiremos que 'G03' es el default si no la encontramos.
-    // Puedes mejorar esto mapeando 'usosCfdi$' a una variable local.
-    return 'G03';
+  // --- EDICIÓN EN TIEMPO REAL ---
+  /** Precio con dos decimales fijos para el campo editable (742.5 → 742.50); el modelo sigue siendo numérico. */
+  precioTexto(item: ConceptoVenta): string {
+    const valor = Number(item.valorUnitario);
+    return Number.isFinite(valor) ? valor.toFixed(2) : '';
   }
 
-  // --- EDICIÓN EN TIEMPO REAL ---
   alCambiarValor(item: ConceptoVenta) {
     // 1. Validaciones básicas (No negativos)
     if (!Number.isFinite(item.cantidad) || item.cantidad < 0.0001) item.cantidad = 1;

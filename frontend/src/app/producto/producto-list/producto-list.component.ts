@@ -8,7 +8,6 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,14 +33,14 @@ import { ConfirmService } from '../../shared/confirm.service';
   standalone: true,
   imports: [
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
-    MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
+    MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,
     MatProgressSpinnerModule, CurrencyPipe,
     MatTabsModule,
     CategoriaListComponent, RouterLink
   ],
   templateUrl: './producto-list.component.html',
-  styleUrls: ['./producto-list.component.css']
+  styleUrls: ['../../shared/list-page.css', './producto-list.component.css']
 })
 export class ProductoListComponent implements OnInit, OnDestroy {
   readonly canEdit = inject(AuthService).getSessionIdentity()?.role === 'admin';
@@ -75,7 +74,8 @@ export class ProductoListComponent implements OnInit, OnDestroy {
 
   verKardex(producto: Producto) {
     this.dialog.open(ProductoKardexComponent, {
-      width: '600px',
+      width: '880px',
+      maxWidth: '96vw',
       data: producto
     });
   }

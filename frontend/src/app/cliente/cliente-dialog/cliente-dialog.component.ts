@@ -14,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 
 import { ClienteService } from '../../services/cliente.service';
-import { Cliente, CreateClienteDto, UpdateClienteDto } from '../cliente.interface';
+import { Cliente } from '../cliente.interface';
 // Importamos el servicio y las interfaces
 import { CatalogosService, RegimenFiscal, UsoCFDI, FormaPago, MetodoPago, Estado, Municipio } from '../../services/catalogos.service';
 

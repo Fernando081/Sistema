@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, TemplateRef, viewChild } from '@angular/core';
+import { bindTemplateDialog } from '../shared/template-dialog';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -26,7 +27,12 @@ export class AbastecimientoComponent{
  readonly ratingForm=this.fb.nonNullable.group({idProveedor:[0,Validators.min(1)],idOrden:[0],precio:[5,[Validators.min(1),Validators.max(5)]],entrega:[5,[Validators.min(1),Validators.max(5)]],calidad:[5,[Validators.min(1),Validators.max(5)]],atencion:[5,[Validators.min(1),Validators.max(5)]],comentario:''});
  readonly costForm=this.fb.nonNullable.group({tipo:'Flete',monto:[0,Validators.min(.01)],criterio:'Valor',notas:''});
  readonly returnForm=this.fb.nonNullable.group({motivo:['',[Validators.required,Validators.maxLength(500)]],partidas:this.fb.array([] as ReturnType<AbastecimientoComponent['returnLine']>[])});
- constructor(){this.load();forkJoin({p:this.productsApi.buscarProductos('',100),v:this.providersApi.getProveedores()}).subscribe(({p,v})=>{this.products.set(p);this.providers.set(v.map(x=>({id:Number(x.idProveedor),name:String(x.razonSocial)})));});}
+ readonly receiptDialog=viewChild<TemplateRef<unknown>>('receiptDialog');readonly costDialog=viewChild<TemplateRef<unknown>>('costDialog');readonly returnDialog=viewChild<TemplateRef<unknown>>('returnDialog');
+ constructor(){
+  bindTemplateDialog(()=>!!this.selected(),this.receiptDialog,()=>this.selected.set(null),{ariaLabelledBy:'receipt-dialog-title'});
+  bindTemplateDialog(()=>this.showCost()&&!!this.selectedReceipt(),this.costDialog,()=>{this.showCost.set(false);this.selectedReceipt.set(null);},{ariaLabelledBy:'cost-dialog-title'});
+  bindTemplateDialog(()=>this.showReturn()&&!!this.selectedReceipt(),this.returnDialog,()=>{this.showReturn.set(false);this.selectedReceipt.set(null);},{ariaLabelledBy:'return-dialog-title'});
+  this.load();forkJoin({p:this.productsApi.buscarProductos('',100),v:this.providersApi.getProveedores()}).subscribe(({p,v})=>{this.products.set(p);this.providers.set(v.map(x=>({id:Number(x.idProveedor),name:String(x.razonSocial)})));});}
  get requestLines(){return this.requestForm.controls.partidas as FormArray}get orderLines(){return this.orderForm.controls.partidas as FormArray}get receiptLines(){return this.receiptForm.controls.partidas as FormArray}
  requestLine(){return this.fb.nonNullable.group({idProducto:[0,Validators.min(1)],cantidad:[1,Validators.min(.000001)],costoEstimado:[0,Validators.min(0)],origen:'Manual'})}
  orderLine(){return this.fb.nonNullable.group({idProducto:[0,Validators.min(1)],cantidad:[1,Validators.min(.000001)],costoUnitario:[0,Validators.min(0)],tasaIva:.16})}

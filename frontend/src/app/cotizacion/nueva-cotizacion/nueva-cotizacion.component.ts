@@ -48,6 +48,7 @@ import { catchError, debounceTime, distinctUntilChanged, finalize, map, startWit
     MatDividerModule,
   ],
   templateUrl: './nueva-cotizacion.component.html',
+  styleUrl: './nueva-cotizacion.component.css',
 })
 export class NuevaCotizacionComponent implements OnInit {
   carrito: ConceptoCotizacion[] = [];

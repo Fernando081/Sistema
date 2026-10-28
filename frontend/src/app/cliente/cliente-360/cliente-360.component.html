@@ -1,7 +1,7 @@
 <header class="page-header">
   <div>
     <a mat-button routerLink="/cliente"><mat-icon>arrow_back</mat-icon>Clientes</a>
-    <h1>{{data()?.cliente?.razonSocial || 'Cliente 360'}}</h1>
+    <h2 class="client-name">{{data()?.cliente?.razonSocial || 'Cliente 360'}}</h2>
     @if(data()){<p>{{data()!.cliente.rfc}} · {{data()!.cliente.email || 'Sin correo registrado'}}</p>}
   </div>
   <a mat-flat-button [routerLink]="['/pedidos']"><mat-icon>add_shopping_cart</mat-icon>Nuevo pedido</a>

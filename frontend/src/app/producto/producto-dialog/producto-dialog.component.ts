@@ -1,6 +1,5 @@
 // frontend/src/app/producto/producto-dialog/producto-dialog.component.ts
 import { Component, Inject, OnInit, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormGroup,
@@ -24,7 +23,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import type { EChartsCoreOption as EChartsOption } from 'echarts/core';
 
 import { ProductoService } from '../../services/producto.service';
-import { Producto, CreateProductoDto, UpdateProductoDto, KardexItem } from '../producto.interface';
+import { Producto, KardexItem } from '../producto.interface';
 import { CategoriaService } from '../../services/categoria.service';
 import { Categoria } from '../../categoria/categoria.interface';
 import {
@@ -315,7 +314,7 @@ export class ProductoDialogComponent implements OnInit {
               data: precios,
               type: 'line',
               smooth: true,
-              itemStyle: { color: '#5AA454' },
+              itemStyle: { color: 'var(--c-chart-1)' },
             },
           ],
         });
@@ -440,7 +439,7 @@ export class ProductoDialogComponent implements OnInit {
       imagenes: imagenesArray
     };
 
-    let request = this.isEditMode
+    const request = this.isEditMode
       ? this.productoService.updateProducto(this.data.idProducto, dataToSave)
       : this.productoService.createProducto(dataToSave);
 

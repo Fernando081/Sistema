@@ -3,6 +3,9 @@
 import { Routes } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { EsPaginatorIntl } from './shared/paginator-intl';
 import { authGuard } from './auth/auth.guard';
 
 export const AUTHENTICATED_ROUTES: Routes = [
@@ -13,6 +16,9 @@ export const AUTHENTICATED_ROUTES: Routes = [
     providers: [
       provideAnimationsAsync(),
       { provide: MAT_DATE_LOCALE, useValue: 'es-MX' },
+      // U01.6 · Campos con contorno y paginador en español en las pantallas autenticadas (en la ruta diferida para no inflar el paquete inicial).
+      { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
+      { provide: MatPaginatorIntl, useClass: EsPaginatorIntl },
     ],
     loadComponent: () =>
       import('./layout/authenticated-shell.component').then(

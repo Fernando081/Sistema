@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { debounceTime, distinctUntilChanged, finalize, map, of, startWith, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, of, startWith, switchMap } from 'rxjs';
 import { Cliente } from '../cliente/cliente.interface';
 import { Producto } from '../producto/producto.interface';
 import { ClienteService } from '../services/cliente.service';

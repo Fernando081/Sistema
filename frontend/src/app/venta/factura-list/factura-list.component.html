@@ -1,151 +1,114 @@
 <!-- frontend/src/app/venta/factura-list/factura-list.component.html -->
- <div class="p-6">
-  <mat-card class="mat-elevation-z4">
-    <mat-card-content>
+<section class="list-surface">
+  <header class="list-head">
+    <div><h2>Historial de facturas</h2><p>{{ totalItems | number }} documentos con los filtros actuales</p></div>
+    <div class="list-head-actions">
       <button mat-stroked-button type="button" [disabled]="directory.exporting()" (click)="exportar()"><mat-icon>download</mat-icon>Exportar CSV filtrado</button>
-      <p *ngIf="directory.loading()" role="status">Cargando facturas...</p>
-      
-      <div class="card-header flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-semibold dark:text-white">Historial de Facturas</h2>
-      </div>
+    </div>
+  </header>
 
-      <div class="flex flex-col md:flex-row gap-4 mb-4">
-        <mat-form-field appearance="outline" class="flex-grow">
-          <mat-label>Buscar en todas las ventas</mat-label>
-          <input matInput (input)="applyFilter($event)" [value]="directory.term()" placeholder="Folio, cliente o RFC" #input>
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
+  <div class="list-filters">
+    <mat-form-field appearance="outline" class="grow" subscriptSizing="dynamic">
+      <mat-label>Buscar en todas las ventas</mat-label>
+      <input matInput (input)="applyFilter($event)" [value]="directory.term()" placeholder="Folio, cliente o RFC" #input>
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Estado comercial</mat-label>
+      <mat-select [value]="directory.query().estado || ''" (selectionChange)="directory.setEstado($event.value)">
+        <mat-option value="">Todos los estados</mat-option>
+        <mat-option value="Pendiente">Pendiente</mat-option>
+        <mat-option value="Timbrada">Timbrada</mat-option>
+        <mat-option value="Cancelada">Cancelada</mat-option>
+        <mat-option value="Pagada">Pagada</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-button-toggle-group [ngModel]="directory.query().tipo || ''" (ngModelChange)="directory.setTipo($event)" aria-label="Tipo Comprobante" hideSingleSelectionIndicator>
+      <mat-button-toggle value="">Todas</mat-button-toggle>
+      <mat-button-toggle value="I">Ingresos</mat-button-toggle>
+      <mat-button-toggle value="E">Egresos</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Estado comercial</mat-label>
-          <mat-select [value]="directory.query().estado || ''" (selectionChange)="directory.setEstado($event.value)">
-            <mat-option value="">Todos los estados</mat-option>
-            <mat-option value="Pendiente">Pendiente</mat-option>
-            <mat-option value="Timbrada">Timbrada</mat-option>
-            <mat-option value="Cancelada">Cancelada</mat-option>
-            <mat-option value="Pagada">Pagada</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-button-toggle-group [ngModel]="directory.query().tipo || ''" (ngModelChange)="directory.setTipo($event)" aria-label="Tipo Comprobante" class="h-[56px]">
-          <mat-button-toggle value="">Todas</mat-button-toggle>
-          <mat-button-toggle value="I">Ingresos</mat-button-toggle>
-          <mat-button-toggle value="E">Egresos</mat-button-toggle>
-        </mat-button-toggle-group>
-      </div>
+  <div class="list-dates" aria-label="Rango de fecha de emisión">
+    <span class="label"><mat-icon aria-hidden="true">event</mat-icon>Emisión</span>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Desde</mat-label>
+      <input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().desde || ''" #desde>
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Hasta</mat-label>
+      <input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().hasta || ''" #hasta>
+    </mat-form-field>
+    <button mat-stroked-button type="button" (click)="directory.setDates(desde.value, hasta.value)">Aplicar fechas</button>
+    <button mat-button type="button" (click)="desde.value = ''; hasta.value = ''; directory.setDates('', '')">Limpiar fechas</button>
+    <small>Hasta incluye el día completo.</small>
+  </div>
 
-      <div class="flex flex-wrap gap-4 items-center mb-4" aria-label="Rango de fecha de emisión">
-        <mat-form-field appearance="outline">
-          <mat-label>Desde</mat-label>
-          <input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().desde || ''" #desde>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Hasta</mat-label>
-          <input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().hasta || ''" #hasta>
-        </mat-form-field>
-        <button mat-stroked-button type="button" (click)="directory.setDates(desde.value, hasta.value)">Aplicar fechas</button>
-        <button mat-button type="button" (click)="desde.value = ''; hasta.value = ''; directory.setDates('', '')">Limpiar fechas</button>
-        <span>Fecha de emisión; Hasta incluye el día completo.</span>
-      </div>
-      <div class="overflow-auto" [hidden]="directory.loading()">
-        <table mat-table [dataSource]="dataSource" matSort [matSortActive]="directory.query().sortBy === 'id' ? '' : directory.query().sortBy" [matSortDirection]="directory.query().sortOrder" matSortDisableClear (matSortChange)="directory.sort($event)" class="full-width">
+  <p *ngIf="directory.loading()" role="status" class="list-status">Cargando facturas...</p>
+  <div class="list-table stack" [hidden]="directory.loading()">
+    <table mat-table [dataSource]="dataSource" matSort [matSortActive]="directory.query().sortBy === 'id' ? '' : directory.query().sortBy" [matSortDirection]="directory.query().sortOrder" matSortDisableClear (matSortChange)="directory.sort($event)">
+      <ng-container matColumnDef="folio">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Folio</th>
+        <td mat-cell *matCellDef="let row" class="folio" data-label="Folio">{{ row.serie || '' }}{{ row.folio }}</td>
+      </ng-container>
+      <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
+        <td mat-cell *matCellDef="let row" class="muted" data-label="Fecha">{{ row.fecha_emision | date:'mediumDate' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="receptor">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Cliente</th>
+        <td mat-cell *matCellDef="let row" class="stack-wide" data-label="Cliente"><div class="party"><strong>{{ row.nombre_receptor }}</strong></div></td>
+      </ng-container>
+      <ng-container matColumnDef="rfc">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>RFC</th>
+        <td mat-cell *matCellDef="let row" class="muted" data-label="RFC">{{ row.rfc_receptor }}</td>
+      </ng-container>
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="amount">Total</th>
+        <td mat-cell *matCellDef="let row" class="amount" data-label="Total">{{ row.total | currency:'MXN' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="estatus">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Estatus</th>
+        <td mat-cell *matCellDef="let row" data-label="Estatus">
+          <span class="badge" [ngClass]="{
+            'badge-success': row.estatus === 'Pagada' || row.estatus === 'Pagado',
+            'badge-warning': row.estatus === 'Pendiente',
+            'badge-danger': row.estatus === 'Cancelada' || row.estatus === 'Cancelado',
+            'badge-info': !['Pagada', 'Pagado', 'Pendiente', 'Cancelada', 'Cancelado'].includes(row.estatus)
+          }">{{ row.estatus }}</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="fiscal">
+        <th mat-header-cell *matHeaderCellDef>Fiscal</th>
+        <td mat-cell *matCellDef="let row" data-label="Fiscal">
+          <span class="badge" [ngClass]="{
+            'badge-success': row.estado_fiscal === 'Timbrado',
+            'badge-danger': row.estado_fiscal === 'Cancelado' || row.estado_fiscal === 'Error',
+            'badge-warning': row.estado_fiscal === 'Procesando' || row.estado_fiscal === 'Cancelacion solicitada',
+            'badge-info': !['Timbrado','Cancelado','Error','Procesando','Cancelacion solicitada'].includes(row.estado_fiscal)
+          }">{{ row.estado_fiscal || 'Borrador' }}</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef><span class="sr-only">Acciones</span></th>
+        <td mat-cell *matCellDef="let row" class="stack-wide">
+          <div class="row-actions">
+            <button mat-icon-button matTooltip="Ver detalles" (click)="verDetalle(row)" aria-label="Ver detalle de factura"><mat-icon>visibility</mat-icon></button>
+            <button mat-icon-button matTooltip="Preparar correo local" (click)="prepararCorreoLocal(row)" aria-label="Preparar correo local de factura"><mat-icon>mail_outline</mat-icon></button>
+          </div>
+        </td>
+      </ng-container>
 
-          <ng-container matColumnDef="folio">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Folio </th>
-            <td mat-cell *matCellDef="let row" class="font-bold"> 
-              {{ row.serie || '' }}{{ row.folio }} 
-            </td>
-          </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          <div class="erp-empty-state list-empty"><mat-icon>receipt_long</mat-icon><strong>Sin facturas con estos filtros</strong><span>Ajusta la búsqueda o el rango de fechas, o registra una venta para que aparezca aquí.</span></div>
+        </td>
+      </tr>
+    </table>
+  </div>
 
-          <ng-container matColumnDef="fecha">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
-            <td mat-cell *matCellDef="let row"> {{ row.fecha_emision | date:'mediumDate' }} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="receptor">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </th>
-            <td mat-cell *matCellDef="let row" class="font-medium text-[var(--wrap-text)]">
-              {{ row.nombre_receptor }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="rfc">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> RFC </th>
-            <td mat-cell *matCellDef="let row" class="text-gray-500"> 
-              {{ row.rfc_receptor }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right pr-6"> Total </th>
-            <td mat-cell *matCellDef="let row" class="font-bold font-mono text-right pr-6"> 
-              {{ row.total | currency:'MXN' }} 
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="estatus">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Estatus </th>
-            <td mat-cell *matCellDef="let row">
-              <span class="badge"
-                [ngClass]="{
-                  'badge-success': row.estatus === 'Pagada' || row.estatus === 'Pagado',
-                  'badge-warning': row.estatus === 'Pendiente',
-                  'badge-danger': row.estatus === 'Cancelada' || row.estatus === 'Cancelado',
-                  'badge-info': !['Pagada', 'Pagado', 'Pendiente', 'Cancelada', 'Cancelado'].includes(row.estatus)
-                }">
-                {{ row.estatus }}
-              </span>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="fiscal">
-            <th mat-header-cell *matHeaderCellDef> Fiscal </th>
-            <td mat-cell *matCellDef="let row">
-              <span class="badge"
-                [ngClass]="{
-                  'badge-success': row.estado_fiscal === 'Timbrado',
-                  'badge-danger': row.estado_fiscal === 'Cancelado' || row.estado_fiscal === 'Error',
-                  'badge-warning': row.estado_fiscal === 'Procesando' || row.estado_fiscal === 'Cancelacion solicitada',
-                  'badge-info': !['Timbrado','Cancelado','Error','Procesando','Cancelacion solicitada'].includes(row.estado_fiscal)
-                }">
-                {{ row.estado_fiscal || 'Borrador' }}
-              </span>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="acciones">
-            <th mat-header-cell *matHeaderCellDef> </th>
-            
-            <td mat-cell *matCellDef="let row">
-              
-              <button mat-icon-button color="primary" matTooltip="Ver Detalles" 
-                      (click)="verDetalle(row)" aria-label="Ver detalle de factura">
-                <mat-icon>visibility</mat-icon>
-              </button>
-
-              <button mat-icon-button color="accent" matTooltip="Preparar correo local"
-                      (click)="prepararCorreoLocal(row)" aria-label="Preparar correo local de factura">
-                <mat-icon>email</mat-icon>
-              </button>
-
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-              <div class="flex flex-col items-center justify-center p-12 text-gray-400">
-                <mat-icon class="!w-16 !h-16 text-6xl mb-4 opacity-50">receipt_long</mat-icon>
-                <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-1">No hay registros aún</h3>
-                <p class="text-gray-500 text-sm">Comienza agregando nuevas ventas para que aparezcan aquí.</p>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
-
-      <mat-paginator [length]="totalItems" [pageSize]="directory.query().limit" [pageIndex]="directory.query().page - 1" (page)="directory.page($event)" [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
-    </mat-card-content>
-  </mat-card>
-</div>
+  <mat-paginator [length]="totalItems" [pageSize]="directory.query().limit" [pageIndex]="directory.query().page - 1" (page)="directory.page($event)" [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+</section>

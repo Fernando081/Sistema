@@ -20,6 +20,7 @@ import { DetalleFacturaDb, FacturaResumen } from '../venta.interface';
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule],
   templateUrl: './factura-detalle.component.html',
+  styleUrls: ['../../shared/list-page.css', './factura-detalle.component.css'],
 })
 export class FacturaDetalleComponent implements OnInit {
   readonly isAdmin = inject(AuthService).getSessionIdentity()?.role === 'admin';

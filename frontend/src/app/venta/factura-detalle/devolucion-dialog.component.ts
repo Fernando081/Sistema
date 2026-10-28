@@ -21,7 +21,7 @@ import { DetalleFacturaDb } from '../venta.interface';
       <p class="text-sm">Disponible para devolver: {{available}}. El reembolso se calcula con los importes originales de la venta.</p>
       <mat-form-field class="w-full"><mat-label>Cantidad a devolver</mat-label><input matInput type="number" formControlName="cantidad" min="0.0001" [max]="available"><mat-error>Ingresa una cantidad mayor a cero y menor o igual a {{available}}.</mat-error></mat-form-field>
       <mat-form-field class="w-full"><mat-label>Reembolso</mat-label><mat-select formControlName="metodoReembolso"><mat-option value="Saldo a Favor">Saldo a favor del cliente</mat-option><mat-option value="Efectivo">Devolución de efectivo</mat-option></mat-select></mat-form-field>
-      <p class="text-sm text-slate-500">Al registrar, se reintegrará la cantidad al inventario y quedará constancia de la devolución.</p>
+      <p class="text-sm text-[var(--c-text-3)]">Al registrar, se reintegrará la cantidad al inventario y quedará constancia de la devolución.</p>
     </mat-dialog-content>
     <mat-dialog-actions align="end"><button mat-button (click)="ref.close()" [disabled]="saving()">Cancelar</button><button mat-flat-button (click)="save()" [disabled]="form.invalid || saving()">{{saving() ? 'Registrando…' : 'Registrar devolución'}}</button></mat-dialog-actions>`,
 })

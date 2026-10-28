@@ -3,7 +3,6 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -13,9 +12,9 @@ import { CajaService, MovimientoCaja, ResumenCaja, TurnoCaja } from '../services
 
 @Component({
   selector:'app-caja',standalone:true,
-  imports:[CommonModule,FormsModule,MatButtonModule,MatCardModule,MatFormFieldModule,MatInputModule,MatPaginatorModule,MatSnackBarModule],
+  imports:[CommonModule,FormsModule,MatButtonModule,MatFormFieldModule,MatInputModule,MatPaginatorModule,MatSnackBarModule],
   templateUrl:'./caja.component.html',
-  styles:[`:host{display:block;padding:24px;max-width:1400px;margin:auto}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:20px 0}mat-card{padding:20px}.amount{font-size:1.65rem;font-weight:650;margin:8px 0}.muted{opacity:.72}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px}form{display:flex;gap:16px;flex-wrap:wrap;align-items:start}mat-form-field{min-width:220px}.notes{flex:1}.table-wrap{overflow:auto;margin:16px 0}table{width:100%;border-collapse:collapse;text-align:left}th,td{padding:12px;border-bottom:1px solid #8883;white-space:nowrap}.negative{color:#c62828}.positive{color:#2e7d32}.warning{padding:12px;background:#ffb30018;border-left:3px solid #ffb300;margin:12px 0}`],
+  styleUrls:['./caja.component.css'],
 })
 export class CajaComponent {
   private readonly service=inject(CajaService);

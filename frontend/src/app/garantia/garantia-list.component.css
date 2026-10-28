@@ -1,0 +1,4 @@
+/* frontend/src/app/garantia/garantia-list.component.css · U01.6 (usa shared/list-page.css) */
+.cell-field{width:170px}.cell-field.wide{width:min(280px,100%)}
+.unit-link{margin-top:.2rem;padding-inline:0!important;height:auto;min-height:0}
+@media(max-width:760px){.cell-field,.cell-field.wide{width:100%}}

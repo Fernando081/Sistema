@@ -34,14 +34,15 @@ export class ReportesUtilidadComponent {
 
     return {
       tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-      xAxis: { type: 'category', data: top5.map((item) => item.descripcion) },
+      grid: { left: 8, right: 8, top: 16, bottom: 8, containLabel: true },
+      xAxis: { type: 'category', data: top5.map((item) => item.descripcion), axisLabel: { interval: 0, width: 150, overflow: 'truncate' } },
       yAxis: { type: 'value' },
       series: [
         {
           name: 'Margen bruto',
           type: 'bar',
           data: top5.map((item) => item.utilidadBruta),
-          itemStyle: { color: '#1976D2' },
+          itemStyle: { color: 'var(--c-chart-3)', borderRadius: [6, 6, 0, 0] },
         },
       ],
     };

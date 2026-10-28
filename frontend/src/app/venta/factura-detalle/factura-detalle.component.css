@@ -1,0 +1,9 @@
+/* frontend/src/app/venta/factura-detalle/factura-detalle.component.css · U01.6 (usa shared/list-page.css) */
+.detail-table{max-height:320px;border:1px solid var(--c-border);border-radius:var(--radius-md)}
+.detail-table td.desc{min-width:240px}.desc strong{display:block;color:var(--c-text);font-weight:550}
+.tax{color:var(--c-text-3);font-size:.72rem;font-variant-numeric:tabular-nums}.tax.retention{color:var(--c-warning)}
+td.qty{font-weight:650;font-variant-numeric:tabular-nums}td.qty small{display:block;color:var(--c-text-3);font-weight:500;font-size:.72rem}
+.line-actions{white-space:nowrap}.line-actions .compact{height:32px;padding-inline:.65rem;font-size:.78rem;margin-left:.25rem}
+.grand-total{display:flex;justify-content:flex-end;align-items:baseline;gap:.75rem;margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--c-border)}
+.grand-total span{color:var(--c-text-3);font-size:.76rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.grand-total strong{color:var(--c-text);font-size:1.4rem;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}

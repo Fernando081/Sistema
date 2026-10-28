@@ -30,12 +30,12 @@ import { Producto } from '../producto.interface';
   ],
   template: `
     <h2 mat-dialog-title class="flex items-center gap-2 border-b pb-2 mb-0">
-      <mat-icon class="text-indigo-600">tune</mat-icon>
+      <mat-icon class="text-[var(--c-link)]">tune</mat-icon>
       <span>Ajuste Manual de Inventario</span>
     </h2>
 
     <mat-dialog-content class="!pt-4 space-y-4">
-      <div class="p-3 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg text-xs text-indigo-900 dark:text-indigo-200 border border-indigo-100 dark:border-indigo-900">
+      <div class="p-3 bg-[var(--c-info-soft)] rounded-lg text-xs text-[var(--c-info)] border border-[var(--c-border)]">
         <p class="font-bold">Ajustando Stock para:</p>
         <p class="font-mono text-sm mt-0.5">{{ data.codigo }} - {{ data.descripcion }}</p>
         <p class="mt-1">Existencia actual: <span class="font-bold text-sm">{{ data.existencia }}</span> unidades</p>

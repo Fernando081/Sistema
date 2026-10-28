@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component,inject,signal } from '@angular/core';
+import { Component,inject,signal,TemplateRef,viewChild } from '@angular/core';
+import { bindTemplateDialog } from '../shared/template-dialog';
 import { FormBuilder,ReactiveFormsModule,Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -30,7 +31,8 @@ export class ComercialComponent{
  readonly approval=this.fb.nonNullable.group({tipo:'Margen bajo',idCliente:[0,Validators.min(1)],idProducto:0,valorSolicitado:[0,Validators.min(0)],valorReferencia:[0,Validators.min(0)],
    operacionDestino:this.fb.nonNullable.control<OperacionComercial>('Venta'),montoOperacion:[null as number|null,[Validators.required,Validators.min(0),Validators.max(999999999999)]],motivo:['',[Validators.required,Validators.maxLength(1000)]]});
  readonly decision=this.fb.nonNullable.group({resolucion:['',[Validators.required,Validators.maxLength(1000)]],vigenciaHoras:[24,[Validators.required,Validators.min(1),Validators.max(720)]]});
- constructor(){this.load();}
+ readonly creditDialog=viewChild<TemplateRef<unknown>>('creditDialog');
+ constructor(){bindTemplateDialog(()=>!!this.selectedClient(),this.creditDialog,()=>this.selectedClient.set(null),{width:'min(560px, 96vw)',ariaLabelledBy:'credit-dialog-title'});this.load();}
  load(){this.loading.set(true);this.error.set('');forkJoin({c:this.clientsApi.getClientes(),products:this.productsApi.buscarProductos('',100),p:this.api.clientes(),a:this.api.autorizaciones(),l:this.api.listas()})
    .pipe(finalize(()=>this.loading.set(false))).subscribe({next:x=>{this.clients.set(x.c);this.products.set(x.products);this.policies.set(x.p);this.approvals.set(x.a);this.lists.set(x.l);},error:e=>this.error.set(commercialError(e))});}
  simulate(){if(this.simulator.invalid||this.busy())return;this.busy.set(true);this.error.set('');const raw=this.simulator.getRawValue();

@@ -32,9 +32,14 @@ import { NotificationService } from './notification.service';
       background: #2f3033;
       color: #fff;
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
-      font: 500 0.9rem/1.35 'Segoe UI', Arial, sans-serif;
+      font:
+        500 0.9rem/1.35 'Segoe UI',
+        Arial,
+        sans-serif;
     }
-    .app-notification-info { background: #075985; }
+    .app-notification-info {
+      background: #075985;
+    }
     button {
       border: 0;
       background: transparent;

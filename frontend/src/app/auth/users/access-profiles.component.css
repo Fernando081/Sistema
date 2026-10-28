@@ -1,10 +1,10 @@
-:host{display:block;color:var(--wrap-text-title)}
-.profiles-panel{padding:1.25rem;background:var(--wrap-card-bg);border:1px solid var(--wrap-border);border-radius:12px}
+:host{display:block;color:var(--c-text)}
+.profiles-panel{padding:1.25rem;background:var(--c-surface);border:1px solid var(--c-border);border-radius:12px}
 header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
-h2,h3{margin:0 0 .5rem}p,small{color:var(--wrap-text-muted)}p{margin:.5rem 0 1rem}small{display:block}
+h2,h3{margin:0 0 .5rem}p,small{color:var(--c-text-3)}p{margin:.5rem 0 1rem}small{display:block}
 .profiles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:1rem;margin:1rem 0}
-article{border:1px solid var(--wrap-border);padding:1rem;border-radius:10px;overflow-wrap:anywhere}
+article{border:1px solid var(--c-border);padding:1rem;border-radius:10px;overflow-wrap:anywhere}
 .actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem}
-.profile-editor{border-top:1px solid var(--wrap-border);padding-top:1.25rem}.fields{display:flex;flex-wrap:wrap;gap:1rem}mat-form-field{flex:1;min-width:min(100%,240px)}
-fieldset{border:1px solid var(--wrap-border);border-radius:8px;min-width:0}.permissions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:.75rem}
-label{display:flex;gap:.6rem;padding:.6rem;align-items:flex-start;overflow-wrap:anywhere}input{margin-top:.2rem;accent-color:var(--wrap-primary)}strong{font-weight:500}legend{padding:.25rem}
+.profile-editor{border-top:1px solid var(--c-border);padding-top:1.25rem}.fields{display:flex;flex-wrap:wrap;gap:1rem}mat-form-field{flex:1;min-width:min(100%,240px)}
+fieldset{border:1px solid var(--c-border);border-radius:8px;min-width:0}.permissions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:.75rem}
+label{display:flex;gap:.6rem;padding:.6rem;align-items:flex-start;overflow-wrap:anywhere}input{margin-top:.2rem;accent-color:var(--c-link)}strong{font-weight:500}legend{padding:.25rem}

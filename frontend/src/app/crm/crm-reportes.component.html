@@ -1,5 +1,5 @@
 <section class="campaign-page" aria-labelledby="reports-title" [attr.aria-busy]="busy()">
- <header class="heading"><div><h1 id="reports-title">Reportes comerciales programados</h1><p>Resumen interno de compromisos pendientes, conservado a la hora de su generación.</p></div><a mat-stroked-button routerLink="/crm/bandeja">Bandeja comercial</a></header>
+ <header class="heading"><div><h2 id="reports-title" class="sr-only">Reportes comerciales programados</h2><p>Resumen interno de compromisos pendientes, conservado a la hora de su generación.</p></div><a mat-stroked-button routerLink="/crm/bandeja">Bandeja comercial</a></header>
  <p>Programaciones propias de administración. Hora de Tampico; ejecución cada diez minutos con el servidor encendido. No envía mensajes.</p>
  @if(error()){<p class="notice" role="alert">{{error()}} <button mat-button (click)="refresh()" [disabled]="busy()">Actualizar</button><button mat-button (click)="back()" [disabled]="busy()">Volver a programaciones</button></p>}
  @if(notice()){<p class="notice" role="status">{{notice()}}</p>}

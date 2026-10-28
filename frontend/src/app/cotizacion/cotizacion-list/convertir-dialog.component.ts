@@ -46,50 +46,50 @@ export interface ConceptoForm {
     FormsModule
   ],
   template: `
-    <h2 mat-dialog-title class="font-bold flex items-center gap-2 text-blue-600 dark:text-white">
-      <mat-icon>handshake</mat-icon> Conversión de Cotización C-{{ data.folio }}
+    <h2 mat-dialog-title class="flex items-center gap-2">
+      <mat-icon class="text-[var(--c-text-3)]" aria-hidden="true">handshake</mat-icon> Convertir cotización C-{{ data.folio }} a venta
     </h2>
     <mat-dialog-content class="!pb-6 !pt-4">
       
       @if (isLoading()) {
-        <div class="p-8 text-center text-gray-500">Cargando partidas...</div>
+        <div class="p-8 text-center text-[var(--c-text-3)]">Cargando partidas...</div>
       } @else {
-        <div class="mb-4 text-sm text-gray-600 dark:text-gray-300">
+        <div class="mb-4 text-sm text-[var(--c-text-2)]">
           Selecciona los artículos que el cliente realmente comprará. Ajusta el precio de cierre si aplicaste un descuento de último minuto. Para los artículos descartados, indica el motivo de rechazo.
         </div>
 
-        <div class="overflow-x-auto w-full border dark:border-slate-700 rounded-lg shadow-sm mb-6">
+        <div class="overflow-x-auto w-full border rounded-lg shadow-sm mb-6">
           <table class="w-full text-sm text-left">
-            <thead class="bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 uppercase text-xs">
+            <thead class="bg-[var(--c-surface-sunken)] text-[var(--c-text-2)] uppercase text-xs">
               <tr>
-                <th scope="col" class="px-4 py-3 text-center w-12"><mat-icon>check_box</mat-icon></th>
+                <th scope="col" class="px-4 py-3 text-center w-12"><span class="sr-only">Incluir</span></th>
                 <th scope="col" class="px-4 py-3">Descripción</th>
                 <th scope="col" class="px-4 py-3 text-center">Cant.</th>
-                <th scope="col" class="px-4 py-3 text-right">Precio Original</th>
-                <th scope="col" class="px-4 py-3 text-right">Condición de Cierre</th>
+                <th scope="col" class="px-4 py-3 text-right">Precio original</th>
+                <th scope="col" class="px-4 py-3 text-right">Condición de cierre</th>
               </tr>
             </thead>
             <tbody>
               @for (item of conceptos(); track item.idConcepto) {
-                <tr class="border-b dark:border-slate-700 hover:bg-black/5 dark:hover:bg-white/5 transition-colors" [class.bg-red-50]="!item.seleccionado">
+                <tr class="border-b hover:bg-[var(--c-surface-sunken)] transition-colors" [style.background-color]="item.seleccionado ? null : 'var(--c-danger-soft)'">
                   <td class="px-4 py-3 text-center">
-                    <mat-checkbox [(ngModel)]="item.seleccionado" (change)="triggerRecalc()" color="primary"></mat-checkbox>
+                    <mat-checkbox [(ngModel)]="item.seleccionado" (change)="triggerRecalc()" [aria-label]="'Incluir ' + item.descripcion"></mat-checkbox>
                   </td>
                   <td class="px-4 py-3" [class.opacity-50]="!item.seleccionado" [class.line-through]="!item.seleccionado">
-                    <span class="font-medium dark:text-gray-100">{{ item.descripcion }}</span>
+                    <span class="font-medium">{{ item.descripcion }}</span>
                   </td>
-                  <td class="px-4 py-3 text-center font-bold dark:text-gray-100" [class.opacity-50]="!item.seleccionado">{{ item.cantidad }}</td>
-                  <td class="px-4 py-3 text-right dark:text-gray-100" [class.opacity-50]="!item.seleccionado">{{ item.precioOriginal | currency }}</td>
+                  <td class="px-4 py-3 text-center font-bold" [class.opacity-50]="!item.seleccionado">{{ item.cantidad }}</td>
+                  <td class="px-4 py-3 text-right" [class.opacity-50]="!item.seleccionado">{{ item.precioOriginal | currency }}</td>
                   <td class="px-4 py-3 text-right w-64">
                     @if (item.seleccionado) {
                       <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
-                        <mat-label>Precio Final</mat-label>
-                        <input matInput type="number" [(ngModel)]="item.precioFinal" (change)="triggerRecalc()" (keyup)="triggerRecalc()">
-                        <span matTextPrefix class="mr-1 text-gray-500 dark:text-gray-400">$ &nbsp;</span>
+                        <mat-label>Precio final</mat-label>
+                        <input matInput type="number" step="0.01" min="0" [(ngModel)]="item.precioFinal" (change)="triggerRecalc()" (keyup)="triggerRecalc()">
+                        <span matTextPrefix class="mr-1 text-[var(--c-text-3)]">$ &nbsp;</span>
                       </mat-form-field>
                     } @else {
                       <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
-                        <mat-label>Motivo de Rechazo</mat-label>
+                        <mat-label>Motivo de rechazo</mat-label>
                         <mat-select [(ngModel)]="item.motivoRechazo" (selectionChange)="triggerRecalc()">
                           <mat-option value="Precio alto">Precio alto</mat-option>
                           <mat-option value="Tiempo de entrega muy largo">Tiempo de entrega largo</mat-option>
@@ -108,16 +108,16 @@ export interface ConceptoForm {
         </div>
 
         <div class="flex gap-4">
-          <mat-form-field appearance="fill" class="flex-1">
-            <mat-label>Forma de Pago</mat-label>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>Forma de pago</mat-label>
             <mat-select [(ngModel)]="idFormaPago">
               @for (f of data.formasPago; track f.idFormaPago) {
                 <mat-option [value]="f.idFormaPago">{{ f.clave }} - {{ f.nombre }}</mat-option>
               }
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="fill" class="flex-1">
-            <mat-label>Método de Pago</mat-label>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>Método de pago</mat-label>
             <mat-select [(ngModel)]="idMetodoPago">
               @for (m of data.metodosPago; track m.idMetodoDePago) {
                 <mat-option [value]="m.idMetodoDePago">{{ m.clave }} - {{ m.nombre }}</mat-option>
@@ -127,21 +127,21 @@ export interface ConceptoForm {
         </div>
       }
     </mat-dialog-content>
-    <mat-dialog-actions align="end" class="!px-6 !py-4 border-t dark:border-slate-700 bg-gray-50 dark:bg-slate-900 flex justify-between w-full">
-       <div class="text-lg">
-         Subtotal Esperado (Sin Impuestos): <span class="font-bold text-blue-600">{{ dynamicSubtotal() | currency }}</span>
+    <mat-dialog-actions align="end" class="!px-6 !py-4 border-t bg-[var(--c-surface-2)] flex flex-wrap justify-between gap-4 w-full">
+       <div class="flex flex-col">
+         <span class="text-xs text-[var(--c-text-3)]">Subtotal esperado sin impuestos</span><strong class="text-xl text-[var(--c-text)] tabular-nums">{{ dynamicSubtotal() | currency }}</strong>
        </div>
-       <div class="flex gap-2 items-center">
+       <div class="flex flex-wrap gap-2 items-center">
          @if (!isConfirming()) {
            <button mat-stroked-button mat-dialog-close>Cancelar</button>
            <button mat-flat-button color="primary" (click)="isConfirming.set(true)" [disabled]="!esValido()">
-             <mat-icon>check_circle</mat-icon> Efectuar Venta
+             <mat-icon>check_circle</mat-icon> Efectuar venta
            </button>
          } @else {
-           <span class="text-red-500 font-bold text-sm mr-2 hidden sm:block">¿Confirmar conversión irreversible?</span>
-           <button mat-stroked-button color="primary" (click)="isConfirming.set(false)">No, Regresar</button>
+           <span class="text-[var(--c-danger)] font-bold text-sm mr-2 hidden sm:block">¿Confirmar conversión irreversible?</span>
+           <button mat-stroked-button color="primary" (click)="isConfirming.set(false)">No, regresar</button>
            <button mat-flat-button color="warn" (click)="ejecutar()">
-             <mat-icon>warning</mat-icon> Sí, Descontar Stock
+             <mat-icon>warning</mat-icon> Sí, descontar existencia
            </button>
          }
        </div>

@@ -1,10 +1,10 @@
 <section class="audit-page" aria-labelledby="audit-title">
-  <header><div><h1 id="audit-title">Bitácora de movimientos</h1><p>Últimos 500 registros, ordenados por fecha e identificador. Las páginas corresponden a esa ventana.</p></div>
+  <header><div><h2 id="audit-title" class="sr-only">Bitácora de movimientos</h2><p>Últimos 500 registros, ordenados por fecha e identificador. Las páginas corresponden a esa ventana.</p></div>
     <button mat-stroked-button type="button" [disabled]="isLoading()" (click)="load()">Actualizar bitácora</button>
   </header>
   @if(protection();as state){
     <section class="audit-status" aria-labelledby="audit-protection">
-      <h2 id="audit-protection">Protección de la bitácora</h2>
+      <h3 id="audit-protection">Protección de la bitácora</h3>
       <p role="status">{{state.appendOnly ? 'Bloqueo de modificación, borrado y vaciado activo.' : 'Protección incompleta: revisar los controles de PostgreSQL.'}}</p>
       <p>{{state.actorSnapshots ? 'Los eventos nuevos conservan el nombre del usuario al registrarse.' : 'La captura del usuario al registrar no está activa.'}} Tablas de acceso cubiertas: {{state.accessTables}} de {{state.expectedAccessTables}}.</p>
       <p>Los históricos no reciben una identidad inventada. El estado comprueba controles instalados; no verifica firmas criptográficas.</p>
@@ -12,7 +12,7 @@
     </section>
   }
   @if(error()){<p class="audit-warning" role="alert">No se pudo cargar la bitácora y su estado. Usa Actualizar bitácora para reintentar.</p>}
-  <mat-card>
+  <mat-card class="audit-table">
     @if(isLoading()){<div class="audit-loading" role="status"><mat-spinner diameter="32" /><span>Cargando bitácora…</span></div>}
     <div class="audit-scroll" role="region" aria-label="Registros de auditoría" tabindex="0">
       <table mat-table [dataSource]="dataSource">

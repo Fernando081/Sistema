@@ -1,7 +1,8 @@
 <section class="sale-workspace">
   <header class="sale-toolbar">
-    <div><h2>Venta de mostrador</h2><p>Busca por código, OEM, descripción, motor o aplicación.</p></div>
-    <div class="sale-toolbar-actions"><span class="keyboard-help"><kbd>F2</kbd> buscar · <kbd>Ctrl</kbd> + <kbd>Enter</kbd> cobrar</span><button mat-button type="button" (click)="guardarBorrador()"><mat-icon>save</mat-icon>Guardar borrador</button><button mat-button type="button" (click)="descartarVenta()" [disabled]="!carrito().length && !clienteSeleccionado"><mat-icon>delete_sweep</mat-icon>Descartar</button></div>
+    <h2 class="sr-only">Venta de mostrador</h2>
+    <span class="keyboard-help"><kbd>F2</kbd> buscar <span aria-hidden="true">·</span> <kbd>Ctrl</kbd>+<kbd>Enter</kbd> cobrar</span>
+    <div class="sale-toolbar-actions"><button mat-stroked-button type="button" (click)="guardarBorrador()"><mat-icon>bookmark_add</mat-icon>Guardar borrador</button><button mat-button type="button" class="discard" (click)="descartarVenta()" [disabled]="!carrito().length && !clienteSeleccionado"><mat-icon>delete_sweep</mat-icon>Descartar</button></div>
   </header>
 
   <div class="sale-layout">
@@ -25,16 +26,16 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-        <span class="scanner-status"><mat-icon>qr_code_scanner</mat-icon>Listo para escáner</span>
+        <span class="scanner-status"><span class="live-dot" aria-hidden="true"></span>Listo para escáner</span>
       </div>
 
       <div class="cart-card">
-        <div class="cart-heading"><div><h3>Productos</h3><p>{{ carrito().length }} partidas en la venta</p></div></div>
+        <div class="cart-heading"><h3>Productos</h3><span class="count">{{ carrito().length }} {{ carrito().length === 1 ? 'partida' : 'partidas' }}</span></div>
         <div class="responsive-table cart-table">
           <table mat-table [dataSource]="carrito()" class="w-full">
-            <ng-container matColumnDef="descripcion"><th mat-header-cell *matHeaderCellDef>Producto</th><td mat-cell *matCellDef="let item" data-label="Producto"><div class="cart-product"><img *ngIf="item.imagenes?.length" [src]="productImageUrl(item.imagenes[0])" [alt]="'Imagen de ' + item.descripcion" loading="lazy" (error)="onImageError($event)"><span [hidden]="item.imagenes?.length" class="product-placeholder"><mat-icon>inventory_2</mat-icon></span><span><strong>{{ item.codigo }} · {{ item.descripcion }}</strong><small>{{ item.claveProdServ }} · {{ item.unidadDescripcion }}</small></span></div></td></ng-container>
+            <ng-container matColumnDef="descripcion"><th mat-header-cell *matHeaderCellDef>Producto</th><td mat-cell *matCellDef="let item" data-label="Producto"><div class="cart-product"><img *ngIf="item.imagenes?.length" [src]="productImageUrl(item.imagenes[0])" [alt]="'Imagen de ' + item.descripcion" loading="lazy" (error)="onImageError($event)"><span [hidden]="item.imagenes?.length" class="product-placeholder"><mat-icon>inventory_2</mat-icon></span><span><code class="code-chip">{{ item.codigo }}</code><strong>{{ item.descripcion }}</strong><small>SAT {{ item.claveProdServ }} · {{ item.unidadDescripcion }}</small></span></div></td></ng-container>
             <ng-container matColumnDef="cantidad"><th mat-header-cell *matHeaderCellDef>Cantidad</th><td mat-cell *matCellDef="let item" data-label="Cantidad"><div class="quantity-control"><button type="button" aria-label="Quitar una unidad" (click)="cambiarCantidad(item,-1)">−</button><input type="number" min="1" [(ngModel)]="item.cantidad" (change)="alCambiarValor(item)" aria-label="Cantidad"><button type="button" aria-label="Agregar una unidad" (click)="cambiarCantidad(item,1)">+</button></div></td></ng-container>
-            <ng-container matColumnDef="precio"><th mat-header-cell *matHeaderCellDef>Precio</th><td mat-cell *matCellDef="let item" data-label="Precio"><label class="money-input"><span>$</span><input type="number" min="0" [(ngModel)]="item.valorUnitario" (change)="alCambiarValor(item)" [readonly]="!canEditPrice" aria-label="Precio unitario"></label></td></ng-container>
+            <ng-container matColumnDef="precio"><th mat-header-cell *matHeaderCellDef>Precio</th><td mat-cell *matCellDef="let item" data-label="Precio"><label class="money-input"><span>$</span><input type="number" min="0" step="0.01" [ngModel]="precioTexto(item)" [ngModelOptions]="{ updateOn: 'blur' }" (ngModelChange)="item.valorUnitario = $event; alCambiarValor(item)" [readonly]="!canEditPrice" aria-label="Precio unitario"></label></td></ng-container>
             <ng-container matColumnDef="importe"><th mat-header-cell *matHeaderCellDef>Importe</th><td mat-cell *matCellDef="let item" data-label="Importe"><strong>{{ item.importe | currency:'MXN' }}</strong></td></ng-container>
             <ng-container matColumnDef="acciones"><th mat-header-cell *matHeaderCellDef><span class="sr-only">Acciones</span></th><td mat-cell *matCellDef="let item;let i=index" data-label="Acciones" class="actions-cell"><button mat-icon-button type="button" (click)="eliminarDelCarrito(i)" [attr.aria-label]="'Quitar '+item.descripcion"><mat-icon>delete_outline</mat-icon></button></td></ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr><tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
@@ -64,7 +65,7 @@
         </div>
       </details>
 
-      <mat-card class="erp-static-card total-card"><mat-card-content><p class="total-label">Resumen de venta</p><dl><div><dt>Subtotal</dt><dd>{{subtotalGeneral()|currency:'MXN'}}</dd></div><div><dt>IVA</dt><dd>{{ivaGeneral()|currency:'MXN'}}</dd></div>@if(retIsrGeneral()>0){<div><dt>Retención ISR</dt><dd>− {{retIsrGeneral()|currency:'MXN'}}</dd></div>}<div class="grand-total"><dt>Total</dt><dd>{{totalGeneral()|currency:'MXN'}}</dd></div></dl><button mat-flat-button type="button" class="pay-button" (click)="guardarVenta()" [disabled]="isSaving()||!carrito().length||!clienteSeleccionado">@if(isSaving()){<ng-container><mat-spinner diameter="20"></mat-spinner><span>Guardando…</span></ng-container>}@else{<ng-container><mat-icon>point_of_sale</mat-icon><span>Cobrar venta</span></ng-container>}</button><p class="safe-action">Se validarán existencias, impuestos y datos fiscales antes de guardar.</p></mat-card-content></mat-card>
+      <mat-card class="erp-static-card total-card"><mat-card-content><p class="total-label">Resumen de venta</p><dl><div><dt>Subtotal</dt><dd>{{subtotalGeneral()|currency:'MXN'}}</dd></div><div><dt>IVA</dt><dd>{{ivaGeneral()|currency:'MXN'}}</dd></div>@if(retIsrGeneral()>0){<div><dt>Retención ISR</dt><dd>− {{retIsrGeneral()|currency:'MXN'}}</dd></div>}<div class="grand-total"><dt>Total</dt><dd>{{totalGeneral()|currency:'MXN'}}</dd></div></dl><button mat-flat-button type="button" class="pay-button btn-brass" (click)="guardarVenta()" [disabled]="isSaving()||!carrito().length||!clienteSeleccionado">@if(isSaving()){<ng-container><mat-spinner diameter="20"></mat-spinner><span>Guardando…</span></ng-container>}@else{<ng-container><mat-icon>point_of_sale</mat-icon><span>Cobrar venta</span></ng-container>}</button><p class="safe-action"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> · Se validan existencias, impuestos y datos fiscales antes de guardar.</p></mat-card-content></mat-card>
     </aside>
   </div>
 </section>

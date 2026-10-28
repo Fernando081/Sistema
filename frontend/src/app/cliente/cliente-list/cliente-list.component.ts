@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,12 +28,12 @@ import { ClienteUnidadesDialogComponent } from '../cliente-unidades-dialog/clien
   standalone: true,
   imports: [
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
-    MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
+    MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,
     MatProgressSpinnerModule
   ],
   templateUrl: './cliente-list.component.html',
-  styleUrls: ['./cliente-list.component.css']
+  styleUrls: ['../../shared/list-page.css', './cliente-list.component.css']
 })
 export class ClienteListComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);

@@ -1,6 +1,6 @@
 <!-- frontend/src/app/producto/producto-dialog/producto-dialog.component.html -->
-<div class="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50">
-  <h1 mat-dialog-title class="!m-0">{{ isEditMode ? 'Editar Producto' : 'Nuevo Producto' }}</h1>
+<div class="flex justify-between items-center px-6 py-4 border-b border-[var(--c-border)] bg-[var(--c-surface-2)]">
+  <h2 mat-dialog-title class="!m-0">{{ isEditMode ? 'Editar Producto' : 'Nuevo Producto' }}</h2>
   <button mat-icon-button type="button" (click)="cerrar()" aria-label="Cerrar ficha de producto">
     <mat-icon>close</mat-icon>
   </button>
@@ -16,12 +16,12 @@
       </mat-tab>
       <mat-tab label="Datos Generales">
         <div class="p-6 pt-4 grid grid-cols-1 md:grid-cols-2 gap-x-4">
-          <div class="col-span-1 md:col-span-2 flex flex-col items-center mb-4 p-4 border-2 border-dashed border-gray-300 rounded-md bg-gray-50">
-            <span class="text-sm font-semibold text-gray-600 mb-2">Fotografías del Producto (Hasta 5)</span>
+          <div class="col-span-1 md:col-span-2 flex flex-col items-center mb-4 p-4 border-2 border-dashed border-[var(--c-border-strong)] rounded-md bg-[var(--c-surface-2)]">
+            <span class="text-sm font-semibold text-[var(--c-text-2)] mb-2">Fotografías del Producto (Hasta 5)</span>
             
             <div class="flex flex-wrap items-center justify-center gap-4 mb-3" *ngIf="previewUrls().length > 0">
               <div *ngFor="let prev of previewUrls(); let i = index" class="relative group">
-                <img [src]="prev.url" alt="Previsualización" class="w-24 h-24 object-cover rounded-md shadow-sm border border-gray-200" />
+                <img [src]="prev.url" alt="Previsualización" class="w-24 h-24 object-cover rounded-md shadow-sm border border-[var(--c-border)]" />
                 <button mat-mini-fab color="warn" type="button" class="absolute -top-2 -right-2 scale-75 opacity-0 group-hover:opacity-100 transition-opacity" (click)="eliminarImagenA(i)">
                   <mat-icon>close</mat-icon>
                 </button>
@@ -122,7 +122,7 @@
             </mat-select>
           </mat-form-field>
 
-          <div class="col-span-1 md:col-span-2 mt-4 p-4 border rounded bg-gray-50">
+          <div class="col-span-1 md:col-span-2 mt-4 p-4 border rounded bg-[var(--c-surface-2)]">
             <h3 class="text-md font-semibold mb-2">Configuración Fiscal (RESICO)</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <mat-form-field class="w-full">
@@ -154,9 +154,9 @@
     <ng-template matTabContent>
       <div class="p-6 space-y-6">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div class="p-4 rounded-xl border border-gray-200"><span class="text-sm text-gray-500">Existencia actual</span><strong class="block text-2xl">{{ data.existencia }}</strong></div>
-          <div class="p-4 rounded-xl border border-gray-200"><span class="text-sm text-gray-500">Ubicación</span><strong class="block text-xl">{{ data.ubicacion || 'Sin asignar' }}</strong></div>
-          <div class="p-4 rounded-xl border border-gray-200"><span class="text-sm text-gray-500">Precio de venta</span><strong class="block text-xl">{{ data.precioUnitario | currency:'MXN' }}</strong></div>
+          <div class="p-4 rounded-xl border border-[var(--c-border)]"><span class="text-sm text-[var(--c-text-3)]">Existencia actual</span><strong class="block text-2xl">{{ data.existencia }}</strong></div>
+          <div class="p-4 rounded-xl border border-[var(--c-border)]"><span class="text-sm text-[var(--c-text-3)]">Ubicación</span><strong class="block text-xl">{{ data.ubicacion || 'Sin asignar' }}</strong></div>
+          <div class="p-4 rounded-xl border border-[var(--c-border)]"><span class="text-sm text-[var(--c-text-3)]">Precio de venta</span><strong class="block text-xl">{{ data.precioUnitario | currency:'MXN' }}</strong></div>
         </div>
         <section><h3 class="font-bold mb-2">Movimientos recientes</h3><div class="overflow-auto border rounded-xl"><table class="w-full text-sm"><thead><tr><th class="p-3 text-left">Fecha</th><th class="p-3 text-left">Movimiento</th><th class="p-3 text-right">Cantidad</th><th class="p-3 text-right">Existencia final</th><th class="p-3 text-left">Referencia</th></tr></thead><tbody>@for(m of kardex();track m.id_kardex){<tr class="border-t"><td class="p-3">{{m.fecha|date:'short'}}</td><td class="p-3"><span class="badge badge-info">{{m.tipo_movimiento}}</span></td><td class="p-3 text-right">{{m.cantidad}}</td><td class="p-3 text-right font-bold">{{m.stock_resultante}}</td><td class="p-3">{{m.referencia||'—'}}</td></tr>}@empty{<tr><td colspan="5"><div class="erp-empty-state compact">No hay movimientos registrados.</div></td></tr>}</tbody></table></div></section>
         <section><h3 class="font-bold mb-2">Cotizaciones de proveedores</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3">@for(c of cotizacionesProveedor();track c.id_cotizacion_prov){<article class="p-4 border rounded-xl"><strong>{{c.proveedor_nombre||'Proveedor'}}</strong><p class="m-0">{{c.precio_cotizado|currency:'MXN'}} · Entrega {{c.dias_entrega||0}} días</p><small>{{c.fecha_registro|date:'shortDate'}}</small></article>}@empty{<div class="erp-empty-state compact md:col-span-2">Aún no hay cotizaciones de proveedor.</div>}</div></section>
@@ -167,14 +167,14 @@
   <mat-tab label="Historial Precios" *ngIf="isEditMode">
     <ng-template matTabContent>
       <div class="p-6 flex flex-col items-center">
-        <h3 class="text-lg font-bold mb-4 text-gray-700">Evolución del Precio</h3>
+        <h3 class="text-lg font-bold mb-4 text-[var(--c-text-2)]">Evolución del Precio</h3>
 
         <div class="h-[300px] w-full" *ngIf="chartData() as options; else noData">
           <div echarts [options]="options" class="w-full h-full"></div>
         </div>
 
         <ng-template #noData>
-          <div class="p-8 text-center text-gray-400 bg-gray-50 rounded w-full">
+          <div class="p-8 text-center text-[var(--c-text-3)] bg-[var(--c-surface-2)] rounded w-full">
             No hay cambios de precio registrados aún.
           </div>
         </ng-template>
@@ -208,12 +208,12 @@
       </mat-form-field>
 
       <div class="mt-4">
-        <h3 class="font-bold text-gray-700 border-b pb-2">Productos Vinculados:</h3>
+        <h3 class="font-bold text-[var(--c-text-2)] border-b pb-2">Productos Vinculados:</h3>
         <mat-list role="list">
-          <mat-list-item *ngFor="let eq of equivalentes()" role="listitem" class="hover:bg-gray-50">
-            <mat-icon matListItemIcon class="text-gray-400">inventory_2</mat-icon>
+          <mat-list-item *ngFor="let eq of equivalentes()" role="listitem" class="hover:bg-[var(--c-surface-2)]">
+            <mat-icon matListItemIcon class="text-[var(--c-text-3)]">inventory_2</mat-icon>
             <span matListItemTitle class="font-medium">{{ eq.descripcion }}</span>
-            <span matListItemLine class="text-sm text-gray-500">
+            <span matListItemLine class="text-sm text-[var(--c-text-3)]">
               Cód: {{ eq.codigo }} | Precio: {{ eq.precio | currency }} | Stock: {{ eq.existencia }}
             </span>
             <button
@@ -229,7 +229,7 @@
 
         <div
           *ngIf="equivalentes().length === 0"
-          class="text-gray-400 text-sm mt-4 text-center italic"
+          class="text-[var(--c-text-3)] text-sm mt-4 text-center italic"
         >
           No hay productos vinculados a este ítem.
         </div>
@@ -282,7 +282,7 @@
   </mat-tab-group>
   </div>
 
-  <div mat-dialog-actions align="end" class="!px-6 !py-4 border-t border-gray-100 bg-gray-50/30">
+  <div mat-dialog-actions align="end" class="!px-6 !py-4 border-t border-[var(--c-border)] bg-[var(--c-surface-2)]">
     <button mat-stroked-button type="button" class="!rounded-lg" (click)="cerrar()">Cancelar</button>
     <button *ngIf="!webTabActive" mat-flat-button color="primary" type="submit" class="!rounded-lg" [disabled]="isSaving() || form.invalid">Guardar</button>
   </div>

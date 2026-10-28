@@ -7,7 +7,6 @@ import { SelectionModel } from '@angular/cdk/collections';
 import anime from 'animejs';
 
 // Material Imports
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,7 +18,6 @@ import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDividerModule } from '@angular/material/divider';
 
 // Services
 import { VentaService } from '../../services/venta.service';
@@ -43,7 +41,6 @@ export interface PendingTicket {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
@@ -54,11 +51,11 @@ export interface PendingTicket {
     MatNativeDateModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatTooltipModule,
-    MatDividerModule
+    MatTooltipModule
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './factura-global.component.html',
+  styleUrls: ['../../shared/list-page.css', './factura-global.component.css'],
 })
 export class FacturaGlobalComponent implements OnInit {
   dateForm: FormGroup;
@@ -78,7 +75,6 @@ export class FacturaGlobalComponent implements OnInit {
     'folio',
     'fecha',
     'cliente',
-    'rfc',
     'subtotal',
     'iva',
     'total'

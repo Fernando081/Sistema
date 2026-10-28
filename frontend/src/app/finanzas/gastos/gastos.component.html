@@ -1,327 +1,98 @@
-<div
-  class="max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-xl mt-10 transition-colors duration-300"
->
-  <div
-    class="flex items-center justify-between mb-8 pb-4 border-b border-gray-200 dark:border-gray-700"
-  >
-    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-8 w-8 text-blue-600 dark:text-blue-400"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      Registro de Gastos
-    </h1>
-    <button
-      (click)="downloadPDF()"
-      class="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
-      Corte Semanal (PDF)
-    </button>
-  </div>
+<h2 class="sr-only">Registro de gastos</h2>
 
-  <!-- Vista Rápida de Saldos -->
-  <div class="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl border border-blue-100 dark:border-blue-800">
-    <h2 class="text-xl font-bold mb-4 text-blue-900 dark:text-blue-100 flex items-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-      Saldos Actuales
-    </h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
-        <div class="text-sm text-gray-500 mb-1">Caja Chica (Efectivo)</div>
-        <div class="text-2xl font-bold text-green-600 dark:text-green-400">
-          {{ saldos()[0]?.cajaChica || 0 | currency:'MXN':'symbol':'1.2-2' }}
-        </div>
+<section class="balances" aria-label="Saldos actuales">
+  <article class="metric">
+    <span class="metric-symbol success"><mat-icon>payments</mat-icon></span>
+    <span><small>Caja chica (efectivo)</small><strong>{{ saldos()[0]?.cajaChica || 0 | currency: 'MXN' : 'symbol' : '1.2-2' }}</strong></span>
+  </article>
+  <article class="metric">
+    <span class="metric-symbol info"><mat-icon>account_balance</mat-icon></span>
+    <span><small>Cuenta banco (transferencias)</small><strong>{{ saldos()[0]?.cuentaBanco || 0 | currency: 'MXN' : 'symbol' : '1.2-2' }}</strong></span>
+  </article>
+</section>
+
+<section class="panel">
+  <header class="panel-head">
+    <div><h3>Nuevo gasto</h3><p>Se descuenta del saldo según el método de pago.</p></div>
+    <button mat-stroked-button type="button" (click)="downloadPDF()"><mat-icon>picture_as_pdf</mat-icon>Corte semanal (PDF)</button>
+  </header>
+
+  @if (successMessage()) {<p class="message success" role="status"><mat-icon>check_circle</mat-icon>{{ successMessage() }}</p>}
+  @if (errorMessage()) {<p class="message error" role="alert"><mat-icon>error</mat-icon>{{ errorMessage() }}</p>}
+
+  <form (ngSubmit)="onSubmit()" class="expense-form">
+    <mat-form-field appearance="outline" class="wide">
+      <mat-label>Concepto</mat-label>
+      <input matInput name="concepto" required placeholder="Ej. Pago de luz eléctrica" [ngModel]="concepto()" (ngModelChange)="concepto.set($event)" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Monto</mat-label>
+      <span matTextPrefix>$&nbsp;</span>
+      <input matInput type="number" name="monto" step="0.01" min="0" required placeholder="0.00" [ngModel]="monto()" (ngModelChange)="monto.set($event)" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Categoría</mat-label>
+      <mat-select name="categoria" [ngModel]="categoria()" (ngModelChange)="categoria.set($event)">
+        @for (cat of categorias; track cat) {<mat-option [value]="cat">{{ cat }}</mat-option>}
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Método de pago</mat-label>
+      <mat-select name="metodoPago" [ngModel]="metodoPago()" (ngModelChange)="metodoPago.set($event)">
+        @for (metodo of metodos; track metodo) {<mat-option [value]="metodo">{{ metodo }}</mat-option>}
+      </mat-select>
+    </mat-form-field>
+    @if (isLogistics()) {
+      <div class="landed wide">
+        <mat-form-field appearance="outline">
+          <mat-label>ID de compra (prorrateo de flete)</mat-label>
+          <input matInput type="number" name="idCompra" placeholder="Ej. 1024" [ngModel]="idCompra()" (ngModelChange)="idCompra.set($event)" />
+        </mat-form-field>
+        <p><mat-icon>info</mat-icon>Introduce el ID de una compra para distribuir este flete sobre el costo unitario de sus productos.</p>
       </div>
-      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
-        <div class="text-sm text-gray-500 mb-1">Cuenta Banco (Transferencias)</div>
-        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
-          {{ saldos()[0]?.cuentaBanco || 0 | currency:'MXN':'symbol':'1.2-2' }}
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Messages Validation -->
-  <div
-    *ngIf="successMessage()"
-    class="mb-6 p-4 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-lg border border-green-200 dark:border-green-800 flex items-center gap-3 animate-fade-in"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="h-6 w-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-    </svg>
-    {{ successMessage() }}
-  </div>
-
-  <div
-    *ngIf="errorMessage()"
-    class="mb-6 p-4 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800 flex items-center gap-3 animate-fade-in"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="h-6 w-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
-    {{ errorMessage() }}
-  </div>
-
-  <form (ngSubmit)="onSubmit()" class="space-y-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Concepto -->
-      <div class="col-span-1 md:col-span-2">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >Concepto</label
-        >
-        <input
-          type="text"
-          [ngModel]="concepto()"
-          (ngModelChange)="concepto.set($event)"
-          name="concepto"
-          class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
-          placeholder="Ej. Pago de luz eléctrica"
-          required
-        />
-      </div>
-
-      <!-- Monto -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >Monto ($)</label
-        >
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span class="text-gray-500 dark:text-gray-400 sm:text-sm">$</span>
-          </div>
-          <input
-            type="number"
-            [ngModel]="monto()"
-            (ngModelChange)="monto.set($event)"
-            name="monto"
-            step="0.01"
-            min="0"
-            class="w-full pl-8 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
-            placeholder="0.00"
-            required
-          />
-        </div>
-      </div>
-
-      <!-- Categoria -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >Categoría</label
-        >
-        <select
-          [ngModel]="categoria()"
-          (ngModelChange)="categoria.set($event)"
-          name="categoria"
-          class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none appearance-none"
-        >
-          <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
-        </select>
-      </div>
-
-      <!-- Método de Pago -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >Método de Pago</label
-        >
-        <select
-          [ngModel]="metodoPago()"
-          (ngModelChange)="metodoPago.set($event)"
-          name="metodoPago"
-          class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none appearance-none"
-        >
-          <option *ngFor="let metodo of metodos" [value]="metodo">{{ metodo }}</option>
-        </select>
-      </div>
-
-      <!-- ID Compra (Condicional - Landed Cost Prorating) -->
-      <div
-        *ngIf="isLogistics()"
-        class="animate-fade-in-up bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800"
-      >
-        <label
-          class="block text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          ID de Compra (Prorrateo Landed Cost)
-        </label>
-        <input
-          type="number"
-          [ngModel]="idCompra()"
-          (ngModelChange)="idCompra.set($event)"
-          name="idCompra"
-          class="w-full px-4 py-3 rounded-lg border border-blue-300 dark:border-blue-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
-          placeholder="Ej. 1024"
-        />
-        <p class="text-xs text-blue-600 dark:text-blue-400 mt-2">
-          Introduce el ID de una compra para distribuir automáticamente este flete sobre el costo
-          unitario de sus productos.
-        </p>
-      </div>
-    </div>
-
-    <!-- Submit Button -->
-    <div class="pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
-      <button
-        type="submit"
-        [disabled]="loading()"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-semibold transition-all shadow-md hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
-      >
-        <svg
-          *ngIf="loading()"
-          class="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          ></circle>
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-        {{ loading() ? 'Registrando...' : 'Registrar Gasto' }}
-      </button>
+    }
+    <div class="form-actions wide">
+      <button mat-flat-button type="submit" [disabled]="loading()">{{ loading() ? 'Registrando…' : 'Registrar gasto' }}</button>
     </div>
   </form>
+</section>
 
-  <!-- Historial de Gastos -->
-  <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3 mb-6">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-      </svg>
-      Historial de Gastos
-    </h2>
-    
-    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 hidden sm:block">
-      <table mat-table [dataSource]="gastosList()" class="w-full">
-        <!-- Fecha Column -->
-        <ng-container matColumnDef="fecha">
-          <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500"> Fecha </th>
-          <td mat-cell *matCellDef="let element" class="whitespace-nowrap"> 
-            {{ element.fecha | date:'dd/MM/yyyy HH:mm' }} 
-          </td>
-        </ng-container>
-
-        <!-- Concepto Column -->
-        <ng-container matColumnDef="concepto">
-          <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500"> Concepto </th>
-          <td mat-cell *matCellDef="let element"> {{ element.concepto }} </td>
-        </ng-container>
-
-        <!-- Categoría Column -->
-        <ng-container matColumnDef="categoria">
-          <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500"> Categoría </th>
-          <td mat-cell *matCellDef="let element"> 
-            <span class="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium">
-              {{ element.categoria }}
-            </span>
-          </td>
-        </ng-container>
-
-        <!-- Método Column -->
-        <ng-container matColumnDef="metodoPago">
-          <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500"> Método </th>
-          <td mat-cell *matCellDef="let element"> {{ element.metodoPago }} </td>
-        </ng-container>
-
-        <!-- Monto Column -->
-        <ng-container matColumnDef="monto">
-          <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500 text-right"> Monto </th>
-          <td mat-cell *matCellDef="let element" class="text-right font-semibold text-red-600 dark:text-red-400"> 
-            {{ element.monto | currency:'MXN':'symbol':'1.2-2' }} 
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumnsGastos"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnsGastos;" class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"></tr>
-        
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell text-center p-8 text-gray-500" [attr.colspan]="displayedColumnsGastos.length">
-            No hay gastos registrados.
-          </td>
-        </tr>
-      </table>
-    </div>
-
-    <!-- Mobile view -->
-    <div class="sm:hidden space-y-4">
-      <div *ngFor="let gasto of gastosList()" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700">
-        <div class="flex justify-between items-start mb-2">
-          <h3 class="font-semibold text-gray-800 dark:text-gray-100">{{ gasto.concepto }}</h3>
-          <span class="font-bold text-red-600 dark:text-red-400">{{ gasto.monto | currency:'MXN':'symbol':'1.2-2' }}</span>
-        </div>
-        <div class="text-sm text-gray-500 mb-2">{{ gasto.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
-        <div class="flex gap-2 text-xs">
-          <span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-gray-700 dark:text-gray-300">{{ gasto.categoria }}</span>
-          <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded">{{ gasto.metodoPago }}</span>
-        </div>
-      </div>
-      <div *ngIf="gastosList().length === 0" class="text-center p-8 text-gray-500 bg-gray-50 dark:bg-gray-800 rounded-xl">
-        No hay gastos registrados.
-      </div>
-    </div>
+<section class="list-surface">
+  <header class="list-head"><div><h3>Historial de gastos</h3><p>{{ gastosList().length }} registros</p></div></header>
+  <div class="list-table desktop-only">
+    <table mat-table [dataSource]="gastosList()">
+      <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+        <td mat-cell *matCellDef="let element" class="muted nowrap">{{ element.fecha | date: 'dd/MM/yyyy HH:mm' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="concepto">
+        <th mat-header-cell *matHeaderCellDef>Concepto</th>
+        <td mat-cell *matCellDef="let element" ><span class="party"><strong>{{ element.concepto }}</strong></span></td>
+      </ng-container>
+      <ng-container matColumnDef="categoria">
+        <th mat-header-cell *matHeaderCellDef>Categoría</th>
+        <td mat-cell *matCellDef="let element"><span class="tag">{{ element.categoria }}</span></td>
+      </ng-container>
+      <ng-container matColumnDef="metodoPago">
+        <th mat-header-cell *matHeaderCellDef>Método</th>
+        <td mat-cell *matCellDef="let element" class="muted">{{ element.metodoPago }}</td>
+      </ng-container>
+      <ng-container matColumnDef="monto">
+        <th mat-header-cell *matHeaderCellDef class="amount">Monto</th>
+        <td mat-cell *matCellDef="let element" class="amount">{{ element.monto | currency: 'MXN' : 'symbol' : '1.2-2' }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsGastos"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsGastos"></tr>
+      <tr class="mat-row" *matNoDataRow><td class="mat-cell list-empty-cell" [attr.colspan]="displayedColumnsGastos.length">No hay gastos registrados.</td></tr>
+    </table>
   </div>
-</div>
+  <ul class="mobile-list mobile-only">
+    @for (gasto of gastosList(); track gasto.idGasto) {
+      <li>
+        <div><strong>{{ gasto.concepto }}</strong><b>{{ gasto.monto | currency: 'MXN' : 'symbol' : '1.2-2' }}</b></div>
+        <small>{{ gasto.fecha | date: 'dd/MM/yyyy HH:mm' }} · {{ gasto.metodoPago }}</small>
+        <span class="tag">{{ gasto.categoria }}</span>
+      </li>
+    } @empty {<li class="list-empty-cell">No hay gastos registrados.</li>}
+  </ul>
+</section>

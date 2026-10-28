@@ -34,10 +34,7 @@ import { localDate } from '../../shared/document-download';
     MatButtonToggleModule, FormsModule, MatSelectModule
   ],
   templateUrl: './factura-list.component.html',
-  styles: [`
-    .full-width { width: 100%; }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-  `]
+  styleUrls: ['../../shared/list-page.css'],
 })
 export class FacturaListComponent implements OnInit, OnDestroy {
   
@@ -80,7 +77,8 @@ export class FacturaListComponent implements OnInit, OnDestroy {
 
   verDetalle(factura: FacturaResumen) {
     const dialogRef = this.dialog.open(FacturaDetalleComponent, {
-      width: '800px',
+      width: '980px',
+      maxWidth: '96vw',
       data: factura // Le pasamos toda la fila seleccionada
     });
 

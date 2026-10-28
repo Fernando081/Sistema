@@ -1,7 +1,7 @@
 :host {
   display: block;
-  color: var(--text-main);
-  --mat-checkbox-label-text-color: var(--text-main);
+  color: var(--c-text);
+  --mat-checkbox-label-text-color: var(--c-text);
 }
 .spec-row {
   display: grid;
@@ -91,7 +91,7 @@ h4 {
 }
 /* Mantiene contraste también sobre la capa de pulsación del botón. */
 button[mat-stroked-button]:not(:disabled) {
-  color: var(--wrap-text-title);
+  color: var(--c-text);
 }
 .notice {
   border-left: 3px solid currentColor;

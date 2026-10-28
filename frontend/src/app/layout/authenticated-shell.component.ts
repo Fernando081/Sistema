@@ -4,7 +4,6 @@ import { Component, inject, DestroyRef, ElementRef, HostListener, signal, ViewCh
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -29,7 +28,6 @@ import { AppNotification, NotificationService } from '../services/notification.s
     MatIconModule,
     MatButtonModule,
     MatSidenavModule,
-    MatListModule,
     AsyncPipe,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -55,7 +53,7 @@ export class AuthenticatedShellComponent {
   readonly notificationsOpen = signal(false);
   readonly notifications = signal<AppNotification[]>([]);
   readonly unreadNotifications = signal(0);
-  readonly currentPage = signal({ title: 'Inicio', description: 'Resumen operativo' });
+  readonly currentPage = signal({ section: 'Inicio', title: 'Inicio', description: 'Resumen operativo' });
   readonly isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => result.matches),
     shareReplay({bufferSize: 1, refCount: true}),
@@ -86,7 +84,7 @@ export class AuthenticatedShellComponent {
   toggleNotifications(){this.notificationsOpen.update(open=>!open);}
   openNotification(item:AppNotification){
     const complete=()=>{this.notifications.update(items=>items.map(value=>value.idNotification===item.idNotification?{...value,readAt:new Date().toISOString()}:value));this.unreadNotifications.update(value=>Math.max(0,value-(item.readAt?0:1)));this.notificationsOpen.set(false);if(item.route)this.router.navigateByUrl(item.route)};
-    item.readAt?complete():this.notificationsApi.read(item.idNotification).subscribe({next:complete,error:complete});
+    if(item.readAt)complete();else this.notificationsApi.read(item.idNotification).subscribe({next:complete,error:complete});
   }
   readAllNotifications(){this.notificationsApi.readAll().subscribe(()=>{this.unreadNotifications.set(0);this.notifications.update(items=>items.map(item=>({...item,readAt:item.readAt||new Date().toISOString()})))})}
 
@@ -125,15 +123,24 @@ export class AuthenticatedShellComponent {
       ['/comercial', 'Política comercial', 'Precios, márgenes, crédito y autorizaciones'],
       ['/cotizacion/nueva', 'Nueva cotización', 'Prepara una propuesta para tu cliente'],
       ['/cotizacion/historial', 'Cotizaciones', 'Seguimiento y conversión de propuestas'],
+      ['/cotizacion', 'Revisiones de cotización', 'Versiones, respuesta del cliente y conversión'],
       ['/facturas/global', 'Factura global', 'Concentra las ventas de mostrador'],
+      ['/facturas/correos', 'Salida de documentos', 'Preparación y simulación local de envíos'],
       ['/facturas', 'Facturas', 'Historial, documentos y devoluciones'],
       ['/producto', 'Productos e inventario', 'Existencias, aplicaciones y números de parte'],
       ['/catalogo-web', 'Catálogo web', 'Revisión de calidad y preparación de fichas comerciales'],
+      ['/almacen/movil', 'Escaneo de almacén', 'Verificación de picking por ubicación y producto'],
       ['/almacen', 'Almacén profesional', 'Ubicaciones, transferencias, conteos, lotes y series'],
       ['/operaciones/smart-restock', 'Reabastecimiento', 'Sugerencias basadas en demanda y existencias'],
       ['/abastecimiento', 'Abastecimiento', 'Solicitudes, órdenes y recepciones de mercancía'],
       ['/compra/historial', 'Compras', 'Historial de entradas de mercancía'],
       ['/compra', 'Nueva compra', 'Registra mercancía y costos'],
+      ['/crm/campanas', 'Campañas', 'Autorizaciones, bajas y destinatarios; el envío permanece deshabilitado'],
+      ['/crm/secuencias', 'Secuencias de seguimiento', 'Un compromiso a la vez para cada cliente'],
+      ['/crm/reglas-secuencias', 'Reglas de seguimiento', 'Altas, cambios de etapa y asignaciones que inician un seguimiento'],
+      ['/crm/reportes-programados', 'Reportes programados', 'Resumen interno de compromisos pendientes'],
+      ['/crm/unidades', 'Expediente de unidad', 'Lecturas, evidencias y mantenimiento'],
+      ['/crm/bandeja', 'Bandeja comercial', 'Compromisos pendientes para continuar en su registro de origen'],
       ['/crm', 'Clientes y CRM', 'Oportunidades, agenda, unidades y demanda'],
       ['/cliente', 'Clientes', 'Información fiscal y comercial'],
       ['/proveedor', 'Proveedores', 'Condiciones y datos de compra'],
@@ -149,7 +156,26 @@ export class AuthenticatedShellComponent {
       ['/perfil', 'Mi cuenta', 'Seguridad y preferencias'],
     ];
     const match = pages.find(([route]) => path === route) || pages.find(([route]) => path.startsWith(route + '/'));
-    return match ? { title: match[1], description: match[2] } : { title: 'Refacciones y Tractorepuestos Tampico', description: 'Sistema ERP + CRM' };
+    const section = this.sectionForPath(path);
+    return match ? { section, title: match[1], description: match[2] } : { section, title: 'Refacciones y Tractorepuestos Tampico', description: 'Sistema ERP + CRM' };
+  }
+
+  // Misma agrupación que la barra lateral; sustituye al nombre de la empresa repetido en cada página.
+  private sectionForPath(path: string): string {
+    const groups: Array<[string, string[]]> = [
+      ['Ventas', ['/venta', '/pedidos', '/facturas', '/cotizacion', '/comisiones', '/comercial']],
+      ['Inventario y compras', ['/producto', '/compra', '/operaciones', '/abastecimiento', '/almacen', '/catalogo-web']],
+      ['Clientes y CRM', ['/crm', '/cliente', '/garantias', '/proveedor']],
+      ['Finanzas y análisis', ['/caja', '/gastos', '/contabilidad', '/cobranza', '/cuentas-por-pagar', '/reportes']],
+      ['Cuenta y acceso', ['/perfil', '/usuarios']],
+    ];
+    return groups.find(([, prefixes]) => prefixes.some(prefix => path === prefix || path.startsWith(prefix + '/')))?.[0] ?? 'Centro de operación';
+  }
+
+  initials(): string {
+    const name = (this.user?.sub || 'Usuario').replace(/[_.-]+/g, ' ').trim();
+    const parts = name.split(/\s+/).filter(Boolean);
+    return ((parts[0]?.[0] ?? 'U') + (parts.length > 1 ? parts[1][0] : parts[0]?.[1] ?? '')).toUpperCase();
   }
 
   logout(): void {

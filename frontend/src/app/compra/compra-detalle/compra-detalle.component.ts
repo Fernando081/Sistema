@@ -14,10 +14,10 @@ import { CompraResumen, DetalleCompraDb } from '../compra.interface';
   template: `
     <h2 mat-dialog-title>Detalle de Compra</h2>
     <mat-dialog-content>
-      <div class="mb-4 p-3 bg-green-50 rounded border border-green-100">
+      <div class="mb-4 p-3 bg-[var(--c-success-soft)] rounded border border-[var(--c-border)]">
         <p class="font-bold text-sm">{{ data.nombre_proveedor }}</p>
-        <p class="text-xs text-gray-500">Factura Prov: {{ data.folio_factura || 'S/N' }}</p>
-        <p class="text-xs text-gray-500">Fecha: {{ data.fecha_compra | date:'medium' }}</p>
+        <p class="text-xs text-[var(--c-text-3)]">Factura Prov: {{ data.folio_factura || 'S/N' }}</p>
+        <p class="text-xs text-[var(--c-text-3)]">Fecha: {{ data.fecha_compra | date:'medium' }}</p>
       </div>
 
       <table mat-table [dataSource]="detalles" class="w-full">
@@ -29,7 +29,7 @@ import { CompraResumen, DetalleCompraDb } from '../compra.interface';
           <th mat-header-cell *matHeaderCellDef> Producto </th>
           <td mat-cell *matCellDef="let e"> 
             {{e.descripcion}}
-            <span class="text-xs text-gray-400 block">{{e.codigo}}</span>
+            <span class="text-xs text-[var(--c-text-3)] block">{{e.codigo}}</span>
           </td>
         </ng-container>
         <ng-container matColumnDef="costo">

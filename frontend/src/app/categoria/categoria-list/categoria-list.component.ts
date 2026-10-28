@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,12 +24,12 @@ import { ConfirmService } from '../../shared/confirm.service';
   standalone: true,
   imports: [
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
-    MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
+    MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,
     MatProgressSpinnerModule
   ],
   templateUrl: './categoria-list.component.html',
-  styleUrls: ['./categoria-list.component.css']
+  styleUrls: ['../../shared/list-page.css', './categoria-list.component.css']
 })
 export class CategoriaListComponent implements OnInit {
   

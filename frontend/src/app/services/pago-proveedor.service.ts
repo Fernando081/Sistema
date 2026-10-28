@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 const API_URL = `${environment.apiBaseUrl}/pago-proveedor`;
 
 export interface PagoProveedorDto {
+  requestId?: string;
   idCompra: number;
   monto: number;
   formaPago: string;

@@ -1,36 +1,5 @@
-/* frontend/src/app/cliente/cliente-list/cliente-list.component.css */
-/* Estilos para alinear el botón de "Nuevo Cliente" */
-.cliente-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding-bottom: 16px; /* Espacio extra antes del formulario de búsqueda */
-}
-
-/* Ajuste para que el botón no esté pegado al borde */
-.cliente-card-header button {
-  margin-left: 1rem; /* Espacio a la izquierda del botón */
-}
-
-.mobile-cards {
-  display: none;
-  gap: 0.75rem;
-}
-
-.mobile-client-card {
-  padding: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-@media (max-width: 768px) {
-  .overflow-auto {
-    display: none;
-  }
-
-  .mobile-cards {
-    display: block;
-  }
-}
-
-.mobile-client-card .mt-2{flex-wrap:wrap}
+/* frontend/src/app/cliente/cliente-list/cliente-list.component.css · U01.6 (usa shared/list-page.css) */
+.row-actions .compact{height:34px;padding-inline:.7rem;font-size:.8rem}
+.row-actions .compact mat-icon{width:18px;height:18px;font-size:18px}
+.danger-action:not(:disabled){color:var(--c-danger)!important}
+.inline-spinner{display:inline-block;margin-right:.5rem;vertical-align:middle}

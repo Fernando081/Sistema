@@ -15,6 +15,7 @@ import { AjusteInventarioDialogComponent } from './ajuste-inventario-dialog.comp
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatTableModule, MatButtonModule, MatIconModule, MatTooltipModule],
   templateUrl: './producto-kardex.component.html',
+  styleUrls: ['../../shared/list-page.css', './producto-kardex.component.css'],
 })
 export class ProductoKardexComponent implements OnInit {
   
@@ -69,16 +70,18 @@ export class ProductoKardexComponent implements OnInit {
     });
   }
 
-  // Helper para asignar colores según el tipo de movimiento
-  getBadgeClass(tipo: string): string {
+  /** Etiqueta legible del tipo de movimiento (el valor técnico viene del ENUM de la base). */
+  tipoLabel(tipo: string): string {
+    const labels: Record<string, string> = { COMPRA: 'Compra', VENTA: 'Venta', CAMBIO_PRECIO: 'Cambio de precio', AJUSTE_MANUAL_STOCK: 'Ajuste manual', INVENTARIO_INICIAL: 'Inventario inicial', 'ENTRADA POR AJUSTE': 'Entrada por ajuste', 'SALIDA POR MERMA/AJUSTE': 'Salida por merma' };
+    return labels[tipo] ?? tipo;
+  }
+
+  badgeClass(tipo: string): string {
     switch (tipo) {
-      case 'COMPRA': return 'bg-green-100 text-green-800 border-green-200';
-      case 'VENTA': return 'bg-red-100 text-red-800 border-red-200';
-      case 'CAMBIO_PRECIO': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'AJUSTE_MANUAL_STOCK': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'ENTRADA POR AJUSTE': return 'bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300';
-      case 'SALIDA POR MERMA/AJUSTE': return 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-950/40 dark:text-orange-300';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'COMPRA': return 'badge-success';
+      case 'VENTA': return 'badge-danger';
+      case 'AJUSTE_MANUAL_STOCK': case 'SALIDA POR MERMA/AJUSTE': return 'badge-warning';
+      default: return 'badge-info';
     }
   }
 }

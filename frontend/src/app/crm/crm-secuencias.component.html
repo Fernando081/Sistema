@@ -1,5 +1,5 @@
 <section class="campaign-page" aria-labelledby="sequence-title" [attr.aria-busy]="busy()">
- <div class="heading"><div><h1 id="sequence-title">Secuencias de seguimiento</h1><p>Organiza el seguimiento de tus clientes, un compromiso a la vez.</p></div><div class="actions">@if(isAdmin){<a mat-stroked-button routerLink="/crm/reglas-secuencias">Reglas por eventos</a>}<a mat-stroked-button routerLink="/crm">Volver al CRM</a></div></div>
+ <div class="heading"><div><h2 id="sequence-title" class="sr-only">Secuencias de seguimiento</h2><p>Organiza el seguimiento de tus clientes, un compromiso a la vez.</p></div><div class="actions">@if(isAdmin){<a mat-stroked-button routerLink="/crm/reglas-secuencias">Reglas por eventos</a>}<a mat-stroked-button routerLink="/crm">Volver al CRM</a></div></div>
  @if(busy()){<p role="status">Consultando o guardando…</p>}
  @if(error()){<p class="notice" role="alert">{{error()}}</p><button mat-stroked-button type="button" [disabled]="busy()" (click)="refresh()">Actualizar datos</button>}
  @if(notice()){<p class="notice" role="status">{{notice()}}</p>}

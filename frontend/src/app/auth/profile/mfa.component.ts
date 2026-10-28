@@ -11,7 +11,7 @@ import { MfaReceiptService } from '../mfa-receipt.service';
 
 @Component({
   selector:'app-account-mfa',standalone:true,imports:[ReactiveFormsModule,MatButtonModule,MatInputModule,MatFormFieldModule],
-  styles:[`:host{display:block}section{padding:1.25rem;border:1px solid var(--wrap-border);border-radius:.75rem;background:var(--wrap-card-bg);color:var(--wrap-text-title)}form{display:flex;flex-direction:column;gap:.75rem}p{color:var(--wrap-text-muted);margin:.75rem 0}code{display:block;overflow-wrap:anywhere;user-select:all;padding:.5rem;border:1px solid var(--wrap-border);border-radius:.5rem}li{margin:.25rem 0}h2{font-size:1.125rem;font-weight:600}button{align-self:start} .error{color:var(--wrap-text-title);border-inline-start:3px solid #dc2626;padding-inline-start:.75rem}`],
+  styles:[`:host{display:block}section{padding:1.25rem;border:1px solid var(--c-border);border-radius:.75rem;background:var(--c-surface);color:var(--c-text)}form{display:flex;flex-direction:column;gap:.75rem}p{color:var(--c-text-3);margin:.75rem 0}code{display:block;overflow-wrap:anywhere;user-select:all;padding:.5rem;border:1px solid var(--c-border);border-radius:.5rem}li{margin:.25rem 0}h2{font-size:1.125rem;font-weight:600}button{align-self:start} .error{color:var(--c-text);border-inline-start:3px solid #dc2626;padding-inline-start:.75rem}`],
   template:`<section aria-labelledby="mfa-title"><h2 id="mfa-title">Verificación en dos pasos</h2>
     @if(error()){<p role="alert" class="error">{{error()}}</p>}
     @if(!loaded()){
@@ -25,15 +25,15 @@ import { MfaReceiptService } from '../mfa-receipt.service';
         <code aria-label="Clave de configuración">{{enrollment.secret}}</code>
         <p>Esta configuración vence en 10 minutos. Confirma un código de tu aplicación para activarla. No compartas esta clave.</p>
         <form [formGroup]="codeForm" (ngSubmit)="confirm()">
-          <mat-form-field><mat-label>Código del autenticador</mat-label><input matInput formControlName="code" autocomplete="one-time-code" inputmode="numeric" maxlength="6"></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Código del autenticador</mat-label><input matInput formControlName="code" autocomplete="one-time-code" inputmode="numeric" maxlength="6"></mat-form-field>
           <button mat-flat-button [disabled]="busy()||codeForm.invalid">Confirmar activación</button>
           <button mat-button type="button" [disabled]="busy()" (click)="cancel()">Cancelar configuración</button>
         </form>
       } @else if(available()) {
         <form [formGroup]="passwordForm" (ngSubmit)="enabled() ? disable() : begin()">
-          <mat-form-field><mat-label>Contraseña actual para verificación</mat-label><input matInput type="password" formControlName="currentPassword" autocomplete="current-password"></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Contraseña actual para verificación</mat-label><input matInput type="password" formControlName="currentPassword" autocomplete="current-password"></mat-form-field>
           @if(enabled()){
-            <mat-form-field><mat-label>Código del autenticador o respaldo</mat-label><input matInput formControlName="code" autocomplete="one-time-code" maxlength="35"></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Código del autenticador o respaldo</mat-label><input matInput formControlName="code" autocomplete="one-time-code" maxlength="35"></mat-form-field>
             <p>Desactivar cerrará todas tus sesiones y eliminará los códigos de respaldo.</p>
           }
           <button mat-flat-button [disabled]="busy()||passwordForm.controls.currentPassword.invalid||(enabled()&&!passwordForm.controls.code.value)">{{busy() ? 'Procesando…' : enabled() ? 'Desactivar verificación' : 'Configurar verificación en dos pasos'}}</button>

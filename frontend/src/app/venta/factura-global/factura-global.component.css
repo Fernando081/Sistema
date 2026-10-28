@@ -1,0 +1,33 @@
+/* frontend/src/app/venta/factura-global/factura-global.component.css · U01.2 (usa shared/list-page.css) */
+.lead{margin:0 0 1rem;color:var(--c-text-2);max-width:72ch}
+.filters-card{margin-bottom:1.25rem}
+.range-form{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;padding:1rem 1.25rem}
+.range-form mat-form-field{flex:1 1 200px}
+.range-form button{height:48px;padding-inline:1.5rem}
+.range-form mat-spinner,.generate mat-spinner{display:inline-block;margin-right:.5rem;vertical-align:middle}
+.loading{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:3rem 1rem;color:var(--c-text-3)}
+.global-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:1.25rem;align-items:start}
+.list-head h3,.summary h3{margin:0;color:var(--c-text);font-size:1rem;font-weight:650;letter-spacing:-.01em}
+.tickets{max-height:520px}
+.check-cell{width:48px}
+.mono{font-family:var(--font-mono,ui-monospace,monospace);font-size:.8rem}
+.nowrap{white-space:nowrap}.truncate{max-width:200px}.truncate strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.secondary{color:var(--c-text-3)!important;font-weight:500}
+tr.mat-mdc-row{cursor:pointer}
+tr.is-selected td{background:color-mix(in srgb,var(--c-brass) 6%,transparent)}
+.summary{position:sticky;top:1.5rem;display:flex;flex-direction:column;gap:1rem;padding:1.25rem;border:1px solid var(--c-border);border-top:3px solid var(--c-brass);border-radius:var(--radius-lg);background:var(--c-surface);box-shadow:var(--shadow-sm)}
+.summary-lines{margin:0;display:grid;gap:.6rem}
+.summary-lines div{display:flex;justify-content:space-between;gap:1rem;font-size:.86rem}
+.summary-lines dt{color:var(--c-text-2)}.summary-lines dd{margin:0;color:var(--c-text);font-weight:600;font-variant-numeric:tabular-nums}
+.count{padding:.1rem .55rem;border-radius:99px;background:var(--c-brass-soft);color:var(--c-brass-text);font-size:.78rem;font-weight:700}
+.grand-total{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;padding-top:.9rem;border-top:1px solid var(--c-border)}
+.grand-total span{color:var(--c-text-2);font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.grand-total strong{color:var(--c-text);font-size:1.6rem;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.fiscal{padding:.85rem 1rem;border:1px solid var(--c-border);border-radius:var(--radius-md);background:var(--c-surface-2)}
+.fiscal p{margin:0 0 .5rem;color:var(--c-text-3);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.fiscal dl{display:grid;grid-template-columns:auto 1fr;gap:.3rem .9rem;margin:0;font-size:.8rem}
+.fiscal dt{color:var(--c-text-3)}.fiscal dd{margin:0;color:var(--c-text);font-weight:600}
+.generate{height:48px;width:100%;font-weight:650}
+@media(max-width:1100px){.global-grid{grid-template-columns:1fr}.summary{position:static}}
+@media(max-width:760px){tr.is-selected{background:color-mix(in srgb,var(--c-brass) 6%,transparent)}}
+@media(max-width:600px){.range-form button{width:100%}}

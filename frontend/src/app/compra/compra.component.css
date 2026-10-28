@@ -1,0 +1,10 @@
+/* frontend/src/app/compra/compra.component.css · U01.6 (tokens del sistema) */
+mat-card-title{font-size:1rem;font-weight:650;letter-spacing:-.01em;color:var(--c-text)}
+.cart-table{flex:1;overflow:auto;border:1px solid var(--c-border);border-radius:var(--radius-lg);background:var(--c-surface);box-shadow:var(--shadow-xs)}
+.cart-table table{width:100%}
+.cell-input{min-height:36px;padding:.3rem .5rem;border:1px solid var(--c-border-strong);border-radius:var(--radius-sm);background:var(--c-surface);color:var(--c-text);font:inherit;font-variant-numeric:tabular-nums}
+.cell-input:focus{outline:none;border-color:var(--c-focus);box-shadow:0 0 0 3px color-mix(in srgb,var(--c-focus) 18%,transparent)}
+td.amount,th.amount{text-align:right!important;font-variant-numeric:tabular-nums;font-weight:650}
+.danger-action:not(:disabled){color:var(--c-danger)!important}
+.credit-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.6rem 0;border-block:1px solid var(--c-border);color:var(--c-text-2);font-size:.86rem;font-weight:500}
+.erp-empty-state{padding:2.5rem 1rem}

@@ -22,8 +22,8 @@ import { ConfirmDialogComponent } from '../shared/confirm-dialog.component';
     <h2 mat-dialog-title>Registrar venta perdida</h2>
     <mat-dialog-content>
       @if (data) {<p>Cuenta: <strong>{{ data.empresa }}</strong></p>}
-      <p class="text-gray-500 mb-4">Conserva la solicitud aunque la refacción aún no exista en tu catálogo.</p>
-      @if (error()) {<p role="alert" class="text-red-700">{{ error() }}</p>}
+      <p class="text-[var(--c-text-3)] mb-4">Conserva la solicitud aunque la refacción aún no exista en tu catálogo.</p>
+      @if (error()) {<p role="alert" class="text-[var(--c-danger)]">{{ error() }}</p>}
       <form id="venta-perdida-form" [formGroup]="form" (ngSubmit)="guardar()" class="grid grid-cols-1 gap-3 pt-2">
         <mat-form-field><mat-label>Vincular producto del catálogo (opcional)</mat-label><input matInput [formControl]="productoControl" [matAutocomplete]="auto" maxlength="150"><mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProducto">@for (p of productos(); track p.idProducto) {<mat-option [value]="p">{{ p.codigo }} · {{ p.descripcion }}</mat-option>}</mat-autocomplete><mat-hint>Busca por código, número de parte o descripción</mat-hint></mat-form-field>
         <mat-form-field><mat-label>Refacción / número de parte / aplicación solicitada</mat-label><textarea matInput formControlName="descripcionBuscada" maxlength="255" rows="2"></textarea><mat-error>Describe la refacción solicitada</mat-error></mat-form-field>

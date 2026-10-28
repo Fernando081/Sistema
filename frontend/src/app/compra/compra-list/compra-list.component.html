@@ -1,83 +1,80 @@
-<!-- frontend/src/app/compra/compra-list/compra-list.component.html -->
- <div class="p-6">
-  <mat-card>
-    <mat-card-header class="mb-4">
-      <mat-card-title class="text-xl font-bold">Historial de Compras</mat-card-title>
-    </mat-card-header>
-
-    <mat-card-content>
+<!-- frontend/src/app/compra/compra-list/compra-list.component.html · U01.6 (patrón list-page.css) -->
+<section class="list-surface">
+  <header class="list-head">
+    <div>
+      <h2>Historial de compras</h2>
+      <p>{{ totalItems | number }} compras con los filtros actuales</p>
+    </div>
+    <div class="list-head-actions">
       <button mat-stroked-button type="button" [disabled]="directory.exporting()" (click)="exportar()"><mat-icon>download</mat-icon>Exportar CSV filtrado</button>
-      <p *ngIf="isLoading" role="status">Cargando compras...</p>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Buscar compra...</mat-label>
-        <input matInput (input)="applyFilter($event)" [value]="directory.term()" placeholder="Proveedor, Folio..." #input>
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
+    </div>
+  </header>
 
-      <div class="flex flex-wrap gap-4 items-center mb-4">
-        <mat-form-field appearance="outline">
-          <mat-label>Estado comercial</mat-label>
-          <mat-select [value]="directory.query().estado || ''" (selectionChange)="directory.setEstado($event.value)">
-            <mat-option value="">Todos los estados</mat-option>
-            <mat-option value="Pendiente">Pendiente</mat-option>
-            <mat-option value="Completada">Completada</mat-option>
-            <mat-option value="Pagada">Pagada</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Desde</mat-label><input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().desde || ''" #desde></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Hasta</mat-label><input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().hasta || ''" #hasta></mat-form-field>
-        <button mat-stroked-button type="button" (click)="directory.setDates(desde.value, hasta.value)">Aplicar fechas</button>
-        <button mat-button type="button" (click)="desde.value = ''; hasta.value = ''; directory.setDates('', '')">Limpiar fechas</button>
-        <span>Hora de Tampico; Hasta incluye el día completo.</span>
-      </div>
-      <div class="overflow-auto" [hidden]="isLoading">
-        <table mat-table [dataSource]="dataSource" matSort [matSortActive]="directory.query().sortBy === 'id' ? '' : directory.query().sortBy" [matSortDirection]="directory.query().sortOrder" matSortDisableClear (matSortChange)="directory.sort($event)" class="w-full">
+  <div class="list-filters">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="grow">
+      <mat-label>Buscar compra</mat-label>
+      <input matInput (input)="applyFilter($event)" [value]="directory.term()" placeholder="Proveedor o folio" #input />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Estado comercial</mat-label>
+      <mat-select [value]="directory.query().estado || ''" (selectionChange)="directory.setEstado($event.value)">
+        <mat-option value="">Todos los estados</mat-option>
+        <mat-option value="Pendiente">Pendiente</mat-option>
+        <mat-option value="Completada">Completada</mat-option>
+        <mat-option value="Pagada">Pagada</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-          <ng-container matColumnDef="fecha">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
-            <td mat-cell *matCellDef="let row"> {{row.fecha_compra | date:'mediumDate'}} </td>
-          </ng-container>
+  <div class="list-dates">
+    <span class="label"><mat-icon>event</mat-icon>Fecha</span>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Desde</mat-label><input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().desde || ''" #desde /></mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Hasta</mat-label><input matInput type="date" min="1900-01-01" max="9999-12-31" [value]="directory.query().hasta || ''" #hasta /></mat-form-field>
+    <button mat-stroked-button type="button" (click)="directory.setDates(desde.value, hasta.value)">Aplicar fechas</button>
+    <button mat-button type="button" (click)="desde.value = ''; hasta.value = ''; directory.setDates('', '')">Limpiar fechas</button>
+    <small>Hora de Tampico; "Hasta" incluye el día completo.</small>
+  </div>
 
-          <ng-container matColumnDef="proveedor">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header="cliente"> Proveedor </th>
-            <td mat-cell *matCellDef="let row"> 
-              <div class="font-medium">{{row.nombre_proveedor}}</div>
-              <div class="text-xs text-gray-500">RFC: {{row.rfc_proveedor}}</div>
-            </td>
-          </ng-container>
+  @if (isLoading) {
+    <p class="list-status" role="status">Cargando compras…</p>
+  }
 
-          <ng-container matColumnDef="folio">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Folio Factura </th>
-            <td mat-cell *matCellDef="let row"> {{row.folio_factura || '---'}} </td>
-          </ng-container>
+  <div class="list-table stack" [hidden]="isLoading">
+    <table mat-table [dataSource]="dataSource" matSort [matSortActive]="directory.query().sortBy === 'id' ? '' : directory.query().sortBy" [matSortDirection]="directory.query().sortOrder" matSortDisableClear (matSortChange)="directory.sort($event)">
+      <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
+        <td mat-cell *matCellDef="let row" class="muted" data-label="Fecha">{{ row.fecha_compra | date: 'mediumDate' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="proveedor">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="cliente">Proveedor</th>
+        <td mat-cell *matCellDef="let row" class="stack-wide" data-label="Proveedor">
+          <span class="party"><strong>{{ row.nombre_proveedor }}</strong><small>RFC {{ row.rfc_proveedor }}</small></span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="folio">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Folio factura</th>
+        <td mat-cell *matCellDef="let row" class="folio" data-label="Folio factura">{{ row.folio_factura || '—' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="amount">Total</th>
+        <td mat-cell *matCellDef="let row" class="amount" data-label="Total">{{ row.total | currency }}</td>
+      </ng-container>
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef><span class="sr-only">Acciones</span></th>
+        <td mat-cell *matCellDef="let row" class="stack-wide">
+          <div class="row-actions"><button mat-icon-button (click)="verDetalle(row)" matTooltip="Ver detalle" aria-label="Ver detalle de compra"><mat-icon>visibility</mat-icon></button></div>
+        </td>
+      </ng-container>
 
-          <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right pr-6"> Total </th>
-            <td mat-cell *matCellDef="let row" class="font-bold font-mono text-right pr-6"> {{row.total | currency}} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="acciones">
-            <th mat-header-cell *matHeaderCellDef> </th>
-            <td mat-cell *matCellDef="let row">
-              <button mat-icon-button color="primary" (click)="verDetalle(row)" aria-label="Ver detalle de compra">
-                <mat-icon>visibility</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-              <div class="flex flex-col items-center justify-center p-12 text-gray-400">
-                <mat-icon class="!w-16 !h-16 text-6xl mb-4 opacity-50">shopping_cart</mat-icon>
-                <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-1">{{isLoading ? 'Cargando compras…' : 'No hay compras que coincidan'}}</h3>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <mat-paginator [length]="totalItems" [pageSize]="directory.query().limit" [pageIndex]="directory.query().page - 1" (page)="directory.page($event)" [pageSizeOptions]="[10, 25, 50, 100]" aria-label="Páginas de compras"></mat-paginator>
-    </mat-card-content>
-  </mat-card>
-</div>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          <div class="erp-empty-state list-empty"><mat-icon>shopping_cart</mat-icon><strong>{{ isLoading ? 'Cargando compras…' : 'No hay compras que coincidan' }}</strong></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <mat-paginator [length]="totalItems" [pageSize]="directory.query().limit" [pageIndex]="directory.query().page - 1" (page)="directory.page($event)" [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons aria-label="Páginas de compras"></mat-paginator>
+</section>

@@ -5,7 +5,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ProductoService } from '../../services/producto.service';
@@ -16,11 +15,11 @@ import { SmartRestockItem, PrediccionDemandaItem } from '../../producto/producto
   standalone: true,
   imports: [
     CommonModule, MatTableModule, MatTabsModule, MatButtonModule,
-    MatIconModule, MatProgressSpinnerModule, MatChipsModule,
+    MatIconModule, MatProgressSpinnerModule,
     MatTooltipModule, MatSnackBarModule,
   ],
   templateUrl: './smart-restock.component.html',
-  styleUrls: ['./smart-restock.component.css'],
+  styleUrls: ['../../shared/list-page.css', './smart-restock.component.css'],
 })
 export class SmartRestockComponent implements OnInit {
   // Tab 1: Restock Básico
@@ -73,6 +72,18 @@ export class SmartRestockComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  stockClass(stock: number) {
+    return stock <= 0 ? 'badge-danger' : stock <= 5 ? 'badge-warning' : 'badge-success';
+  }
+
+  marginClass(margen: number) {
+    return margen > 30 ? 'good' : margen > 10 ? 'mid' : 'low';
+  }
+
+  trendClass(tendencia: string) {
+    return tendencia === 'ALTA' ? 'badge-success' : tendencia === 'BAJA' ? 'badge-danger' : 'badge-neutral';
   }
 
   refreshPrediccion() {

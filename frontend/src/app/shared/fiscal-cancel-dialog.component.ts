@@ -10,11 +10,20 @@ import { FiscalCancellation } from '../services/fiscal.service';
 @Component({
   selector: 'app-fiscal-cancel-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
-  template: `
-    <h2 mat-dialog-title>Cancelar {{ data.label }}</h2>
+  imports: [
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+  ],
+  template: ` <h2 mat-dialog-title>Cancelar {{ data.label }}</h2>
     <mat-dialog-content>
-      <p>Si el comprobante está timbrado, primero se enviará la solicitud al PAC. Inventario y saldos cambiarán cuando SAT confirme la cancelación.</p>
+      <p>
+        Si el comprobante está timbrado, primero se enviará la solicitud al PAC. Inventario y saldos
+        cambiarán cuando SAT confirme la cancelación.
+      </p>
       <form [formGroup]="form" class="cancel-form">
         <mat-form-field appearance="outline">
           <mat-label>Motivo SAT</mat-label>
@@ -36,13 +45,30 @@ import { FiscalCancellation } from '../services/fiscal.service';
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="ref.close(null)">Volver</button>
-      <button mat-flat-button color="warn" [disabled]="invalid" (click)="submit()">Solicitar cancelación</button>
+      <button mat-flat-button color="warn" [disabled]="invalid" (click)="submit()">
+        Solicitar cancelación
+      </button>
     </mat-dialog-actions>`,
-  styles: [`.cancel-form{display:grid;gap:.5rem;margin-top:1rem;min-width:min(32rem,78vw)} mat-form-field{width:100%}`],
+  styles: [
+    `
+      .cancel-form {
+        display: grid;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        min-width: min(32rem, 78vw);
+      }
+      mat-form-field {
+        width: 100%;
+      }
+    `,
+  ],
 })
 export class FiscalCancelDialogComponent {
   readonly form = new FormGroup({
-    motivo: new FormControl<'01' | '02' | '03' | '04'>('03', { nonNullable: true, validators: [Validators.required] }),
+    motivo: new FormControl<'01' | '02' | '03' | '04'>('03', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
     folioSustitucion: new FormControl('', { nonNullable: true }),
   });
   constructor(
@@ -51,13 +77,19 @@ export class FiscalCancelDialogComponent {
   ) {}
   get invalid() {
     const replacement = this.form.controls.folioSustitucion.value.trim();
-    return this.form.invalid || (this.form.controls.motivo.value === '01'
-      && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(replacement));
+    return (
+      this.form.invalid ||
+      (this.form.controls.motivo.value === '01' &&
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+          replacement,
+        ))
+    );
   }
   submit() {
     if (this.invalid) return;
     const value: FiscalCancellation = { motivo: this.form.controls.motivo.value };
-    if (value.motivo === '01') value.folioSustitucion = this.form.controls.folioSustitucion.value.trim();
+    if (value.motivo === '01')
+      value.folioSustitucion = this.form.controls.folioSustitucion.value.trim();
     this.ref.close(value);
   }
 }

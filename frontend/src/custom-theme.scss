@@ -1,63 +1,28 @@
-/* frontend/src/custom-theme.scss */
+/* frontend/src/custom-theme.scss
+   U01.4 · Tema de Angular Material con variables de sistema (--mat-sys-*). `theme-type: color-scheme`
+   resuelve claro/oscuro con `light-dark()` según `color-scheme`, que styles.css alterna en `:root` y
+   `.dark`. styles.css reasigna las variables --mat-sys-* a los tokens --c-* del sistema visual, así los
+   componentes de Material siguen el tema sin overrides por componente. */
 @use '@angular/material' as mat;
 
-$theme: mat.define-theme((
-  color: (
-    theme-type: light,
-    primary: mat.$azure-palette,
-    tertiary: mat.$blue-palette,
-  ),
-  typography: (
-    brand-family: 'Segoe UI, sans-serif',
-    plain-family: 'Segoe UI, sans-serif',
-  ),
-  density: (
-    scale: -1,
-  ),
-));
-
 html {
-  @include mat.core-theme($theme);
-  @include mat.autocomplete-theme($theme);
-  @include mat.button-theme($theme);
-  @include mat.icon-button-theme($theme);
-  @include mat.fab-theme($theme);
-  @include mat.button-toggle-theme($theme);
-  @include mat.card-theme($theme);
-  @include mat.checkbox-theme($theme);
-  @include mat.chips-theme($theme);
-  @include mat.datepicker-theme($theme);
-  @include mat.dialog-theme($theme);
-  @include mat.divider-theme($theme);
-  @include mat.form-field-theme($theme);
-  @include mat.icon-theme($theme);
-  @include mat.input-theme($theme);
-  @include mat.list-theme($theme);
-  @include mat.paginator-theme($theme);
-  @include mat.progress-spinner-theme($theme);
-  @include mat.select-theme($theme);
-  @include mat.sidenav-theme($theme);
-  @include mat.slide-toggle-theme($theme);
-  @include mat.snack-bar-theme($theme);
-  @include mat.sort-theme($theme);
-  @include mat.table-theme($theme);
-  @include mat.tabs-theme($theme);
-  @include mat.toolbar-theme($theme);
-  @include mat.tooltip-theme($theme);
-
-  --ui-radius-xl: 1.5rem;
-  --ui-radius-lg: 1rem;
-  --ui-transition-fluid: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+      theme-type: color-scheme,
+    ),
+    typography: (
+      brand-family: 'Inter Variable, Segoe UI, sans-serif',
+      plain-family: 'Inter Variable, Segoe UI, sans-serif',
+    ),
+    density: -1,
+  ));
 }
 
 body {
-  color-scheme: light;
-  background-color: var(--mat-sys-surface-container-lowest);
-  color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
   margin: 0;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
-
-

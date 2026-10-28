@@ -1,0 +1,5 @@
+# H02-d formateo gradual: se ignora todo TypeScript salvo las rutas ya formateadas.
+# Para incorporar una carpeta: agregar su línea "!", ejecutar npm run format y revisar el diff.
+**/*.ts
+!src/app/shared/**
+!src/app/pago/**

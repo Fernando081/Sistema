@@ -1,128 +1,104 @@
-<!-- frontend/src/app/producto/producto-list/producto-list.component.html (REEMPLAZAR) -->
+<!-- frontend/src/app/producto/producto-list/producto-list.component.html -->
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="product-tabs" animationDuration="150ms">
 
-<!-- 
-  ¡CAMBIO! Envolvemos todo en un mat-tab-group
-  para tener las dos pestañas que querías.
--->
-<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-
-  <!-- Pestaña 1: Lista de Productos (Código que ya tenías) -->
   <mat-tab label="Lista de Productos">
-    <mat-card class="mat-elevation-z0 !border-t-0 rounded-t-none">
-      <mat-card-header class="producto-card-header">
-        <mat-card-title class="!text-2xl !font-semibold">Gestión de Productos</mat-card-title>
-        <button *ngIf="canEdit" mat-flat-button color="primary" (click)="abrirDialogo()">
-          <mat-icon>add</mat-icon>
-          Nuevo Producto
-        </button>
-      </mat-card-header>
+    <section class="list-surface">
+      <header class="list-head">
+        <div><h2>Catálogo de refacciones</h2><p>{{ totalItems | number }} productos con los filtros actuales</p></div>
+        <div class="list-head-actions">
+          <a *ngIf="canEdit" mat-stroked-button routerLink="/catalogo-web"><mat-icon>storefront</mat-icon>Preparar catálogo web</a>
+          <button mat-stroked-button type="button" [disabled]="isExporting" (click)="exportar()"><mat-icon>download</mat-icon>Exportar CSV filtrado</button>
+          <button *ngIf="canEdit" mat-flat-button type="button" (click)="abrirDialogo()"><mat-icon>add</mat-icon>Nuevo Producto</button>
+        </div>
+      </header>
 
-      <mat-card-content>
-        <a *ngIf="canEdit" mat-stroked-button routerLink="/catalogo-web" class="mb-4">Preparar catálogo web</a>
-        <button mat-stroked-button type="button" [disabled]="isExporting" (click)="exportar()" class="mb-4"><mat-icon>download</mat-icon>Exportar CSV filtrado</button>
-        <mat-form-field appearance="outline" class="w-full mb-4" matTooltip="La búsqueda ahora es global en el servidor.">
+      <div class="list-filters">
+        <mat-form-field appearance="outline" class="grow" subscriptSizing="dynamic" matTooltip="La búsqueda es global en el servidor.">
           <mat-label>Buscar producto</mat-label>
-          <input matInput (input)="applyFilter($event)" [value]="directory.term()" placeholder="Buscar por código, descripción, categoría, marca, OEM o aplicación..." #input>
+          <input matInput (input)="applyFilter($event)" [value]="directory.term()" placeholder="Código, descripción, categoría, marca, OEM o aplicación" #input>
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
+      </div>
 
-        <div *ngIf="isLoading" class="flex justify-center items-center p-8">
-          <mat-spinner diameter="50"></mat-spinner>
-          <span class="ml-4 text-lg">Cargando productos...</span>
-        </div>
+      <p *ngIf="isLoading" role="status" class="list-status">Cargando productos...</p>
+      <div class="list-table stack" [hidden]="isLoading">
+        <table mat-table [dataSource]="dataSource" matSort [matSortActive]="directory.query().sortBy === 'id' ? '' : directory.query().sortBy" [matSortDirection]="directory.query().sortOrder" matSortDisableClear (matSortChange)="directory.sort($event)">
 
-        <div class="overflow-auto" [hidden]="isLoading">
-          <table mat-table [dataSource]="dataSource" matSort [matSortActive]="directory.query().sortBy === 'id' ? '' : directory.query().sortBy" [matSortDirection]="directory.query().sortOrder" matSortDisableClear (matSortChange)="directory.sort($event)" class="w-full">
-            <!-- (Todas tus columnas <ng-container> de producto van aquí) -->
+          <ng-container matColumnDef="imagen_url">
+            <th mat-header-cell *matHeaderCellDef><span class="sr-only">Imagen</span></th>
+            <td mat-cell *matCellDef="let element" class="thumb-cell">
+              <img *ngIf="element.imagenes && element.imagenes.length > 0" [src]="productImageUrl(element.imagenes[0])" [alt]="'Imagen de ' + element.descripcion" loading="lazy" (error)="onImageError($event)" class="thumb" />
+              <span class="product-placeholder" [hidden]="element.imagenes && element.imagenes.length > 0" aria-hidden="true"><mat-icon>inventory_2</mat-icon></span>
+            </td>
+          </ng-container>
 
-            <ng-container matColumnDef="imagen_url">
-              <th mat-header-cell *matHeaderCellDef> Imagen </th>
-              <td mat-cell *matCellDef="let element"> 
-                <img *ngIf="element.imagenes && element.imagenes.length > 0" [src]="productImageUrl(element.imagenes[0])" [alt]="'Imagen de ' + element.descripcion" loading="lazy" (error)="onImageError($event)" class="w-10 h-10 object-cover rounded-md border border-[var(--wrap-border)]" />
-                <mat-icon [hidden]="element.imagenes && element.imagenes.length > 0" class="text-gray-400" aria-hidden="true">image</mat-icon>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="codigo">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Código </th>
-              <td mat-cell *matCellDef="let element"> {{element.codigo}} </td>
-            </ng-container>
-            <ng-container matColumnDef="descripcion">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Descripción </th>
-              <td mat-cell *matCellDef="let element"> {{element.descripcion}} </td>
-            </ng-container>
-            <ng-container matColumnDef="categoriaNombre">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Categoría </th>
-              <td mat-cell *matCellDef="let element"> {{element.categoriaNombre}} </td>
-            </ng-container>
-            <ng-container matColumnDef="marca">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Marca </th>
-              <td mat-cell *matCellDef="let element"> {{element.marca}} </td>
-            </ng-container>
-            <ng-container matColumnDef="ubicacion">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Ubicación </th>
-              <td mat-cell *matCellDef="let element"> {{element.ubicacion}} </td>
-            </ng-container>
-            <ng-container matColumnDef="precioUnitario">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right pr-6"> Precio </th>
-              <td mat-cell *matCellDef="let element" class="font-bold font-mono text-right pr-6"> {{element.precioUnitario | currency:'MXN':'symbol':'1.2-2'}} </td>
-            </ng-container>
+          <ng-container matColumnDef="codigo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Código</th>
+            <td mat-cell *matCellDef="let element" data-label="Código"><span class="code-chip">{{ element.codigo }}</span></td>
+          </ng-container>
+          <ng-container matColumnDef="descripcion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Descripción</th>
+            <td mat-cell *matCellDef="let element" class="stack-wide" data-label="Descripción"><div class="party"><strong>{{ element.descripcion }}</strong></div></td>
+          </ng-container>
+          <ng-container matColumnDef="categoriaNombre">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Categoría</th>
+            <td mat-cell *matCellDef="let element" class="muted" data-label="Categoría">{{ element.categoriaNombre || '—' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="marca">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Marca</th>
+            <td mat-cell *matCellDef="let element" data-label="Marca">{{ element.marca || '—' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="ubicacion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ubicación</th>
+            <td mat-cell *matCellDef="let element" class="muted" data-label="Ubicación">{{ element.ubicacion || '—' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="precioUnitario">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="amount">Precio</th>
+            <td mat-cell *matCellDef="let element" class="amount" data-label="Precio">{{ element.precioUnitario | currency:'MXN':'symbol':'1.2-2' }}</td>
+          </ng-container>
           <ng-container matColumnDef="existencia">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Inventario </th>
-              <td mat-cell *matCellDef="let element" 
-                  [class.text-red-600]="(element.disponible ?? element.existencia) <= 0"
-                  [class.font-bold]="(element.disponible ?? element.existencia) <= 0">
-                <strong>{{ element.disponible ?? element.existencia }} disponible</strong>
-                <small class="block text-xs opacity-70">{{element.existencia}} físico · {{element.reservada || 0}} apartado</small>
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="acciones">
-              <th mat-header-cell *matHeaderCellDef> Acciones </th>
-              <td mat-cell *matCellDef="let element">
-                <button mat-icon-button class="text-green-600" (click)="verCotizacionesProveedor(element)" matTooltip="Ver Cotizaciones de Proveedores" aria-label="Ver cotizaciones de proveedores">
-                  <mat-icon>price_check</mat-icon>
-                </button>
-                <button mat-icon-button color="accent" (click)="verKardex(element)" matTooltip="Ver Historial (Kardex)" aria-label="Ver Kardex del producto">
-                  <mat-icon>history</mat-icon>
-                </button>
-                <button *ngIf="canEdit" mat-icon-button color="primary" (click)="abrirDialogo(element)" matTooltip="Editar Producto" aria-label="Editar producto">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button *ngIf="canEdit" mat-icon-button color="warn" (click)="eliminarProducto(element.idProducto)" matTooltip="Eliminar Producto" aria-label="Eliminar producto">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </td>
-            </ng-container>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Inventario</th>
+            <td mat-cell *matCellDef="let element" data-label="Inventario">
+              <div class="stock">
+                <span class="badge" [ngClass]="(element.disponible ?? element.existencia) <= 0 ? 'badge-danger' : ((element.disponible ?? element.existencia) <= 3 ? 'badge-warning' : 'badge-success')">{{ element.disponible ?? element.existencia }} disponible</span>
+                <small class="muted">{{ element.existencia }} físico · {{ element.reservada || 0 }} apartado</small>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef><span class="sr-only">Acciones</span></th>
+            <td mat-cell *matCellDef="let element" class="stack-wide">
+              <div class="row-actions">
+                <button mat-icon-button (click)="verCotizacionesProveedor(element)" matTooltip="Ver Cotizaciones de Proveedores" aria-label="Ver cotizaciones de proveedores"><mat-icon>price_check</mat-icon></button>
+                <button mat-icon-button (click)="verKardex(element)" matTooltip="Ver Historial (Kardex)" aria-label="Ver Kardex del producto"><mat-icon>history</mat-icon></button>
+                <button *ngIf="canEdit" mat-icon-button (click)="abrirDialogo(element)" matTooltip="Editar Producto" aria-label="Editar producto"><mat-icon>edit</mat-icon></button>
+                <button *ngIf="canEdit" mat-icon-button class="danger-action" (click)="eliminarProducto(element.idProducto)" matTooltip="Eliminar Producto" aria-label="Eliminar producto"><mat-icon>delete</mat-icon></button>
+              </div>
+            </td>
+          </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            <tr class="mat-row" *matNoDataRow>
-              <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-                <div class="flex flex-col items-center justify-center p-12 text-gray-400">
-                  <mat-icon class="!w-16 !h-16 text-6xl mb-4 opacity-50">inventory_2</mat-icon>
-                  <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-1">No hay registros aún</h3>
-                  <p class="text-gray-500 text-sm">Agrega nuevos productos al inventario o intenta con otra búsqueda.</p>
-                </div>
-              </td>
-            </tr>
-          </table>
-        </div>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              <div class="erp-empty-state compact list-empty"><mat-icon>inventory_2</mat-icon><strong>Sin productos</strong><span>Agrega productos al inventario o intenta con otra búsqueda.</span></div>
+            </td>
+          </tr>
+        </table>
+      </div>
 
-        <mat-paginator 
-          [length]="totalItems"
-          [pageSize]="directory.query().limit" [pageIndex]="directory.query().page - 1" (page)="directory.page($event)"
-          [pageSizeOptions]="[10, 25, 50]"
-          showFirstLastButtons
-          aria-label="Seleccionar página de productos">
-        </mat-paginator>
-      </mat-card-content>
-    </mat-card>
+      <mat-paginator
+        [length]="totalItems"
+        [pageSize]="directory.query().limit" [pageIndex]="directory.query().page - 1" (page)="directory.page($event)"
+        [pageSizeOptions]="[10, 25, 50]"
+        showFirstLastButtons
+        aria-label="Seleccionar página de productos">
+      </mat-paginator>
+    </section>
   </mat-tab>
 
-  <!-- Pestaña 2: Gestionar Categorías (Aquí cargamos el nuevo componente) -->
   <mat-tab label="Gestionar Categorías">
-    <!-- El padding (p-6) da espacio alrededor de la tarjeta de categorías -->
-    <div class="p-6">
+    <div class="category-pane">
       <app-categoria-list></app-categoria-list>
     </div>
   </mat-tab>

@@ -4,12 +4,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { roundMoney } from '../shared/document-download';
 import { CommonModule } from '@angular/common';
 import {
-  FormBuilder,
   FormControl,
-  FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  Validators,
 } from '@angular/forms';
 
 // Material
@@ -54,6 +51,7 @@ import { catchError, debounceTime, distinctUntilChanged, map, startWith, finaliz
     MatSelectModule,
   ],
   templateUrl: './compra.component.html',
+  styleUrls: ['./compra.component.css'],
 })
 export class CompraComponent implements OnInit {
   // --- ESTADO ---
@@ -209,7 +207,7 @@ export class CompraComponent implements OnInit {
       .crearCompra(compraPayload)
       .pipe(finalize(() => this.isSaving.set(false)))
       .subscribe({
-        next: (res) => {
+        next: () => {
           this.mostrarNotificacion('✅ Compra registrada correctamente.');
           this.pendingRequestId = null;
           this.limpiarTodo();

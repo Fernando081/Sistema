@@ -1,5 +1,6 @@
-<section class="dashboard-freshness" aria-label="Actualización de las métricas" aria-live="polite">
+<section class="dashboard-freshness" [class.ok]="refreshStatus()?.freshness === 'current' && !refreshStatus()?.overdue" [class.alert]="refreshStatus()?.overdue" aria-label="Actualización de las métricas" aria-live="polite">
   @if (refreshStatus(); as status) {
+    <span class="status-dot" aria-hidden="true"></span>
     <strong>{{ status.overdue ? 'Métricas pendientes de actualización' : (status.freshness === 'current' ? 'Refresco diario al día' : 'Sin refresco diario confirmado') }}</strong>
     <span>Último refresco exitoso: {{ status.lastSuccessAt ? (status.lastSuccessAt | date:'dd/MM/yyyy HH:mm':'-0600') + ' · hora de México' : 'Sin registro' }}.</span>
     <small>Vistas analíticas: actualización diaria a las 02:00, hora de México. No representa información en tiempo real.</small>
@@ -40,7 +41,7 @@
   <section class="dashboard-summary" aria-labelledby="resumen-title">
     <div class="section-heading"><div><p class="eyebrow">Hoy</p><h2 id="resumen-title">Pulso del negocio</h2><p>Las cifras principales y los asuntos que requieren atención.</p></div><div class="quick-actions"><a mat-stroked-button routerLink="/cotizacion/nueva"><mat-icon>request_quote</mat-icon>Cotizar</a><a mat-flat-button routerLink="/venta"><mat-icon>point_of_sale</mat-icon>Nueva venta</a></div></div>
     <div class="metric-grid">
-      <a class="metric-card" routerLink="/facturas"><span class="metric-icon primary"><mat-icon>point_of_sale</mat-icon></span><span><small>Ventas de hoy</small><strong>{{ ventasHoyAnimado() | currency:'MXN' }}</strong><em>Ver facturas</em></span></a>
+      <a class="metric-card featured" routerLink="/facturas"><span class="metric-icon primary"><mat-icon>point_of_sale</mat-icon></span><span><small>Ventas de hoy</small><strong>{{ ventasHoyAnimado() | currency:'MXN' }}</strong><em>Ver facturas</em></span></a>
       <a class="metric-card" routerLink="/reportes/utilidad"><span class="metric-icon success"><mat-icon>trending_up</mat-icon></span><span><small>Ingresos netos</small><strong>{{ ingresosNetosAnimado() | currency:'MXN' }}</strong><em>Analizar utilidad</em></span></a>
       <a class="metric-card" routerLink="/cobranza"><span class="metric-icon warning"><mat-icon>payments</mat-icon></span><span><small>Por cobrar</small><strong>{{ porCobrarAnimado() | currency:'MXN' }}</strong><em>Atender cobranza</em></span></a>
       <a class="metric-card" routerLink="/cuentas-por-pagar"><span class="metric-icon neutral"><mat-icon>account_balance_wallet</mat-icon></span><span><small>Por pagar</small><strong>{{ porPagarAnimado() | currency:'MXN' }}</strong><em>Revisar compromisos</em></span></a>
@@ -63,11 +64,11 @@
     <div class="section-heading"><div><p class="eyebrow">Últimos 7 días</p><h2 id="analysis-title">Venta y flujo</h2><p>Consulta tendencias; las gráficas se cargan al llegar a esta sección.</p></div><a mat-button routerLink="/reportes/utilidad">Ver análisis completo <mat-icon>arrow_forward</mat-icon></a></div>
     @defer (on viewport) {
       <div class="chart-grid">
-        <mat-card class="erp-static-card wide"><mat-card-header><mat-card-title>Tendencia de ventas</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartTendenciaVentas" [theme]="theme() ? 'dark' : 'light'" class="chart" role="img" aria-label="Gráfica de tendencia de ventas de los últimos siete días"></div><p class="sr-only">La gráfica muestra el monto vendido por día durante los últimos siete días.</p></mat-card-content></mat-card>
-        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Flujo comprometido</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartFlujoDinero" [theme]="theme() ? 'dark' : 'light'" class="chart" role="img" aria-label="Comparación entre cuentas por cobrar y cuentas por pagar"></div></mat-card-content></mat-card>
-        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Productos más vendidos</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartTopOriginal" [theme]="theme() ? 'dark' : 'light'" class="chart" role="img" aria-label="Cinco productos con mayor cantidad vendida"></div></mat-card-content></mat-card>
+        <mat-card class="erp-static-card wide"><mat-card-header><mat-card-title>Tendencia de ventas</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartTendenciaVentas" class="chart" role="img" aria-label="Gráfica de tendencia de ventas de los últimos siete días"></div><p class="sr-only">La gráfica muestra el monto vendido por día durante los últimos siete días.</p></mat-card-content></mat-card>
+        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Flujo comprometido</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartFlujoDinero" class="chart" role="img" aria-label="Comparación entre cuentas por cobrar y cuentas por pagar"></div></mat-card-content></mat-card>
+        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Productos más vendidos</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartTopOriginal" class="chart" role="img" aria-label="Cinco productos con mayor cantidad vendida"></div></mat-card-content></mat-card>
       </div>
-    } @placeholder (minimum 250ms) {<div class="chart-skeleton" aria-label="Preparando gráficas"><span></span><span></span><span></span></div>}
+    } @placeholder (minimum 250ms) {<div class="chart-skeleton" role="status" aria-label="Preparando gráficas"><span></span><span></span><span></span></div>}
   </section>
 
   <details class="advanced-analysis">
@@ -82,9 +83,9 @@
     </div>
     @defer (on viewport) {
       <div class="chart-grid secondary">
-        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Venta por categoría</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartVentasPorCategoria" [theme]="theme() ? 'dark' : 'light'" class="chart" role="img" aria-label="Categorías con mayor y menor venta"></div></mat-card-content></mat-card>
-        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Actividad por hora y día</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartComportamientoHoraDia" [theme]="theme() ? 'dark' : 'light'" class="chart" role="img" aria-label="Mapa de actividad de ventas por hora y día"></div></mat-card-content></mat-card>
-        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Utilidad bruta por marca</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartRentabilidad" [theme]="theme() ? 'dark' : 'light'" class="chart" role="img" aria-label="Utilidad por marca con costos históricos conocidos"></div></mat-card-content></mat-card>
+        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Venta por categoría</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartVentasPorCategoria" class="chart" role="img" aria-label="Categorías con mayor y menor venta"></div></mat-card-content></mat-card>
+        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Actividad por hora y día</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartComportamientoHoraDia" class="chart" role="img" aria-label="Mapa de actividad de ventas por hora y día"></div></mat-card-content></mat-card>
+        <mat-card class="erp-static-card"><mat-card-header><mat-card-title>Utilidad bruta por marca</mat-card-title></mat-card-header><mat-card-content><div echarts [options]="data.chartRentabilidad" class="chart" role="img" aria-label="Utilidad por marca con costos históricos conocidos"></div></mat-card-content></mat-card>
       </div>
     } @placeholder {<div class="chart-skeleton"><span></span><span></span><span></span></div>}
   </details>

@@ -14,7 +14,11 @@ describe('API credential boundary', () => {
     expect(accepts('/api/v1/../../other')).toBeFalse();
   });
   it('honors a separately configured backend origin without trusting suffixes', () => {
-    expect(isApiUrl('https://api.example/api/v1/venta', 'https://api.example/api/v1', origin)).toBeTrue();
-    expect(isApiUrl('https://api.example.evil.test/api/v1/venta', 'https://api.example/api/v1', origin)).toBeFalse();
+    expect(
+      isApiUrl('https://api.example/api/v1/venta', 'https://api.example/api/v1', origin),
+    ).toBeTrue();
+    expect(
+      isApiUrl('https://api.example.evil.test/api/v1/venta', 'https://api.example/api/v1', origin),
+    ).toBeFalse();
   });
 });

@@ -1,47 +1,54 @@
-<main class="min-h-screen grid lg:grid-cols-2 bg-[var(--wrap-bg)]">
-  <section class="hidden lg:flex relative overflow-hidden bg-[#0f2742] text-white p-14 flex-col justify-between">
-    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_10%,#d98e18_0,transparent_35%),radial-gradient(circle_at_90%_80%,#247a43_0,transparent_30%)]"></div>
-    <div class="relative flex items-center gap-4"><div class="w-14 h-14 rounded-2xl bg-[#d98e18] text-[#111827] grid place-items-center font-black">RTT</div><div class="leading-tight"><h1 class="m-0 whitespace-nowrap text-xl font-extrabold">Refacciones y Tractorepuestos</h1><p class="m-0 whitespace-nowrap text-xl font-extrabold text-white">Tampico</p></div></div>
-    <div class="relative max-w-xl"><p class="uppercase tracking-[.2em] text-amber-400 text-sm font-bold">Operación conectada</p><h2 class="text-5xl leading-tight font-black mb-5">La refacción correcta, con información clara.</h2><p class="text-xl text-slate-300">Ventas, inventario, compras, cobranza y relaciones comerciales en un solo lugar.</p></div>
-    <p class="relative text-sm text-slate-400">ERP + CRM para servicio pesado diésel</p>
+<main class="login">
+  <section class="showcase" aria-hidden="true">
+    <div class="showcase-glow"></div>
+    <div class="showcase-grid"></div>
+    <div class="showcase-brand"><span class="brand-mark">RTT</span><span><strong>Refacciones y Tractorepuestos</strong><small>Tampico</small></span></div>
+    <div class="showcase-copy">
+      <p class="kicker">Operación conectada</p>
+      <h2>La refacción correcta, con información clara.</h2>
+      <p class="lead">Ventas, inventario, compras, cobranza y relaciones comerciales en un solo lugar.</p>
+      <ul class="pillars">
+        <li><span>VIN / ESN</span>Búsqueda por unidad y aplicación</li>
+        <li><span>CFDI 4.0</span>Facturación y complementos de pago</li>
+        <li><span>Kardex</span>Existencias y movimientos por ubicación</li>
+      </ul>
+    </div>
+    <p class="showcase-foot">ERP + CRM para servicio pesado diésel</p>
   </section>
-  <section class="flex items-center justify-center p-5 md:p-10">
-  <mat-card class="w-full max-w-md p-5 md:p-9 !shadow-xl erp-static-card">
-    <div class="lg:hidden flex items-center gap-3 mb-7"><div class="w-11 h-11 shrink-0 rounded-xl bg-[#0f2742] text-white grid place-items-center text-xs font-black">RTT</div><div class="leading-tight text-[var(--wrap-text-title)]"><strong class="block whitespace-nowrap text-sm">Refacciones y Tractorepuestos</strong><strong class="block whitespace-nowrap text-sm">Tampico</strong></div></div>
-    <p class="text-[#955b06] dark:text-amber-300 uppercase tracking-widest text-xs font-bold mb-2">Bienvenido</p>
-    <h2 class="text-3xl font-extrabold mb-2 text-[var(--wrap-text-title)]">Iniciar sesión</h2>
-    <p class="text-[var(--wrap-text-muted)] mb-7">Accede a tu espacio de trabajo.</p>
 
-    @if(challenge()) {
-      <form [formGroup]="codeForm" (ngSubmit)="verify()" class="flex flex-col gap-4">
-        <h3 class="text-xl font-semibold text-[var(--wrap-text-title)]">Verificación en dos pasos</h3>
-        <p class="text-[var(--wrap-text-muted)]">Escribe el código de 6 dígitos de tu aplicación autenticadora o uno de tus códigos de respaldo. Este intento vence en 5 minutos.</p>
-        <mat-form-field appearance="outline"><mat-label>Código de verificación o respaldo</mat-label><input matInput formControlName="code" autocomplete="one-time-code" maxlength="35" spellcheck="false" autocapitalize="off" /></mat-form-field>
-        <button mat-flat-button type="submit" [disabled]="isSaving() || codeForm.invalid">{{isSaving() ? 'Verificando…' : 'Verificar e ingresar'}}</button>
-        <button mat-button type="button" [disabled]="isSaving()" (click)="restart()">Volver al inicio de sesión</button>
-      </form>
-    } @else {
-    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
-      <mat-form-field appearance="outline">
-        <mat-label>Usuario</mat-label>
-        <input matInput formControlName="username" autocomplete="username" maxlength="100" />
-      </mat-form-field>
+  <section class="panel">
+    <div class="card">
+      <div class="mobile-brand"><span class="brand-mark small" aria-hidden="true">RTT</span><span><strong>Refacciones y Tractorepuestos</strong><small>Tampico</small></span></div>
+      <p class="kicker">Bienvenido</p>
+      <h1>Iniciar sesión</h1>
+      <p class="hint">Accede a tu espacio de trabajo.</p>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Contraseña</mat-label>
-        <input matInput type="password" formControlName="password" autocomplete="current-password" required />
-      </mat-form-field>
-
-      <button mat-flat-button color="primary" type="submit" class="!min-h-12 !text-base" [disabled]="isSaving() || form.invalid">
-        <span *ngIf="!isSaving()">Entrar</span>
-        <span *ngIf="isSaving()" class="inline-flex items-center gap-2">
-          <mat-spinner diameter="18"></mat-spinner>
-          Ingresando...
-        </span>
-      </button>
-    </form>
-    }
-    <a mat-button routerLink="/login/recuperar" class="mt-4">Olvidé mi contraseña</a>
-  </mat-card>
+      @if(challenge()) {
+        <form [formGroup]="codeForm" (ngSubmit)="verify()" class="login-form">
+          <h3>Verificación en dos pasos</h3>
+          <p class="hint">Escribe el código de 6 dígitos de tu aplicación autenticadora o uno de tus códigos de respaldo. Este intento vence en 5 minutos.</p>
+          <mat-form-field appearance="outline"><mat-label>Código de verificación o respaldo</mat-label><input matInput formControlName="code" autocomplete="one-time-code" maxlength="35" spellcheck="false" autocapitalize="off" /></mat-form-field>
+          <button mat-flat-button type="submit" class="submit" [disabled]="isSaving() || codeForm.invalid">{{isSaving() ? 'Verificando…' : 'Verificar e ingresar'}}</button>
+          <button mat-button type="button" [disabled]="isSaving()" (click)="restart()">Volver al inicio de sesión</button>
+        </form>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Usuario</mat-label>
+            <input matInput formControlName="username" autocomplete="username" maxlength="100" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Contraseña</mat-label>
+            <input matInput type="password" formControlName="password" autocomplete="current-password" required />
+          </mat-form-field>
+          <button mat-flat-button type="submit" class="submit" [disabled]="isSaving() || form.invalid">
+            <span *ngIf="!isSaving()">Entrar</span>
+            <span *ngIf="isSaving()" class="saving"><mat-spinner diameter="18"></mat-spinner>Ingresando...</span>
+          </button>
+        </form>
+      }
+      <a mat-button routerLink="/login/recuperar" class="recover">Olvidé mi contraseña</a>
+    </div>
+    <p class="panel-foot">Sesión protegida con cookie segura y verificación en dos pasos opcional</p>
   </section>
 </main>

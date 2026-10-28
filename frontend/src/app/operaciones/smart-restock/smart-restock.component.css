@@ -1,16 +1,12 @@
-/* Smart Restock - Dark mode tab fix */
-:host ::ng-deep .mat-mdc-tab-labels .mdc-tab__text-label {
-  color: var(--mat-sys-on-surface, rgba(255,255,255,0.87)) !important;
-}
-
-:host ::ng-deep .mat-mdc-tab-labels .mdc-tab--active .mdc-tab__text-label {
-  color: var(--mat-sys-primary, #90caf9) !important;
-}
-
-:host ::ng-deep .mat-mdc-tab-labels .mat-mdc-tab .mat-icon {
-  color: inherit;
-}
-
-:host ::ng-deep .mat-mdc-tab-header {
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
+/* frontend/src/app/operaciones/smart-restock/smart-restock.component.css · U01.2 (usa shared/list-page.css) */
+.lead{margin:0 0 .5rem;color:var(--c-text-2)}
+.restock-tabs{--mat-tab-header-divider-color:var(--c-border)}
+.restock-tabs .list-surface{margin-top:1rem}
+.tab-icon{margin-right:.4rem;width:20px;height:20px;font-size:20px}
+.list-head h3{margin:0;color:var(--c-text);font-size:1rem;font-weight:650;letter-spacing:-.01em}
+.loading{display:flex;justify-content:center;padding:2rem}
+.trend{display:inline-flex;align-items:center;gap:.25rem;text-transform:uppercase;letter-spacing:.04em}
+.trend mat-icon{width:15px;height:15px;font-size:15px}
+.buy{display:inline-block;padding:.2rem .6rem;border-radius:99px;background:var(--c-brass-soft);color:var(--c-brass-text);font-weight:700}
+td.good{color:var(--c-success)!important}td.mid{color:var(--c-warning)!important}td.low{color:var(--c-danger)!important}
+.badge-neutral{background:var(--c-surface-sunken);color:var(--c-text-2)}

@@ -1,10 +1,10 @@
 :host {
   display: block;
-  color: var(--text-main);
+  color: var(--c-text);
 }
 section {
-  background: var(--bg-card);
-  border: 1px solid var(--wrap-border);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
   border-radius: 12px;
   padding: 20px;
   margin: 20px 0;
@@ -18,9 +18,9 @@ input:not([type='checkbox']),
 textarea {
   display: block;
   width: 100%;
-  color: var(--text-main);
-  background: var(--bg-card);
-  border: 1px solid var(--wrap-border);
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
   padding: 12px;
   border-radius: 8px;
 }
@@ -28,8 +28,8 @@ textarea {
   font-family: monospace;
 }
 button {
-  background: #0b3650;
-  color: #fff;
+  background: var(--c-primary);
+  color: var(--c-on-primary);
   padding: 12px;
   min-height: 44px;
   border-radius: 8px;
@@ -49,7 +49,7 @@ h3 {
   margin: 12px 0;
 }
 article {
-  border-top: 1px solid var(--wrap-border);
+  border-top: 1px solid var(--c-border);
   margin-top: 20px;
   padding-top: 12px;
 }
@@ -59,6 +59,6 @@ img {
 }
 fieldset {
   min-width: 0;
-  border: 1px solid var(--wrap-border);
+  border: 1px solid var(--c-border);
   padding: 12px;
 }

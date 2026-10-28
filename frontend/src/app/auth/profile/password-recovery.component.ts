@@ -10,7 +10,7 @@ import { PasswordRecoveryService, RecoveryStatus } from '../password-recovery.se
 
 @Component({
   selector:'app-password-recovery-settings',standalone:true,imports:[DatePipe,ReactiveFormsModule,MatButtonModule,MatFormFieldModule,MatInputModule],
-  styles:[`:host{display:block}section{padding:1.25rem;border:1px solid var(--wrap-border);border-radius:.75rem;background:var(--wrap-card-bg);color:var(--wrap-text-title)}h2{font-size:1.125rem;font-weight:600;color:var(--wrap-text-title)}p{margin:.75rem 0;color:var(--wrap-text-muted)}form{display:flex;flex-direction:column;gap:.75rem}code{display:block;overflow-wrap:anywhere;user-select:all;padding:.75rem;border:1px solid var(--wrap-border);border-radius:.5rem}button:disabled{opacity:.55}button{align-self:start;white-space:normal;height:auto!important;min-height:2.5rem}.error{color:var(--wrap-text-title);border-inline-start:3px solid #dc2626;padding-inline-start:.75rem}`],
+  styles:[`:host{display:block}section{padding:1.25rem;border:1px solid var(--c-border);border-radius:.75rem;background:var(--c-surface);color:var(--c-text)}h2{font-size:1.125rem;font-weight:600;color:var(--c-text)}p{margin:.75rem 0;color:var(--c-text-3)}form{display:flex;flex-direction:column;gap:.75rem}code{display:block;overflow-wrap:anywhere;user-select:all;padding:.75rem;border:1px solid var(--c-border);border-radius:.5rem}button:disabled{opacity:.55}button{align-self:start;white-space:normal;height:auto!important;min-height:2.5rem}.error{color:var(--c-text);border-inline-start:3px solid #dc2626;padding-inline-start:.75rem}`],
   template:`<section aria-labelledby="recovery-title"><h2 id="recovery-title">Recuperar acceso a tu cuenta</h2>
     <p>Prepara una clave para recuperar tu contraseña si la olvidas. Guárdala fuera de este equipo. Es distinta de los códigos de respaldo del autenticador.</p>
     @if(error()){<p role="alert" class="error">{{error()}}</p>}
@@ -19,7 +19,7 @@ import { PasswordRecoveryService, RecoveryStatus } from '../password-recovery.se
       <p>Guarda esta clave de recuperación. Debes confirmarla antes de diez minutos; después podrás usarla una sola vez durante un año. La clave anterior se conserva hasta confirmar esta.</p>
       <code aria-label="Clave de recuperación pendiente">{{key}}</code>
       <form [formGroup]="confirmForm" (ngSubmit)="confirm()">
-        <mat-form-field><mat-label>Repite la clave que guardaste</mat-label><input matInput type="password" formControlName="recoveryKey" maxlength="51" autocomplete="off" spellcheck="false"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Repite la clave que guardaste</mat-label><input matInput type="password" formControlName="recoveryKey" maxlength="51" autocomplete="off" spellcheck="false"></mat-form-field>
         <button mat-flat-button [disabled]="busy()||confirmForm.invalid">Confirmar que guardé mi clave</button>
         <button mat-button type="button" [disabled]="busy()" (click)="cancel()">Descartar configuración pendiente</button>
       </form>
@@ -27,8 +27,8 @@ import { PasswordRecoveryService, RecoveryStatus } from '../password-recovery.se
       <p>{{status.configured ? 'Clave de recuperación configurada y vigente.' : 'No tienes una clave de recuperación vigente.'}}</p>
       @if(status.configured){<p>Vence: {{status.expiresAt | date:'mediumDate'}}. Usarla o cambiar tu contraseña la invalida; puedes reemplazarla aquí.</p>}
       <form [formGroup]="proofForm" (ngSubmit)="begin()">
-        <mat-form-field><mat-label>Contraseña actual</mat-label><input matInput type="password" aria-label="Contraseña actual para recuperar acceso" formControlName="currentPassword" autocomplete="current-password"></mat-form-field>
-        <mat-form-field><mat-label>Código MFA, si está activado</mat-label><input matInput formControlName="code" autocomplete="one-time-code" maxlength="35"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Contraseña actual</mat-label><input matInput type="password" aria-label="Contraseña actual para recuperar acceso" formControlName="currentPassword" autocomplete="current-password"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Código MFA, si está activado</mat-label><input matInput formControlName="code" autocomplete="one-time-code" maxlength="35"></mat-form-field>
         <p>Con verificación en dos pasos, usa un código nuevo del autenticador o un respaldo disponible. Un código ya usado no funciona de nuevo.</p>
         <button mat-flat-button [disabled]="busy()||proofForm.invalid">{{busy() ? 'Procesando…' : status.configured ? 'Reemplazar clave de recuperación' : 'Generar clave de recuperación'}}</button>
         @if(status.configured||status.pending){<button mat-button type="button" [disabled]="busy()||proofForm.invalid" (click)="revoke()">Retirar clave de recuperación</button>}

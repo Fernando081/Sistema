@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, signal, computed } from '@angular/core';
+import { Component, Inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -26,6 +26,7 @@ import { Proveedor } from '../../proveedor/proveedor.interface';
     MatIconModule
   ],
   templateUrl: './producto-cotizaciones-dialog.component.html',
+  styleUrls: ['./producto-cotizaciones-dialog.component.css'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
@@ -90,7 +91,7 @@ export class ProductoCotizacionesDialogComponent implements OnInit {
         let minPrice = Number.MAX_VALUE;
 
         // Construir filas principales
-        for (const [key, groupItems] of gruposMap.entries()) {
+        for (const groupItems of gruposMap.values()) {
           // El backend ya ordena por fecha DESC, el primero es el mas reciente
           const mostRecent = groupItems[0];
           

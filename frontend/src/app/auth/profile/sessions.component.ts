@@ -25,9 +25,9 @@ import { ConfirmService } from '../../shared/confirm.service';
     <footer><p>Al cerrar todas las sesiones tendrás que iniciar sesión de nuevo en tus navegadores.</p>
       <button mat-flat-button type="button" [disabled]="busy() || loading()" (click)="closeAll()">Cerrar todas mis sesiones</button></footer>
   </section>`,
-  styles:[`:host{display:block}.session-panel{background:var(--wrap-card-bg);color:var(--wrap-text-title);border:1px solid var(--wrap-border);border-radius:12px;padding:1.25rem}
-    header,.session-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;flex-wrap:wrap}h2,h3{margin:0}h2{font-size:1.2rem}h3{font-size:1rem}p,dt{color:var(--wrap-text-muted)}p{margin:.5rem 0 1rem}.hint{font-size:.875rem}
-    article{border:1px solid var(--wrap-border);padding:1rem;margin:1rem 0;border-radius:10px;overflow-wrap:anywhere}dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:.75rem;margin:1rem 0}dt{font-size:.8rem}dd{margin:.25rem 0 0;font-size:.9rem}.current{font-size:.8rem;border:1px solid var(--wrap-border);border-radius:99px;padding:.2rem .6rem;font-weight:600}footer{border-top:1px solid var(--wrap-border);padding-top:1rem}`],
+  styles:[`:host{display:block}.session-panel{background:var(--c-surface);color:var(--c-text);border:1px solid var(--c-border);border-radius:12px;padding:1.25rem}
+    header,.session-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;flex-wrap:wrap}h2,h3{margin:0}h2{font-size:1.2rem}h3{font-size:1rem}p,dt{color:var(--c-text-3)}p{margin:.5rem 0 1rem}.hint{font-size:.875rem}
+    article{border:1px solid var(--c-border);padding:1rem;margin:1rem 0;border-radius:10px;overflow-wrap:anywhere}dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:.75rem;margin:1rem 0}dt{font-size:.8rem}dd{margin:.25rem 0 0;font-size:.9rem}.current{font-size:.8rem;border:1px solid var(--c-border);border-radius:99px;padding:.2rem .6rem;font-weight:600}footer{border-top:1px solid var(--c-border);padding-top:1rem}`],
 })
 export class SessionsComponent implements OnInit {
   private readonly auth=inject(AuthService);
