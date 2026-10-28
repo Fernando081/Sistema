@@ -81,6 +81,38 @@
   <mat-tab label="Balance general">
     <section class="tab-content statements balance">@for(type of ['Activo','Pasivo','Capital']; track type){<article><h2>{{type}}</h2>@for(item of accountType(type); track item.codigo){<div><span>{{item.codigo}} · {{item.nombre}}</span><b>{{item.saldo | currency:'MXN'}}</b></div>}<footer><span>Total {{type | lowercase}}</span><b>{{type==='Activo' ? (balance()?.activos || 0 | currency:'MXN') : type==='Pasivo' ? (balance()?.pasivos || 0 | currency:'MXN') : (balance()?.capital || 0 | currency:'MXN')}}</b></footer></article>}<p class="balance-check" [class.warning]="(balance()?.diferencia || 0) !== 0"><mat-icon>{{(balance()?.diferencia || 0) === 0 ? 'verified' : 'warning'}}</mat-icon>{{(balance()?.diferencia || 0) === 0 ? 'La ecuación contable está cuadrada.' : 'Diferencia contable: ' + (balance()?.diferencia | currency:'MXN')}}</p></section>
   </mat-tab>
+  <mat-tab label="Días de pago (DPO)">
+    @if (dpo(); as d) {
+    <section class="tab-content dpo">
+      <p class="dpo-intro">Días que en promedio tarda la empresa en pagar a proveedores según la contabilidad: saldo medio diario de Proveedores (2100) entre el costo o las compras del periodo, por {{ d.periodo.dias }} días ({{ d.periodo.inicio | date:'mediumDate' }} – {{ d.periodo.fin | date:'mediumDate' }}). No es el plazo efectivo de pago del centro de operación{{ d.plazoEfectivoOperativo !== null ? ' (' + d.plazoEfectivoOperativo + ' días, últimos 90 días)' : '' }}, que mide factura contra pago.</p>
+      @for (a of d.advertencias; track a) {<p class="balance-check warning" role="alert"><mat-icon>warning</mat-icon>{{ a }}</p>}
+      <div class="dpo-kpis">
+        <article><span>DPO sobre costo de ventas</span><strong>{{ d.dpoCosto !== null ? (d.dpoCosto | number:'1.0-1') + ' días' : 'No calculable' }}</strong><small>Costo {{ d.costoVentas | currency:'MXN' }}</small></article>
+        <article><span>DPO sobre compras a crédito</span><strong>{{ d.dpoCompras !== null ? (d.dpoCompras | number:'1.0-1') + ' días' : 'No calculable' }}</strong><small>Compras {{ d.proveedores.compras | currency:'MXN' }}</small></article>
+        <article><span>Saldo medio de proveedores</span><strong>{{ d.proveedores.saldoMedio | currency:'MXN' }}</strong><small>Inicial {{ d.proveedores.saldoInicial | currency:'MXN' }} · final {{ d.proveedores.saldoFinal | currency:'MXN' }}</small></article>
+      </div>
+      <div class="statements">
+        <article><h2>Proveedores: mayor contra auxiliar</h2>
+          @if (d.conciliacionProveedores.aplica) {
+            <div><span>Saldo en contabilidad (2100)</span><b>{{ d.conciliacionProveedores.mayor | currency:'MXN' }}</b></div>
+            @for (p of d.conciliacionProveedores.partidas; track p.concepto) {<div><span>{{ p.concepto }}</span><b>{{ p.importe | currency:'MXN' }}</b></div>}
+            <footer><span>Diferencia</span><b>{{ d.conciliacionProveedores.diferencia | currency:'MXN' }}</b></footer>
+            @for (c of d.conciliacionProveedores.causas || []; track c) {<p class="dpo-causa">{{ c }}</p>}
+            @if (d.conciliacionProveedores.diferenciaExplicada) {<p class="dpo-causa"><b>La diferencia queda explicada por completo.</b> Corregirla requiere una póliza de ajuste revisada por tu contador (F02).</p>}
+          } @else {<p class="dpo-causa">{{ d.conciliacionProveedores.motivo }}</p>}
+        </article>
+        <article><h2>Inventario contra costo de ventas</h2>
+          <div><span>Inventario inicial (1130)</span><b>{{ d.conciliacionInventario.saldoInicial | currency:'MXN' }}</b></div>
+          <div><span>+ Entradas</span><b>{{ d.conciliacionInventario.entradas | currency:'MXN' }}</b></div>
+          <div><span>− Salidas</span><b>{{ d.conciliacionInventario.salidas | currency:'MXN' }}</b></div>
+          <footer><span>Inventario final</span><b>{{ d.conciliacionInventario.saldoFinal | currency:'MXN' }}</b></footer>
+          <div><span>Costo de ventas (5000)</span><b>{{ d.conciliacionInventario.costoVentas | currency:'MXN' }}</b></div>
+          <div><span>Salidas − costo</span><b>{{ d.conciliacionInventario.diferenciaSalidasCosto | currency:'MXN' }}</b></div>
+        </article>
+      </div>
+    </section>
+    }
+  </mat-tab>
   <mat-tab label="Tesorería y conciliación">
     <section class="tab-content treasury">
       <div class="treasury-toolbar"><div><h2>Cuentas bancarias</h2><p>Operación local: importa CSV o captura movimientos. El sistema no se conecta a ningún banco.</p></div><button mat-stroked-button (click)="bankEditorOpen.set(!bankEditorOpen())"><mat-icon>account_balance</mat-icon>Nueva cuenta</button></div>

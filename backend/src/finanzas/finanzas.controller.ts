@@ -2,6 +2,7 @@ import { BadRequestException, Controller, Get, Post, Body, Res, Req, Query, Para
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { FinanzasService } from './finanzas.service';
+import { DpoContableService } from './dpo-contable.service';
 import { BalanceQueryDto, CloseTreasuryPeriodDto, ConciliarMovimientoDto, ContabilidadQueryDto, CorteFinancieroQueryDto, CreateBankReconciliationDto, CreateCuentaTesoreriaDto, CreateGastoDto, CreateMovimientoTesoreriaDto, CreatePeriodoDto, CreatePolizaDto, CreateTreasuryTransferDto, ExportarContabilidadDto, ImportBankStatementDto, PresupuestoQueryDto, ReviewBankMovementDto, UpsertPresupuestoDto } from './finanzas.dto';
 import type { Response } from 'express';
 import { Roles } from '../auth/roles.decorator';
@@ -12,7 +13,10 @@ import { Permissions } from '../auth/permissions.decorator';
 @Controller('finanzas')
 @Roles(RolUsuario.ADMIN)
 export class FinanzasController {
-  constructor(private readonly finanzasService: FinanzasService) {}
+  constructor(
+    private readonly finanzasService: FinanzasService,
+    private readonly dpo: DpoContableService,
+  ) {}
 
   @Post('gastos')
   async crearGasto(@Body() createGastoDto: CreateGastoDto, @Req() req: { user: JwtPayload }) {
@@ -59,6 +63,12 @@ export class FinanzasController {
   @Get('contabilidad/estado-resultados')
   getEstadoResultados(@Query() query: ContabilidadQueryDto) {
     return this.finanzasService.getEstadoResultados(query);
+  }
+
+  /** F03 · DPO contable con saldo medio de Proveedores y conciliaciones (mayor vs. auxiliar, inventario vs. costo). */
+  @Get('contabilidad/dpo')
+  getDpoContable(@Query() query: ContabilidadQueryDto) {
+    return this.dpo.calcular(query.fechaInicio, query.fechaFin);
   }
 
   @Get('contabilidad/balance-general')

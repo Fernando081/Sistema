@@ -48,3 +48,33 @@ El importador acepta CSV separado por coma, punto y coma o tabulador, con fechas
 Los cargos deben ser negativos cuando se usa la columna `Monto`. En el formato separado, el sistema calcula `Abono - Cargo`. Admite números `1,234.56` y `1.234,56`. Las filas inválidas se reportan sin impedir que se importen las filas correctas.
 
 Los reportes son información operativa. Antes de utilizarlos como libros fiscales definitivos, el contador debe revisar el catálogo, los saldos de apertura y el tratamiento particular de impuestos del negocio.
+
+## F03 — DPO contable (28/10/2026)
+
+**Contabilidad → Días de pago (DPO)** usa el mismo rango de fechas que los demás reportes. API: `GET /finanzas/contabilidad/dpo?fechaInicio&fechaFin`, sólo ADMIN; por defecto, los últimos 90 días. Sólo lee pólizas contabilizadas y no escribe nada.
+
+- **Saldo medio de Proveedores (2100):** promedio de los saldos de cierre de **cada día** del periodo (saldo inicial más movimientos acumulados). No es el promedio simple de inicio y fin.
+- **DPO sobre costo** = saldo medio ÷ costo de ventas (5000) × días.
+- **DPO sobre compras** = saldo medio ÷ compras a crédito × días. Las compras a crédito son los abonos a 2100 de `FacturaProveedor` y `Compra`, con IVA, igual que el saldo de Proveedores.
+- **Conciliación de Proveedores (mayor contra auxiliar):** compara el saldo 2100 con las facturas de proveedor por pagar más las compras anteriores por pagar. Detecta las compras anteriores liquidadas sin pago contable, que son la causa conocida, e indica si la diferencia queda explicada por completo. El auxiliar sólo se conoce al día de hoy, así que esta parte aplica cuando el periodo termina hoy.
+- **Conciliación de inventario:** 1130 inicial + entradas − salidas = final, y las salidas se comparan contra el costo de ventas.
+- **Advertencias:**
+  - mayor y auxiliar no cuadran, así que el DPO no es confiable;
+  - la contabilidad empieza después del inicio del periodo;
+  - Proveedores tuvo saldo deudor algún día;
+  - no hay costo o compras para el denominador;
+  - las salidas de inventario difieren del costo.
+- **Plazo efectivo operativo (Q02):** se muestra sólo como contraste. Mide días entre factura y pago, ponderados por monto, y es otra métrica.
+
+**Hallazgo con los datos actuales:**
+
+- El mayor de Proveedores es 674,091.00 y el auxiliar 78,650.00. La diferencia de 595,441.00 queda explicada por completo por 9 compras anteriores de contado: el modelo anterior (`fn_reconstruir_poliza_compra`) abonó 2100 y nunca registró su pago.
+- Con ese saldo, el DPO sobre costo de los últimos 90 días sale en 9,759 días. La pantalla lo marca como no confiable.
+- La corrección es una póliza de ajuste que debe revisar el contador (F02). F03 no la crea.
+- Inventario contra costo cuadra al centavo en el periodo.
+
+**Límites:**
+
+- El auxiliar no se puede reconstruir a una fecha pasada.
+- No usa saldos medios por proveedor ni pondera por moneda (todo en MXN con el tipo de cambio de cada factura).
+- No incluye gastos (6000) en el denominador.

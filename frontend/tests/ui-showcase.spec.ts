@@ -135,6 +135,9 @@ async function mockLedger(page: Page) {
         { idCuenta: 3, codigo: '201.01', nombre: 'Proveedores', tipo: 'Pasivo', naturaleza: 'A', aceptaMovimientos: true, activa: true, saldoInicial: 380000, debe: 96000, haber: 128800, saldoFinal: 412800 },
         { idCuenta: 4, codigo: '401.01', nombre: 'Ventas de refacciones', tipo: 'Ingreso', naturaleza: 'A', aceptaMovimientos: true, activa: true, saldoInicial: 0, debe: 0, haber: 471300, saldoFinal: 471300 },
       ],
+      'contabilidad/dpo': { periodo: { inicio: '2026-07-31', fin: '2026-10-28', dias: 90 }, proveedores: { saldoInicial: 380000, saldoFinal: 412800, saldoMedio: 396500, compras: 812000, pagos: 779200, otrosAbonos: 0 }, costoVentas: 318420.4, dpoCosto: 112.1, dpoCompras: 43.9,
+        conciliacionProveedores: { aplica: true, motivo: null, mayor: 412800, auxiliar: 412800, diferencia: 0, partidas: [{ concepto: 'Facturas de proveedor por pagar', importe: 412800 }, { concepto: 'Compras anteriores por pagar', importe: 0 }], diferenciaExplicada: false, causas: [] },
+        conciliacionInventario: { saldoInicial: 760000, entradas: 700000, salidas: 318420.4, saldoFinal: 1141579.6, costoVentas: 318420.4, diferenciaSalidasCosto: 0 }, movimientos: [], plazoEfectivoOperativo: 38.5, advertencias: [] },
       'contabilidad/flujo-efectivo': { fechaInicio: '', fechaFin: '', saldoInicial: 100000, ingresos: 238700.5, egresos: 177950, flujoNeto: 60750.5, saldoFinal: 160750.5, detalle: [
         { origen: 'Ventas', ingresos: 224300.5, egresos: 0, neto: 224300.5 }, { origen: 'Pagos a proveedores', ingresos: 0, egresos: 132000, neto: -132000 }, { origen: 'Gastos', ingresos: 14400, egresos: 45950, neto: -31550 },
       ] },

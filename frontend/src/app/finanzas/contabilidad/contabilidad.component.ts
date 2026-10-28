@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { forkJoin } from 'rxjs';
-import { BalanceGeneral, BalanzaCuenta, CandidatoConciliacion, CentroCosto, CierreTesoreria, ConciliacionTesoreria, CuentaContable, CuentaTesoreria, EstadoResultados, FinanzasService, FlujoEfectivo, ImportacionTesoreria, MovimientoTesoreria, PeriodoContable, PolizaContable, PresupuestoContable } from '../finanzas.service';
+import { BalanceGeneral, BalanzaCuenta, DpoContable, CandidatoConciliacion, CentroCosto, CierreTesoreria, ConciliacionTesoreria, CuentaContable, CuentaTesoreria, EstadoResultados, FinanzasService, FlujoEfectivo, ImportacionTesoreria, MovimientoTesoreria, PeriodoContable, PolizaContable, PresupuestoContable } from '../finanzas.service';
 import { NotificationService } from '../../shared/notification.service';
 import { ConfirmService } from '../../shared/confirm.service';
 import { downloadDocument } from '../../shared/document-download';
@@ -38,6 +38,7 @@ export class ContabilidadComponent {
   readonly balanza = signal<BalanzaCuenta[]>([]);
   readonly resultados = signal<EstadoResultados | null>(null);
   readonly balance = signal<BalanceGeneral | null>(null);
+  readonly dpo = signal<DpoContable | null>(null);
   readonly totalPolizas = signal(0);
   readonly cuentasTesoreria = signal<CuentaTesoreria[]>([]);
   readonly movimientosTesoreria = signal<MovimientoTesoreria[]>([]);
@@ -115,6 +116,7 @@ export class ContabilidadComponent {
       cuentas: this.api.getCuentasContables(), polizas: this.api.getPolizas(fechaInicio, fechaFin),
       balanza: this.api.getBalanza(fechaInicio, fechaFin), resultados: this.api.getEstadoResultados(fechaInicio, fechaFin),
       balance: this.api.getBalanceGeneral(fechaFin),
+      dpo: this.api.getDpoContable(fechaInicio, fechaFin),
       cuentasTesoreria: this.api.getCuentasTesoreria(), movimientosTesoreria: this.api.getMovimientosTesoreria(),importacionesTesoreria:this.api.getImportacionesTesoreria(),
       conciliacionesTesoreria:this.api.getConciliacionesTesoreria(),cierresTesoreria:this.api.getCierresTesoreria(),
       periodos:this.api.getPeriodos(),centrosCosto:this.api.getCentrosCosto(),
@@ -124,7 +126,7 @@ export class ContabilidadComponent {
       next: data => {
         this.cuentas.set(data.cuentas.filter(c => c.activa && c.aceptaMovimientos));
         this.polizas.set(data.polizas.data); this.totalPolizas.set(data.polizas.total);
-        this.balanza.set(data.balanza); this.resultados.set(data.resultados); this.balance.set(data.balance);
+        this.balanza.set(data.balanza); this.resultados.set(data.resultados); this.balance.set(data.balance); this.dpo.set(data.dpo);
         this.cuentasTesoreria.set(data.cuentasTesoreria); this.movimientosTesoreria.set(data.movimientosTesoreria);this.importacionesTesoreria.set(data.importacionesTesoreria);
         this.conciliacionesTesoreria.set(data.conciliacionesTesoreria);this.cierresTesoreria.set(data.cierresTesoreria);
         if(data.cuentasTesoreria.length){const id=data.cuentasTesoreria[0].idCuenta;if(!this.movimientoForm.controls.idCuenta.value)this.movimientoForm.controls.idCuenta.setValue(id);if(!this.importacionForm.controls.idCuenta.value)this.importacionForm.controls.idCuenta.setValue(id);if(!this.cierreTesoreriaForm.controls.idCuenta.value)this.cierreTesoreriaForm.controls.idCuenta.setValue(id)}

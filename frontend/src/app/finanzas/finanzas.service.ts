@@ -72,6 +72,21 @@ export interface EstadoResultados {
   detalle: Array<{ tipo: string; codigo: string; nombre: string; saldo: number }>;
 }
 
+/** F03 · DPO contable desde el mayor, con conciliaciones (no confundir con el plazo efectivo operativo de Q02). */
+export interface DpoContable {
+  periodo: { inicio: string; fin: string; dias: number };
+  proveedores: { saldoInicial: number; saldoFinal: number; saldoMedio: number; compras: number; pagos: number; otrosAbonos: number };
+  costoVentas: number;
+  dpoCosto: number | null;
+  dpoCompras: number | null;
+  conciliacionProveedores: { aplica: boolean; motivo: string | null; mayor: number; auxiliar: number | null; diferencia: number;
+    partidas: Array<{ concepto: string; importe: number }>; diferenciaExplicada?: boolean; causas?: string[] };
+  conciliacionInventario: { saldoInicial: number; entradas: number; salidas: number; saldoFinal: number; costoVentas: number; diferenciaSalidasCosto: number };
+  movimientos: Array<{ cuenta: string; origen: string; debe: number; haber: number }>;
+  plazoEfectivoOperativo: number | null;
+  advertencias: string[];
+}
+
 export interface BalanceGeneral {
   fecha: string;
   activos: number;
@@ -141,6 +156,10 @@ export class FinanzasService {
 
   getEstadoResultados(fechaInicio: string, fechaFin: string) {
     return this.http.get<EstadoResultados>(`${this.apiUrl}/contabilidad/estado-resultados`, { params: { fechaInicio, fechaFin } });
+  }
+
+  getDpoContable(fechaInicio: string, fechaFin: string) {
+    return this.http.get<DpoContable>(`${this.apiUrl}/contabilidad/dpo`, { params: { fechaInicio, fechaFin } });
   }
 
   getBalanceGeneral(fecha: string) {
