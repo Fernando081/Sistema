@@ -51,6 +51,11 @@ export class CuentasProveedorService {
   ): ReturnType<PagosProveedorService['pay']> {
     return this.pagos.pay(...args);
   }
+  payGrouped(
+    ...args: Parameters<PagosProveedorService['payGrouped']>
+  ): ReturnType<PagosProveedorService['payGrouped']> {
+    return this.pagos.payGrouped(...args);
+  }
   reversePayment(
     ...args: Parameters<PagosProveedorService['reversePayment']>
   ): ReturnType<PagosProveedorService['reversePayment']> {

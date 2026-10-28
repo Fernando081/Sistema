@@ -12,6 +12,7 @@ import { ConsultasVentaService } from './consultas-venta.service';
 import { DocumentosVentaService } from './documentos-venta.service';
 import { ReversionVentaService } from './reversion-venta.service';
 import { FacturaGlobalService } from './factura-global.service';
+import { DescargasVentaService } from './descargas-venta.service';
 import { SalidaDocumentosService } from './salida-documentos.service';
 import { SalidaDocumentosController } from './salida-documentos.controller';
 @Module({
@@ -24,6 +25,7 @@ import { SalidaDocumentosController } from './salida-documentos.controller';
     DocumentosVentaService,
     ReversionVentaService,
     FacturaGlobalService,
+    DescargasVentaService,
     SalidaDocumentosService,
   ],
   controllers: [VentaController, FacturaController, SalidaDocumentosController],

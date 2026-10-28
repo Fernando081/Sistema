@@ -39,3 +39,9 @@ th.amount{text-align:right!important}th.amount .mat-sort-header-container{justif
 .list-table.stack td.mat-mdc-cell[data-label]::before{content:attr(data-label);color:var(--c-text-3);font-size:.66rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
 .list-table.stack td.stack-wide{grid-column:1/-1}.list-table.stack td.stack-wide .row-actions{justify-content:flex-start;margin-left:-.5rem}
 .list-table.stack .party,.list-table.stack .truncate{max-width:none}}
+/* U02.3 · Barra de acciones en lote (aparece al seleccionar filas) */
+.list-table .select-cell{width:44px;padding-right:0}
+.bulk-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin:0 1.25rem .75rem;padding:.55rem .75rem;border:1px solid var(--c-brass-strong);border-radius:var(--radius-md);background:var(--c-brass-soft);color:var(--c-text);font-size:.85rem}
+.bulk-bar strong{font-variant-numeric:tabular-nums}
+.bulk-bar .spacer{flex:1}
+.bulk-bar button{height:34px}

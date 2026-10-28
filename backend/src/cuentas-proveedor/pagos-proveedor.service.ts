@@ -9,9 +9,11 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, EntityManager } from 'typeorm';
 import { queryRows } from '../common/database/typed-query';
 import {
+  PayGroupedSupplierInvoicesDto,
   PaySupplierInvoiceDto,
   ScheduleSupplierPaymentDto,
 } from './cuentas-proveedor.dto';
+import { randomUUID } from 'node:crypto';
 import { IdRow, InvoiceRow } from './cuentas-proveedor.types';
 @Injectable()
 export class PagosProveedorService {
@@ -78,6 +80,50 @@ export class PagosProveedorService {
           notas: dto.notas || null,
         },
         () => this.payIn(manager, id, dto, idUser),
+      ),
+    );
+  }
+
+  /**
+   * U02.3 · Pago agrupado: un solo movimiento del usuario que genera un pago (con su póliza y el
+   * traspaso de IVA) por factura, todo en una transacción e idempotente por requestId.
+   */
+  payGrouped(dto: PayGroupedSupplierInvoicesDto, idUser?: number) {
+    const ids = [...new Set(dto.idsFacturas)].sort((a, b) => a - b);
+    return this.dataSource.transaction(async (manager) =>
+      supplierRequest(
+        manager,
+        dto.requestId,
+        'supplier-payment-batch',
+        { idsFacturas: ids, fecha: dto.fecha, monto: dto.monto ?? null, formaPago: dto.formaPago, referencia: dto.referencia || null, notas: dto.notas || null },
+        async () => {
+          if (ids.length !== dto.idsFacturas.length) throw new BadRequestException('Hay facturas repetidas en el pago');
+          const invoices = await queryRows<{ id: number; idProveedor: number; saldo: string | number; estado: string; moneda: string; vence: string; folio: string }>(
+            manager,
+            `SELECT id_factura_proveedor AS id, id_proveedor AS "idProveedor", saldo_pendiente AS saldo, estado, moneda,
+                    fecha_vencimiento::text AS vence, coalesce(serie || '-', '') || folio AS folio
+               FROM factura_proveedor WHERE id_factura_proveedor = ANY($1::bigint[]) ORDER BY id_factura_proveedor FOR UPDATE`,
+            [ids],
+          );
+          if (invoices.length !== ids.length) throw new NotFoundException('Una o más facturas ya no existen');
+          if (new Set(invoices.map((i) => i.idProveedor)).size > 1) throw new BadRequestException('Todas las facturas deben ser del mismo proveedor');
+          if (new Set(invoices.map((i) => i.moneda)).size > 1) throw new BadRequestException('Todas las facturas deben estar en la misma moneda');
+          const closed = invoices.filter((i) => !['Aprobada', 'Parcialmente pagada'].includes(i.estado));
+          if (closed.length) throw new ConflictException(`No admiten pagos: ${closed.map((i) => i.folio).join(', ')}`);
+          const plan = distributeGroupedPayment(invoices.map((i) => ({ id: i.id, saldo: Number(i.saldo), vence: i.vence })), dto.monto);
+          const reference = dto.referencia || `Pago agrupado ${dto.requestId.slice(0, 8)}`;
+          const pagos: Array<{ idFacturaProveedor: number; folio: string; idPago: number; monto: number; saldo: number }> = [];
+          for (const step of plan) {
+            const invoice = invoices.find((i) => i.id === step.id)!;
+            const result = await this.payIn(manager, step.id, {
+              requestId: randomUUID(), fecha: dto.fecha, monto: step.monto, formaPago: dto.formaPago,
+              referencia: reference, notas: [`Pago agrupado de ${plan.length} facturas`, dto.notas].filter(Boolean).join(' · '),
+            }, idUser);
+            pagos.push({ idFacturaProveedor: step.id, folio: invoice.folio, idPago: result.idPago, monto: step.monto, saldo: result.saldo });
+          }
+          const total = this.money(pagos.reduce((sum, p) => sum + p.monto, 0));
+          return { message: `Pago registrado en ${pagos.length} facturas por ${total.toFixed(2)}`, total, referencia: reference, pagos };
+        },
       ),
     );
   }
@@ -261,4 +307,25 @@ export class PagosProveedorService {
   private money(value: number) {
     return Math.round((value + Number.EPSILON) * 100) / 100;
   }
+}
+
+/** Reparte un monto por vencimiento más próximo (y folio interno); sin monto, liquida cada saldo completo. */
+export function distributeGroupedPayment(
+  invoices: Array<{ id: number; saldo: number; vence: string }>,
+  monto?: number,
+): Array<{ id: number; monto: number }> {
+  const money = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
+  const ordered = [...invoices].sort((a, b) => a.vence.localeCompare(b.vence) || a.id - b.id);
+  const total = money(ordered.reduce((sum, i) => sum + i.saldo, 0));
+  if (monto === undefined) return ordered.map((i) => ({ id: i.id, monto: money(i.saldo) }));
+  if (money(monto) > total) throw new BadRequestException(`El pago supera la suma de saldos (${total.toFixed(2)})`);
+  let restante = money(monto);
+  const plan: Array<{ id: number; monto: number }> = [];
+  for (const invoice of ordered) {
+    if (restante <= 0) break;
+    const parte = money(Math.min(restante, invoice.saldo));
+    if (parte > 0) plan.push({ id: invoice.id, monto: parte });
+    restante = money(restante - parte);
+  }
+  return plan;
 }

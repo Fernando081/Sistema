@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,6 +16,9 @@ import { SessionIdentity } from '../auth/auth.interface';
 import { ThemeService } from '../services/theme.service';
 import { CrmService, GlobalSearchItem, GlobalSearchResult } from '../services/crm.service';
 import { AppNotification, NotificationService } from '../services/notification.service';
+import { APP_PAGES, AppPage, pageAllowed, pageForPath, searchPages, sectionForPath } from './app-pages';
+
+const RECENT_PAGES_KEY = 'erp.recent-pages';
 
 @Component({
   selector: 'app-authenticated-shell',
@@ -44,12 +47,18 @@ export class AuthenticatedShellComponent {
   private readonly notificationsApi = inject(NotificationService);
   @ViewChild('sidenav') sidenav?: MatSidenav;
   @ViewChild('globalSearchInput') globalSearchInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('globalSearchForm') globalSearchForm?: ElementRef<HTMLFormElement>;
+  private readonly childRoutes = inject(ActivatedRoute).routeConfig?.children ?? [];
 
   user: SessionIdentity | null = null;
   readonly searchControl = new FormControl('', { nonNullable: true });
   readonly searchResults = signal<GlobalSearchResult | null>(null);
   readonly searching = signal(false);
   readonly searchOpen = signal(false);
+  /** U02.1 · Pantallas que coinciden con lo escrito y recientes (sólo las que el rol puede abrir). */
+  readonly screenMatches = signal<AppPage[]>([]);
+  readonly recentPages = signal<AppPage[]>([]);
+  readonly searchTerm = signal('');
   readonly notificationsOpen = signal(false);
   readonly notifications = signal<AppNotification[]>([]);
   readonly unreadNotifications = signal(0);
@@ -66,13 +75,21 @@ export class AuthenticatedShellComponent {
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.user = this.authService.getSessionIdentity();
       this.currentPage.set(this.pageForUrl(this.router.url));
+      this.rememberPage(this.router.url);
       if (this.sidenav?.mode === 'over') this.sidenav.close();
     });
     this.user = this.authService.getSessionIdentity();
     this.currentPage.set(this.pageForUrl(this.router.url));
+    this.rememberPage(this.router.url);
+    this.searchControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
+      const term = value.trim();
+      this.searchTerm.set(term);
+      this.screenMatches.set(searchPages(term, this.allowedPages()));
+      if (term) this.searchOpen.set(true);
+    });
     this.searchControl.valueChanges.pipe(
       map(value => value.trim()), debounceTime(250), distinctUntilChanged(),
-      tap(value => { this.searchOpen.set(value.length >= 2); if (value.length < 2) this.searchResults.set(null); }),
+      tap(value => { if (value.length < 2) this.searchResults.set(null); }),
       filter(value => value.length >= 2), tap(() => this.searching.set(true)),
       switchMap(value => this.crm.buscarGlobal(value).pipe(catchError(() => of({ productos: [], clientes: [], unidades: [] })))),
       takeUntilDestroyed(this.destroyRef),
@@ -103,7 +120,67 @@ export class AuthenticatedShellComponent {
     this.searchOpen.set(false);
   }
 
-  closeSearchSoon() { window.setTimeout(() => this.searchOpen.set(false), 160); }
+  /** Abre el panel al enfocar: recientes con el campo vacío, coincidencias si ya hay texto. */
+  openSearch() {
+    this.recentPages.set(this.readRecent());
+    this.searchOpen.set(this.searchTerm().length > 0 || this.recentPages().length > 0);
+  }
+
+  /** Cierra sólo si el foco salió de todo el buscador (las flechas mueven el foco a los resultados). */
+  closeSearchSoon() {
+    window.setTimeout(() => {
+      if (!this.globalSearchForm?.nativeElement.contains(document.activeElement)) this.searchOpen.set(false);
+    }, 160);
+  }
+
+  goToPage(page: AppPage) {
+    this.router.navigateByUrl(page.route);
+    this.searchOpen.set(false);
+    this.searchControl.setValue('');
+  }
+
+  /** Flechas arriba/abajo recorren los resultados; Escape cierra y regresa al campo. */
+  searchKeydown(event: KeyboardEvent) {
+    const form = this.globalSearchForm?.nativeElement;
+    if (!form) return;
+    const options = Array.from(form.querySelectorAll<HTMLButtonElement>('.search-results button'));
+    if (event.key === 'Escape') {
+      this.searchOpen.set(false);
+      this.globalSearchInput?.nativeElement.focus();
+      return;
+    }
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+    if (!this.searchOpen()) this.openSearch();
+    if (!options.length) return;
+    event.preventDefault();
+    const index = options.indexOf(document.activeElement as HTMLButtonElement);
+    if (event.key === 'ArrowUp' && index <= 0) { this.globalSearchInput?.nativeElement.focus(); return; }
+    const next = event.key === 'ArrowDown' ? Math.min(options.length - 1, index + 1) : index - 1;
+    options[next]?.focus();
+  }
+
+  pageSection(page: AppPage) { return sectionForPath(page.route); }
+
+  private allowedPages() { return APP_PAGES.filter(page => pageAllowed(page, this.user?.role, this.childRoutes)); }
+
+  private readRecent(): AppPage[] {
+    try {
+      const routes = JSON.parse(localStorage.getItem(RECENT_PAGES_KEY) || '[]') as unknown;
+      const allowed = this.allowedPages();
+      return Array.isArray(routes) ? routes.map(r => allowed.find(p => p.route === r)).filter((p): p is AppPage => !!p).slice(0, 5) : [];
+    } catch { return []; }
+  }
+
+  /** Recientes por navegador (conveniencia local); si el almacenamiento no está disponible, simplemente no se muestran. */
+  private rememberPage(url: string) {
+    const page = pageForPath(url.split('?')[0]);
+    if (!page) return;
+    try {
+      const previous = JSON.parse(localStorage.getItem(RECENT_PAGES_KEY) || '[]') as unknown;
+      const list = Array.isArray(previous) ? previous.filter((r): r is string => typeof r === 'string' && r !== page.route) : [];
+      localStorage.setItem(RECENT_PAGES_KEY, JSON.stringify([page.route, ...list].slice(0, 8)));
+    } catch { /* sin almacenamiento local */ }
+  }
 
   @HostListener('document:keydown', ['$event'])
   focusGlobalSearch(event: KeyboardEvent) {
@@ -116,60 +193,9 @@ export class AuthenticatedShellComponent {
 
   private pageForUrl(url: string) {
     const path = url.split('?')[0];
-    const pages: Array<[string, string, string]> = [
-      ['/dashboard', 'Centro de operación', 'Prioridades, ventas y salud del negocio'],
-      ['/venta', 'Nueva venta', 'Mostrador, cliente y facturación'],
-      ['/pedidos', 'Pedidos y backorders', 'Apartados, surtido y mercancía pendiente'],
-      ['/comercial', 'Política comercial', 'Precios, márgenes, crédito y autorizaciones'],
-      ['/cotizacion/nueva', 'Nueva cotización', 'Prepara una propuesta para tu cliente'],
-      ['/cotizacion/historial', 'Cotizaciones', 'Seguimiento y conversión de propuestas'],
-      ['/cotizacion', 'Revisiones de cotización', 'Versiones, respuesta del cliente y conversión'],
-      ['/facturas/global', 'Factura global', 'Concentra las ventas de mostrador'],
-      ['/facturas/correos', 'Salida de documentos', 'Preparación y simulación local de envíos'],
-      ['/facturas', 'Facturas', 'Historial, documentos y devoluciones'],
-      ['/producto', 'Productos e inventario', 'Existencias, aplicaciones y números de parte'],
-      ['/catalogo-web', 'Catálogo web', 'Revisión de calidad y preparación de fichas comerciales'],
-      ['/almacen/movil', 'Escaneo de almacén', 'Verificación de picking por ubicación y producto'],
-      ['/almacen', 'Almacén profesional', 'Ubicaciones, transferencias, conteos, lotes y series'],
-      ['/operaciones/smart-restock', 'Reabastecimiento', 'Sugerencias basadas en demanda y existencias'],
-      ['/abastecimiento', 'Abastecimiento', 'Solicitudes, órdenes y recepciones de mercancía'],
-      ['/compra/historial', 'Compras', 'Historial de entradas de mercancía'],
-      ['/compra', 'Nueva compra', 'Registra mercancía, factura del proveedor y pago en un solo paso'],
-      ['/crm/campanas', 'Campañas', 'Autorizaciones, bajas y destinatarios; el envío permanece deshabilitado'],
-      ['/crm/secuencias', 'Secuencias de seguimiento', 'Un compromiso a la vez para cada cliente'],
-      ['/crm/reglas-secuencias', 'Reglas de seguimiento', 'Altas, cambios de etapa y asignaciones que inician un seguimiento'],
-      ['/crm/reportes-programados', 'Reportes programados', 'Resumen interno de compromisos pendientes'],
-      ['/crm/unidades', 'Expediente de unidad', 'Lecturas, evidencias y mantenimiento'],
-      ['/crm/bandeja', 'Bandeja comercial', 'Compromisos pendientes para continuar en su registro de origen'],
-      ['/crm', 'Clientes y CRM', 'Oportunidades, agenda, unidades y demanda'],
-      ['/cliente', 'Clientes', 'Información fiscal y comercial'],
-      ['/proveedor', 'Proveedores', 'Condiciones y datos de compra'],
-      ['/garantias', 'Garantías', 'Seguimiento de reclamaciones'],
-      ['/cobranza', 'Cobranza', 'Pagos y complementos de recepción'],
-      ['/cuentas-por-pagar', 'Cuentas por pagar', 'Compromisos con proveedores'],
-      ['/caja', 'Caja', 'Apertura, movimientos y cierre'],
-      ['/gastos', 'Saldos y gastos', 'Egresos y flujo operativo'],
-      ['/contabilidad', 'Contabilidad', 'Pólizas, balanza y estados financieros'],
-      ['/reportes/utilidad', 'Utilidad', 'Rentabilidad de ventas'],
-      ['/reportes/auditoria', 'Auditoría', 'Trazabilidad de cambios'],
-      ['/usuarios', 'Usuarios y acceso', 'Roles y sesiones'],
-      ['/perfil', 'Mi cuenta', 'Seguridad y preferencias'],
-    ];
-    const match = pages.find(([route]) => path === route) || pages.find(([route]) => path.startsWith(route + '/'));
-    const section = this.sectionForPath(path);
-    return match ? { section, title: match[1], description: match[2] } : { section, title: 'Refacciones y Tractorepuestos Tampico', description: 'Sistema ERP + CRM' };
-  }
-
-  // Misma agrupación que la barra lateral; sustituye al nombre de la empresa repetido en cada página.
-  private sectionForPath(path: string): string {
-    const groups: Array<[string, string[]]> = [
-      ['Ventas', ['/venta', '/pedidos', '/facturas', '/cotizacion', '/comisiones', '/comercial']],
-      ['Inventario y compras', ['/producto', '/compra', '/operaciones', '/abastecimiento', '/almacen', '/catalogo-web']],
-      ['Clientes y CRM', ['/crm', '/cliente', '/garantias', '/proveedor']],
-      ['Finanzas y análisis', ['/caja', '/gastos', '/contabilidad', '/cobranza', '/cuentas-por-pagar', '/reportes']],
-      ['Cuenta y acceso', ['/perfil', '/usuarios']],
-    ];
-    return groups.find(([, prefixes]) => prefixes.some(prefix => path === prefix || path.startsWith(prefix + '/')))?.[0] ?? 'Centro de operación';
+    const match = pageForPath(path);
+    const section = sectionForPath(path);
+    return match ? { section, title: match.title, description: match.description } : { section, title: 'Refacciones y Tractorepuestos Tampico', description: 'Sistema ERP + CRM' };
   }
 
   initials(): string {

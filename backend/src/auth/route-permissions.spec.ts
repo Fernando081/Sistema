@@ -24,6 +24,8 @@ const OPEN_WRITE_ROUTES = new Set([
   'POST /auth/mfa/setup', 'POST /auth/mfa/confirm', 'POST /auth/mfa/disable',
   'POST /auth/password-recovery/setup', 'POST /auth/password-recovery/confirm', 'POST /auth/password-recovery/revoke',
   'POST /notifications/:id/read', 'POST /notifications/read-all',
+  // U02.2: vistas guardadas propias (sólo filtros; el servicio filtra por req.user y no revela vistas ajenas).
+  'POST /vistas-guardadas', 'DELETE /vistas-guardadas/:id',
   // Maestros compartidos del personal; borrar cliente/proveedor sigue siendo ADMIN.
   'POST /cliente', 'PUT /cliente/:id', 'POST /cliente/:id/contactos', 'DELETE /cliente/:id/contactos/:idContacto',
   'POST /proveedores', 'PUT /proveedores/:id', 'POST /upload',

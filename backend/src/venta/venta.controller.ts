@@ -10,10 +10,14 @@ import { RolUsuario } from '../common/enums/app.enums';
 import { JwtPayload } from '../auth/auth.types';
 import { Permissions } from '../auth/permissions.decorator';
 import { CancelFiscalDocumentDto } from '../fiscal/fiscal.dto';
+import { DescargasVentaService, parseIdsLote } from './descargas-venta.service';
 
 @Controller('venta')
 export class VentaController {
-  constructor(private readonly ventaService: VentaService) {}
+  constructor(
+    private readonly ventaService: VentaService,
+    private readonly descargas: DescargasVentaService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -48,6 +52,20 @@ export class VentaController {
   @Get(':id/detalle')
   findDetalle(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.findDetalle(id);
+  }
+
+  /** U02.3 · PDF + XML timbrado de varias facturas en un ZIP (mismo acceso que la descarga individual). */
+  @UseGuards(JwtAuthGuard)
+  @Get('documentos-lote')
+  async documentosLote(@Query('ids') ids: string | undefined, @Res() res: Response) {
+    const { zip } = await this.descargas.zipFacturas(parseIdsLote(ids));
+    res.set({
+      'Content-Type': 'application/zip',
+      'Content-Disposition': 'attachment; filename=facturas.zip',
+      'Content-Length': zip.length,
+      'Cache-Control': 'private, no-store',
+    });
+    res.end(zip);
   }
 
   @Get(':id/pdf')

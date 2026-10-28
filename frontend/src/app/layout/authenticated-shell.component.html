@@ -68,18 +68,21 @@
   <mat-sidenav-content class="stage">
     <header class="topbar">
       <button mat-icon-button class="menu-toggle" (click)="sidenav.toggle()" aria-label="Abrir menú"><mat-icon>menu</mat-icon></button>
-      <form class="global-search" (ngSubmit)="submitSearch()" role="search">
+      <form #globalSearchForm class="global-search" (ngSubmit)="submitSearch()" (focusout)="closeSearchSoon()" (keydown)="searchKeydown($event)" role="search">
         <mat-icon aria-hidden="true">search</mat-icon>
-        <input #globalSearchInput type="search" [formControl]="searchControl" (focus)="searchOpen.set(searchControl.value.trim().length >= 2)" (blur)="closeSearchSoon()" placeholder="Buscar número de parte, aplicación, cliente, VIN o ESN" aria-label="Búsqueda global">
+        <input #globalSearchInput type="search" [formControl]="searchControl" (focus)="openSearch()" placeholder="Buscar pantalla, número de parte, aplicación, cliente, VIN o ESN" aria-label="Búsqueda global y navegación rápida">
         <kbd class="search-shortcut" aria-hidden="true">Ctrl K</kbd>
         @if (searchOpen()) {
           <div class="search-results" role="listbox" aria-label="Resultados de búsqueda">
+            @if (!searchTerm() && recentPages().length) {<h4>Recientes</h4>@for (page of recentPages(); track page.route) {<button type="button" (mousedown)="$event.preventDefault()" (click)="goToPage(page)"><mat-icon>{{ page.icon }}</mat-icon><span><strong>{{ page.title }}</strong><small>{{ pageSection(page) }}</small></span></button>}}
+            @if (screenMatches().length) {<h4>Pantallas</h4>@for (page of screenMatches(); track page.route) {<button type="button" (mousedown)="$event.preventDefault()" (click)="goToPage(page)"><mat-icon>{{ page.icon }}</mat-icon><span><strong>{{ page.title }}</strong><small>{{ pageSection(page) }} · {{ page.description }}</small></span></button>}}
+            @if (searchTerm().length === 1 && !screenMatches().length) {<p class="search-status">Escribe al menos 2 caracteres para buscar productos, clientes y unidades.</p>}
             @if (searching()) {<p class="search-status">Buscando…</p>}
             @if (searchResults(); as result) {
               @if (result.productos.length) {<h4>Productos</h4>@for (item of result.productos; track item.id) {<button type="button" (mousedown)="$event.preventDefault()" (click)="selectResult('producto', item)"><mat-icon>inventory_2</mat-icon><span><strong>{{ item.codigo }} · {{ item.titulo }}</strong><small>{{ item.subtitulo }} · Existencia {{ item.existencia }}</small></span></button>}}
               @if (result.clientes.length) {<h4>Clientes</h4>@for (item of result.clientes; track item.id) {<button type="button" (mousedown)="$event.preventDefault()" (click)="selectResult('cliente', item)"><mat-icon>person</mat-icon><span><strong>{{ item.titulo }}</strong><small>{{ item.codigo }}</small></span></button>}}
               @if (result.unidades.length) {<h4>Unidades</h4>@for (item of result.unidades; track item.id) {<button type="button" (mousedown)="$event.preventDefault()" (click)="selectResult('unidad', item)"><mat-icon>local_shipping</mat-icon><span><strong>{{ item.titulo }}</strong><small>{{ item.codigo }} · {{ item.cliente }}</small></span></button>}}
-              @if (!searching() && !result.productos.length && !result.clientes.length && !result.unidades.length) {<div class="erp-empty-state compact"><mat-icon>search_off</mat-icon><strong>Sin coincidencias</strong><span>Prueba con otro número, nombre o aplicación.</span></div>}
+              @if (!searching() && !screenMatches().length && !result.productos.length && !result.clientes.length && !result.unidades.length) {<div class="erp-empty-state compact"><mat-icon>search_off</mat-icon><strong>Sin coincidencias</strong><span>Prueba con otro número, nombre o aplicación.</span></div>}
             }
           </div>
         }

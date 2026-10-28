@@ -27,17 +27,21 @@ import { ProductoCotizacionesDialogComponent } from './producto-cotizaciones-dia
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { localDate } from '../../shared/document-download';
 import { ConfirmService } from '../../shared/confirm.service';
+import { SavedViewsComponent } from '../../shared/saved-views.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { BulkSelection } from '../../shared/bulk-selection';
+import { ProductoLoteDialogComponent, ProductoLoteDialogData } from './producto-lote-dialog.component';
 
 @Component({
   selector: 'app-producto-list',
   standalone: true,
-  imports: [
+  imports: [SavedViewsComponent, 
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
     MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,
     MatProgressSpinnerModule, CurrencyPipe,
     MatTabsModule,
-    CategoriaListComponent, RouterLink
+    CategoriaListComponent, RouterLink, MatCheckboxModule
   ],
   templateUrl: './producto-list.component.html',
   styleUrls: ['../../shared/list-page.css', './producto-list.component.css']
@@ -48,7 +52,9 @@ export class ProductoListComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   
-  displayedColumns: string[] = ['imagen_url', 'codigo', 'descripcion', 'categoriaNombre', 'marca', 'ubicacion', 'precioUnitario','existencia', 'acciones'];
+  /** U02.3 · Productos marcados para cambiar precio o categoría en lote (sólo administradores). */
+  readonly seleccion = new BulkSelection<Producto>((row) => row.idProducto, 200);
+  displayedColumns: string[] = [...(this.canEdit ? ['seleccion'] : []), 'imagen_url', 'codigo', 'descripcion', 'categoriaNombre', 'marca', 'ubicacion', 'precioUnitario','existencia', 'acciones'];
   readonly directory: RemoteDirectory<Producto>;
   get dataSource() { return this.directory.dataSource; }
   get isLoading() { return this.directory.loading(); }
@@ -71,6 +77,18 @@ export class ProductoListComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void { this.directory.dispose(); }
   cargarProductos(): void { this.directory.reload(); }
+
+  cambiarEnLote(accion: ProductoLoteDialogData['accion']): void {
+    const ids = this.seleccion.ids();
+    if (!ids.length) return;
+    this.dialog.open(ProductoLoteDialogComponent, { width: '760px', maxWidth: '96vw', data: { accion, ids } })
+      .afterClosed().subscribe((result) => {
+        if (!result) return;
+        this.mostrarNotificacion(result.message);
+        this.seleccion.clear();
+        this.directory.reload();
+      });
+  }
 
   verKardex(producto: Producto) {
     this.dialog.open(ProductoKardexComponent, {

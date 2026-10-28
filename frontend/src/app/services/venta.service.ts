@@ -40,6 +40,11 @@ export class VentaService {
   }
 
 
+  /** U02.3 · ZIP con PDF y XML timbrado de varias facturas (máximo 100). */
+  descargarLote(ids: number[]): Observable<Blob> {
+    return this.http.get(`${API_URL}/documentos-lote`, { params: { ids: ids.join(',') }, responseType: 'blob' });
+  }
+
   descargarPdf(idFactura: number): Observable<Blob> {
     return this.http.get(`${API_URL}/${idFactura}/pdf`, { responseType: 'blob' });
   }

@@ -7,6 +7,24 @@ import { Producto, CreateProductoDto, UpdateProductoDto, KardexItem, SmartRestoc
 
 import { ProductoDb, ProductoPagina, HistorialPrecio, ProductoEquivalente, NumeroParte, NumeroParteInput, AplicacionProducto, AplicacionInput, CotizacionProveedor, CotizacionProveedorInput, MensajeProducto } from './producto-api.types';
 
+/** U02.3 · Cambio en lote de precio (porcentaje) o categoría. */
+export type ProductoLoteRequest =
+  | { ids: number[]; accion: 'precio'; porcentaje: number; redondeo: 'centavos' | 'pesos' }
+  | { ids: number[]; accion: 'categoria'; idCategoria: number };
+
+export interface ProductoLoteCambio {
+  idProducto: number; codigo: string; descripcion: string;
+  precioActual: number; precioNuevo: number;
+  idCategoriaActual: number | null; categoriaActual: string | null;
+  idCategoriaNueva: number | null; categoriaNueva: string | null;
+  cambia: boolean;
+}
+
+export interface ProductoLoteVista {
+  cambios: ProductoLoteCambio[];
+  resumen: { productos: number; conCambio: number; totalActual: number; totalNuevo: number };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -167,5 +185,13 @@ export class ProductoService {
 
   ajustarInventario(idProducto: number, cantidad: number, tipo: 'ENTRADA POR AJUSTE' | 'SALIDA POR MERMA/AJUSTE', motivo: string): Observable<{ message: string; existencia: number }> {
     return this.http.post<{ message: string; existencia: number }>(`${this.apiUrl}/${idProducto}/ajustar-inventario`, { cantidad, tipo, motivo });
+  }
+
+  vistaPreviaLote(request: ProductoLoteRequest): Observable<ProductoLoteVista> {
+    return this.http.post<ProductoLoteVista>(`${this.apiUrl}/lote/vista-previa`, request);
+  }
+
+  aplicarLote(request: ProductoLoteRequest & { requestId: string; esperados: Array<{ idProducto: number; precio: number; idCategoria: number | null }> }) {
+    return this.http.post<{ message: string; actualizados: number; sinCambio: number }>(`${this.apiUrl}/lote/aplicar`, request);
   }
 }

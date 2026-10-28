@@ -125,6 +125,9 @@ export async function installErpApiMock(page: Page): Promise<ErpMockState> {
     if (path === '/crm/busqueda') return json(route, { productos: [{ id: 101, titulo: 'Filtro de combustible ISX', codigo: 'FILTRO-ISX', subtitulo: 'Fleetguard', existencia: 12, precio: 850 }], clientes: [{ id: 1, titulo: 'Transportes del Golfo', codigo: 'XAXX010101000' }], unidades: [{ id: 81, titulo: 'T-14 · ISX-7788', codigo: '1M8GDM9AXKP042788', cliente: 'Transportes del Golfo' }] });
     if (['/crm/segmentos','/crm/plantillas','/crm/campanas','/crm/encuestas','/crm/metas','/crm/tareas','/crm/comunicaciones'].includes(path)) return json(route, []);
 
+    // U02.2: los listados consultan sus vistas guardadas; por defecto el usuario no tiene ninguna.
+    if (path === '/vistas-guardadas' && method === 'GET') return json(route, []);
+
     return json(route, { message: `Mock faltante para ${method} ${path}` }, 501);
   });
   return state;

@@ -3,6 +3,7 @@
   <header class="list-head">
     <div><h2>Historial de cotizaciones</h2><p>{{ totalItems | number }} propuestas con los filtros actuales</p></div>
     <div class="list-head-actions">
+      <app-saved-views ruta="/cotizacion/historial" />
       <button mat-stroked-button type="button" [disabled]="directory.exporting()" (click)="exportar()"><mat-icon>download</mat-icon>Exportar CSV filtrado</button>
       <a mat-flat-button routerLink="/cotizacion/nueva"><mat-icon>add</mat-icon>Nueva cotización</a>
     </div>

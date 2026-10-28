@@ -18,11 +18,12 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CompraService } from '../../services/compra.service';
 import { CompraResumen } from '../compra.interface';
 import { CompraDetalleComponent } from '../compra-detalle/compra-detalle.component';
+import { SavedViewsComponent } from '../../shared/saved-views.component';
 
 @Component({
   selector: 'app-compra-list',
   standalone: true,
-  imports: [MatSelectModule,
+  imports: [SavedViewsComponent, MatSelectModule,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,

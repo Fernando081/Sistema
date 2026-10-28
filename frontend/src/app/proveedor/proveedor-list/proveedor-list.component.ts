@@ -21,11 +21,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ConfirmService } from '../../shared/confirm.service';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import { SavedViewsComponent } from '../../shared/saved-views.component';
 
 @Component({
   selector: 'app-proveedor-list', // CAMBIO
   standalone: true,
-  imports: [
+  imports: [SavedViewsComponent, 
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
     MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,

@@ -6,6 +6,7 @@
       <p>{{ totalItems | number }} compras con los filtros actuales</p>
     </div>
     <div class="list-head-actions">
+      <app-saved-views ruta="/compra/historial" />
       <button mat-stroked-button type="button" [disabled]="directory.exporting()" (click)="exportar()"><mat-icon>download</mat-icon>Exportar CSV filtrado</button>
     </div>
   </header>

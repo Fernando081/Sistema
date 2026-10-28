@@ -22,11 +22,12 @@ import { CatalogosService } from '../../services/catalogos.service';
 import { ConvertirDialogComponent } from './convertir-dialog.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PedidoService } from '../../services/pedido.service';
+import { SavedViewsComponent } from '../../shared/saved-views.component';
 
 @Component({
   selector: 'app-cotizacion-list',
   standalone: true,
-  imports: [MatSelectModule,
+  imports: [SavedViewsComponent, MatSelectModule,
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatSnackBarModule, MatTooltipModule,

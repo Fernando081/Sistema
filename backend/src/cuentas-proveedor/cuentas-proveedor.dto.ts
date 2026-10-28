@@ -77,6 +77,18 @@ export class PaySupplierInvoiceDto {
   @Transform(trim) @IsString() @MaxLength(1000) @IsOptional() notas?: string;
 }
 
+/** U02.3 · Un pago que liquida (o abona a) varias facturas del mismo proveedor. */
+export class PayGroupedSupplierInvoicesDto {
+  @IsUUID() requestId: string;
+  @IsArray() @ArrayMinSize(2) @ArrayMaxSize(50) @IsInt({ each: true }) @Min(1, { each: true }) idsFacturas: number[];
+  @IsDateString() fecha: string;
+  /** Sin monto se liquida el saldo completo de cada factura; con monto se reparte por vencimiento más próximo. */
+  @IsNumber({ maxDecimalPlaces: 2 }) @Min(0.01) @IsOptional() monto?: number;
+  @Transform(trim) @IsString() @MaxLength(40) formaPago: string;
+  @Transform(trim) @IsString() @MaxLength(120) @IsOptional() referencia?: string;
+  @Transform(trim) @IsString() @MaxLength(1000) @IsOptional() notas?: string;
+}
+
 export class ReviewSupplierTransactionDto {
   @Transform(trim) @IsString() @IsNotEmpty() @MaxLength(1000) motivo: string;
 }

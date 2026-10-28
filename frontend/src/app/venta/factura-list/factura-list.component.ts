@@ -1,6 +1,7 @@
 import { MatSelectModule } from '@angular/material/select';
 // frontend/src/app/venta/factura-list/factura-list.component.ts
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { finalize } from 'rxjs';
 import anime from 'animejs';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -22,24 +23,31 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RemoteDirectory } from '../../shared/remote-directory';
 import { localDate } from '../../shared/document-download';
+import { SavedViewsComponent } from '../../shared/saved-views.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { BulkSelection } from '../../shared/bulk-selection';
+import { downloadDocument } from '../../shared/document-download';
 
 
 @Component({
   selector: 'app-factura-list',
   standalone: true,
-  imports: [
+  imports: [SavedViewsComponent, 
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatChipsModule, MatDialogModule, MatSnackBarModule,
-    MatButtonToggleModule, FormsModule, MatSelectModule
+    MatButtonToggleModule, FormsModule, MatSelectModule, MatCheckboxModule
   ],
   templateUrl: './factura-list.component.html',
   styleUrls: ['../../shared/list-page.css'],
 })
 export class FacturaListComponent implements OnInit, OnDestroy {
   
-  displayedColumns: string[] = ['folio', 'fecha', 'receptor', 'rfc', 'total', 'estatus', 'fiscal', 'acciones'];
+  displayedColumns: string[] = ['seleccion', 'folio', 'fecha', 'receptor', 'rfc', 'total', 'estatus', 'fiscal', 'acciones'];
   readonly directory: RemoteDirectory<FacturaResumen>;
+  /** U02.3 · Facturas marcadas para descargar en lote (se conservan al cambiar de página). */
+  readonly seleccion = new BulkSelection<FacturaResumen>((row) => row.id_factura, 100);
+  readonly descargandoLote = signal(false);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   get dataSource() { return this.directory.dataSource; }
@@ -63,6 +71,15 @@ export class FacturaListComponent implements OnInit, OnDestroy {
   applyFilter(event: Event): void {
     if (event.target instanceof HTMLInputElement) this.directory.setTerm(event.target.value);
   }
+  descargarSeleccion(): void {
+    if (!this.seleccion.count() || this.descargandoLote()) return;
+    this.descargandoLote.set(true);
+    this.ventaService.descargarLote(this.seleccion.ids()).pipe(finalize(() => this.descargandoLote.set(false))).subscribe((blob) => {
+      downloadDocument(blob, 'facturas_' + localDate() + '.zip');
+      this.snackBar.open(`Descargadas ${this.seleccion.count()} facturas (PDF y XML timbrado si existe)`, 'Cerrar', { duration: 4000 });
+    });
+  }
+
   exportar(): void { this.directory.export(query => this.ventaService.exportCsv(query, query.tipo || ''), 'facturas_' + localDate() + '.csv'); }
 
   // Función auxiliar para el color del chip de estatus

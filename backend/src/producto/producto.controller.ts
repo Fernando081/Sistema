@@ -11,15 +11,36 @@ import {
   Query,
   DefaultValuePipe,
   StreamableFile,
+  Req,
 } from '@nestjs/common';
 import { ProductoService } from './producto.service';
 import { AjustarInventarioDto, CreateAplicacionDto, CreateNumeroParteDto, CreateProductoDto, UpdateProductoDto, CreateCotizacionProvDto } from './producto.dto';
 import { Roles } from '../auth/roles.decorator';
 import { RolUsuario } from '../common/enums/app.enums';
 import { ProductoExportDto } from './producto-export.dto';
+import { ProductoLoteService } from './producto-lote.service';
+import { AplicarProductoLoteDto, ProductoLoteDto } from './producto-lote.dto';
+import { JwtPayload } from '../auth/auth.types';
 @Controller('producto') // Endpoint: /api/v1/producto
 export class ProductoController {
-  constructor(private readonly productoService: ProductoService) {}
+  constructor(
+    private readonly productoService: ProductoService,
+    private readonly lote: ProductoLoteService,
+  ) {}
+
+  /** U02.3 · Calcula precio por porcentaje o categoría de varios productos sin guardar nada. */
+  @Post('lote/vista-previa')
+  @Roles(RolUsuario.ADMIN)
+  vistaPreviaLote(@Body() dto: ProductoLoteDto) {
+    return this.lote.vistaPrevia(dto);
+  }
+
+  /** U02.3 · Aplica en una transacción lo revisado en la vista previa; rechaza si algo cambió desde entonces. */
+  @Post('lote/aplicar')
+  @Roles(RolUsuario.ADMIN)
+  aplicarLote(@Body() dto: AplicarProductoLoteDto, @Req() req: { user: JwtPayload }) {
+    return this.lote.aplicar(dto, req.user?.idUser);
+  }
 
   @Post()
   @Roles(RolUsuario.ADMIN)

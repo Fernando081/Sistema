@@ -37,6 +37,8 @@ export class CuentasProveedorService {
   cancel(id:number,motivo:string){return this.http.post(`${this.api}/facturas/${id}/cancelar`,{motivo})}
   schedule(id:number,dto:unknown){return this.http.post(`${this.api}/facturas/${id}/programaciones`,dto)}
   pay(id:number,dto:unknown){return this.http.post(`${this.api}/facturas/${id}/pagos`,dto)}
+  /** U02.3 · Un pago repartido entre varias facturas del mismo proveedor. */
+  payGrouped(dto:{requestId:string;idsFacturas:number[];fecha:string;monto?:number;formaPago:string;referencia?:string;notas?:string}){return this.http.post<{message:string;total:number;referencia:string;pagos:Array<{idFacturaProveedor:number;folio:string;idPago:number;monto:number;saldo:number}>}>(`${this.api}/pagos-agrupados`,dto)}
   reversePayment(id:number,motivo:string){return this.http.post(`${this.api}/pagos/${id}/revertir`,{motivo})}
   credit(dto:unknown){return this.http.post(`${this.api}/notas-credito`,dto)}
   advance(dto:unknown){return this.http.post(`${this.api}/anticipos`,dto)}

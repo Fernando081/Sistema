@@ -6,7 +6,7 @@ import { JwtPayload } from '../auth/auth.types';
 import { Permissions } from '../auth/permissions.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolUsuario } from '../common/enums/app.enums';
-import { CreateFacturaProveedorDto, CreateSupplierAdvanceDto, CreateSupplierCreditDto, PaySupplierInvoiceDto, ResolveDiscrepancyDto, ReviewSupplierTransactionDto, ScheduleSupplierPaymentDto } from './cuentas-proveedor.dto';
+import { CreateFacturaProveedorDto, CreateSupplierAdvanceDto, CreateSupplierCreditDto, PaySupplierInvoiceDto, PayGroupedSupplierInvoicesDto, ResolveDiscrepancyDto, ReviewSupplierTransactionDto, ScheduleSupplierPaymentDto } from './cuentas-proveedor.dto';
 import { CuentasProveedorService } from './cuentas-proveedor.service';
 import { supplierJson } from './supplier-json';
 
@@ -72,6 +72,13 @@ export class CuentasProveedorController {
   @Roles(RolUsuario.ADMIN) @Permissions('compras.pagar')
   pay(@Param('id', ParseIntPipe) id: number, @Body() dto: PaySupplierInvoiceDto, @Req() req: { user: JwtPayload }) {
     return this.json(this.service.pay(id, dto, req.user?.idUser));
+  }
+
+  /** U02.3 · Un pago repartido entre varias facturas del mismo proveedor. */
+  @Post('pagos-agrupados')
+  @Roles(RolUsuario.ADMIN) @Permissions('compras.pagar')
+  payGrouped(@Body() dto: PayGroupedSupplierInvoicesDto, @Req() req: { user: JwtPayload }) {
+    return this.json(this.service.payGrouped(dto, req.user?.idUser));
   }
 
   @Post('pagos/:id/revertir')

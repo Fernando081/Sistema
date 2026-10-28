@@ -6,6 +6,7 @@
       <p>{{ totalItems | number }} clientes · datos fiscales, unidades VIN/ESN y portal</p>
     </div>
     <div class="list-head-actions">
+      <app-saved-views ruta="/cliente" />
       <button mat-stroked-button type="button" [disabled]="directory.exporting()" (click)="exportar()"><mat-icon>download</mat-icon>Exportar CSV filtrado</button>
       <button mat-flat-button type="button" (click)="abrirDialogo()"><mat-icon>add</mat-icon>Nuevo cliente</button>
     </div>

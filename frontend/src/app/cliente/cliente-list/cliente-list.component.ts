@@ -22,11 +22,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmService } from '../../shared/confirm.service';
 import { ClienteUnidadesDialogComponent } from '../cliente-unidades-dialog/cliente-unidades-dialog.component';
+import { SavedViewsComponent } from '../../shared/saved-views.component';
 
 @Component({
   selector: 'app-cliente-list',
   standalone: true,
-  imports: [
+  imports: [SavedViewsComponent, 
     CommonModule, MatTableModule, MatPaginatorModule, MatSortModule,
     MatFormFieldModule, MatInputModule, MatIconModule,
     MatButtonModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,

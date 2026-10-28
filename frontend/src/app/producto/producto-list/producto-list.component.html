@@ -6,6 +6,7 @@
       <header class="list-head">
         <div><h2>Catálogo de refacciones</h2><p>{{ totalItems | number }} productos con los filtros actuales</p></div>
         <div class="list-head-actions">
+          <app-saved-views ruta="/producto" />
           <a *ngIf="canEdit" mat-stroked-button routerLink="/catalogo-web"><mat-icon>storefront</mat-icon>Preparar catálogo web</a>
           <button mat-stroked-button type="button" [disabled]="isExporting" (click)="exportar()"><mat-icon>download</mat-icon>Exportar CSV filtrado</button>
           <button *ngIf="canEdit" mat-flat-button type="button" (click)="abrirDialogo()"><mat-icon>add</mat-icon>Nuevo Producto</button>
@@ -21,8 +22,26 @@
       </div>
 
       <p *ngIf="isLoading" role="status" class="list-status">Cargando productos...</p>
+      @if (seleccion.count()) {
+        <div class="bulk-bar" role="region" aria-label="Acciones con los productos seleccionados">
+          <strong>{{ seleccion.count() }} seleccionado{{ seleccion.count() === 1 ? '' : 's' }}</strong><span>(máximo {{ seleccion.max }}, se conservan al cambiar de página)</span>
+          <span class="spacer"></span>
+          <button mat-flat-button type="button" (click)="cambiarEnLote('precio')"><mat-icon>percent</mat-icon>Cambiar precio…</button>
+          <button mat-stroked-button type="button" (click)="cambiarEnLote('categoria')"><mat-icon>category</mat-icon>Cambiar categoría…</button>
+          <button mat-button type="button" (click)="seleccion.clear()">Quitar selección</button>
+        </div>
+      }
       <div class="list-table stack" [hidden]="isLoading">
         <table mat-table [dataSource]="dataSource" matSort [matSortActive]="directory.query().sortBy === 'id' ? '' : directory.query().sortBy" [matSortDirection]="directory.query().sortOrder" matSortDisableClear (matSortChange)="directory.sort($event)">
+
+          <ng-container matColumnDef="seleccion">
+            <th mat-header-cell *matHeaderCellDef class="select-cell">
+              <mat-checkbox [checked]="seleccion.allSelected(dataSource.data)" [indeterminate]="seleccion.someSelected(dataSource.data)" (change)="seleccion.togglePage(dataSource.data)" aria-label="Seleccionar los productos de esta página"></mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let element" class="select-cell">
+              <mat-checkbox [checked]="seleccion.isSelected(element)" (change)="seleccion.toggle(element) || $event.source.toggle()" [aria-label]="'Seleccionar producto ' + element.codigo"></mat-checkbox>
+            </td>
+          </ng-container>
 
           <ng-container matColumnDef="imagen_url">
             <th mat-header-cell *matHeaderCellDef><span class="sr-only">Imagen</span></th>

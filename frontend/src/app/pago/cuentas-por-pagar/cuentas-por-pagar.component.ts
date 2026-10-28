@@ -27,6 +27,8 @@ import { downloadDocument } from '../../shared/document-download';
 import { LegacySupplierDebt, PagoProveedorService } from '../../services/pago-proveedor.service';
 import { ProveedorService } from '../../services/proveedor.service';
 import { ConfirmService } from '../../shared/confirm.service';
+import { BulkSelection } from '../../shared/bulk-selection';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 interface SupplierOptionRow {
   IdProveedor?: number;
@@ -48,6 +50,7 @@ interface SupplierOptionRow {
     MatInputModule,
     MatSelectModule,
     MatTabsModule,
+    MatCheckboxModule,
   ],
   templateUrl: './cuentas-por-pagar.component.html',
   styleUrls: ['./cuentas-por-pagar.component.css', './cuentas-por-pagar.modals.css'],
@@ -61,6 +64,33 @@ export class CuentasPorPagarComponent {
   private readonly notice = inject(NotificationService);
   private readonly confirm = inject(ConfirmService);
   readonly invoices = signal<SupplierInvoice[]>([]);
+  /** U02.3 · Facturas por pagar marcadas para un pago agrupado (mismo proveedor y moneda). */
+  readonly grouped = new BulkSelection<SupplierInvoice>(
+    (f) => f.idFacturaProveedor,
+    50,
+    (f) => ['Aprobada', 'Parcialmente pagada'].includes(f.estado) && Number(f.saldo) > 0,
+  );
+  readonly showGrouped = signal(false);
+  readonly groupedTotal = computed(() =>
+    this.round(this.grouped.rows().reduce((sum, f) => sum + Number(f.saldo), 0)),
+  );
+  /** Mensaje cuando la selección no puede pagarse junta; vacío si es válida. */
+  readonly groupedProblem = computed(() => {
+    const rows = this.grouped.rows();
+    if (rows.length < 2) return 'Selecciona al menos dos facturas';
+    if (new Set(rows.map((f) => f.idProveedor)).size > 1)
+      return 'Las facturas deben ser del mismo proveedor';
+    if (new Set(rows.map((f) => f.moneda)).size > 1)
+      return 'Las facturas deben estar en la misma moneda';
+    return '';
+  });
+  readonly groupedForm = this.fb.nonNullable.group({
+    fecha: [businessDate(), Validators.required],
+    monto: [0, [Validators.required, Validators.min(0.01)]],
+    formaPago: ['Transferencia', Validators.required],
+    referencia: '',
+    notas: '',
+  });
   readonly dashboard = signal<SupplierDashboard | null>(null);
   readonly orders = signal<OrdenCompra[]>([]);
   readonly selectedOrder = signal<OrdenCompraDetalle | null>(null);
@@ -351,6 +381,59 @@ export class CuentasPorPagarComponent {
       error: (e) => this.notice.show(e.error?.message || 'No se pudo programar.'),
     });
   }
+  openGrouped() {
+    if (this.groupedProblem()) return;
+    this.groupedForm.reset({
+      fecha: businessDate(),
+      monto: this.groupedTotal(),
+      formaPago: 'Transferencia',
+      referencia: '',
+      notas: '',
+    });
+    this.showGrouped.set(true);
+  }
+
+  payGrouped() {
+    if (this.saving() || this.groupedForm.invalid || this.groupedProblem()) return;
+    const raw = this.groupedForm.getRawValue();
+    if (this.round(raw.monto) > this.groupedTotal()) {
+      this.notice.show('El pago supera la suma de saldos seleccionados.');
+      return;
+    }
+    const idsFacturas = this.grouped.ids().sort((a, b) => a - b);
+    // Monto igual a la suma: se liquida cada saldo completo; menor: el servidor reparte por vencimiento.
+    const payload = {
+      idsFacturas,
+      fecha: raw.fecha,
+      formaPago: raw.formaPago,
+      monto: this.round(raw.monto) === this.groupedTotal() ? undefined : this.round(raw.monto),
+      referencia: raw.referencia || undefined,
+      notas: raw.notas || undefined,
+    };
+    const kind = 'grouped-payment';
+    const key = this.intent(kind, payload);
+    if (!key) return;
+    this.saving.set(true);
+    this.api
+      .payGrouped({ ...payload, requestId: key })
+      .pipe(finalize(() => this.saving.set(false)))
+      .subscribe({
+        next: (res) => {
+          this.intents.success(kind);
+          this.notice.show(res.message, 5000, 'info');
+          this.showGrouped.set(false);
+          this.grouped.clear();
+          this.load();
+        },
+        error: (e) => {
+          this.intents.failure(kind, e.status);
+          this.notice.show(
+            e.error?.message || 'Resultado pendiente. Reintenta con los mismos datos.',
+          );
+        },
+      });
+  }
+
   pay() {
     const i = this.selectedInvoice();
     if (this.saving() || !i || this.paymentForm.invalid) return;
