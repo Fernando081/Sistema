@@ -27,6 +27,9 @@ export class DetalleCompraDto {
   @IsNumber({ maxDecimalPlaces: 6 }) @Min(0.000001) costoUnitario: number;
   @IsNumber({ maxDecimalPlaces: 2 }) @Min(0.01) importe: number;
 
+  /** Tasa de IVA del renglón (16 %, 8 % frontera o 0 %/exento). Sin valor se registra sin IVA. */
+  @IsOptional() @IsIn([0, 0.08, 0.16]) tasaIva?: number;
+
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
@@ -49,6 +52,7 @@ export class CreateCompraDto {
   @IsBoolean()
   esCredito: boolean;
 
+  /** Total con IVA (subtotal + IVA de los renglones). */
   @IsNumber({ maxDecimalPlaces: 2 }) @Min(0.01) total: number;
 
   @IsString()

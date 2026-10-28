@@ -38,14 +38,22 @@
           </td>
         </ng-container>
         <ng-container matColumnDef="costo">
-          <th mat-header-cell *matHeaderCellDef> Costo unitario </th>
+          <th mat-header-cell *matHeaderCellDef> Costo unitario sin IVA </th>
           <td mat-cell *matCellDef="let item">
             <input type="number" min="0" class="cell-input w-24 text-right" aria-label="Costo unitario"
                    [(ngModel)]="item.costoUnitario" (change)="alCambiarValor(item)">
           </td>
         </ng-container>
+        <ng-container matColumnDef="iva">
+          <th mat-header-cell *matHeaderCellDef> IVA </th>
+          <td mat-cell *matCellDef="let item">
+            <select class="cell-input" aria-label="Tasa de IVA" [(ngModel)]="item.tasaIva" (ngModelChange)="alCambiarValor(item)">
+              <option *ngFor="let t of tasasIva" [ngValue]="t.value">{{ t.label }}</option>
+            </select>
+          </td>
+        </ng-container>
         <ng-container matColumnDef="importe">
-          <th mat-header-cell *matHeaderCellDef class="amount"> Importe </th>
+          <th mat-header-cell *matHeaderCellDef class="amount"> Importe sin IVA </th>
           <td mat-cell *matCellDef="let item" class="amount"> {{ item.importe | currency }} </td>
         </ng-container>
         <ng-container matColumnDef="acciones">
@@ -81,6 +89,7 @@
         <div *ngIf="proveedorSeleccionado" class="p-3 rounded text-sm mb-2" style="background-color: var(--c-surface-2); border: 1px solid var(--c-border);">
           <p class="font-bold">{{ proveedorSeleccionado.razonSocial }}</p>
           <p>RFC: {{ proveedorSeleccionado.rfc }}</p>
+          <p>Crédito: {{ proveedorSeleccionado.diasCredito }} días</p>
         </div>
 
         <mat-form-field class="w-full">
@@ -96,7 +105,7 @@
         <div class="credit-row">
             <span class="text-sm font-medium text-[var(--c-text-2)]">¿Compra a crédito?</span>
             <mat-slide-toggle [(ngModel)]="esCredito" color="warn">
-                {{ esCredito ? 'Sí, genera deuda' : 'No, de contado' }}
+                {{ esCredito ? 'Sí, vence en ' + (proveedorSeleccionado?.diasCredito ?? 30) + ' días' : 'No, de contado' }}
             </mat-slide-toggle>
         </div>
         <mat-form-field *ngIf="!esCredito" class="w-full">
@@ -112,6 +121,8 @@
 
     <mat-card class="!bg-[var(--c-ink)] !text-[var(--c-on-ink)] !border-transparent">
       <mat-card-content class="p-6">
+        <div class="flex justify-between text-sm opacity-80"><span>Subtotal</span><span>{{ subtotalGeneral() | currency }}</span></div>
+        <div class="flex justify-between text-sm opacity-80 mb-2"><span>IVA</span><span>{{ ivaGeneral() | currency }}</span></div>
         <div class="flex justify-between text-2xl font-bold">
           <span>Total:</span> <span>{{ totalGeneral() | currency }}</span>
         </div>

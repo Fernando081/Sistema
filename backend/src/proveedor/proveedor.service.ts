@@ -39,7 +39,8 @@ export class ProveedorService {
   }
 
   async create(createProveedorDto: CreateProveedorDto): Promise<Proveedor> {
-    const result = await queryRows<Proveedor>(this.dataSource,
+    return this.dataSource.transaction(async (manager) => {
+    const result = await queryRows<Proveedor>(manager,
       'SELECT * FROM fn_create_proveedor($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)',
       [
         createProveedorDto.rfc,
@@ -60,7 +61,12 @@ export class ProveedorService {
         createProveedorDto.idRegimenFiscal,
       ],
     );
-    return result[0];
+    if (createProveedorDto.diasCredito === undefined || !result[0]) return result[0];
+    const updated = await queryRows<Proveedor>(manager,
+      'UPDATE proveedor SET "DiasCredito"=$2 WHERE "IdProveedor"=$1 RETURNING *',
+      [(result[0] as unknown as Record<string, unknown>).IdProveedor, createProveedorDto.diasCredito]);
+    return updated[0];
+    });
   }
 
   async update(
@@ -78,6 +84,9 @@ export class ProveedorService {
         ['referencia', 'Referencia'], ['idMetodoDePago', 'IdMetodoDePago'],
         ['idUsoCFDI', 'IdUsoCFDI'], ['idFormaPago', 'IdFormaPago'], ['idRegimenFiscal', 'IdRegimenFiscal'],
       ] as const;
+      if (updateProveedorDto.diasCredito !== undefined) {
+        await manager.query('UPDATE proveedor SET "DiasCredito"=$2 WHERE "IdProveedor"=$1', [idProveedor, updateProveedorDto.diasCredito]);
+      }
       const values = fields.map(([field, column]) =>
         updateProveedorDto[field] !== undefined ? updateProveedorDto[field] : rows[0][column]);
       const result = await queryRows<Proveedor>(manager,

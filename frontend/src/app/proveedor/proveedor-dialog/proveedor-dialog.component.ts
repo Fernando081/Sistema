@@ -74,7 +74,8 @@ export class ProveedorDialogComponent implements OnInit {
       idMetodoDePago: [null],
       idUsoCFDI: [null],
       idFormaPago: [null],
-      idRegimenFiscal: [null, Validators.required]
+      idRegimenFiscal: [null, Validators.required],
+      diasCredito: [30, [Validators.required, Validators.min(0), Validators.max(365)]]
     });
   }
 

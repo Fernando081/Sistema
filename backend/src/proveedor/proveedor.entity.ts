@@ -66,4 +66,7 @@ export class Proveedor {
 
   @Column({ type: 'int', name: 'IdRegimenFiscal' })
   idRegimenFiscal: number;
+
+  @Column({ type: 'int', name: 'DiasCredito', default: 30 })
+  diasCredito: number;
 }

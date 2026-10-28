@@ -62,7 +62,17 @@ export class CompraComponent implements OnInit {
   subtotalGeneral = computed(() =>
     roundMoney(this.carrito().reduce((acc, item) => acc + roundMoney(item.cantidad * item.costoUnitario), 0))
   );
-  totalGeneral = this.subtotalGeneral; // Alias (las compras no tienen IVA separado por ahora)
+  ivaGeneral = computed(() =>
+    roundMoney(this.carrito().reduce((acc, item) => acc + item.cantidad * item.costoUnitario * item.tasaIva, 0))
+  );
+  totalGeneral = computed(() => roundMoney(this.subtotalGeneral() + this.ivaGeneral()));
+
+  /** Tasas permitidas por el servidor; el costo se captura sin IVA. */
+  readonly tasasIva = [
+    { value: 0.16, label: '16 %' },
+    { value: 0.08, label: '8 %' },
+    { value: 0, label: '0 % / exento' },
+  ];
 
   isSaving = signal(false);
   private pendingRequestId: string | null = null;
@@ -84,7 +94,7 @@ export class CompraComponent implements OnInit {
   proveedoresFiltrados$: Observable<Proveedor[]> = of([]);
   productosFiltrados$: Observable<Producto[]> = of([]);
 
-  displayedColumns: string[] = ['descripcion', 'cantidad', 'costo', 'importe', 'acciones'];
+  displayedColumns: string[] = ['descripcion', 'cantidad', 'costo', 'iva', 'importe', 'acciones'];
 
   constructor(
     private compraService: CompraService,
@@ -149,6 +159,7 @@ export class CompraComponent implements OnInit {
         cantidad: 1,
         costoUnitario: 0,
         importe: 0,
+        tasaIva: this.tasasIva.some((t) => t.value === Number(producto.tasaIva)) ? Number(producto.tasaIva) : 0.16,
       };
       this.carrito.update((items) => [...items, nuevo]);
     }
@@ -199,6 +210,7 @@ export class CompraComponent implements OnInit {
         cantidad: Number(item.cantidad),
         costoUnitario: Number(item.costoUnitario),
         importe: roundMoney(item.cantidad * item.costoUnitario),
+        tasaIva: item.tasaIva,
       })),
     };
 

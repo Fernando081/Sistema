@@ -6,6 +6,8 @@ export interface DetalleCompra {
   cantidad: number;
   costoUnitario: number;
   importe: number;
+  /** Tasa de IVA del renglón: 0.16, 0.08 o 0 (exento/0 %). El costo se captura sin IVA. */
+  tasaIva: number;
 }
 
 export interface CreateCompra {

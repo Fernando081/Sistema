@@ -56,7 +56,8 @@ async function verifyOperations(ds, options = {}) {
   const [product] = await ds.query(`INSERT INTO producto("Codigo","Descripcion","IdObjetoImpuesto","PrecioUnitario","Existencia","ObjetoImpuesto","TasaIVA","AplicaRetencionISR")
     VALUES($1,'Fixture aislado integridad',$2,10,100,'01',0,false) RETURNING "IdProducto" AS id`, ['TEST-'+randomUUID().slice(0,12), tax.id]);
   const venta = new VentaService(new RegistroVentaService(ds), new ConsultasVentaService(ds), new DocumentosVentaService(ds, {}), new ReversionVentaService(ds), new FacturaGlobalService(ds));
-  const compra = new CompraService(ds);
+  // H02-b: la compra directa registra orden, recepción, factura y pago con los servicios formales.
+  const compra = new CompraService(ds, new AbastecimientoService(ds), new FacturasProveedorService(ds), new PagosProveedorService(ds));
   const pago = new PagoService(new CobranzaService(ds), new RegistroRepService(ds), new RepPdfService(ds), new RepXmlService(ds));
   const quote = new CotizacionService(ds);
   const stock = async () => Number((await ds.query('SELECT "Existencia" AS n FROM producto WHERE "IdProducto"=$1',[product.id]))[0].n);
@@ -77,7 +78,9 @@ async function verifyOperations(ds, options = {}) {
     esCredito: false, formaPago: 'Efectivo', total: 10, observaciones: 'Fixture aislado',
     conceptos: [{ idProducto: product.id, descripcion: 'Fixture aislado', cantidad: 5, costoUnitario: 2, importe: 10 }] };
   const purchases = await Promise.all([compra.create(purchase), compra.create(purchase)]);
-  assert.equal(purchases[0].idCompra,purchases[1].idCompra);
+  assert.ok(purchases[0].idOrden);
+  assert.equal(purchases[0].idOrden,purchases[1].idOrden);
+  assert.equal(purchases[0].idFacturaProveedor,purchases[1].idFacturaProveedor);
   assert.equal(await stock(),105);
   assert.equal(cents(await cash()),cents(beforePurchase)-1000);
 

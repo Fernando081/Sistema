@@ -91,3 +91,10 @@ Los registros históricos con UUID pero sin huella se rechazan con 409: revisar 
 `perf:documents-http` prueba en copia propia el resguardo PDF multipart y XML incorporado al registrar la factura. Compara descarga/bytes/hash almacenado, MIME y disposición de archivo; prueba ausencia, autenticación, permiso de carga, contenido inválido y límite de 10 MiB. Rechazar una carga no debe sustituir el PDF anterior. Ver README/reporte para resultados.
 
 La validación actual del PDF comprueba MIME, firma inicial y EOF; no es un parser completo ni antivirus. El XML comprueba estructura identificable, rechazo DTD/entidades y concordancia de metadatos; no certifica validez fiscal. Los fixtures no son documentos para producción.
+
+## H03 — IVA acreditable y días de crédito (28/10/2026)
+
+- **Póliza de factura aprobada:** Inventarios 1130 por el total sin IVA, **1160 IVA acreditable pendiente de pago** por el IVA, contra Proveedores 2100 por el total. Aplica a facturas de Abastecimiento y de "Nueva compra".
+- **Pago:** además de 2100 contra caja/banco, traspasa la parte proporcional del IVA (`monto × impuestos / total`) de 1160 a **1170 IVA acreditable pagado**. Un anticipo aplicado hace el mismo traspaso; una nota de crédito aplicada abona 1130 por la parte sin IVA y 1160 por su IVA. Revertir un pago o una aplicación cancela su póliza completa, incluido el traspaso.
+- **Nueva compra:** la tasa de IVA se captura por renglón (16 %, 8 % o 0 %/exento) y el costo unitario es sin IVA. Las compras a crédito vencen a los **días de crédito del proveedor** (ficha del proveedor; 30 por defecto).
+- Migración117. Las pólizas generadas antes no se reescriben.

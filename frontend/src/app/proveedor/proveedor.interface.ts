@@ -20,6 +20,8 @@ export interface Proveedor {
   idUsoCFDI: number | null;
   idFormaPago: number | null;
   idRegimenFiscal: number;
+  /** Plazo de pago del proveedor; las compras a crédito vencen a estos días. */
+  diasCredito: number;
 }
 
 export type CreateProveedorDto = Omit<Proveedor, 'idProveedor'>;

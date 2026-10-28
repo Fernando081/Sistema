@@ -1,6 +1,7 @@
 // backend/src/proveedor/proveedor.dto.ts (NUEVO ARCHIVO)
 
 import {
+  Max,
   IsString,
   IsNotEmpty,
   MaxLength,
@@ -104,6 +105,13 @@ export class CreateProveedorDto {
   @Min(1)
   @IsNotEmpty()
   idRegimenFiscal: number;
+
+  /** Plazo de pago que da el proveedor; las compras a crédito vencen a estos días (por defecto 30). */
+  @IsInt()
+  @Min(0)
+  @Max(365)
+  @IsOptional()
+  diasCredito?: number;
 }
 
 // DTO para Actualizar (la mayoría de campos son opcionales)

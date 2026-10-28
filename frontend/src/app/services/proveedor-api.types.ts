@@ -18,6 +18,7 @@ export interface ProveedorDb {
   IdUsoCFDI: number | null;
   IdFormaPago: number | null;
   IdRegimenFiscal: number;
+  DiasCredito?: number | null;
 }
 
 export function mapProveedor(row: ProveedorDb): Proveedor {
@@ -29,5 +30,6 @@ export function mapProveedor(row: ProveedorDb): Proveedor {
     numeroInterior: row.NumeroInterior ?? '', referencia: row.Referencia ?? '',
     idMetodoDePago: row.IdMetodoDePago, idUsoCFDI: row.IdUsoCFDI,
     idFormaPago: row.IdFormaPago, idRegimenFiscal: row.IdRegimenFiscal,
+    diasCredito: row.DiasCredito ?? 30,
   };
 }

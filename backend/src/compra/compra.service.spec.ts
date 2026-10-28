@@ -3,16 +3,19 @@ import { CompraService, COMPRA_CREDITO_DIAS } from './compra.service';
 
 // H02-b · "Nueva compra" registra orden → recepción → factura aprobada (y pago si es de contado)
 // en una sola transacción; ya no llama a fn_crear_compra ni crea saldo en compra.saldo_pendiente.
-function setup() {
+let lineTax: [string, string] = ['0', '0'];
+
+function setup(diasCredito: number | null = 30) {
   const sql: string[] = [];
   const manager = {
     query: jest.fn().mockImplementation((text: string) => {
       sql.push(text);
       if (text.includes('FROM producto')) return Promise.resolve([{ IdProducto: 5 }, { IdProducto: 7 }]);
+      if (text.includes('"DiasCredito"')) return Promise.resolve([{ dias: diasCredito }]);
       if (text.includes('FROM orden_compra_detalle d JOIN orden_compra o')) {
         return Promise.resolve([
-          { idDetalle: 11, idProducto: 5, descripcion: 'Filtro', cantidad: '2', costo: '50', folio: '120' },
-          { idDetalle: 12, idProducto: 7, descripcion: 'Balero', cantidad: '1', costo: '30.5', folio: '120' },
+          { idDetalle: 11, idProducto: 5, descripcion: 'Filtro', cantidad: '2', costo: '50', tasaIva: lineTax[0], folio: '120' },
+          { idDetalle: 12, idProducto: 7, descripcion: 'Balero', cantidad: '1', costo: '30.5', tasaIva: lineTax[1], folio: '120' },
         ]);
       }
       return Promise.resolve([]);
@@ -75,6 +78,31 @@ describe('CompraService (compra directa por flujo formal)', () => {
     expect(days).toBe(COMPRA_CREDITO_DIAS);
     expect(pagos.payIn).not.toHaveBeenCalled();
     expect(result.idPago).toBeNull();
+  });
+
+  it('IVA por renglón: orden y factura con tasa, impuestos separados y total con IVA', async () => {
+    lineTax = ['0.16', '0'];
+    const { service, abastecimiento, facturas, pagos } = setup();
+    const conceptos = [{ ...base.conceptos[0], tasaIva: 0.16 }, { ...base.conceptos[1], tasaIva: 0 }];
+    const result = await service.create({ ...base, conceptos, total: 146.5, esCredito: false, formaPago: 'Efectivo' });
+    lineTax = ['0', '0'];
+    expect(abastecimiento.createOrderIn.mock.calls[0][1].partidas.map((p: { tasaIva: number }) => p.tasaIva)).toEqual([0.16, 0]);
+    const invoice = facturas.createInvoiceIn.mock.calls[0][1];
+    expect(invoice).toEqual(expect.objectContaining({ subtotal: 130.5, impuestos: 16, total: 146.5 }));
+    expect(invoice.partidas.map((p: { tasaIva: number }) => p.tasaIva)).toEqual([0.16, 0]);
+    expect(pagos.payIn.mock.calls[0][2].monto).toBe(146.5);
+    expect(result).toEqual(expect.objectContaining({ subtotal: 130.5, impuestos: 16, total: 146.5 }));
+  });
+
+  it('crédito usa los días del proveedor y rechaza el total sin IVA', async () => {
+    let ctx = setup(45);
+    await ctx.service.create({ ...base, esCredito: true });
+    const invoice = ctx.facturas.createInvoiceIn.mock.calls[0][1];
+    expect((Date.parse(invoice.fechaVencimiento) - Date.parse(invoice.fechaEmision)) / 86_400_000).toBe(45);
+
+    ctx = setup();
+    const conceptos = [{ ...base.conceptos[0], tasaIva: 0.16 }, base.conceptos[1]];
+    await expect(ctx.service.create({ ...base, conceptos, esCredito: true })).rejects.toThrow('El total de la compra no coincide');
   });
 
   it('rechaza total distinto al servidor, productos repetidos y facturas que no concilian', async () => {

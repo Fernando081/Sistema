@@ -18,17 +18,17 @@ describe('Contratos de proveedores y categorías', () => {
     IdProveedor: 4, RFC: 'XAXX010101000', RazonSocial: 'Proveedor ISX', Pais: 'México',
     IdEstado: null, IdMunicipio: null, Ciudad: null, Colonia: null, Calle: null,
     CodigoPostal: '89000', NumeroExterior: null, NumeroInterior: null, Referencia: null,
-    IdMetodoDePago: null, IdUsoCFDI: null, IdFormaPago: null, IdRegimenFiscal: 601,
+    IdMetodoDePago: null, IdUsoCFDI: null, IdFormaPago: null, IdRegimenFiscal: 601, DiasCredito: 45,
   };
 
   it('lista y consulta individual producen el mismo proveedor y conservan IDs null', () => {
     const api = TestBed.inject(ProveedorService);
     api.getProveedores().subscribe(rows => expect(rows[0]).toEqual(jasmine.objectContaining({
-      idProveedor: 4, razonSocial: 'Proveedor ISX', idEstado: null, ciudad: '',
+      idProveedor: 4, razonSocial: 'Proveedor ISX', idEstado: null, ciudad: '', diasCredito: 45,
     })));
     http.expectOne(`${environment.apiBaseUrl}/proveedores`).flush([proveedor]);
-    api.getProveedorById(4).subscribe(row => expect(row.razonSocial).toBe('Proveedor ISX'));
-    http.expectOne(`${environment.apiBaseUrl}/proveedores/4`).flush(proveedor);
+    api.getProveedorById(4).subscribe(row => expect(row.diasCredito).toBe(30));
+    http.expectOne(`${environment.apiBaseUrl}/proveedores/4`).flush({ ...proveedor, DiasCredito: undefined });
   });
 
   it('alta y edición de categoría normalizan el resultado PascalCase de SQL', () => {

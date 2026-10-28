@@ -47,8 +47,8 @@ describe('Contratos de productos y compras', () => {
   it('conserva requestId y devuelve la orden, recepción y factura de la compra directa (H02-b)', () => {
     const compra = {
       requestId: '18dc62cd-1f5c-4b8e-8e98-aa29842b3013', idProveedor: 4,
-      esCredito: true, total: 250, conceptos: [{ idProducto: 8, descripcion: 'Filtro',
-        codigo: 'ISX-8', cantidad: 2, costoUnitario: 125, importe: 250 }],
+      esCredito: true, total: 290, conceptos: [{ idProducto: 8, descripcion: 'Filtro',
+        codigo: 'ISX-8', cantidad: 2, costoUnitario: 125, importe: 250, tasaIva: 0.16 }],
     };
     TestBed.inject(CompraService).crearCompra(compra).subscribe(result => {
       expect(result.idOrden).toBe(6);

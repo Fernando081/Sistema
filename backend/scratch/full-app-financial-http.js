@@ -111,7 +111,8 @@ async function verifyFinancialHttp(ds, api, headers, options = {}) {
     ],
   };
   const bought = await request('compra', purchase);
-  assert.equal((await request('compra', purchase)).idCompra, bought.idCompra);
+  assert.ok(bought.idOrden);
+  assert.equal((await request('compra', purchase)).idOrden, bought.idOrden);
   assert.equal(await stock(), 105);
   assert.equal(await cash(), before - 1000);
   const sale = {

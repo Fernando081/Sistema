@@ -14,8 +14,9 @@ import { PagosProveedorService } from '../cuentas-proveedor/pagos-proveedor.serv
 
 interface IdempotencyRow { response: Record<string, unknown>; payload_hash: string; }
 interface ProductoIdRow { IdProducto: number; }
+interface ProveedorCreditoRow { dias: number | string | null; }
 
-/** Plazo de pago de una compra a crédito capturada en "Nueva compra" (la factura vence a 30 días). */
+/** Plazo de respaldo si el proveedor no trae días de crédito (la columna tiene el mismo valor por defecto). */
 export const COMPRA_CREDITO_DIAS = 30;
 
 export type CompraFuente = 'compra' | 'orden';
@@ -89,21 +90,29 @@ export class CompraService {
       [uniqueIds]);
     if (products.length !== uniqueIds.length) throw new BadRequestException('Uno o más productos ya no existen');
 
+    // Mismo cálculo que la orden y la conciliación de la factura: subtotal por renglón, IVA sobre el conjunto.
     const money = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
-    const total = money(dto.conceptos.reduce((sum, c) => sum + money(Number(c.cantidad) * Number(c.costoUnitario)), 0));
+    const tasa = (c: CreateCompraDto['conceptos'][number]) => Number(c.tasaIva ?? 0);
+    const subtotal = money(dto.conceptos.reduce((sum, c) => sum + money(Number(c.cantidad) * Number(c.costoUnitario)), 0));
+    const impuestos = money(dto.conceptos.reduce((sum, c) => sum + Number(c.cantidad) * Number(c.costoUnitario) * tasa(c), 0));
+    const total = money(subtotal + impuestos);
     if (Math.abs(total - dto.total) > 0.01) {
       throw new BadRequestException('El total de la compra no coincide con el cálculo del servidor');
     }
+    const credito = await queryRows<ProveedorCreditoRow>(manager,
+      `SELECT "DiasCredito" AS dias FROM proveedor WHERE "IdProveedor" = $1`, [dto.idProveedor]);
+    if (!credito.length) throw new BadRequestException('El proveedor no existe');
+    const diasCredito = Number(credito[0].dias ?? COMPRA_CREDITO_DIAS);
 
-    // 1) Orden de compra. Los costos se registran como se capturan, sin desglose de IVA (igual que antes).
+    // 1) Orden de compra. Costos sin IVA y tasa por renglón (el IVA va a IVA acreditable, no al inventario).
     const order = await this.abastecimiento.createOrderIn(manager, {
       requestId: randomUUID(),
       idProveedor: dto.idProveedor,
       notas: dto.observaciones || undefined,
-      partidas: dto.conceptos.map((c) => ({ idProducto: c.idProducto, cantidad: Number(c.cantidad), costoUnitario: Number(c.costoUnitario), tasaIva: 0 })),
+      partidas: dto.conceptos.map((c) => ({ idProducto: c.idProducto, cantidad: Number(c.cantidad), costoUnitario: Number(c.costoUnitario), tasaIva: tasa(c) })),
     }, idUser, 'Compra directa');
-    const lines = await queryRows<{ idDetalle: number; idProducto: number; descripcion: string; cantidad: string | number; costo: string | number; folio: string | number }>(manager,
-      `SELECT d.id_detalle AS "idDetalle", d.id_producto AS "idProducto", d.descripcion, d.cantidad, d.costo_unitario AS costo, o.folio
+    const lines = await queryRows<{ idDetalle: number; idProducto: number; descripcion: string; cantidad: string | number; costo: string | number; tasaIva: string | number; folio: string | number }>(manager,
+      `SELECT d.id_detalle AS "idDetalle", d.id_producto AS "idProducto", d.descripcion, d.cantidad, d.costo_unitario AS costo, d.tasa_iva AS "tasaIva", o.folio
          FROM orden_compra_detalle d JOIN orden_compra o ON o.id_orden = d.id_orden
         WHERE d.id_orden = $1 ORDER BY d.id_detalle`, [order.idOrden]);
     const folioOrden = String(lines[0].folio);
@@ -116,7 +125,7 @@ export class CompraService {
       partidas: lines.map((line) => ({ idDetalle: line.idDetalle, cantidad: Number(line.cantidad) })),
     }, idUser);
 
-    // 3) Factura de proveedor conciliada contra la orden y aprobada (póliza inventario/proveedores).
+    // 3) Factura de proveedor conciliada contra la orden y aprobada (póliza inventario + IVA pendiente / proveedores).
     const today = businessDate();
     const invoice = await this.facturas.createInvoiceIn(manager, {
       requestId: randomUUID(),
@@ -124,22 +133,22 @@ export class CompraService {
       idOrden: order.idOrden,
       folio: dto.folioFactura?.trim() || `OC-${folioOrden}`,
       fechaEmision: today,
-      fechaVencimiento: dto.esCredito ? addDays(today, COMPRA_CREDITO_DIAS) : today,
+      fechaVencimiento: dto.esCredito ? addDays(today, diasCredito) : today,
       moneda: 'MXN',
       tipoCambio: 1,
-      subtotal: total,
-      impuestos: 0,
+      subtotal,
+      impuestos,
       retenciones: 0,
       total,
       observaciones: dto.observaciones || undefined,
-      partidas: lines.map((line) => ({ idOrdenDetalle: line.idDetalle, descripcion: line.descripcion, cantidad: Number(line.cantidad), costoUnitario: Number(line.costo), tasaIva: 0 })),
+      partidas: lines.map((line) => ({ idOrdenDetalle: line.idDetalle, descripcion: line.descripcion, cantidad: Number(line.cantidad), costoUnitario: Number(line.costo), tasaIva: Number(line.tasaIva) })),
     }, idUser);
     if (invoice.estado !== 'Conciliada') {
       throw new ConflictException('La factura de la compra no concilió con su orden; revisa cantidades y costos');
     }
     await this.facturas.approveInvoiceIn(manager, invoice.idFacturaProveedor, idUser);
 
-    // 4) Contado: pago inmediato por el total (descuenta caja o banco y genera la póliza de egreso).
+    // 4) Contado: pago inmediato por el total con IVA (descuenta caja o banco; el IVA pasa a pagado).
     let idPago: number | null = null;
     if (!dto.esCredito) {
       const payment = await this.pagos.payIn(manager, invoice.idFacturaProveedor, {
@@ -154,13 +163,16 @@ export class CompraService {
 
     return {
       message: dto.esCredito
-        ? 'Compra registrada. Inventario actualizado y factura por pagar en Cuentas por pagar.'
+        ? `Compra registrada. Inventario actualizado y factura por pagar en Cuentas por pagar (vence en ${diasCredito} días).`
         : 'Compra registrada y pagada. Inventario actualizado.',
       idOrden: order.idOrden,
       folioOrden,
       idRecepcion: receipt.idRecepcion,
       idFacturaProveedor: invoice.idFacturaProveedor,
       idPago,
+      subtotal,
+      impuestos,
+      total,
     };
   }
 
@@ -173,7 +185,7 @@ export class CompraService {
   async findDetalle(id: number, fuente: CompraFuente = 'compra') {
     if (fuente === 'orden') {
       return queryRows<Record<string, unknown>>(this.dataSource,
-        `SELECT d.cantidad, d.costo_unitario, round(d.cantidad * d.costo_unitario, 2) AS importe,
+        `SELECT d.cantidad, d.costo_unitario, round(d.cantidad * d.costo_unitario, 2) AS importe, d.tasa_iva,
                 COALESCE(p."Descripcion", d.descripcion)::text AS descripcion, COALESCE(p."Codigo", 'ELIMINADO')::text AS codigo
            FROM orden_compra_detalle d JOIN orden_compra o ON o.id_orden = d.id_orden
            LEFT JOIN producto p ON p."IdProducto" = d.id_producto
