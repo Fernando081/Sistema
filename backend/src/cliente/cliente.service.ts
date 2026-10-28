@@ -91,7 +91,7 @@ export class ClienteService {
   }
 
   async deleteContacto(idCliente: number, idContacto: number) {
-    const result: unknown[] = await this.dataSource.query('DELETE FROM cliente_contacto WHERE id_contacto=$1 AND id_cliente=$2 RETURNING id_contacto', [idContacto, idCliente]);
+    const result = await queryRows(this.dataSource, 'DELETE FROM cliente_contacto WHERE id_contacto=$1 AND id_cliente=$2 RETURNING id_contacto', [idContacto, idCliente]);
     if (!result.length) throw new NotFoundException('Contacto no encontrado');
     return { message: 'Contacto eliminado' };
   }

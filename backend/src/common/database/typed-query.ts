@@ -20,6 +20,20 @@ export async function readSnapshot<T>(
   });
 }
 
+/**
+ * TypeORM (PostgreSQL) devuelve `[filas, filasAfectadas]` para UPDATE/DELETE, también con RETURNING;
+ * SELECT/INSERT devuelven sólo las filas. Una fila nunca es un arreglo ni un número, así que la forma es inequívoca.
+ */
+function isAffectedRowsResult(
+  result: unknown[],
+): result is [unknown[], number] {
+  return (
+    result.length === 2 &&
+    Array.isArray(result[0]) &&
+    typeof result[1] === 'number'
+  );
+}
+
 export async function queryRows<Row>(
   executor: QueryExecutor,
   sql: string,
@@ -29,5 +43,5 @@ export async function queryRows<Row>(
   if (!Array.isArray(result)) {
     throw new Error('La consulta no devolvió una colección de filas');
   }
-  return result as Row[];
+  return (isAffectedRowsResult(result) ? result[0] : result) as Row[];
 }
