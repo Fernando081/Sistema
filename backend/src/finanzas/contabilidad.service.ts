@@ -1,3 +1,4 @@
+import { businessDate } from '../common/business-date';
 import {
   BadRequestException,
   Injectable,
@@ -206,8 +207,8 @@ export class ContabilidadService {
     this.validateDateRange(query.fechaInicio, query.fechaFin);
     const start =
       query.fechaInicio ||
-      new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0, 10);
-    const end = query.fechaFin || new Date().toISOString().slice(0, 10);
+      `${businessDate().slice(0, 4)}-01-01`;
+    const end = query.fechaFin || businessDate();
     return queryRows<Record<string, unknown>>(
       this.dataSource,
       `
@@ -228,8 +229,8 @@ export class ContabilidadService {
     this.validateDateRange(query.fechaInicio, query.fechaFin);
     const start =
       query.fechaInicio ||
-      new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0, 10);
-    const end = query.fechaFin || new Date().toISOString().slice(0, 10);
+      `${businessDate().slice(0, 4)}-01-01`;
+    const end = query.fechaFin || businessDate();
     const detail = await queryRows<{
       tipo: string;
       codigo: string;
@@ -266,7 +267,7 @@ export class ContabilidadService {
   }
 
   async getBalanceGeneral(fecha?: string) {
-    const end = fecha || new Date().toISOString().slice(0, 10);
+    const end = fecha || businessDate();
     const detail = await queryRows<{
       tipo: string;
       codigo: string;
@@ -466,8 +467,8 @@ export class ContabilidadService {
     this.validateDateRange(query.fechaInicio, query.fechaFin);
     const start =
       query.fechaInicio ||
-      new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0, 10);
-    const end = query.fechaFin || new Date().toISOString().slice(0, 10);
+      `${businessDate().slice(0, 4)}-01-01`;
+    const end = query.fechaFin || businessDate();
     const opening = await queryRows<{ saldo: string | number }>(
       this.dataSource,
       `SELECT coalesce(sum(d.debe-d.haber),0) AS saldo

@@ -6,9 +6,15 @@ import {
   IsNotEmpty,
   Min,
   IsInt,
+  IsUUID,
 } from 'class-validator';
 
 export class RegistrarPagoProveedorDto {
+  // Opcional para conservar clientes anteriores; el frontend lo envía en cada intento.
+  @IsUUID()
+  @IsOptional()
+  requestId?: string;
+
   @IsInt()
   @Min(1)
   @IsNotEmpty()

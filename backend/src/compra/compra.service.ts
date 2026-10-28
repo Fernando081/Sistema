@@ -6,6 +6,7 @@ import { DataSource } from 'typeorm';
 import { CreateCompraDto } from './compra.dto';
 import { createHash } from 'node:crypto';
 import { queryRows } from '../common/database/typed-query';
+import { setAuditActor } from '../auth/audit-actor';
 
 interface IdempotencyRow { response: Record<string, unknown>; payload_hash: string; }
 interface ProductoIdRow { IdProducto: number; }
@@ -16,13 +17,14 @@ interface BackorderRow { idBackorder: number; idPedido: number; idDetalle: numbe
 export class CompraService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
-  async create(createCompraDto: CreateCompraDto) {
+  async create(createCompraDto: CreateCompraDto, idUser?: number) {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
+      await setAuditActor(queryRunner, idUser);
       const requestPayload = { ...createCompraDto };
       delete requestPayload.requestId;
       const payloadHash = createHash('sha256')
@@ -101,9 +103,9 @@ export class CompraService {
       };
       if (createCompraDto.requestId) {
         await queryRunner.query(
-          `INSERT INTO operation_idempotency(request_id, operation_type, payload_hash, response)
-           VALUES ($1, 'compra', $2, $3::jsonb)`,
-          [createCompraDto.requestId, payloadHash, JSON.stringify(response)],
+          `INSERT INTO operation_idempotency(request_id, operation_type, id_user, payload_hash, response)
+           VALUES ($1, 'compra', $2, $3, $4::jsonb)`,
+          [createCompraDto.requestId, idUser ?? null, payloadHash, JSON.stringify(response)],
         );
       }
       await queryRunner.commitTransaction();

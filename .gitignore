@@ -18,3 +18,8 @@ public-web/dist/
 public-web/test-results/
 public-web/playwright-report/
 public-web/capture-profile.local.json
+
+# IDE y resultados locales (H01: retirados del control de versiones)
+.vs/
+/test-results/
+/*.log

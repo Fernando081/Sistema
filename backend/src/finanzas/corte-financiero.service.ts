@@ -9,6 +9,7 @@ import { Saldo } from './entities/saldo.entity';
 import PdfPrinter from 'pdfmake';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { queryRows } from '../common/database/typed-query';
+import { BUSINESS_TIME_ZONE, businessDate } from '../common/business-date';
 
 const fonts = {
   Helvetica: {
@@ -49,7 +50,7 @@ export class CorteFinancieroService {
       );
     }
     try {
-      const start = fechaInicio || new Date().toISOString().slice(0, 10);
+      const start = fechaInicio || businessDate();
       const end = fechaFin || start;
       const saldos = await this.saldoRepository.find();
       const saldoActual =
@@ -61,7 +62,7 @@ export class CorteFinancieroService {
         this.dataSource,
         `SELECT categoria, SUM(monto) as total_gastado
            FROM gasto
-          WHERE fecha::date BETWEEN $1::date AND $2::date
+          WHERE (fecha AT TIME ZONE 'America/Mexico_City')::date BETWEEN $1::date AND $2::date
             AND NOT anulado
           GROUP BY categoria ORDER BY total_gastado DESC`,
         [start, end],
@@ -71,7 +72,7 @@ export class CorteFinancieroService {
         this.dataSource,
         `
         SELECT forma_pago, SUM(monto) AS total_pagado FROM pago_proveedor
-         WHERE fecha_pago::date BETWEEN $1::date AND $2::date GROUP BY forma_pago`,
+         WHERE (fecha_pago AT TIME ZONE 'America/Mexico_City')::date BETWEEN $1::date AND $2::date GROUP BY forma_pago`,
         [start, end],
       );
 
@@ -80,7 +81,7 @@ export class CorteFinancieroService {
         `SELECT p.forma_pago, SUM(p.monto) as total_ingreso
            FROM pago p
            JOIN factura f ON f.id_factura = p.id_factura
-          WHERE p.fecha_pago::date BETWEEN $1::date AND $2::date
+          WHERE (p.fecha_pago AT TIME ZONE 'America/Mexico_City')::date BETWEEN $1::date AND $2::date
             AND f.estatus::text <> 'Cancelada'
           GROUP BY p.forma_pago ORDER BY total_ingreso DESC`,
         [start, end],
@@ -95,7 +96,7 @@ export class CorteFinancieroService {
         content: [
           { text: 'Corte Financiero', style: 'header' },
           {
-            text: `Periodo: ${start} a ${end} · Generado: ${new Date().toLocaleString('es-MX')}`,
+            text: `Periodo: ${start} a ${end} · Generado: ${new Date().toLocaleString('es-MX', { timeZone: BUSINESS_TIME_ZONE })}`,
             margin: [0, 0, 0, 20],
           },
 

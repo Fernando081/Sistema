@@ -3,7 +3,8 @@ import { DataSource } from 'typeorm';
 import { queryRows } from './database/typed-query';
 import { syncScheduledJobAlerts } from './scheduled-job-alerts';
 
-export type ScheduledJobName = 'operational_alerts' | 'dashboard_freshness' | 'crm_reports';
+export type ScheduledJobName =
+  'operational_alerts' | 'dashboard_freshness' | 'crm_reports';
 const locks: Record<ScheduledJobName, number> = {
   operational_alerts: 2,
   dashboard_freshness: 3,

@@ -1,3 +1,4 @@
+import { businessDate } from '../common/business-date';
 import {
   BadRequestException,
   ConflictException,
@@ -145,7 +146,7 @@ export class TransferenciasCierresService {
       );
     const end = new Date(Date.UTC(dto.anio, dto.mes, 0));
     const endIso = end.toISOString().slice(0, 10);
-    if (endIso > new Date().toISOString().slice(0, 10))
+    if (endIso >= businessDate())
       throw new BadRequestException(
         'No se puede cerrar un mes que aún no termina',
       );

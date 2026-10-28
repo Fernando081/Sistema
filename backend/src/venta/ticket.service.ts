@@ -1,3 +1,4 @@
+import { businessDate, businessDateTime } from '../common/business-date';
 import { Injectable } from '@nestjs/common';
 import { DatosTicketFactura } from './ticket.types';
 import PdfPrinter from 'pdfmake';
@@ -114,13 +115,11 @@ export class TicketService {
     if (isNaN(fechaEmision.getTime())) {
        fechaEmision = new Date(); // Fallback segurísimo
     }
-    const fechaVencimiento = new Date(fechaEmision);
-    fechaVencimiento.setDate(fechaVencimiento.getDate() + 30);
-    const fechaVencimientoStr = fechaVencimiento.toISOString().split('T')[0];
-    const fechaEmisionStr = fechaEmision
-      .toISOString()
-      .replace('T', ' ')
-      .substring(0, 19);
+    // Fechas impresas en hora de Tampico; el vencimiento suma 30 días de calendario local.
+    const fechaVencimiento = new Date(`${businessDate(fechaEmision)}T00:00:00Z`);
+    fechaVencimiento.setUTCDate(fechaVencimiento.getUTCDate() + 30);
+    const fechaVencimientoStr = fechaVencimiento.toISOString().slice(0, 10);
+    const fechaEmisionStr = businessDateTime(fechaEmision).replace('T', ' ');
     const fiscal = datos.fiscal;
     const isFiscal = fiscal?.state === 'Timbrado' && fiscal.environment === 'production';
     const uuid = fiscal?.uuid || 'PENDIENTE DE TIMBRADO';

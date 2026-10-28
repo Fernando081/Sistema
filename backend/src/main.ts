@@ -8,7 +8,7 @@ async function bootstrap() {
 
   configureApp(app);
 
-  const port = Number(process.env.PORT || 3000);
+  const port = Number(process.env.PORT || 3100);
   if (!Number.isSafeInteger(port) || port < 1 || port > 65535) throw new Error('PORT inválido');
   await app.listen(port);
   console.log(`Backend escuchando en http://localhost:${port}`);

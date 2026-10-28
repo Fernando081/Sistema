@@ -10,14 +10,16 @@ import { RegistrarPagoDto } from './pago.dto';
 import { queryRows } from '../common/database/typed-query';
 import { FacturaSaldoRow, PagoIdRow } from './pago.types';
 import { createHash } from 'node:crypto';
+import { setAuditActor } from '../auth/audit-actor';
 @Injectable()
 export class CobranzaService {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
-  async registrarPago(dto: RegistrarPagoDto) {
+  async registrarPago(dto: RegistrarPagoDto, idUser?: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      await setAuditActor(queryRunner, idUser);
       const payloadHash = createHash('sha256')
         .update(
           JSON.stringify({

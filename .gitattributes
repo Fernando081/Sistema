@@ -1,0 +1,17 @@
+# H02-e: el repositorio guarda texto con LF sin depender de core.autocrlf de cada equipo.
+# Las migraciones validan su checksum sin importar el fin de línea (backend/migration-checksum.js).
+* text=auto
+
+*.ps1 text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.dump binary
+*.woff binary
+*.woff2 binary
+*.zip binary

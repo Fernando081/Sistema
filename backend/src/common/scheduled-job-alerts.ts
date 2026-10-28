@@ -6,10 +6,12 @@ import { queryRows } from './database/typed-query';
 export async function syncScheduledJobAlerts(
   source: Pick<DataSource, 'transaction'>,
 ): Promise<void> {
-  await source.transaction(async manager => {
+  await source.transaction(async (manager) => {
     await manager.query("SET LOCAL statement_timeout='5s'");
-    const [guard] = await queryRows<{ locked: boolean }>(manager,
-      'SELECT pg_try_advisory_xact_lock(72410,4) AS locked');
+    const [guard] = await queryRows<{ locked: boolean }>(
+      manager,
+      'SELECT pg_try_advisory_xact_lock(72410,4) AS locked',
+    );
     if (!guard?.locked) return;
     await manager.query(`WITH checked AS MATERIALIZED (SELECT clock_timestamp() AS at),
       jobs AS MATERIALIZED (

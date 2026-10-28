@@ -12,7 +12,10 @@ function setup(locked = true) {
   };
   const query = jest.fn().mockResolvedValue([]);
   const alertQuery = jest.fn().mockResolvedValue([{ locked: true }]);
-  const transaction = jest.fn(async (work: (manager: { query: jest.Mock }) => Promise<void>) => work({ query: alertQuery }));
+  const transaction = jest.fn(
+    async (work: (manager: { query: jest.Mock }) => Promise<void>) =>
+      work({ query: alertQuery }),
+  );
   const source = {
     createQueryRunner: () => runner,
     query,
@@ -50,10 +53,16 @@ describe('Historial de jobs programados', () => {
     const { source, query, transaction } = setup();
     transaction.mockRejectedValueOnce(new Error('private-alert-error'));
     const report = jest.fn();
-    await expect(runScheduledJob(source, 'operational_alerts', async () => {}, report)).resolves.toBe('success');
+    await expect(
+      runScheduledJob(source, 'operational_alerts', async () => {}, report),
+    ).resolves.toBe('success');
     expect(query.mock.calls[1][0]).toContain("status='success'");
-    expect(report).toHaveBeenCalledWith('No se pudieron revisar avisos de procesos automáticos');
-    expect(JSON.stringify(report.mock.calls)).not.toContain('private-alert-error');
+    expect(report).toHaveBeenCalledWith(
+      'No se pudieron revisar avisos de procesos automáticos',
+    );
+    expect(JSON.stringify(report.mock.calls)).not.toContain(
+      'private-alert-error',
+    );
   });
   it('conserva fallo/cierre sin persistir el detalle del error', async () => {
     const { source, query, runner } = setup();

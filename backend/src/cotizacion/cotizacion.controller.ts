@@ -7,6 +7,7 @@ import { CreateCotizacionDto, ConvertirCotizacionDto } from './cotizacion.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import type { Response } from 'express';
 import { JwtPayload } from '../auth/auth.types';
+import { Permissions } from '../auth/permissions.decorator';
 
 @Controller('cotizacion')
 export class CotizacionController {
@@ -45,8 +46,10 @@ export class CotizacionController {
     res.end(buffer);
   }
 
+  // Convertir crea una venta (fn_crear_venta): mismo permiso que POST /venta.
   @UseGuards(JwtAuthGuard)
   @Post(':id/convertir')
+  @Permissions('ventas.crear')
   convertir(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: ConvertirCotizacionDto,

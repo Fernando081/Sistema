@@ -1,5 +1,5 @@
 const { Client } = require('pg');
-const crypto = require('crypto');
+const { canonicalChecksum, matchesChecksum } = require('./migration-checksum');
 const fs = require('fs');
 const path = require('path');
 const { databaseConfig } = require('./db-config');
@@ -40,8 +40,24 @@ async function run() {
     const applied = new Map(existing.rows.map((row) => [row.filename, row.checksum]));
     // Verifica TODO el historial antes de escribir cualquier migración nueva.
     for (const filename of files) {
-      const checksum = crypto.createHash('sha256').update(fs.readFileSync(path.join(migrationsDir, filename))).digest('hex');
-      if (applied.has(filename) && applied.get(filename) !== checksum) throw new Error(`La migración aplicada cambió: ${filename}`);
+      const content = fs.readFileSync(path.join(migrationsDir, filename));
+      if (applied.has(filename) && !matchesChecksum(applied.get(filename), content)) throw new Error(`La migración aplicada cambió: ${filename}`);
+    }
+    if (!statusOnly && !dryRun) {
+      // Re-sella checksums históricos de bytes crudos sólo cuando el archivo actual
+      // coincide exactamente con lo registrado; así un clon con otro fin de línea valida.
+      for (const filename of files) {
+        if (!applied.has(filename)) continue;
+        const content = fs.readFileSync(path.join(migrationsDir, filename));
+        const canonical = canonicalChecksum(content);
+        if (applied.get(filename) === canonical) continue;
+        await client.query(
+          'UPDATE schema_migration SET checksum = $2 WHERE filename = $1 AND checksum = $3',
+          [filename, canonical, applied.get(filename)],
+        );
+        applied.set(filename, canonical);
+        console.log(`Checksum normalizado: ${filename}`);
+      }
     }
     if (statusOnly) {
       for (const filename of files) console.log(`${applied.has(filename) ? 'Aplicada' : 'Pendiente'}: ${filename}`);
@@ -52,8 +68,7 @@ async function run() {
       for (const filename of files) {
         const number = Number(filename.split('_')[0]);
         if (number <= baselineThrough && !applied.has(filename)) {
-          const sql = fs.readFileSync(path.join(migrationsDir, filename), 'utf8');
-          const checksum = crypto.createHash('sha256').update(sql).digest('hex');
+          const checksum = canonicalChecksum(fs.readFileSync(path.join(migrationsDir, filename)));
           await client.query(
             'INSERT INTO schema_migration(filename, checksum) VALUES ($1, $2) ON CONFLICT DO NOTHING',
             [filename, checksum],
@@ -66,10 +81,11 @@ async function run() {
 
     if (dryRun) await client.query('BEGIN');
     for (const filename of files) {
-      const sql = fs.readFileSync(path.join(migrationsDir, filename), 'utf8');
-      const checksum = crypto.createHash('sha256').update(sql).digest('hex');
+      const content = fs.readFileSync(path.join(migrationsDir, filename));
+      const sql = content.toString('utf8');
+      const checksum = canonicalChecksum(content);
       if (applied.has(filename)) {
-        if (applied.get(filename) !== checksum) {
+        if (!matchesChecksum(applied.get(filename), content)) {
           throw new Error(`La migración aplicada cambió: ${filename}`);
         }
         continue;

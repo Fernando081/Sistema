@@ -1,5 +1,7 @@
 import { CompraQueryDto } from './compra-query';
-import { Body, Controller, Post, Get, Param, Query, StreamableFile, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Post, Get, Param, Query, StreamableFile, ParseIntPipe, Req } from '@nestjs/common';
+import { Permissions } from '../auth/permissions.decorator';
+import { JwtPayload } from '../auth/auth.types';
 import { CompraService } from './compra.service';
 import { CreateCompraDto } from './compra.dto';
 
@@ -7,9 +9,11 @@ import { CreateCompraDto } from './compra.dto';
 export class CompraController {
   constructor(private readonly compraService: CompraService) {}
 
+  // Compra directa: ingresa mercancía y genera saldo por pagar, igual que una recepción.
   @Post()
-  create(@Body() createCompraDto: CreateCompraDto) {
-    return this.compraService.create(createCompraDto);
+  @Permissions('compras.recibir')
+  create(@Body() createCompraDto: CreateCompraDto, @Req() req: { user: JwtPayload }) {
+    return this.compraService.create(createCompraDto, req.user?.idUser);
   }
 
   @Get()

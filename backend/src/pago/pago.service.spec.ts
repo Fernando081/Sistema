@@ -2,6 +2,7 @@ import { CobranzaService } from './cobranza.service';
 import { RegistroRepService } from './registro-rep.service';
 import { RepPdfService } from './rep-pdf.service';
 import { RepXmlService } from './rep-xml.service';
+import { FiscalService } from '../fiscal/fiscal.service';
 import { DataSource } from 'typeorm';
 import { PagoService } from './pago.service';
 import { MetodoPago } from '../common/enums/app.enums';
@@ -66,6 +67,6 @@ function createPagoService(source: unknown): PagoService {
     new CobranzaService(ds),
     new RegistroRepService(ds),
     new RepPdfService(ds),
-    new RepXmlService(ds),
+    new RepXmlService({ previewXml: jest.fn(async () => '<cfdi:Comprobante/>') } as unknown as FiscalService),
   );
 }

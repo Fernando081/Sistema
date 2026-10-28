@@ -2,6 +2,7 @@ import { CobranzaService } from './cobranza.service';
 import { RegistroRepService } from './registro-rep.service';
 import { RepPdfService } from './rep-pdf.service';
 import { RepXmlService } from './rep-xml.service';
+import { FiscalService } from '../fiscal/fiscal.service';
 import { DataSource } from 'typeorm';
 import { PagoService } from './pago.service';
 
@@ -111,25 +112,14 @@ describe('Cobros: saldos y reversos', () => {
     ).rejects.toThrow('Concilia');
     expect(runner.rollbackTransaction).toHaveBeenCalled();
   });
-  it('escapa los datos del receptor y cuenta en XML', async () => {
-    const query = jest.fn(async (sql: string) =>
-      sql.includes('SELECT r.*')
-        ? [
-            {
-              id_rep: 1,
-              cliente_nombre: 'Taller & "Diesel" <test>',
-              cliente_rfc: 'AAA010101AAA',
-              moneda: 'MXN',
-              fecha_emision: '2026-09-16',
-              fecha_pago: '2026-09-16',
-              cuenta_beneficiario: '"/><evil/>',
-            },
-          ]
-        : [],
+  it('descarga el XML del REP desde el generador fiscal único', async () => {
+    const previewXml = jest.fn(async () => '<cfdi:Comprobante TipoDeComprobante="P"/>');
+    const service = new PagoService(
+      new CobranzaService({} as DataSource), new RegistroRepService({} as DataSource),
+      new RepPdfService({} as DataSource), new RepXmlService({ previewXml } as unknown as FiscalService),
     );
-    const xml = await createPagoService({ query } as any).generarRepXml(1);
-    expect(xml).toContain('Taller &amp; &quot;Diesel&quot; &lt;test&gt;');
-    expect(xml).not.toContain('<evil/>');
+    await expect(service.generarRepXml(7)).resolves.toContain('TipoDeComprobante="P"');
+    expect(previewXml).toHaveBeenCalledWith('REP', 7);
   });
 });
 
@@ -139,6 +129,6 @@ function createPagoService(source: unknown): PagoService {
     new CobranzaService(ds),
     new RegistroRepService(ds),
     new RepPdfService(ds),
-    new RepXmlService(ds),
+    new RepXmlService({ previewXml: jest.fn(async () => '<cfdi:Comprobante/>') } as unknown as FiscalService),
   );
 }

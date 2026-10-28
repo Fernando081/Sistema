@@ -1,3 +1,4 @@
+import { businessDateTime } from '../common/business-date';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
@@ -50,10 +51,7 @@ const attr = (value: unknown) => {
 const money = (value: unknown) => Number(value || 0).toFixed(2);
 const quantity = (value: unknown) => Number(value || 0).toFixed(6).replace(/\.?0+$/, '');
 const rate = (value: unknown) => Number(value || 0).toFixed(6);
-const satDate = (value: Date | string) => new Intl.DateTimeFormat('sv-SE', {
-  timeZone: 'America/Mexico_City', year: 'numeric', month: '2-digit', day: '2-digit',
-  hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
-}).format(new Date(value)).replace(' ', 'T');
+const satDate = businessDateTime;
 
 @Injectable()
 export class FiscalXmlBuilder {

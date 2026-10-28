@@ -1,3 +1,4 @@
+import { setAuditActor } from '../auth/audit-actor';
 import {
   Injectable,
   BadRequestException,
@@ -23,12 +24,13 @@ export class RegistroRepService {
     @InjectDataSource() private readonly dataSource: DataSource,
     private readonly fiscalService?: FiscalService,
   ) {}
-  async registrarRepComplejo(dto: RegistrarRepDto) {
+  async registrarRepComplejo(dto: RegistrarRepDto, idUser?: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
+      await setAuditActor(queryRunner, idUser);
       const hash = createHash('sha256')
         .update(
           JSON.stringify({

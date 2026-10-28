@@ -70,7 +70,7 @@ Las acciones de autorización y tesorería requieren además rol administrador.
 
 ## Compatibilidad
 
-Las compras históricas creadas por el flujo anterior continúan visibles y pagables en la pestaña **Compras anteriores**. Las nuevas operaciones deben usar orden, recepción y factura separadas.
+Las compras históricas creadas por el flujo anterior continúan visibles y pagables en la pestaña **Compras anteriores**. Desde H01 (27/10/2026) ese pago exige ADMIN + `compras.pagar`, registra actor y usa `requestId` idempotente como los demás pagos; su fusión con el flujo de facturas queda en H02-b. Las nuevas operaciones deben usar orden, recepción y factura separadas.
 
 ## Contrato JSON de identificadores — 2 de octubre de 2026
 

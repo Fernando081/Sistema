@@ -14,8 +14,9 @@ export class PagoController {
   constructor(private readonly pagoService: PagoService) {}
 
   @Post()
-  registrar(@Body() dto: RegistrarPagoDto) {
-    return this.pagoService.registrarPago(dto);
+  @Permissions('cobranza.registrar')
+  registrar(@Body() dto: RegistrarPagoDto, @Req() req: { user: JwtPayload }) {
+    return this.pagoService.registrarPago(dto, req.user?.idUser);
   }
 
   @Get('factura/:id')
@@ -39,8 +40,9 @@ export class PagoController {
   }
 
   @Post('rep')
-  registrarRep(@Body() dto: RegistrarRepDto) {
-    return this.pagoService.registrarRepComplejo(dto);
+  @Permissions('cobranza.registrar')
+  registrarRep(@Body() dto: RegistrarRepDto, @Req() req: { user: JwtPayload }) {
+    return this.pagoService.registrarRepComplejo(dto, req.user?.idUser);
   }
 
   @Get('rep')

@@ -152,7 +152,7 @@ export class CotizacionService {
     await queryRunner.startTransaction();
 
     try {
-      if(actor)await commercialActor(queryRunner,actor);else await setAuditActor(queryRunner,idVendedor);
+      if(actor)await commercialActor(queryRunner,actor,'ventas.crear');else await setAuditActor(queryRunner,idVendedor);
       const revision=await requireAcceptedQuote(queryRunner,idCotizacion);
       if(revision&&dto.articulosAceptados.some(a=>Number(revision.snapshot.conceptos.find(c=>c.idConcepto===a.idConcepto)?.precio)!==a.precioCierre))throw new BadRequestException('El precio difiere de la revisión aceptada; prepara una nueva revisión.');
       // 1. Extraer cabecera para re-calcular impuestos de los confirmados

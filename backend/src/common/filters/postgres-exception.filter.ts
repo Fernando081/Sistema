@@ -1,4 +1,9 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpStatus,
+} from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { Request, Response } from 'express';
 
@@ -37,13 +42,16 @@ export class PostgresExceptionFilter implements ExceptionFilter {
         break;
       case 'P0001': // RAISE EXCEPTION de reglas de negocio
         status = HttpStatus.BAD_REQUEST;
-        message = error.message?.split('\n')[0]?.slice(0, 300) || 'La operación no cumple las reglas de negocio.';
+        message =
+          error.message?.split('\n')[0]?.slice(0, 300) ||
+          'La operación no cumple las reglas de negocio.';
         break;
       case '40001':
       case '40P01':
       case '55P03':
         status = HttpStatus.CONFLICT;
-        message = 'Otro usuario modificó los datos. Actualiza e intenta nuevamente.';
+        message =
+          'Otro usuario modificó los datos. Actualiza e intenta nuevamente.';
         break;
       default:
         // Mensaje genérico para otros errores de BD no mapeados explícitamente

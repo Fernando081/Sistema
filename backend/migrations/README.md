@@ -272,3 +272,19 @@ Respaldo previo legible `.backups/2026-10-22T05-38-01-973Z/database.dump` → db
 Permiso ventas.correo.gestionar ADMIN inicial/delegable y documento_salida/archivo/cierre, con UUID/huella/referencia de origen/bytes/PDF/hash/actor, clasificador fiscal y modo Local fijo. Cierre único Simulado/Cancelado/Obsoleto, FKs restrictivas, índices/constraints y guardas ALWAYS de vínculo/tamaño/cabeceraPDF/conservación/privacidad de archivo en auditoría. Metadatos/cierres auditados sin destinatario/cuerpo/bytes. No cambia112/anteriores, función histórica de correo o contenido de facturas; sin backfill, SMTP, consumidor automático o siembra de ejemplos.
 
 Previo legible `.backups/2026-10-22T15-46-14-271Z/database.dump` → db:check revertido →113 aplicada tras aceptación real aislada desde respaldo15:36. Backend Node24 reiniciado faseO01.2a. Posterior legible `.backups/2026-10-22T15-46-37-897Z/database.dump` restaurado y aceptación13 grupos reales; copias propias eliminadas. Tres tablas nuevas vacías en origen y checksums112/113 conservados. O01.2 sigue parcial por ejecutor/transporte O01.2b y otros consumidores O01.2c. [Manual y límites](../../docs/SALIDA_DOCUMENTOS.md).
+
+## 114 — Permisos de surtido y cancelación de pedidos H01 (27/10/2026)
+
+Agrega `pedidos.surtir` y `pedidos.cancelar` y los concede a `admin` y `user` para conservar el comportamiento previo; desde ahora pueden negarse por usuario o perfil S01. `POST /pedido/:id/surtir` y `/cancelar` los exigen. No crea tablas, no cambia datos de pedidos ni otros permisos.
+
+Previo legible `.backups/2026-10-27T06-15-52-057Z` → db:check revertido → 114 aplicada. Posterior legible `.backups/2026-10-27T06-16-14-798Z`. Verificado en origen: cinco concesiones `pedidos.*` (entregas sigue sólo admin) y permiso efectivo del administrador existente. Sin aceptación HTTP real en copia aislada (ver sesión H01 del README).
+
+## 115 — Permisos de cobranza y trazabilidad H02-a (27/10/2026)
+
+Agrega `cobranza.registrar` (`POST /pago`, `POST /pago/rep`) e `inventario.trazabilidad` (lotes, series y cascos), concedidos a `admin` y `user` para conservar el acceso; negables por usuario o perfil. Sin tablas ni cambios de datos.
+
+Previo legible `.backups/2026-10-27T07-27-29-729Z` → db:check revertido → 115 aplicada. Posterior legible `.backups/2026-10-27T07-27-33-959Z`, usado por la aceptación `test:route-permissions` (copia eliminada).
+
+### Checksums independientes del fin de línea (H02-e)
+
+`run-migrations.js` usa `migration-checksum.js`: las migraciones nuevas guardan el SHA-256 del contenido con LF y la validación acepta además los checksums históricos de bytes crudos (CRLF o LF). En una ejecución normal (no `--check`/`--status`) re-sella al checksum canónico **sólo** las migraciones cuyo archivo actual coincide con lo registrado. Motivo: 019, 077, 080, 081, 082 y 085 tenían checksum de bytes con finales mezclados que ningún clon nuevo podía reproducir (git guarda LF), así que `db:migrate` habría rechazado la base en staging u otro equipo. En esta base se re-sellaron esas seis al aplicar 115; las 109 aplicadas validan ahora con el blob de git en LF y en CRLF. Un cambio de contenido sigue siendo rechazado.
