@@ -1,0 +1,149 @@
+{
+  "id": "O04.1",
+  "fecha": "2026-10-29T04:44:09.890Z",
+  "respaldoBase": ".backups/2026-10-29T04-15-03-843Z",
+  "total": 28,
+  "aprobadas": 28,
+  "resultados": [
+    {
+      "name": "Copia \"producción\" restaurada",
+      "ok": true,
+      "detail": "1 migraciones pendientes (121_salud_salidas.sql)"
+    },
+    {
+      "name": "build rechaza el árbol con cambios sin commit",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "build crea la versión A con manifiesto",
+      "ok": true,
+      "detail": "20261028-223938-8cefd0c"
+    },
+    {
+      "name": "El manifiesto registra commit, sucio y migraciones",
+      "ok": true,
+      "detail": "121_salud_salidas.sql"
+    },
+    {
+      "name": "verify confirma la integridad",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "verify detecta un archivo alterado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "deploy exige staging aprobado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "staging-deploy exige refrescar staging",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "staging-refresh restaura la copia en la base _staging",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "staging-deploy aplica migraciones y pasa las pruebas de humo",
+      "ok": true,
+      "detail": "8 pruebas, 1 migraciones"
+    },
+    {
+      "name": "Staging sirve la versión A en su puerto",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Login por el proxy de staging llega al backend (rechazo 401)",
+      "ok": true,
+      "detail": "HTTP 401"
+    },
+    {
+      "name": "staging-stop detiene staging",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "deploy rechaza una versión sin commit sin permiso explícito",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "deploy A: respaldo previo, migraciones, cambio y pruebas de humo",
+      "ok": true,
+      "detail": ".backups/2026-10-29T04-40-32-253Z, 1 migraciones"
+    },
+    {
+      "name": "La copia \"producción\" quedó sin migraciones pendientes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "El respaldo previo existe y es legible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "build crea la versión B",
+      "ok": true,
+      "detail": "20261028-224059-8cefd0c"
+    },
+    {
+      "name": "deploy B sin staging se rechaza aunque A pasó",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Omitir staging exige un motivo suficiente",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "staging-deploy B sin migraciones nuevas",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "deploy B reemplaza a A y la conserva como anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "rollback regresa a A sin tocar la base",
+      "ok": true,
+      "detail": "{\"actual\":\"20261028-223938-8cefd0c\",\"anterior\":\"20261028-224059-8cefd0c\"} sirve 20261028-223938-8cefd0c"
+    },
+    {
+      "name": "Un despliegue que falla las pruebas de humo vuelve solo a la versión anterior",
+      "ok": true,
+      "detail": "fallo-revertido"
+    },
+    {
+      "name": "status informa la versión en marcha",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "stop detiene producción",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "start vuelve a iniciar la versión actual",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "prune no propone retirar versiones protegidas",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

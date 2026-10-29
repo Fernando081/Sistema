@@ -31,3 +31,6 @@ public-web/capture-profile.local.json
 /.artifacts/*.png
 /.artifacts/*.jpg
 /.artifacts/*.webp
+
+# O04 (28/10/2026): versiones desplegables, estado, bitácoras y datos de staging se quedan en el equipo.
+/releases/
