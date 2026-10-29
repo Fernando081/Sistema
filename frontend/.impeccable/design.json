@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-29T00:00:00-06:00",
+  "title": "Design System: RTT ERP — Industrial premium",
+  "extensions": {
+    "colorMeta": {
+      "ink": { "role": "primary", "displayName": "Tinta de taller", "canonical": "#121b2a", "tonalRamp": ["#0b111b", "#121b2a", "#26324a", "#3d4b66", "#5b6984", "#8691a7", "#b9c0ce", "#e6e9ef"] },
+      "brass": { "role": "primary", "displayName": "Latón RTT", "canonical": "#d99a2b", "tonalRamp": ["#3a2606", "#5e3e0c", "#82540f", "#c4861b", "#d99a2b", "#e6ae4c", "#f0c47a", "#f8edd8"] },
+      "brass-strong": { "role": "primary", "displayName": "Latón profundo", "canonical": "#c4861b" },
+      "brass-text": { "role": "primary", "displayName": "Latón legible", "canonical": "#82540f" },
+      "brass-soft": { "role": "primary", "displayName": "Latón tenue", "canonical": "#f8edd8" },
+      "link": { "role": "secondary", "displayName": "Azul de enlace", "canonical": "#1f4f86", "tonalRamp": ["#0d2442", "#163a64", "#1f4f86", "#3a6ba3", "#6290c2", "#8cbcf0", "#a6cdf6", "#e5eef8"] },
+      "canvas": { "role": "neutral", "displayName": "Lienzo de papel", "canonical": "#f4f3ef", "tonalRamp": ["#141a24", "#454e5c", "#5f6776", "#cfcac0", "#e4e1da", "#efede8", "#f4f3ef", "#faf9f6"] },
+      "surface": { "role": "neutral", "displayName": "Superficie", "canonical": "#ffffff" },
+      "rail": { "role": "neutral", "displayName": "Riel grafito", "canonical": "#0f1520", "tonalRamp": ["#090d13", "#0f1520", "#161e2b", "#232c3a", "#364254", "#8f9aaa", "#c7cfda", "#f2d49c"] },
+      "text": { "role": "neutral", "displayName": "Texto principal", "canonical": "#141a24" },
+      "success": { "role": "semantic", "displayName": "Éxito", "canonical": "#1f7a4a" },
+      "warning": { "role": "semantic", "displayName": "Aviso", "canonical": "#8a5a00" },
+      "danger": { "role": "semantic", "displayName": "Peligro", "canonical": "#b42335" },
+      "info": { "role": "semantic", "displayName": "Información", "canonical": "#1f4f86" }
+    },
+    "typographyMeta": {
+      "headline": { "displayName": "Título de página", "purpose": "Único h1, puesto por el shell bajo el antetítulo de sección." },
+      "total": { "displayName": "Total", "purpose": "Total del recibo de venta, cotización y cobranza." },
+      "metric": { "displayName": "Indicador", "purpose": "Valor de las tarjetas de indicador." },
+      "title-dialog": { "displayName": "Título de diálogo", "purpose": "Títulos de MatDialog." },
+      "title": { "displayName": "Título de bloque", "purpose": "Tarjetas, listas y h2 de sección." },
+      "body": { "displayName": "Cuerpo", "purpose": "Texto de trabajo a 14 px." },
+      "label-eyebrow": { "displayName": "Antetítulo", "purpose": "Sección en mayúsculas, latón legible." },
+      "label-table": { "displayName": "Rótulo de tabla", "purpose": "Encabezados de tabla y etiquetas de modo tarjeta." },
+      "code": { "displayName": "Código", "purpose": "Números de parte y códigos en chip." }
+    },
+    "shadows": [
+      { "name": "xs", "value": "0 1px 2px rgba(17, 24, 39, 0.05)", "purpose": "Tarjetas, listas y botón principal en reposo." },
+      { "name": "sm", "value": "0 1px 2px rgba(17, 24, 39, 0.04), 0 2px 6px rgba(17, 24, 39, 0.05)", "purpose": "Hover de filas de trabajo." },
+      { "name": "md", "value": "0 2px 4px rgba(17, 24, 39, 0.04), 0 10px 24px -6px rgba(17, 24, 39, 0.12)", "purpose": "Hover de indicadores y recibo de totales." },
+      { "name": "lg", "value": "0 24px 60px -12px rgba(17, 24, 39, 0.28)", "purpose": "Diálogos, resultados de búsqueda y notificaciones." },
+      { "name": "brass-glow", "value": "inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 6px 18px -6px rgba(217, 154, 43, 0.65)", "purpose": "Exclusivo de botones de cierre latón." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.2, 0.8, 0.2, 1)", "purpose": "Transiciones de hover y elevación (150–250 ms)." },
+      { "name": "page-enter", "value": "fadeInSlideUp 0.22s cubic-bezier(0.2, 0, 0, 1) backwards", "purpose": "Entrada del contenido de página; sin fill final." }
+    ],
+    "breakpoints": [
+      { "name": "shell-compact", "value": "1100px" },
+      { "name": "topbar-compact", "value": "900px" },
+      { "name": "list-stack", "value": "760px" },
+      { "name": "dialog-sheet", "value": "768px" },
+      { "name": "topbar-minimal", "value": "650px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción principal única de la vista: tinta en claro, latón en oscuro.",
+      "html": "<button class=\"ds-btn-primary\">Guardar cambios</button>",
+      "css": ".ds-btn-primary { height: 38px; padding: 0 16px; border: 0; border-radius: 10px; background: var(--c-primary, #121b2a); color: var(--c-on-primary, #fff); font: 600 14px/1 'Inter Variable', 'Segoe UI', sans-serif; box-shadow: 0 1px 2px rgba(17,24,39,.05), inset 0 1px 0 rgba(255,255,255,.08); cursor: pointer; transition: filter .15s; } .ds-btn-primary:hover { filter: brightness(1.12); } .ds-btn-primary:focus-visible { outline: 2px solid var(--c-focus, #c4861b); outline-offset: 3px; }"
+    },
+    {
+      "name": "Brass Close Button",
+      "kind": "button",
+      "refersTo": "button-brass",
+      "description": "Cierre de operación (Cobrar venta, Generar cotización); latón en ambos temas.",
+      "html": "<button class=\"ds-btn-brass\">Cobrar venta</button>",
+      "css": ".ds-btn-brass { min-height: 50px; padding: 0 24px; border: 0; border-radius: 10px; background: var(--c-brass, #d99a2b); color: var(--c-on-brass, #1c1305); font: 600 16px/1 'Inter Variable', 'Segoe UI', sans-serif; box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 6px 18px -6px rgba(217,154,43,.65); cursor: pointer; transition: background-color .15s; } .ds-btn-brass:hover { background: var(--c-brass-strong, #c4861b); } .ds-btn-brass:focus-visible { outline: 2px solid var(--c-focus, #c4861b); outline-offset: 3px; }"
+    },
+    {
+      "name": "Outlined Button",
+      "kind": "button",
+      "refersTo": "button-outlined",
+      "description": "Acciones secundarias.",
+      "html": "<button class=\"ds-btn-outlined\">Exportar</button>",
+      "css": ".ds-btn-outlined { height: 38px; padding: 0 16px; border: 1px solid var(--c-border-strong, #cfcac0); border-radius: 10px; background: var(--c-surface, #fff); color: var(--c-text, #141a24); font: 600 14px/1 'Inter Variable', 'Segoe UI', sans-serif; cursor: pointer; transition: background-color .15s; } .ds-btn-outlined:hover { background: var(--c-surface-2, #faf9f6); } .ds-btn-outlined:focus-visible { outline: 2px solid var(--c-focus, #c4861b); outline-offset: 3px; }"
+    },
+    {
+      "name": "Money Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo de importe tabular alineado a la derecha con foco latón.",
+      "html": "<label class=\"ds-money\">$<input class=\"ds-money-input\" value=\"742.50\" aria-label=\"Precio unitario\"></label>",
+      "css": ".ds-money { display: flex; align-items: center; gap: .25rem; color: var(--c-text-3, #5f6776); font: 14px 'Inter Variable', 'Segoe UI', sans-serif; } .ds-money-input { width: 92px; padding: .42rem .5rem; border: 1px solid var(--c-border-strong, #cfcac0); border-radius: 8px; background: var(--c-surface, #fff); color: var(--c-text, #141a24); text-align: right; font: inherit; font-variant-numeric: tabular-nums; } .ds-money-input:hover { border-color: var(--c-text-3, #5f6776); } .ds-money-input:focus { outline: 0; border-color: var(--c-brass-strong, #c4861b); box-shadow: 0 0 0 3px var(--c-brass-soft, #f8edd8); }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge-success",
+      "description": "Estado con punto + texto; nunca sólo color.",
+      "html": "<span class=\"ds-badge ds-badge-success\">Timbrada</span> <span class=\"ds-badge ds-badge-warning\">Pendiente</span> <span class=\"ds-badge ds-badge-danger\">Cancelada</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: .35rem; padding: .2rem .6rem; border-radius: 999px; font: 600 .72rem/1.4 'Inter Variable', 'Segoe UI', sans-serif; letter-spacing: .02em; } .ds-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .85; } .ds-badge-success { background: var(--c-success-soft, #e3f3ea); color: var(--c-success, #1f7a4a); } .ds-badge-warning { background: var(--c-warning-soft, #fbf0d9); color: var(--c-warning, #8a5a00); } .ds-badge-danger { background: var(--c-danger-soft, #fbe8ea); color: var(--c-danger, #b42335); }"
+    },
+    {
+      "name": "Part Number Chip",
+      "kind": "chip",
+      "refersTo": "code-chip",
+      "description": "Forma canónica de mostrar un número de parte o código.",
+      "html": "<span class=\"ds-code-chip\">23532396</span>",
+      "css": ".ds-code-chip { display: inline-block; padding: .05rem .4rem; border-radius: 6px; background: var(--c-surface-sunken, #efede8); border: 1px solid var(--c-border, #e4e1da); color: var(--c-text-2, #454e5c); font: 600 .72rem/1.5 ui-monospace, 'Cascadia Mono', Consolas, monospace; }"
+    },
+    {
+      "name": "Metric Card",
+      "kind": "card",
+      "refersTo": "metric-card-featured",
+      "description": "Indicador navegable; la variante destacada es tinta con halo latón.",
+      "html": "<a class=\"ds-metric\" href=\"#\"><small>Ventas de hoy</small><strong>$48,215.00</strong><em>Ver ventas</em></a> <a class=\"ds-metric ds-metric-featured\" href=\"#\"><small>Por cobrar</small><strong>$126,904.50</strong><em>Ir a cobranza</em></a>",
+      "css": ".ds-metric { position: relative; display: inline-flex; flex-direction: column; min-width: 220px; padding: 1.15rem 1.2rem; background: var(--c-surface, #fff); color: var(--c-text, #141a24); border: 1px solid var(--c-border, #e4e1da); border-radius: 14px; text-decoration: none; overflow: hidden; box-shadow: 0 1px 2px rgba(17,24,39,.05); font-family: 'Inter Variable', 'Segoe UI', sans-serif; transition: transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s cubic-bezier(.2,.8,.2,1), border-color .2s; } .ds-metric:hover { transform: translateY(-2px); border-color: var(--c-border-strong, #cfcac0); box-shadow: 0 2px 4px rgba(17,24,39,.04), 0 10px 24px -6px rgba(17,24,39,.12); } .ds-metric:focus-visible { outline: 2px solid var(--c-focus, #c4861b); outline-offset: 3px; } .ds-metric small { color: var(--c-text-3, #5f6776); font-size: .78rem; font-weight: 500; } .ds-metric strong { margin-top: .2rem; font-size: 1.55rem; font-weight: 650; letter-spacing: -.025em; font-variant-numeric: tabular-nums; } .ds-metric em { margin-top: .6rem; color: var(--c-link, #1f4f86); font-size: .76rem; font-style: normal; font-weight: 600; } .ds-metric em::after { content: ' →'; } .ds-metric-featured { background: #121b2a; border-color: #121b2a; color: #fff; } .ds-metric-featured::after { content: ''; position: absolute; right: -40px; top: -40px; width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, rgba(217,154,43,.35), transparent 70%); } .ds-metric-featured small { color: rgba(255,255,255,.72); } .ds-metric-featured em { color: #d99a2b; }"
+    },
+    {
+      "name": "Rail Navigation",
+      "kind": "nav",
+      "refersTo": "rail-link-active",
+      "description": "Riel grafito siempre oscuro; activo con barra e icono latón.",
+      "html": "<nav class=\"ds-rail\" aria-label=\"Principal\"><a class=\"ds-rail-link\" href=\"#\">Inicio</a><a class=\"ds-rail-link is-active\" href=\"#\" aria-current=\"page\">Ventas</a><a class=\"ds-rail-link\" href=\"#\">Inventario</a></nav>",
+      "css": ".ds-rail { display: flex; flex-direction: column; gap: 2px; width: 240px; padding: .5rem .7rem; background: #0f1520; font-family: 'Inter Variable', 'Segoe UI', sans-serif; } .ds-rail-link { position: relative; display: flex; align-items: center; min-height: 36px; padding: 0 .7rem; border-radius: 9px; color: #c7cfda; font-size: .84rem; font-weight: 500; text-decoration: none; transition: background-color .15s, color .15s; } .ds-rail-link:hover { background: rgba(255,255,255,.05); color: #fff; } .ds-rail-link:focus-visible { outline: 2px solid #f0bf66; outline-offset: 2px; } .ds-rail-link.is-active { background: rgba(217,154,43,.14); color: #f2d49c; } .ds-rail-link.is-active::before { content: ''; position: absolute; left: -.7rem; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; background: #d99a2b; }"
+    },
+    {
+      "name": "Totals Receipt",
+      "kind": "custom",
+      "refersTo": "total-receipt",
+      "description": "Recibo grafito de venta/cotización/cobranza que cierra la captura.",
+      "html": "<section class=\"ds-receipt\"><p class=\"ds-receipt-label\">Resumen</p><dl><div><dt>Subtotal</dt><dd>$1,280.17</dd></div><div><dt>IVA 16 %</dt><dd>$204.83</dd></div><div class=\"ds-receipt-total\"><dt>Total</dt><dd>$1,485.00</dd></div></dl><button class=\"ds-receipt-pay\">Cobrar venta</button></section>",
+      "css": ".ds-receipt { position: relative; width: 300px; padding: 1.25rem; border: 1px solid #232c3a; border-radius: 14px; background: #161e2b; color: #e8edf3; font-family: 'Inter Variable', 'Segoe UI', sans-serif; overflow: hidden; box-shadow: 0 2px 4px rgba(17,24,39,.04), 0 10px 24px -6px rgba(17,24,39,.12); } .ds-receipt::before { content: ''; position: absolute; inset: 0 0 auto; height: 3px; background: linear-gradient(90deg, #d99a2b, transparent); } .ds-receipt-label { margin: 0 0 .75rem; color: #f0c47a; font-size: .7rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; } .ds-receipt dl { margin: 0; font-variant-numeric: tabular-nums; } .ds-receipt dl div { display: flex; justify-content: space-between; padding: .32rem 0; color: #b8c2cf; } .ds-receipt dd { margin: 0; color: #e8edf3; } .ds-receipt-total { align-items: baseline; margin-top: .55rem; padding-top: .85rem !important; border-top: 1px dashed rgba(255,255,255,.18); } .ds-receipt-total dt { color: #fff; font-weight: 600; } .ds-receipt-total dd { color: #fff; font-size: 1.85rem; font-weight: 700; letter-spacing: -.03em; } .ds-receipt-pay { width: 100%; min-height: 50px; margin-top: 1.1rem; border: 0; border-radius: 10px; background: #d99a2b; color: #1c1305; font: 600 1rem 'Inter Variable', 'Segoe UI', sans-serif; box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 6px 18px -6px rgba(217,154,43,.65); cursor: pointer; } .ds-receipt-pay:hover { background: #c4861b; } .ds-receipt-pay:focus-visible { outline: 2px solid #f0bf66; outline-offset: 3px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El mostrador de latón",
+    "overview": "Un banco de trabajo ordenado. El grafito y la tinta sostienen el trabajo de todos los días: buscar por número de parte, capturar partidas, revisar saldos. El latón, el ámbar del logotipo RTT, aparece sólo donde algo se decide o se cierra: cobrar una venta, generar la cotización, el indicador de la sección activa, el foco del campo donde se escribe. Si el latón está en todas partes, deja de señalar.\n\nLa densidad es de herramienta profesional: Material 3 en densidad -1, cuerpo de 14 px, tablas con encabezados en versalitas y cifras tabulares. Las superficies son planas, blancas sobre un lienzo cálido (o tinta profunda en oscuro), separadas por bordes finos más que por sombras. El riel lateral es siempre oscuro en ambos temas; el escenario cambia entre claro y oscuro. Los controles son firmes y sobrios: una sola acción principal por vista, sin degradados decorativos ni color fijo fuera de los tokens.",
+    "keyCharacteristics": [
+      "Grafito y tinta para estructura; latón escaso para cierre, foco y selección.",
+      "Lienzo cálido (no gris frío) en claro; tinta casi negra azulada en oscuro.",
+      "Plano con realce sutil: borde fino en reposo, sombra sólo al interactuar o flotar.",
+      "Inter Variable con cifras tabulares en todo monto y cantidad.",
+      "Un solo título de página, puesto por el shell; el resto son `h2`.",
+      "Estados con punto + texto, nunca sólo color."
+    ],
+    "rules": [
+      { "name": "The Brass Means Done Rule", "body": "El latón sólido se reserva para la acción que cierra una operación y para señales de posición/foco. Nunca para decorar tarjetas, títulos o iconos sueltos.", "section": "colors" },
+      { "name": "The Token-Only Rule", "body": "Ningún color fijo en componentes: todo valor sale de `--c-*`. Un hex en el CSS de una pantalla es una regresión (U01.2 retiró `#c62828`, `#a76809`, degradados índigo, etc.).", "section": "colors" },
+      { "name": "The Two Inks Rule", "body": "`--c-ink` cambia de tinta (claro) a latón (oscuro); cualquier fondo que deba ser oscuro en ambos temas usa los tokens del riel, no `ink`.", "section": "colors" },
+      { "name": "The Tabular Money Rule", "body": "Todo monto, cantidad, folio y conteo usa `font-variant-numeric: tabular-nums` y va alineado a la derecha en tablas.", "section": "typography" },
+      { "name": "The Zero Tracking Rule", "body": "Material trae tracking de 0.25–0.5 px; con Inter se ve estirado. Controles, tablas y campos van a tracking 0; sólo los rótulos en mayúsculas llevan tracking positivo.", "section": "typography" },
+      { "name": "The One H1 Rule", "body": "El shell pone el único `h1`. Las pantallas usan `h2`; si necesitan un `h1` para `aria-labelledby`, va `sr-only`.", "section": "typography" },
+      { "name": "The Flat-At-Rest Rule", "body": "Nada se levanta sin motivo: la elevación es estado (hover, flotante), no decoración.", "section": "elevation" }
+    ],
+    "dos": [
+      "**Do** usar sólo tokens `--c-*`, `--radius-*` y `--shadow-*`; agregar un token nuevo antes que un valor suelto.",
+      "**Do** tener una sola acción principal por vista; las de cierre de operación son `.btn-brass`.",
+      "**Do** mostrar números de parte como chip de código y montos con cifras tabulares a la derecha.",
+      "**Do** plegar el detalle técnico (huellas, UUID, bytes) en `<details>` o en una línea secundaria.",
+      "**Do** usar `:host-context(.dark)` o CSS global para variantes oscuras dentro de componentes Angular.",
+      "**Do** incluir `shared/list-page.css` por `styleUrls` en cada lista, para que viaje en su chunk diferido.",
+      "**Do** verificar cada pantalla migrada con `ui-showcase` (Axe A/AA, 1440 y 390 px, claro y oscuro).",
+      "**Do** limitar el movimiento a transiciones de 150–250 ms con `--ease-out` y respetar `prefers-reduced-motion`."
+    ],
+    "donts": [
+      "**Don't** poner un `h1` visual dentro de una pantalla del shell.",
+      "**Don't** usar colores fijos, utilidades Tailwind de color o degradados decorativos (se retiraron índigo/morado/rosa, `blue-600`, `#c62828`).",
+      "**Don't** usar el latón como color de decoración, de títulos o de varias acciones a la vez.",
+      "**Don't** comunicar un estado sólo con color: siempre punto o icono + texto.",
+      "**Don't** dejar `animation-fill-mode: forwards` con `transform` en contenedores de página: convierte al componente en contenedor de los `position: fixed`.",
+      "**Don't** subir los presupuestos de CSS por componente (6 kB aviso / 8 kB error); mover patrones repetidos al CSS global.",
+      "**Don't** usar `--c-ink` para fondos que deben ser oscuros en ambos temas."
+    ]
+  }
+}
