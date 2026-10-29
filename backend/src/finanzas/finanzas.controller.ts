@@ -3,7 +3,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { FinanzasService } from './finanzas.service';
 import { DpoContableService } from './dpo-contable.service';
-import { BalanceQueryDto, CloseTreasuryPeriodDto, ConciliarMovimientoDto, ContabilidadQueryDto, CorteFinancieroQueryDto, CreateBankReconciliationDto, CreateCuentaTesoreriaDto, CreateGastoDto, CreateMovimientoTesoreriaDto, CreatePeriodoDto, CreatePolizaDto, CreateTreasuryTransferDto, ExportarContabilidadDto, ImportBankStatementDto, PresupuestoQueryDto, ReviewBankMovementDto, UpsertPresupuestoDto } from './finanzas.dto';
+import { AjusteProveedoresService } from './ajuste-proveedores.service';
+import { BalanceQueryDto, CrearAjusteProveedoresDto, CloseTreasuryPeriodDto, ConciliarMovimientoDto, ContabilidadQueryDto, CorteFinancieroQueryDto, CreateBankReconciliationDto, CreateCuentaTesoreriaDto, CreateGastoDto, CreateMovimientoTesoreriaDto, CreatePeriodoDto, CreatePolizaDto, CreateTreasuryTransferDto, ExportarContabilidadDto, ImportBankStatementDto, PresupuestoQueryDto, ReviewBankMovementDto, UpsertPresupuestoDto } from './finanzas.dto';
 import type { Response } from 'express';
 import { Roles } from '../auth/roles.decorator';
 import { RolUsuario } from '../common/enums/app.enums';
@@ -16,6 +17,7 @@ export class FinanzasController {
   constructor(
     private readonly finanzasService: FinanzasService,
     private readonly dpo: DpoContableService,
+    private readonly ajusteProveedores: AjusteProveedoresService,
   ) {}
 
   @Post('gastos')
@@ -69,6 +71,19 @@ export class FinanzasController {
   @Get('contabilidad/dpo')
   getDpoContable(@Query() query: ContabilidadQueryDto) {
     return this.dpo.calcular(query.fechaInicio, query.fechaFin);
+  }
+
+  /** F02a · Compras de contado sin pago contable y pólizas de ajuste ya propuestas. */
+  @Get('contabilidad/dpo/ajuste-proveedores')
+  getAjusteProveedores() {
+    return this.ajusteProveedores.propuesta();
+  }
+
+  /** F02a · Crea la póliza de ajuste en Borrador; contabilizarla es una decisión aparte del contador. */
+  @Post('contabilidad/dpo/ajuste-proveedores')
+  @Permissions('contabilidad.operar')
+  crearAjusteProveedores(@Body() dto: CrearAjusteProveedoresDto, @Req() req: { user: JwtPayload }) {
+    return this.ajusteProveedores.crear(dto, req.user?.idUser);
   }
 
   @Get('contabilidad/balance-general')

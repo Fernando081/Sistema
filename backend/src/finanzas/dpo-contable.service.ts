@@ -102,6 +102,7 @@ export class DpoContableService {
   /**
    * Compara el mayor 2100 con el auxiliar: saldos pendientes de facturas de proveedor vigentes y de compras anteriores.
    * El auxiliar sólo existe "hoy", así que la comparación aplica cuando el periodo termina hoy.
+   * Una compra cuyo ajuste F02 ya se contabilizó deja de contarse como causa.
    */
   private async conciliarProveedores(db: QueryExecutor, fin: string, mayor: number) {
     if (fin !== businessDate()) {
@@ -112,9 +113,13 @@ export class DpoContableService {
              (SELECT coalesce(sum(saldo_pendiente),0) FROM compra WHERE estatus::text NOT IN ('Cancelada','Cancelado')) AS anteriores,
              (SELECT coalesce(sum(saldo_disponible),0) FROM anticipo_proveedor WHERE estado<>'Cancelado') AS anticipos,
              (SELECT coalesce(sum(c.total),0) FROM compra c WHERE c.estatus::text NOT IN ('Cancelada','Cancelado') AND c.saldo_pendiente=0
-                AND NOT EXISTS (SELECT 1 FROM pago_proveedor pp WHERE pp.id_compra=c.id_compra)) AS "contadoSinPago",
+                AND NOT EXISTS (SELECT 1 FROM pago_proveedor pp WHERE pp.id_compra=c.id_compra)
+                AND NOT EXISTS (SELECT 1 FROM poliza_contable_detalle d JOIN poliza_contable p ON p.id_poliza=d.id_poliza
+                                 WHERE p.estado='Contabilizada' AND d.referencia='F02:compra:'||c.id_compra)) AS "contadoSinPago",
              (SELECT count(*)::int FROM compra c WHERE c.estatus::text NOT IN ('Cancelada','Cancelado') AND c.saldo_pendiente=0
-                AND NOT EXISTS (SELECT 1 FROM pago_proveedor pp WHERE pp.id_compra=c.id_compra)) AS "contadoN"`);
+                AND NOT EXISTS (SELECT 1 FROM pago_proveedor pp WHERE pp.id_compra=c.id_compra)
+                AND NOT EXISTS (SELECT 1 FROM poliza_contable_detalle d JOIN poliza_contable p ON p.id_poliza=d.id_poliza
+                                 WHERE p.estado='Contabilizada' AND d.referencia='F02:compra:'||c.id_compra)) AS "contadoN"`);
     const facturas = money(Number(aux.facturas));
     const anteriores = money(Number(aux.anteriores));
     const auxiliar = money(facturas + anteriores);

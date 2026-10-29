@@ -16,6 +16,8 @@ import {
   IsBoolean,
   IsUUID,
   ValidateNested,
+  Equals,
+  MinLength,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
@@ -209,4 +211,30 @@ export class UpsertPresupuestoDto extends PresupuestoQueryDto {
 
 export class ExportarContabilidadDto extends ContabilidadQueryDto {
   @IsIn(['balanza','resultados','balance','flujo']) reporte: 'balanza'|'resultados'|'balance'|'flujo';
+}
+
+/** F02a · Propuesta de ajuste de Proveedores por compras de contado sin pago contable (queda en Borrador). */
+export class CrearAjusteProveedoresDto {
+  @IsDateString()
+  fecha: string;
+
+  @IsInt()
+  @Min(1)
+  idCuentaContrapartida: number;
+
+  @Transform(trim)
+  @IsString()
+  @MinLength(10)
+  @MaxLength(200)
+  motivo: string;
+
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(200)
+  @IsInt({ each: true })
+  @Min(1, { each: true })
+  compras: number[];
+
+  @Equals(true)
+  confirmacion: boolean;
 }

@@ -110,6 +110,34 @@
           <div><span>Salidas − costo</span><b>{{ d.conciliacionInventario.diferenciaSalidasCosto | currency:'MXN' }}</b></div>
         </article>
       </div>
+      @if (ajusteProveedores(); as a) {
+      <section class="dpo-ajuste" aria-label="Propuesta de ajuste de Proveedores">
+        <h2>Propuesta de ajuste para tu contador (F02)</h2>
+        @if (a.compras.length) {
+          <p>Estas compras se pagaron de contado, pero su póliza abonó Proveedores (2100) y el pago nunca se registró en contabilidad. La propuesta carga 2100 por cada compra y abona la cuenta que elija tu contador (por ejemplo, Caja o Bancos). <b>Se crea en borrador:</b> no cambia saldos hasta que se contabilice en Pólizas.</p>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Compras de contado sin pago contable"><table>
+            <caption class="sr-only">Compras de contado sin pago contable</caption>
+            <thead><tr><th scope="col">Compra</th><th scope="col">Fecha</th><th scope="col">Proveedor</th><th scope="col">Póliza original</th><th scope="col">Abono a 2100</th></tr></thead>
+            <tbody>@for (c of a.compras; track c.idCompra) {<tr><td>{{ c.idCompra }}</td><td>{{ c.fecha | date:'mediumDate' }}</td><td>{{ c.proveedor }}</td><td>{{ c.folioPoliza ?? '—' }}</td><td>{{ c.abonoProveedores | currency:'MXN' }}</td></tr>}</tbody>
+            <tfoot><tr><th scope="row" colspan="4">Total</th><td>{{ a.total | currency:'MXN' }}</td></tr></tfoot>
+          </table></div>
+          <form [formGroup]="ajusteProveedoresForm" (ngSubmit)="crearAjusteProveedores()" class="dpo-ajuste-form">
+            <mat-form-field appearance="outline"><mat-label>Fecha de la póliza</mat-label><input matInput type="date" formControlName="fecha"></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Cuenta de contrapartida</mat-label>
+              <mat-select formControlName="idCuenta">@for (c of cuentasContrapartida(); track c.idCuenta) {<mat-option [value]="c.idCuenta">{{ c.codigo }} · {{ c.nombre }}</mat-option>}</mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="wide"><mat-label>Motivo o instrucción del contador</mat-label><input matInput formControlName="motivo" maxlength="200"><mat-hint>Mínimo 10 caracteres; queda en el concepto de la póliza.</mat-hint></mat-form-field>
+            <label class="check"><input type="checkbox" formControlName="revisado"> Revisé con mi contador la cuenta de contrapartida y la fecha.</label>
+            <button mat-flat-button type="submit" [disabled]="creandoAjuste() || ajusteProveedoresForm.invalid || !ajusteProveedoresForm.controls.revisado.value">Crear póliza en borrador</button>
+          </form>
+        } @else {
+          <p>No hay compras de contado pendientes de ajuste.</p>
+        }
+        @for (p of a.ajustes; track p.idPoliza) {
+          <p class="dpo-causa">Póliza {{ p.folio }} del {{ p.fecha | date:'mediumDate' }} · {{ p.total | currency:'MXN' }} · {{ p.compras.length }} compras · <b>{{ p.estado === 'Borrador' ? 'En borrador: contabilízala en Pólizas cuando tu contador la apruebe' : 'Contabilizada' }}</b></p>
+        }
+      </section>
+      }
     </section>
     }
   </mat-tab>

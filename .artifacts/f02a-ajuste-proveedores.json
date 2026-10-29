@@ -1,0 +1,84 @@
+{
+  "id": "F02a",
+  "fecha": "2026-10-29T04:06:17.541Z",
+  "respaldo": "2026-10-28T23-57-30-365Z",
+  "total": 15,
+  "aprobadas": 15,
+  "resultados": [
+    {
+      "name": "copia aislada restaurada y migrada (2026-10-28T23-57-30-365Z)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "detecta las compras de contado sin pago y su abono a Proveedores",
+      "ok": true,
+      "detail": "9 compras, 595441.00"
+    },
+    {
+      "name": "la propuesta coincide con la diferencia explicada de F03",
+      "ok": true,
+      "detail": "F03 595441 · propuesta 595441"
+    },
+    {
+      "name": "rechaza Proveedores como contrapartida",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "rechaza una cuenta que no acepta movimientos",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "rechaza una compra que no está en la propuesta",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "una solicitud rechazada no deja pólizas",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "dos solicitudes simultáneas: una póliza y un conflicto",
+      "ok": true,
+      "detail": "fulfilled,rejected"
+    },
+    {
+      "name": "póliza manual en Borrador, cuadrada, un cargo a 2100 por compra y un abono a Caja",
+      "ok": true,
+      "detail": "F02 · Ajuste de Proveedores: 9 compra(s) de contado sin pago contable · Verificación aislada F02a"
+    },
+    {
+      "name": "la propuesta ya no ofrece las compras y muestra el ajuste en Borrador",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mientras siga en Borrador, F03 conserva la diferencia",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "al contabilizarla, el mayor de Proveedores cuadra con el auxiliar",
+      "ok": true,
+      "detail": "mayor 78650 · auxiliar 78650 · diferencia 0"
+    },
+    {
+      "name": "después de contabilizar no se puede volver a proponer",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "el ajuste queda como póliza manual normal (sin origen automático)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "copia aislada eliminada",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

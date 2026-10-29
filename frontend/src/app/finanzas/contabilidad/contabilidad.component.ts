@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { forkJoin } from 'rxjs';
-import { BalanceGeneral, BalanzaCuenta, DpoContable, CandidatoConciliacion, CentroCosto, CierreTesoreria, ConciliacionTesoreria, CuentaContable, CuentaTesoreria, EstadoResultados, FinanzasService, FlujoEfectivo, ImportacionTesoreria, MovimientoTesoreria, PeriodoContable, PolizaContable, PresupuestoContable } from '../finanzas.service';
+import { AjusteProveedores, BalanceGeneral, BalanzaCuenta, DpoContable, CandidatoConciliacion, CentroCosto, CierreTesoreria, ConciliacionTesoreria, CuentaContable, CuentaTesoreria, EstadoResultados, FinanzasService, FlujoEfectivo, ImportacionTesoreria, MovimientoTesoreria, PeriodoContable, PolizaContable, PresupuestoContable } from '../finanzas.service';
 import { NotificationService } from '../../shared/notification.service';
 import { ConfirmService } from '../../shared/confirm.service';
 import { downloadDocument } from '../../shared/document-download';
@@ -39,6 +39,8 @@ export class ContabilidadComponent {
   readonly resultados = signal<EstadoResultados | null>(null);
   readonly balance = signal<BalanceGeneral | null>(null);
   readonly dpo = signal<DpoContable | null>(null);
+  readonly ajusteProveedores = signal<AjusteProveedores | null>(null);
+  readonly creandoAjuste = signal(false);
   readonly totalPolizas = signal(0);
   readonly cuentasTesoreria = signal<CuentaTesoreria[]>([]);
   readonly movimientosTesoreria = signal<MovimientoTesoreria[]>([]);
@@ -63,6 +65,8 @@ export class ContabilidadComponent {
   readonly inicioAnio = `${new Date().getFullYear()}-01-01`;
 
   readonly filtros = this.fb.nonNullable.group({ fechaInicio: this.inicioAnio, fechaFin: this.hoy });
+  readonly ajusteProveedoresForm = this.fb.nonNullable.group({ fecha: this.hoy, idCuenta: [0, Validators.min(1)], motivo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]], revisado: false });
+  readonly cuentasContrapartida = computed(() => this.cuentas().filter((c) => c.codigo !== '2100'));
   readonly polizaForm = this.fb.nonNullable.group({
     fecha: [this.hoy, Validators.required], tipo: ['Diario', Validators.required],
     concepto: ['', [Validators.required, Validators.maxLength(300)]],
@@ -105,6 +109,24 @@ export class ContabilidadComponent {
     return this.fb.nonNullable.group({ idCuenta: [0, Validators.min(1)], idCentroCosto:[0], concepto: '', referencia: '', debe: [0, Validators.min(0)], haber: [0, Validators.min(0)] });
   }
 
+  // F02a · Se consulta aparte para no bloquear la contabilidad si falla.
+  loadAjusteProveedores() { this.api.getAjusteProveedores().subscribe({ next: (a) => this.ajusteProveedores.set(a && Array.isArray(a.compras) && Array.isArray(a.ajustes) ? a : null), error: () => this.ajusteProveedores.set(null) }); }
+
+  crearAjusteProveedores() {
+    const a = this.ajusteProveedores();
+    const v = this.ajusteProveedoresForm.getRawValue();
+    if (!a?.compras.length || this.ajusteProveedoresForm.invalid || !v.revisado || this.creandoAjuste()) return;
+    const cuenta = this.cuentas().find((c) => c.idCuenta === v.idCuenta);
+    this.confirm.ask({ title: 'Crear póliza de ajuste en borrador', message: `Se cargarán ${a.total.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })} a Proveedores (2100) por ${a.compras.length} compras y se abonará a ${cuenta?.codigo} ${cuenta?.nombre}. La póliza queda en borrador: no cambia saldos hasta que se contabilice.`, confirmLabel: 'Crear borrador' }).subscribe((ok) => {
+      if (!ok) return;
+      this.creandoAjuste.set(true);
+      this.api.crearAjusteProveedores({ fecha: v.fecha, idCuentaContrapartida: v.idCuenta, motivo: v.motivo.trim(), compras: a.compras.map((c) => c.idCompra), confirmacion: true }).subscribe({
+        next: (r) => { this.creandoAjuste.set(false); this.ajusteProveedoresForm.patchValue({ motivo: '', revisado: false }); this.notice.show(`Póliza ${r.folio} creada en borrador. Revísala con tu contador en Pólizas antes de contabilizarla.`, 6000, 'info'); this.load(); },
+        error: (e: { error?: { message?: string } }) => { this.creandoAjuste.set(false); this.notice.show(e.error?.message ?? 'No se pudo crear la póliza de ajuste.'); this.loadAjusteProveedores(); },
+      });
+    });
+  }
+
   addLine() { this.partidas.push(this.createLine()); }
   removeLine(index: number) { if (this.partidas.length > 2) this.partidas.removeAt(index); }
 
@@ -133,6 +155,7 @@ export class ContabilidadComponent {
         this.periodos.set(data.periodos);this.centrosCosto.set(data.centrosCosto.filter(c=>c.activo));
         this.presupuestos.set(data.presupuestos);this.flujo.set(data.flujo);
         this.loading.set(false);
+        this.loadAjusteProveedores();
       },
       error: () => { this.loading.set(false); this.notice.show('No se pudo cargar la contabilidad.'); },
     });

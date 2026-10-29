@@ -72,6 +72,13 @@ export interface EstadoResultados {
   detalle: Array<{ tipo: string; codigo: string; nombre: string; saldo: number }>;
 }
 
+/** F02a · Compras de contado sin pago contable y pólizas de ajuste propuestas (Borrador hasta que el contador decida). */
+export interface AjusteProveedores {
+  compras: { idCompra: number; fecha: string; proveedor: string; total: number; abonoProveedores: number; folioPoliza: number | null }[];
+  total: number;
+  ajustes: { idPoliza: number; folio: number; fecha: string; estado: 'Borrador' | 'Contabilizada'; total: number; compras: number[] }[];
+}
+
 /** F03 · DPO contable desde el mayor, con conciliaciones (no confundir con el plazo efectivo operativo de Q02). */
 export interface DpoContable {
   periodo: { inicio: string; fin: string; dias: number };
@@ -160,6 +167,14 @@ export class FinanzasService {
 
   getDpoContable(fechaInicio: string, fechaFin: string) {
     return this.http.get<DpoContable>(`${this.apiUrl}/contabilidad/dpo`, { params: { fechaInicio, fechaFin } });
+  }
+
+  getAjusteProveedores() {
+    return this.http.get<AjusteProveedores>(`${this.apiUrl}/contabilidad/dpo/ajuste-proveedores`);
+  }
+
+  crearAjusteProveedores(body: { fecha: string; idCuentaContrapartida: number; motivo: string; compras: number[]; confirmacion: true }) {
+    return this.http.post<{ idPoliza: number; folio: number; estado: 'Borrador'; compras: number; total: number }>(`${this.apiUrl}/contabilidad/dpo/ajuste-proveedores`, body);
   }
 
   getBalanceGeneral(fecha: string) {

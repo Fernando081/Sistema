@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FinanzasService } from './finanzas.service';
 import { FinanzasController } from './finanzas.controller';
 import { DpoContableService } from './dpo-contable.service';
+import { AjusteProveedoresService } from './ajuste-proveedores.service';
 import { Gasto } from './entities/gasto.entity';
 import { Saldo } from './entities/saldo.entity';
 import { AuthModule } from '../auth/auth.module';
@@ -16,6 +17,7 @@ import { AuthModule } from '../auth/auth.module';
   imports: [TypeOrmModule.forFeature([Gasto, Saldo]), AuthModule],
   controllers: [FinanzasController],
   providers: [
+    AjusteProveedoresService,
     DpoContableService,
     FinanzasService,
     ContabilidadService,
