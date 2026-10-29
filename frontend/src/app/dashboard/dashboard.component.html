@@ -17,8 +17,8 @@
   <details #automaticProcesses class="scheduled-jobs"><summary>Procesos automáticos</summary>
     @if (scheduledJobs(); as jobs) {
       @for (job of jobs; track job.name) {
-        <section [attr.aria-label]="job.name === 'operational_alerts' ? 'Generación de alertas' : job.name === 'crm_reports' ? 'Reportes comerciales' : job.name === 'document_mail' ? 'Envío de documentos por correo' : 'Revisión de frescura'">
-          <strong>{{ job.name === 'operational_alerts' ? 'Generación de alertas' : job.name === 'crm_reports' ? 'Reportes comerciales' : job.name === 'document_mail' ? 'Envío de documentos por correo' : 'Revisión de frescura' }}</strong>
+        <section [attr.aria-label]="jobLabels[job.name]">
+          <strong>{{ jobLabels[job.name] }}</strong>
           <p>{{ job.overdue ? 'Sin éxito para la ejecución esperada' : (job.lastSuccessAt ? 'Ejecución reciente registrada' : 'Sin éxito registrado') }}.</p>
           <p>Último éxito: {{ job.lastSuccessAt ? (job.lastSuccessAt | date:'dd/MM/yyyy HH:mm':'-0600') + ' · hora de México' : 'Sin registro' }}.</p>
           @if (job.lastRun?.status === 'failed') { <p>El último intento falló.</p> }
@@ -33,6 +33,29 @@
         Leer un aviso no confirma recuperación: se requiere un éxito posterior y el proceso al día.
         El estado del cron no incluye la revisión al abrir notificaciones.</small>
     } @else { <p>{{ scheduledJobs() === undefined ? 'Consultando procesos…' : 'No se pudo verificar el estado de los procesos.' }}</p> }
+  </details>
+  <details #outputsPanel class="outputs-health"><summary>Salud de las salidas{{ outputsHealth() ? ' · ' + healthLabels[outputsHealth()!.nivel] : '' }}</summary>
+    @if (outputsHealth(); as health) {
+      @for (area of health.areas; track area.area) {
+        <section [attr.aria-label]="area.titulo" [class.alert]="area.nivel !== 'ok'">
+          <strong>{{ area.titulo }} · {{ healthLabels[area.nivel] }}</strong>
+          @for (mensaje of area.mensajes; track mensaje) { <p>{{ mensaje }}</p> }
+          @switch (area.area) {
+            @case ('correo') { <p>Correo {{ health.metricas.correo.modo === 'smtp' ? 'activo' : 'desactivado' }} · {{ health.metricas.correo.pendientes }} en espera · {{ health.metricas.correo.inciertos }} inciertos · {{ health.metricas.correo.aceptados7d }} aceptados en 7 días.</p> }
+            @case ('reportes') { <p>{{ health.metricas.reportes.pendientes }} por recuperar · {{ health.metricas.reportes.agotados }} agotados en total.</p> }
+            @case ('fiscal') { <p>{{ health.metricas.fiscal.pendientes }} cancelaciones esperando al SAT.</p> }
+            @case ('campanas') { <p>{{ health.metricas.campanas.enCurso }} simulaciones en curso · {{ health.metricas.campanas.pendientes }} destinatarios pendientes.</p> }
+            @case ('almacenamiento') { <p>Base de datos {{ health.metricas.almacenamiento.baseBytes / 1048576 | number:'1.0-0' }} MB · PDF de salidas {{ health.metricas.almacenamiento.pdfBytes / 1048576 | number:'1.0-0' }} MB ({{ health.metricas.almacenamiento.documentos }} documentos).</p> }
+          }
+        </section>
+      }
+      <section aria-label="Vista previa de retención">
+        <strong>Vista previa de retención ({{ health.metricas.retencion.dias }} días)</strong>
+        <p>Con más de {{ health.metricas.retencion.dias }} días: {{ health.metricas.retencion.pdfsCerrados }} PDF de salidas cerradas ({{ health.metricas.retencion.pdfBytesCerrados / 1048576 | number:'1.0-1' }} MB), {{ health.metricas.retencion.historialJobs }} ejecuciones de procesos y {{ health.metricas.retencion.notificacionesLeidas }} avisos leídos.</p>
+        <p>Sólo es una medición: no se elimina nada. La política de retención la decide el propietario.</p>
+      </section>
+      <small>Revisado {{ health.revisadaEn | date:'dd/MM/yyyy HH:mm':'-0600' }} · hora de México. Los problemas generan un aviso diario por área para administradores.</small>
+    } @else { <p>{{ outputsHealth() === undefined ? 'Revisando las salidas…' : 'No se pudo revisar la salud de las salidas.' }}</p> }
   </details>
 </section>
 @if (loadError()) {

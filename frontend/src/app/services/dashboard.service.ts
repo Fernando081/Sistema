@@ -97,6 +97,10 @@ export class DashboardService {
     return this.http.get<DashboardRefreshStatus>(`${API_URL}/refresh-status`);
   }
 
+  getOutputsHealth(): Observable<OutputsHealth> {
+    return this.http.get<OutputsHealth>(`${API_URL}/salidas`);
+  }
+
   getScheduledJobs(): Observable<ScheduledJobStatus[]> {
     return this.http.get<ScheduledJobStatus[]>(`${API_URL}/scheduled-jobs`);
   }
@@ -132,8 +136,27 @@ export interface DashboardRefreshStatus {
   recentRuns: { id: string; startedAt: string; finishedAt: string | null; status: 'running' | 'success' | 'failed' }[];
 }
 
+export type ScheduledJobName = 'operational_alerts' | 'dashboard_freshness' | 'crm_reports' | 'document_mail' | 'fiscal_followup' | 'campaign_simulation' | 'outputs_health';
+
+/** O01.3a · Acumulación, capacidad y vista previa de retención de las salidas. */
+export type OutputsHealthLevel = 'ok' | 'atencion' | 'critico';
+export interface OutputsHealth {
+  revisadaEn: string;
+  nivel: OutputsHealthLevel;
+  areas: { area: 'correo' | 'reportes' | 'fiscal' | 'campanas' | 'almacenamiento'; titulo: string; nivel: OutputsHealthLevel; mensajes: string[] }[];
+  metricas: {
+    correo: { modo: 'desactivado' | 'smtp'; pendientes: number; enCurso: number; inciertos: number; fallidos7d: number; aceptados7d: number; masAntiguoMin: number | null };
+    reportes: { pendientes: number; enCurso: number; agotados: number; agotados7d: number; masAntiguoMin: number | null };
+    fiscal: { pendientes: number; sinRespuesta: number; errores7d: number; masAntiguoHoras: number | null };
+    campanas: { enCurso: number; pendientes: number; masAntiguoMin: number | null };
+    almacenamiento: { baseBytes: number; pdfBytes: number; documentos: number; historialJobs: number; notificaciones: number };
+    retencion: { dias: number; pdfsCerrados: number; pdfBytesCerrados: number; historialJobs: number; notificacionesLeidas: number };
+  };
+  umbrales: { colaMax: number; baseMaxMb: number; pdfMaxMb: number; retencionDias: number };
+}
+
 export interface ScheduledJobStatus {
-  name: 'operational_alerts' | 'dashboard_freshness' | 'crm_reports' | 'document_mail';
+  name: ScheduledJobName;
   checkedAt: string;
   expectedAt: string;
   lastSuccessAt: string | null;

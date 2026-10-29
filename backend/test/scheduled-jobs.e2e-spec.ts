@@ -4,6 +4,7 @@ import { APP_GUARD } from '@nestjs/core';
 import request from 'supertest';
 import { DashboardController } from '../src/dashboard/dashboard.controller';
 import { DashboardService } from '../src/dashboard/dashboard.service';
+import { SaludSalidasService } from '../src/dashboard/salud-salidas.service';
 import { AuthService } from '../src/auth/auth.service';
 import { JwtAuthGuard } from '../src/auth/jwt-auth.guard';
 import { RolesGuard } from '../src/auth/roles.guard';
@@ -15,11 +16,13 @@ describe('HTTP de procesos automáticos: acceso administrativo', () => {
     .mockResolvedValue([
       { name: 'operational_alerts', lastRun: null, recentRuns: [] },
     ]);
+  const revisar = jest.fn().mockResolvedValue({ nivel: 'ok', areas: [] });
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       controllers: [DashboardController],
       providers: [
         { provide: DashboardService, useValue: { getScheduledJobs } },
+        { provide: SaludSalidasService, useValue: { revisar } },
         {
           provide: AuthService,
           useValue: {
@@ -61,5 +64,19 @@ describe('HTTP de procesos automáticos: acceso administrativo', () => {
       .expect(200);
     expect(result.body[0].name).toBe('operational_alerts');
     expect(getScheduledJobs).toHaveBeenCalledTimes(1);
+  });
+  it('salud de las salidas: sólo administradores (O01.3a)', async () => {
+    await request(app.getHttpServer()).get('/api/v1/dashboard/salidas').expect(401);
+    await request(app.getHttpServer())
+      .get('/api/v1/dashboard/salidas')
+      .set('Authorization', 'Bearer user')
+      .expect(403);
+    expect(revisar).not.toHaveBeenCalled();
+    const result = await request(app.getHttpServer())
+      .get('/api/v1/dashboard/salidas')
+      .set('Authorization', 'Bearer admin')
+      .expect(200);
+    expect(result.body.nivel).toBe('ok');
+    expect(revisar).toHaveBeenCalledTimes(1);
   });
 });

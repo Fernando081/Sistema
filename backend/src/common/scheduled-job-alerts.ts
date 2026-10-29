@@ -21,7 +21,8 @@ export async function syncScheduledJobAlerts(
             WHEN 'crm_reports' THEN 'Reportes comerciales'
             WHEN 'document_mail' THEN 'Envío de documentos por correo'
             WHEN 'fiscal_followup' THEN 'Seguimiento de cancelaciones fiscales'
-            WHEN 'campaign_simulation' THEN 'Simulación de campañas' END AS label,
+            WHEN 'campaign_simulation' THEN 'Simulación de campañas'
+            WHEN 'outputs_health' THEN 'Salud de las salidas' END AS label,
           terminal.status,terminal.finished_at
         FROM checked CROSS JOIN LATERAL jsonb_array_elements(fn_scheduled_job_status(checked.at))
         LEFT JOIN LATERAL (
@@ -29,7 +30,7 @@ export async function syncScheduledJobAlerts(
           WHERE job_name=value->>'name' AND status IN ('success','failed')
           ORDER BY started_at DESC,id DESC LIMIT 1
         ) terminal ON true
-        WHERE value->>'name' IN ('operational_alerts','dashboard_freshness','crm_reports','document_mail','fiscal_followup','campaign_simulation')
+        WHERE value->>'name' IN ('operational_alerts','dashboard_freshness','crm_reports','document_mail','fiscal_followup','campaign_simulation','outputs_health')
       ), resolved AS (
         UPDATE app_notification n SET type='scheduled_job_recovered',severity='info',
           title=j.label || ': proceso recuperado',

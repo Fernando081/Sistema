@@ -19,10 +19,11 @@
 .dashboard-freshness details{font-size:.8rem;color:var(--c-text-2)}
 .dashboard-freshness summary{cursor:pointer;color:var(--c-link);font-weight:600}
 .dashboard-freshness ul{margin:.4rem 0 0;padding-left:1.1rem;color:var(--c-text-3)}
-.scheduled-jobs{flex-basis:100%}
-.scheduled-jobs>section{margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--c-border)}
-.scheduled-jobs p{margin:.3rem 0}
-.scheduled-jobs small{display:block;margin-top:.6rem;color:var(--c-text-3)}
+.scheduled-jobs,.outputs-health{flex-basis:100%}
+.scheduled-jobs>section,.outputs-health>section{margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--c-border)}
+.scheduled-jobs p,.outputs-health p{margin:.3rem 0}
+.scheduled-jobs small,.outputs-health small{display:block;margin-top:.6rem;color:var(--c-text-3)}
+.outputs-health>section.alert strong{color:var(--c-warning)}
 
 .primary{background:var(--c-info-soft);color:var(--c-info)}
 .success{background:var(--c-success-soft);color:var(--c-success)}

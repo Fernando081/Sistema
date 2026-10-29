@@ -1,0 +1,94 @@
+{
+  "id": "O01.3a",
+  "fecha": "2026-10-29T04:02:42.033Z",
+  "respaldo": "2026-10-28T23-57-30-365Z",
+  "total": 17,
+  "aprobadas": 17,
+  "resultados": [
+    {
+      "name": "respaldo restaurado, db:check y migraciones hasta 121 (2026-10-28T23-57-30-365Z)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "121 registra outputs_health (30 min, tolerancia 15)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "cifras coinciden con las tablas",
+      "ok": true,
+      "detail": "{\"correo\":0,\"reportes\":0,\"fiscal\":0,\"base\":\"57243327\"}"
+    },
+    {
+      "name": "cinco áreas y correo desactivado por defecto",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "vista previa de retención con 90 días y valores numéricos",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "cancelación sin respuesta eleva Cancelaciones fiscales a revisión",
+      "ok": true,
+      "detail": "1 cancelaciones llevan días sin respuesta del SAT."
+    },
+    {
+      "name": "nivel general refleja el área",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "un aviso por administrador activo, ninguno para otros roles",
+      "ok": true,
+      "detail": "[8,9]"
+    },
+    {
+      "name": "aviso de revisión con ruta al panel",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "repetir la revisión el mismo día no duplica ni reabre avisos",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "al empeorar a crítico se actualiza y reabre el aviso del día",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "un aviso crítico no se repite en la misma jornada",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "el proceso programado registra su ejecución",
+      "ok": true,
+      "detail": "success [{\"status\":\"success\"}]"
+    },
+    {
+      "name": "aparece en el estado de procesos automáticos",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "el sincronizador de avisos de procesos acepta outputs_health",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "umbrales y modo de correo se leen del entorno",
+      "ok": true,
+      "detail": "smtp sin datos válidos queda desactivado"
+    },
+    {
+      "name": "copia aislada eliminada",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

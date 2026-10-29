@@ -16,6 +16,7 @@ import {
   HoraDiaVenta,
   RentabilidadProveedor,
   HistoricoDato,
+  ScheduledJobName, OutputsHealthLevel,
 } from '../services/dashboard.service';
 import { ErpEchartsDirective } from '../shared/echarts.provider';
 import { CrmService } from '../services/crm.service';
@@ -34,6 +35,7 @@ export class DashboardComponent {
   private crmService = inject(CrmService);
   private readonly route = inject(ActivatedRoute);
   private readonly automaticProcesses = viewChild<ElementRef<HTMLDetailsElement>>('automaticProcesses');
+  private readonly outputsPanel = viewChild<ElementRef<HTMLDetailsElement>>('outputsPanel');
   private readonly navigation = toSignal(inject(Router).events.pipe(
     filter(event => event instanceof NavigationEnd || event instanceof NavigationSkipped),
   ));
@@ -60,9 +62,26 @@ export class DashboardComponent {
   descuentoPromedioOtorgadoAnimado = signal(0);
   costoAterrizadoAnimado = signal(0);
 
+  readonly jobLabels: Record<ScheduledJobName, string> = {
+    operational_alerts: 'Generación de alertas',
+    dashboard_freshness: 'Revisión de frescura',
+    crm_reports: 'Reportes comerciales',
+    document_mail: 'Envío de documentos por correo',
+    fiscal_followup: 'Seguimiento de cancelaciones fiscales',
+    campaign_simulation: 'Simulación de campañas',
+    outputs_health: 'Salud de las salidas',
+  };
+  readonly healthLabels: Record<OutputsHealthLevel, string> = { ok: 'Sin pendientes', atencion: 'Requiere revisión', critico: 'Requiere acción' };
   readonly loadError = signal(false);
   readonly refreshStatus = toSignal(timer(0, 60000).pipe(
     switchMap(() => this.dashboardService.getRefreshStatus().pipe(catchError(() => of(null)))),
+  ));
+  // O01.3a · Se revisa cada 5 minutos; los avisos internos los genera el proceso outputs_health.
+  readonly outputsHealth = toSignal(timer(0, 300000).pipe(
+    switchMap(() => this.dashboardService.getOutputsHealth().pipe(
+      map((health) => (health && Array.isArray(health.areas) && health.metricas ? health : null)),
+      catchError(() => of(null)),
+    )),
   ));
   readonly scheduledJobs = toSignal(timer(0, 60000).pipe(
     switchMap(() => this.dashboardService.getScheduledJobs().pipe(catchError(() => of(null)))),
@@ -113,6 +132,8 @@ export class DashboardComponent {
       this.navigation();
       const panel = this.automaticProcesses();
       if (panel && this.route.snapshot.queryParamMap.get('procesos') === '1') panel.nativeElement.open = true;
+      const outputs = this.outputsPanel();
+      if (outputs && this.route.snapshot.queryParamMap.get('salidas') === '1') outputs.nativeElement.open = true;
     });
     effect(() => {
       const data = this.dashboardData();

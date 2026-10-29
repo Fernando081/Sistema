@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
+import { SaludSalidasService } from './salud-salidas.service';
 import {
   MvVentasFacturacion,
   MvInventarioAlmacen,
@@ -13,11 +14,20 @@ import { RolUsuario } from '../common/enums/app.enums';
 @Controller('dashboard')
 @Roles(RolUsuario.ADMIN)
 export class DashboardController {
-  constructor(private readonly dashboardService: DashboardService) {}
+  constructor(
+    private readonly dashboardService: DashboardService,
+    private readonly saludSalidas: SaludSalidasService,
+  ) {}
 
   @Get('refresh-status')
   getRefreshStatus() {
     return this.dashboardService.getRefreshStatus();
+  }
+
+  // O01.3a · Acumulación, capacidad y vista previa de retención de las salidas (sólo lectura).
+  @Get('salidas')
+  getOutputsHealth() {
+    return this.saludSalidas.revisar();
   }
 
   @Get('scheduled-jobs')

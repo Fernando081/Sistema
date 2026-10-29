@@ -9,7 +9,8 @@ export type ScheduledJobName =
   | 'crm_reports'
   | 'document_mail'
   | 'fiscal_followup'
-  | 'campaign_simulation';
+  | 'campaign_simulation'
+  | 'outputs_health';
 const locks: Record<ScheduledJobName, number> = {
   operational_alerts: 2,
   dashboard_freshness: 3,
@@ -17,6 +18,7 @@ const locks: Record<ScheduledJobName, number> = {
   document_mail: 6,
   fiscal_followup: 7,
   campaign_simulation: 8,
+  outputs_health: 9,
 };
 
 // The guard transaction owns only the lock. Run history is committed separately.
