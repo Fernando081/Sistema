@@ -27,10 +27,12 @@ import { CrmSecuenciasService } from './crm-secuencias.service';
 import { CrmSecuenciasController } from './crm-secuencias.controller';
 import { CrmSecuenciaReglasController } from './crm-secuencia-reglas.controller';
 import { CrmSecuenciaReglasService } from './crm-secuencia-reglas.service';
-import { CampanasLocalesController,ConsentimientoComercialController } from './campana-consentimiento.controller';
+import { CampanaEjecucionesController,CampanasLocalesController,ConsentimientoComercialController } from './campana-consentimiento.controller';
+import { CampanaEjecucionService } from './campana-ejecucion.service';
+import { CampanaEjecucionEjecutor } from './campana-ejecucion.ejecutor';
 
 @Module({
-  controllers: [CrmReportesController,CrmBandejaController,CrmSecuenciaReglasController,CrmSecuenciasController,CrmController, CrmSolicitudesWebController, WebLeadBridgeController, CrmDocumentosController,UnidadExpedienteController, UnidadPiezasController,CampanasLocalesController,ConsentimientoComercialController],
+  controllers: [CrmReportesController,CrmBandejaController,CrmSecuenciaReglasController,CrmSecuenciasController,CrmController, CrmSolicitudesWebController, WebLeadBridgeController, CrmDocumentosController,UnidadExpedienteController, UnidadPiezasController,CampanasLocalesController,CampanaEjecucionesController,ConsentimientoComercialController],
   providers: [
     CrmReportesService,
     CrmReportesColaService,
@@ -47,6 +49,8 @@ import { CampanasLocalesController,ConsentimientoComercialController } from './c
     UnidadExpedienteService,
     UnidadPiezasService,
     CampanaConsentimientoService,
+    CampanaEjecucionService,
+    CampanaEjecucionEjecutor,
     CrmSecuenciasService,
     CrmSecuenciaReglasService,
   ],

@@ -7,7 +7,15 @@ import { loadFiscalSettings } from './fiscal.config';
 import { FiscalXmlBuilder } from './fiscal-xml.builder';
 import { CancelFiscalDocumentDto } from './fiscal.dto';
 import { FISCAL_PROVIDER } from './fiscal.types';
-import type { CancelInput, CancelResult, FiscalDocumentState, FiscalDocumentType, FiscalProvider } from './fiscal.types';
+import type { CancelInput, CancelResult, FiscalDocumentState, FiscalDocumentType, FiscalProvider, FiscalStatusResult } from './fiscal.types';
+
+export interface CancellationFollowUp {
+  type: FiscalDocumentType; originId: number; documentId: number; userId: number | null;
+  result: 'Cancelado' | 'Rechazada' | 'Pendiente'; consultas: number;
+}
+
+/** Espera antes de la siguiente consulta: 15 min, 1 h, 4 h y después cada 12 h. */
+export const followUpDelayMinutes = (consultas: number) => [15, 60, 240][consultas - 1] ?? 720;
 
 interface FiscalRow {
   id_documento: number; tipo: FiscalDocumentType; id_factura: number | null; id_rep: number | null;
@@ -229,6 +237,7 @@ export class FiscalService {
     await this.dataSource.query(`UPDATE fiscal_documento SET estado=$2,acuse_cancelacion=COALESCE($3,acuse_cancelacion),
       fecha_cancelacion=CASE WHEN $4 THEN clock_timestamp() ELSE fecha_cancelacion END,
       motivo_cancelacion=$5,folio_sustitucion=$6,codigo_cancelacion=$7,mensaje_cancelacion=$8,
+      proxima_consulta=CASE WHEN $4 THEN NULL ELSE clock_timestamp()+interval '15 minutes' END,consultas_estado=0,
       updated_at=clock_timestamp() WHERE id_documento=$1`,
     [document.id_documento, state, result.acknowledgement || null, result.cancelled,
       input.reason, input.replacementUuid || null, result.code || null, result.message || null]);
@@ -246,13 +255,83 @@ export class FiscalService {
     const cancelled = status.status === 'Cancelado';
     if (cancelled) {
       await this.dataSource.query(`UPDATE fiscal_documento SET estado='Cancelado',fecha_cancelacion=clock_timestamp(),
-        updated_at=clock_timestamp() WHERE id_documento=$1`, [document.id_documento]);
+        proxima_consulta=NULL,updated_at=clock_timestamp() WHERE id_documento=$1`, [document.id_documento]);
     }
     await this.dataSource.query(`INSERT INTO fiscal_evento(id_documento,tipo,exito,codigo,mensaje,detalle,id_user)
       VALUES($1,'ESTADO_CONCILIADO',true,$2,$3,$4::jsonb,$5)`,
     [document.id_documento, status.rawCode || null, status.status,
       JSON.stringify({ cancellableStatus: status.cancellableStatus, cancellationStatus: status.cancellationStatus }), userId ?? null]);
     return { fiscal: true, cancelled, state: cancelled ? 'Cancelado' : 'Cancelacion solicitada', ...status };
+  }
+
+  /**
+   * O01.2c · Consulta automática de una cancelación que el SAT dejó pendiente.
+   * Sólo cambia el estado fiscal; la reversión operativa la completa quien llama.
+   */
+  async followUpCancellation(documentId: number): Promise<CancellationFollowUp | null> {
+    const [document] = await queryRows<FiscalRow & { consultas_estado: number }>(this.dataSource,
+      `SELECT * FROM fiscal_documento WHERE id_documento=$1 AND estado='Cancelacion solicitada'`, [documentId]);
+    if (!document) return null;
+    const originId = (document.tipo === 'FACTURA' ? document.id_factura : document.id_rep)!;
+    const [requester] = await queryRows<{ id_user: number | null }>(this.dataSource,
+      `SELECT id_user FROM fiscal_evento WHERE id_documento=$1 AND tipo='CANCELACION_SOLICITADA' ORDER BY created_at DESC LIMIT 1`, [documentId]);
+    const base = { type: document.tipo, originId, documentId, userId: requester?.id_user ?? null, consultas: document.consultas_estado + 1 };
+    const settings = loadFiscalSettings(this.config);
+    const later = async (message: string, success: boolean, code?: string | null, detail: Record<string, unknown> = {}) => {
+      await this.dataSource.query(`UPDATE fiscal_documento SET consultas_estado=consultas_estado+1,
+        proxima_consulta=clock_timestamp()+make_interval(mins => $2),updated_at=clock_timestamp() WHERE id_documento=$1`,
+      [documentId, followUpDelayMinutes(base.consultas)]);
+      await this.dataSource.query(`INSERT INTO fiscal_evento(id_documento,tipo,exito,codigo,mensaje,detalle)
+        VALUES($1,$2,$3,$4,$5,$6::jsonb)`,
+      [documentId, success ? 'ESTADO_CONSULTADO' : 'CONSULTA_ERROR', success, code || null, message.slice(0, 1000), JSON.stringify({ automatico: true, ...detail })]);
+      return { ...base, result: 'Pendiente' as const };
+    };
+    if (!settings.ready || document.ambiente !== settings.environment || document.proveedor !== this.provider.name) {
+      return later(`No se consultó: el documento es ${document.ambiente}/${document.proveedor} y la configuración actual es ${settings.environment}/${this.provider.name}`, false);
+    }
+    let status: FiscalStatusResult;
+    try {
+      const input = await this.cancellationInput(document.tipo, originId, document, {
+        motivo: document.motivo_cancelacion as CancelFiscalDocumentDto['motivo'],
+        folioSustitucion: document.folio_sustitucion || undefined,
+      });
+      status = await this.provider.queryStatus(input);
+    } catch (error) {
+      return later(safeErrorMessage(error), false);
+    }
+    const detail = { automatico: true, cancellableStatus: status.cancellableStatus, cancellationStatus: status.cancellationStatus };
+    if (status.status === 'Cancelado') {
+      await this.dataSource.query(`UPDATE fiscal_documento SET estado='Cancelado',fecha_cancelacion=clock_timestamp(),proxima_consulta=NULL,
+        consultas_estado=consultas_estado+1,updated_at=clock_timestamp() WHERE id_documento=$1 AND estado='Cancelacion solicitada'`, [documentId]);
+      await this.dataSource.query(`INSERT INTO fiscal_evento(id_documento,tipo,exito,codigo,mensaje,detalle)
+        VALUES($1,'ESTADO_CONCILIADO',true,$2,$3,$4::jsonb)`,
+      [documentId, status.rawCode || null, status.status, JSON.stringify(detail)]);
+      return { ...base, result: 'Cancelado' };
+    }
+    if (status.status === 'Vigente' && /rechaz/i.test(status.cancellationStatus ?? '')) {
+      // El receptor rechazó: el CFDI sigue vigente y la operación local no se toca.
+      await this.dataSource.query(`UPDATE fiscal_documento SET estado='Timbrado',proxima_consulta=NULL,
+        consultas_estado=consultas_estado+1,updated_at=clock_timestamp() WHERE id_documento=$1 AND estado='Cancelacion solicitada'`, [documentId]);
+      await this.dataSource.query(`INSERT INTO fiscal_evento(id_documento,tipo,exito,codigo,mensaje,detalle)
+        VALUES($1,'CANCELACION_RECHAZADA',false,$2,$3,$4::jsonb)`,
+      [documentId, status.rawCode || null, status.cancellationStatus, JSON.stringify(detail)]);
+      return { ...base, result: 'Rechazada' };
+    }
+    return later(status.cancellationStatus || status.status, true, status.rawCode, detail);
+  }
+
+  /** O01.2c · Un timbrado sin respuesta por más de 15 min (proceso interrumpido) queda en Error para reintentarlo. */
+  async markInterruptedStamps(): Promise<number> {
+    const rows = await queryRows<{ id_documento: number }>(this.dataSource,
+      `UPDATE fiscal_documento SET estado='Error',updated_at=clock_timestamp(),
+         ultimo_error='El timbrado se interrumpió sin respuesta. Revisa el documento y vuelve a timbrar; el PAC reconoce la misma solicitud.'
+       WHERE estado='Procesando' AND ultimo_error IS NULL AND updated_at<clock_timestamp()-interval '15 minutes'
+       RETURNING id_documento`);
+    for (const row of rows) {
+      await this.dataSource.query(`INSERT INTO fiscal_evento(id_documento,tipo,exito,mensaje,detalle)
+        VALUES($1,'TIMBRADO_INTERRUMPIDO',false,'Sin respuesta en 15 minutos','{"automatico":true}'::jsonb)`, [row.id_documento]);
+    }
+    return rows.length;
   }
 
   async xml(type: FiscalDocumentType, id: number) {

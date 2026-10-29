@@ -18,7 +18,10 @@ import { SwFiscalProvider } from './providers/sw-fiscal.provider';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const settings = loadFiscalSettings(config);
-        return settings.provider === 'sw' ? new SwFiscalProvider(settings) : new MockFiscalProvider();
+        const mockCancellation = config.get<string>('FISCAL_MOCK_CANCELACION');
+        return settings.provider === 'sw'
+          ? new SwFiscalProvider(settings)
+          : new MockFiscalProvider(mockCancellation === 'pendiente' || mockCancellation === 'rechazada' ? mockCancellation : 'inmediata');
       },
     },
   ],

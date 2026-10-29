@@ -33,6 +33,6 @@ import { CORREO_TRANSPORTE, NodemailerTransporte } from './correo-transporte';
     { provide: CORREO_TRANSPORTE, useClass: NodemailerTransporte },
   ],
   controllers: [VentaController, FacturaController, SalidaDocumentosController],
-  exports: [VentaService],
+  exports: [VentaService, ReversionVentaService],
 })
 export class VentaModule {}

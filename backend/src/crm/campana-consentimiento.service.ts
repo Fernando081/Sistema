@@ -6,8 +6,8 @@ import { QueryExecutor,queryRows,readSnapshot } from '../common/database/typed-q
 import { quoteHash } from '../cotizacion/cotizacion-version-policy';
 import { CommercialChannel,CommercialQuery,ConsentDto,ConsentQuery,PrepareCampaignDto } from './campana-consentimiento.dto';
 import { commercialDestination,commercialSegmentPredicate,destinationHash,maskDestination } from './campana-consentimiento-policy';
-interface Contact {id:number;idCliente:number;nombre:string;cliente:string;telefono:string|null;email:string|null;}
-interface Consent {id_consentimiento:number;id_contacto:number;destino_hash:string;estado:string;version:number;vence_en:Date|null;ocurrida_en:Date;}
+export interface Contact {id:number;idCliente:number;nombre:string;cliente:string;telefono:string|null;email:string|null;}
+export interface Consent {id_consentimiento:number;id_contacto:number;destino_hash:string;estado:string;version:number;vence_en:Date|null;ocurrida_en:Date;}
 export interface CampaignSource {id:number;nombre:string;estado:string;fechaInicio:string|null;fechaFin:string|null;objetivo:string|null;idSegmento:number|null;segmento:string|null;segmentoActivo:boolean|null;tipoCliente:string|null;diasInactivo:number|null;idPlantilla:number|null;plantilla:string|null;canal:CommercialChannel|null;plantillaActiva:boolean|null;asunto:string|null;contenido:string|null;vencida:boolean;}
 interface Candidate {idCliente:number;idContacto:number;cliente:string;contacto:string;destino:string;motivo:string;consentimiento:number|null;version:number;destinoHash:string|null;}
 export interface CampaignPreparation {id:number;creadaEn:Date;motivo:string;autor:string;sha256:string;evaluacionSha256:string;}
@@ -23,8 +23,8 @@ export class CampanaConsentimientoService {
    AND fn_effective_permission(id_user,role,$4) ${write?'FOR SHARE':''}`,[actor.idUser??null,actor.role,actor.version,eventPermission]);
   if(!u)throw new ForbiddenException('Tu cuenta o permiso de campañas cambió.');if(write)await setAuditActor(db,actor.idUser);
  }
- private read<T>(actor:JwtPayload,work:(db:QueryExecutor)=>Promise<T>){return readSnapshot(this.source,async db=>{await db.query("SET LOCAL statement_timeout='8s'");await this.staff(db,actor);return work(db);});}
- private write<T>(actor:JwtPayload,work:(db:EntityManager)=>Promise<T>){return this.source.transaction(async db=>{
+ read<T>(actor:JwtPayload,work:(db:QueryExecutor)=>Promise<T>){return readSnapshot(this.source,async db=>{await db.query("SET LOCAL statement_timeout='8s'");await this.staff(db,actor);return work(db);});}
+ write<T>(actor:JwtPayload,work:(db:EntityManager)=>Promise<T>){return this.source.transaction(async db=>{
   await db.query("SET LOCAL statement_timeout='10s'");await this.staff(db,actor,true);await db.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[consentLock]);return work(db);
  });}
  private async client(db:QueryExecutor,id:number){const [c]=await queryRows(db,'SELECT "IdCliente" FROM cliente WHERE "IdCliente"=$1',[id]);if(!c)throw new NotFoundException('Cliente no encontrado');}
@@ -34,13 +34,13 @@ export class CampanaConsentimientoService {
   const rows=await queryRows<Contact>(db,`SELECT id_contacto AS id,id_cliente AS "idCliente",nombre,telefono,email FROM cliente_contacto WHERE ${where} ORDER BY id_contacto LIMIT 20 OFFSET $3`,[client,q,(query.page-1)*20]);
   return{rows,total:count.total};
  }
- private async latest(db:QueryExecutor,contacts:number[],canal:CommercialChannel){return queryRows<Consent>(db,`SELECT DISTINCT ON(id_contacto) id_consentimiento,id_contacto,destino_hash,estado,version,vence_en,ocurrida_en FROM crm_consentimiento_comercial
+ async latest(db:QueryExecutor,contacts:number[],canal:CommercialChannel){return queryRows<Consent>(db,`SELECT DISTINCT ON(id_contacto) id_consentimiento,id_contacto,destino_hash,estado,version,vence_en,ocurrida_en FROM crm_consentimiento_comercial
   WHERE id_contacto=ANY($1::int[]) AND canal=$2 ORDER BY id_contacto,version DESC`,[contacts,canal]);}
- private async blocked(db:QueryExecutor,hashes:string[],canal:CommercialChannel){
+ async blocked(db:QueryExecutor,hashes:string[],canal:CommercialChannel){
   const rows=await queryRows<{destino_hash:string}>(db,`SELECT DISTINCT destino_hash FROM(SELECT DISTINCT ON(id_contacto,destino_hash) destino_hash,estado FROM crm_consentimiento_comercial
    WHERE canal=$1 AND destino_hash=ANY($2::text[]) ORDER BY id_contacto,destino_hash,version DESC) current_binding WHERE estado='Baja'`,[canal,hashes]);return new Set(rows.map(r=>r.destino_hash));
  }
- private destination(c:Contact,canal:CommercialChannel){return commercialDestination(canal,canal==='Correo'?c.email:c.telefono);}
+ destination(c:Contact,canal:CommercialChannel){return commercialDestination(canal,canal==='Correo'?c.email:c.telefono);}
  contacts(client:number,query:ConsentQuery,actor:JwtPayload){return this.read(actor,async db=>{
   await this.client(db,client);const {rows,total}=await this.contactsRows(db,client,query),events=await this.latest(db,rows.map(c=>c.id),query.canal);
   const hashes=rows.map(c=>this.destination(c,query.canal)).filter((d):d is string=>d!==null).map(d=>destinationHash(query.canal,d)),blocked=await this.blocked(db,hashes,query.canal);
@@ -78,7 +78,7 @@ export class CampanaConsentimientoService {
   const data=await queryRows(db,`SELECT c.id_campana AS id,c.nombre,c.estado,p.canal,s.nombre AS segmento FROM crm_campana c LEFT JOIN crm_plantilla p USING(id_plantilla) LEFT JOIN crm_segmento s USING(id_segmento)
    WHERE ($1='' OR c.nombre ILIKE $1) ORDER BY c.id_campana DESC LIMIT 20 OFFSET $2`,[q,(query.page-1)*20]);return{data,total:count.total,page:query.page,limit:20};
  });}
- private async evaluate(db:QueryExecutor,id:number){
+ async evaluate(db:QueryExecutor,id:number){
   const [campaign]=await queryRows<CampaignSource>(db,`SELECT c.id_campana AS id,c.nombre,c.estado,c.fecha_inicio::text AS "fechaInicio",c.fecha_fin::text AS "fechaFin",c.objetivo,
    c.id_segmento AS "idSegmento",s.nombre AS segmento,s.activo AS "segmentoActivo",s.tipo_cliente AS "tipoCliente",s.dias_inactivo AS "diasInactivo",
    c.id_plantilla AS "idPlantilla",p.nombre AS plantilla,p.canal,p.activa AS "plantillaActiva",p.asunto,p.contenido,

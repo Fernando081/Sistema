@@ -20,5 +20,6 @@ import { RepXmlService } from './rep-xml.service';
     RepXmlService,
   ],
   controllers: [PagoController],
+  exports: [RegistroRepService],
 })
 export class PagoModule {}

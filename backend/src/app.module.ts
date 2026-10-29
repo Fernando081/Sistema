@@ -48,6 +48,7 @@ import { ComercialModule } from './comercial/comercial.module';
 import { AlmacenModule } from './almacen/almacen.module';
 import { NotificationModule } from './notification/notification.module';
 import { VistasGuardadasModule } from './vistas-guardadas/vistas-guardadas.module';
+import { FiscalSeguimientoModule } from './fiscal-seguimiento/fiscal-seguimiento.module';
 import { FiscalModule } from './fiscal/fiscal.module';
 
 @Module({
@@ -127,6 +128,7 @@ import { FiscalModule } from './fiscal/fiscal.module';
     AlmacenModule,
     NotificationModule,
     VistasGuardadasModule,
+    FiscalSeguimientoModule,
     FiscalModule,
   ],
   controllers: [HealthController],

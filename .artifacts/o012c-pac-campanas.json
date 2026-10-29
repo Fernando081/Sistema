@@ -1,0 +1,134 @@
+{
+  "passed": true,
+  "total": 32,
+  "results": [
+    {
+      "name": "respaldo restaurado, db:check y migración 120 en base aislada (2026-10-28T23-57-30-365Z)",
+      "ok": true
+    },
+    {
+      "name": "AppModule conectado a la copia aislada",
+      "ok": true
+    },
+    {
+      "name": "cancelación pendiente del SAT: no revierte y programa la consulta en ~15 min",
+      "ok": true
+    },
+    {
+      "name": "antes de su hora no se consulta",
+      "ok": true
+    },
+    {
+      "name": "SAT confirma → estado Cancelado y la factura se revierte automáticamente",
+      "ok": true
+    },
+    {
+      "name": "bitácora fiscal marca la conciliación como automática",
+      "ok": true
+    },
+    {
+      "name": "avisa a quien pidió la cancelación (info)",
+      "ok": true
+    },
+    {
+      "name": "un segundo ciclo no vuelve a consultar ni revertir",
+      "ok": true
+    },
+    {
+      "name": "receptor rechaza → CFDI vuelve a Timbrado, la factura no cambia y se avisa (warning)",
+      "ok": true
+    },
+    {
+      "name": "falla de consulta → sigue pendiente, cuenta el intento y reprograma (sin revertir)",
+      "ok": true
+    },
+    {
+      "name": "si el usuario concilia a mano primero, el proceso no repite la reversión",
+      "ok": true
+    },
+    {
+      "name": "timbrado interrumpido (>15 min sin respuesta) queda en Error con mensaje y evento",
+      "ok": true
+    },
+    {
+      "name": "el documento interrumpido se vuelve a timbrar con la misma solicitud",
+      "ok": true
+    },
+    {
+      "name": "proceso automático fiscal_followup registra su ejecución",
+      "ok": true
+    },
+    {
+      "name": "fixture: 4 elegibles y 1 sin autorización; preparación conservada",
+      "ok": true
+    },
+    {
+      "name": "permisos y validación: 401 sin sesión, 403 sin permiso, 400 sin confirmar, 409 con otra preparación",
+      "ok": true
+    },
+    {
+      "name": "inicia con 4 destinatarios; reintento idempotente; mismo UUID con otro contenido 409; una sola en curso",
+      "ok": true
+    },
+    {
+      "name": "proceso automático: Ana y Beto simulados con huella del mensaje personalizado",
+      "ok": true
+    },
+    {
+      "name": "baja registrada después de iniciar → Omitido \"Baja\"",
+      "ok": true
+    },
+    {
+      "name": "correo cambiado después de iniciar → Omitido \"Destino cambiado\"",
+      "ok": true
+    },
+    {
+      "name": "la simulación termina sola y nada se envía (sin documentos de salida nuevos)",
+      "ok": true
+    },
+    {
+      "name": "el texto y el destino no se guardan, sólo huellas",
+      "ok": true
+    },
+    {
+      "name": "BD: un destinatario procesado no se reescribe",
+      "ok": true
+    },
+    {
+      "name": "BD: no se borran ejecuciones ni se reabren",
+      "ok": true
+    },
+    {
+      "name": "BD: sólo existe el modo Simulación",
+      "ok": true
+    },
+    {
+      "name": "con la preparación desactualizada no se puede iniciar (409)",
+      "ok": true
+    },
+    {
+      "name": "cancelar: pendientes quedan Cancelado, la simulación Cancelada; cancelar de nuevo 409",
+      "ok": true
+    },
+    {
+      "name": "el inicio respeta el límite de 10 solicitudes por minuto (429)",
+      "ok": true
+    },
+    {
+      "name": "plantilla cambiada después de iniciar → nada se simula y la ejecución cierra con ese motivo",
+      "ok": true
+    },
+    {
+      "name": "historial: 3 simulaciones con conteos y motivos de omisión",
+      "ok": true
+    },
+    {
+      "name": "auditoría registra alta y cierre de cada simulación",
+      "ok": true
+    },
+    {
+      "name": "base aislada eliminada",
+      "ok": true
+    }
+  ]
+}
