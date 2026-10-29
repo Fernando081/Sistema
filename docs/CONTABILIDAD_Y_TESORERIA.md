@@ -70,7 +70,7 @@ Los reportes son información operativa. Antes de utilizarlos como libros fiscal
 
 - El mayor de Proveedores es 674,091.00 y el auxiliar 78,650.00. La diferencia de 595,441.00 queda explicada por completo por 9 compras anteriores de contado: el modelo anterior (`fn_reconstruir_poliza_compra`) abonó 2100 y nunca registró su pago.
 - Con ese saldo, el DPO sobre costo de los últimos 90 días sale en 9,759 días. La pantalla lo marca como no confiable.
-- La corrección es una póliza de ajuste que debe revisar el contador (F02). F03 no la crea.
+- La corrección es una póliza de ajuste que debe revisar el contador (F02). F03 no la crea. Desde F02a se puede preparar en borrador (sección siguiente).
 - Inventario contra costo cuadra al centavo en el periodo.
 
 **Límites:**
@@ -78,3 +78,42 @@ Los reportes son información operativa. Antes de utilizarlos como libros fiscal
 - El auxiliar no se puede reconstruir a una fecha pasada.
 - No usa saldos medios por proveedor ni pondera por moneda (todo en MXN con el tipo de cambio de cada factura).
 - No incluye gastos (6000) en el denominador.
+
+## F02a — Propuesta de ajuste de Proveedores (28/10/2026)
+
+En **Contabilidad → Días de pago (DPO)**, debajo de las conciliaciones, el panel "Propuesta de ajuste para tu contador (F02)" lista las compras anteriores de contado:
+
+- liquidadas y sin pago registrado;
+- con su póliza automática original y el abono que hizo a Proveedores (2100).
+
+Con los datos actuales son 9 compras por 595,441.00. Es la misma diferencia que explica F03.
+
+**Qué hace:**
+
+- Crea una **póliza manual en Borrador**, tipo Diario:
+  - un cargo a 2100 por cada compra, con referencia `F02:compra:<id>`;
+  - un abono total a la **cuenta de contrapartida que elija el contador**, por ejemplo 1100 Caja o 1110 Bancos.
+- La fecha y el motivo los captura quien la prepara; el motivo queda en el concepto. Se pide confirmar que se revisó con el contador.
+- **No cambia saldos.** La póliza se contabiliza en la pestaña Pólizas con "Contabilizar" (permiso `contabilidad.operar`), cuando el contador la apruebe.
+- Al contabilizarla, F03 deja de contar esas compras como causa y el mayor de Proveedores cuadra con el auxiliar. Mientras siga en Borrador, la diferencia sigue a la vista.
+
+**Controles:**
+
+- Una compra sólo puede estar en un ajuste vigente: no Cancelado y no automático. Dos solicitudes simultáneas se serializan; una crea la póliza y la otra recibe conflicto.
+- La contrapartida debe estar activa, aceptar movimientos y no ser 2100. Una compra que ya no aplica rechaza la solicitud completa sin dejar pólizas.
+- El trigger de periodos cerrados existente impide fechar la póliza en un mes cerrado.
+- API:
+  - `GET /finanzas/contabilidad/dpo/ajuste-proveedores` (ADMIN);
+  - `POST` con `{fecha, idCuentaContrapartida, motivo (10–200), compras[], confirmacion:true}` (ADMIN y `contabilidad.operar`).
+  - Sin migración: usa `poliza_contable` y `poliza_contable_detalle`.
+
+**Verificación:**
+
+- `npm run test:supplier-adjustment`: copia aislada del último respaldo; exige 15/15.
+- `tests/dpo-contable.spec.ts`: interfaz, sin 2100 en contrapartidas, confirmación y axe.
+
+**Pendiente (F02, externo):**
+
+- Que el contador decida la contrapartida y la fecha (y si conviene una póliza por compra o una sola), y que la contabilice.
+- Los **saldos iniciales** previos al sistema: se registran como póliza manual de apertura con respaldo del contador. No hay importación de balanza inicial.
+- La validación contable general del catálogo y de las pólizas automáticas.

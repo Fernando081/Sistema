@@ -164,4 +164,63 @@ La pantalla muestra el servidor, el tipo de TLS, el remitente, los dominios y lo
 - No hay bandeja global de envíos: el historial es por factura.
 - El ejecutor corre dentro del backend: si este no está encendido, no se envía (la cola espera).
 - `test:document-outbox` de O01.2a no se volvió a ejecutar; el modo Local conserva su contrato.
-- **O01.2c** (consumidores PAC/campañas) y **O01.3** (operación real) siguen pendientes.
+- **O01.2c** (28/10/2026) agregó los consumidores PAC (seguimiento de cancelaciones) y campañas (sólo simulación); ver [FISCAL_PAC_SANDBOX](FISCAL_PAC_SANDBOX.md) y [CAMPANAS_CONSENTIMIENTO](CAMPANAS_CONSENTIMIENTO.md). **O01.3a** (28/10/2026) agregó la revisión de acumulación, capacidad y retención (sección siguiente). **O01.3b** (canales, proveedores y destinatarios reales; aceptación del procedimiento) sigue pendiente.
+
+# O01.3a — Salud de las salidas (28/10/2026)
+
+Responde a la parte local de O01.3: saber si algo se está acumulando, cuánto espacio ocupa lo que se conserva y qué liberaría una política de retención. No activa canales, no elimina datos y no cambia la regla de que un reporte Agotado no se reinicia solo.
+
+## Dónde se ve
+
+- **Inicio → "Salud de las salidas"**, debajo de Procesos automáticos. Sólo administradores. Se revisa cada 5 minutos y `/dashboard?salidas=1` abre el panel directamente.
+- API: `GET /api/v1/dashboard/salidas` (rol ADMIN, sólo lectura).
+
+| Área | Qué mide | Cuándo pide revisión / acción |
+|---|---|---|
+| Correo de documentos | En espera (Pendiente/Reintento), en curso, inciertos, fallidos y aceptados en 7 días, antigüedad del más viejo y si el correo está activo | **Acción:** más de `OPERACION_COLA_MAX` en espera, o más de 2 h de espera con el correo activo. **Revisión:** inciertos por conciliar, fallidos recientes, o envíos en espera con el correo desactivado |
+| Recuperación de reportes | Pendientes, en curso, agotados (totales y de 7 días), antigüedad | **Acción:** cola mayor al límite. **Revisión:** agotados en 7 días o más de 1 h de espera |
+| Cancelaciones fiscales | Pendientes del SAT, sin respuesta (15 consultas, unos 7 días), documentos en Error en 7 días | **Revisión:** sin respuesta, errores recientes o más de 72 h pendiente |
+| Simulaciones de campaña | En curso y destinatarios pendientes | **Revisión:** una simulación con más de 1 h sin terminar |
+| Almacenamiento | Tamaño de la base, PDF conservados de salidas, documentos, historial de procesos y avisos | **Revisión:** sobre `OPERACION_BD_MAX_MB` u `OPERACION_PDF_MAX_MB` |
+
+**Vista previa de retención:** cuenta lo que tiene más de `OPERACION_RETENCION_DIAS` días (90 por defecto):
+
+- PDF de salidas ya cerradas (simuladas, canceladas, obsoletas, aceptadas o fallidas) y sus MB;
+- ejecuciones de procesos;
+- avisos leídos.
+
+**No se elimina nada.** La política (qué borrar, cuándo y con qué respaldo) la decide el propietario. Las tablas de historial tienen triggers que impiden borrar.
+
+## Variables (`backend/.env`, opcionales)
+
+`OPERACION_COLA_MAX` (200), `OPERACION_BD_MAX_MB` (4096), `OPERACION_PDF_MAX_MB` (1024) y `OPERACION_RETENCION_DIAS` (90). Un valor inválido o fuera de rango usa el valor por defecto.
+
+## Qué hacer con cada aviso
+
+- **Correo con espera larga o cola grande:** revisa `MAIL_MODE`/SMTP (ver arriba) y Procesos automáticos → "Envío de documentos por correo". Si el servidor de correo está caído, la cola espera y no se pierde nada.
+- **Envíos inciertos:** Ventas → Facturas → correo de la factura. Un administrador decide con motivo: confirmar, reintentar o dar por fallido. Nunca se reenvían solos.
+- **Reportes agotados:** Reportes comerciales → historial del programa. Corrige la causa (configuración o permisos); el siguiente periodo usa su calendario normal.
+- **Cancelación sin respuesta:** confirma con el cliente que acepte la cancelación en el buzón del SAT. El seguimiento sigue consultando cada 12 h.
+- **Documentos fiscales en Error:** vuelve a timbrar desde la factura o el REP; si se repite, revisa el PAC ([FISCAL_PAC_SANDBOX](FISCAL_PAC_SANDBOX.md)).
+- **Simulación detenida:** revisa Procesos automáticos → "Simulación de campañas". Puedes cancelarla con motivo desde CRM → Campañas.
+- **Almacenamiento:** revisa la vista previa de retención y decide la política. Antes de cualquier limpieza manual, haz un respaldo (`npm run backup:daily`).
+
+## Verificación
+
+- `backend/src/dashboard/salud-salidas.spec.ts`: 7 pruebas de reglas y umbrales.
+- `test/scheduled-jobs.e2e-spec.ts`: `/dashboard/salidas` sólo para administradores.
+- `npm run test:outputs-health`: copia aislada del último respaldo con migraciones hasta 121; exige 17/17 y que la copia se elimine (`.artifacts/o013a-salud-salidas.json`). Comprueba:
+  - las cifras contra las tablas;
+  - la cancelación sin respuesta;
+  - un aviso por administrador activo y ninguno para otros roles;
+  - que no se dupliquen avisos el mismo día;
+  - el escalamiento a crítico;
+  - el registro del proceso y su presencia en el estado de procesos.
+- UI: `tests/outputs-health.spec.ts`, en claro y oscuro, móvil, axe y error.
+
+## Límites
+
+- Las colas están vacías en los datos actuales; los umbrales por defecto son una propuesta y no una capacidad medida.
+- No hay monitor externo: si el backend o la base están apagados, no hay revisión ni avisos (igual que los demás procesos).
+- No se mide `backend/uploads` en disco ni el espacio libre del equipo.
+- **O01.3b pendiente:** canales y proveedores reales (SMTP de un proveedor, WhatsApp), destinatarios verificados, aceptación humana del procedimiento y política de retención aprobada.

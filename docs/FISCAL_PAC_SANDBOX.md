@@ -84,3 +84,32 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/node24.ps1 run verif
 ```
 
 `verify:release` restaura el respaldo más reciente en una base temporal y valida timbrado/cancelación mock de factura y REP junto con los reversos transaccionales. El ambiente sandbox real requiere las credenciales y el CSD configurados en el portal del PAC.
+
+## O01.2c — seguimiento automático de cancelaciones (28/10/2026)
+
+Cuando el SAT deja una cancelación **pendiente** (el receptor debe aceptarla), el documento queda en `Cancelacion solicitada` y la operación no se revierte. Antes sólo se volvía a revisar si alguien pulsaba "Cancelar" otra vez. Ahora el proceso automático **Seguimiento de cancelaciones fiscales** (`fiscal_followup`, cada 5 minutos) lo consulta solo:
+
+| Consulta | Espera antes de la siguiente |
+| --- | --- |
+| 1.ª | 15 minutos después de solicitar |
+| 2.ª | 1 hora |
+| 3.ª | 4 horas |
+| Siguientes | cada 12 horas |
+
+- **SAT confirma:** el documento pasa a `Cancelado` y se completa la misma reversión del botón (factura: `sp_cancelar_factura`; REP: `cancelarRep`), con el usuario que pidió la cancelación. Si ya se hizo a mano, no se repite. Aviso informativo.
+- **Receptor rechaza** (`EstatusCancelacion` con "rechaz" y CFDI vigente): vuelve a `Timbrado`, la operación no cambia, evento `CANCELACION_RECHAZADA` y aviso de advertencia.
+- **Consulta fallida o sin respuesta:** sigue pendiente, evento `CONSULTA_ERROR`/`ESTADO_CONSULTADO` y nueva espera. Tras unos 7 días avisa una vez y sigue consultando.
+- **Reversión fallida** (por ejemplo, porque después se emitió un REP): el estado fiscal queda `Cancelado` y llega un aviso crítico para completarla a mano con "Cancelar".
+- **Timbrado interrumpido:** un documento en `Procesando` sin respuesta por más de 15 minutos pasa a `Error` con el evento `TIMBRADO_INTERRUMPIDO`; al timbrar de nuevo se usa la misma clave de idempotencia.
+- Si el ambiente o proveedor del documento no coincide con la configuración actual, no se consulta; se registra y se reprograma.
+
+Los avisos llegan al centro de notificaciones de quien pidió la cancelación, o a los administradores si esa cuenta ya no está activa. Todos los eventos automáticos llevan `"automatico": true` en su detalle.
+
+### Probar sin PAC
+
+`FISCAL_MOCK_CANCELACION` (sólo con `FISCAL_MODE=mock`): vacío o `inmediata` cancela al instante, como antes; `pendiente` deja la cancelación en espera y la primera consulta la confirma; `rechazada` la deja en espera y la consulta informa el rechazo. `npm run test:pac-campaigns` prueba el ciclo completo en una copia aislada.
+
+### Límites
+
+- No se probó contra el servicio de consulta real del SAT; la detección del rechazo sigue el texto que devuelve `EstatusCancelacion`.
+- El proceso corre dentro del backend; si está apagado, las consultas esperan.

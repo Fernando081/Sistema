@@ -25,6 +25,20 @@ Actualizado: **21/10/2026**. O02.1–O02.4 implementan observación y avisos loc
 
 O02.4 agrega avisos propios de fallo/atraso y recuperación de los dos últimos. El monitor del dashboard conserva sus avisos de métricas atrasadas: esos avisos describen el refresco diario y se distinguen de los incidentes del proceso que revisa su frescura.
 
+### Agregados en O01.2c (28/10/2026)
+
+- `fiscal_followup` — Seguimiento de cancelaciones fiscales: cron cada 5 min; registra ejecución con trabajo pendiente o cada 25 min (intervalo esperado 30 min, gracia 10 min). Bloqueo 7.
+- `campaign_simulation` — Simulación de campañas: cron cada minuto (segundo 30); registra con simulaciones en curso o cada 9 min (intervalo 10 min, gracia 5 min). Bloqueo 8.
+
+Ambos usan `runScheduledJob`, aparecen en Procesos automáticos y avisan fallos/atrasos como los demás.
+
+### Agregado en O01.3a (28/10/2026)
+
+- `outputs_health` — Salud de las salidas. El cron corre a los minutos 15 y 45 de cada hora; intervalo esperado de 30 min y gracia de 15 min (migración 121). Bloqueo 9.
+  - Revisa acumulación, capacidad y retención del correo de documentos, la recuperación de reportes, las cancelaciones fiscales pendientes, las simulaciones de campaña y el almacenamiento.
+  - Envía un aviso por área con problema, por administrador y por día (`salidas:<área>:<fecha>:<usuario>`). Si el área empeora a crítico el mismo día, el aviso se actualiza y vuelve a quedar sin leer.
+  - Panel: Inicio → "Salud de las salidas" (`/dashboard?salidas=1`). Ver [SALIDA_DOCUMENTOS](SALIDA_DOCUMENTOS.md#o013a--salud-de-las-salidas-28102026).
+
 ## Persistencia y concurrencia
 
 `operational_job` conserva fecha de instalación y, para jobs periódicos, intervalo/tolerancia. `operational_job_run` conserva UUID técnico, inicio, cierre y estado `running`, `success` o `failed`. No se guarda texto de errores, secretos ni datos de negocio. El historial completo no tiene aún política de retención; las respuestas muestran los últimos 20 por job, con índices para las consultas.

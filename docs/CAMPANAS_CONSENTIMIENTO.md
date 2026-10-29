@@ -80,3 +80,22 @@ Node24. Respaldar → db:check (rollback) → builds → aceptación en copia �
 ## Pendientes C01.2 y límites del cierre
 
 Consentimiento/evidencia e identidad humana, procedimiento para destinos compartidos/contactos retirados, privacidad/conservación y aprobación operativa; luego evaluar proveedor/canal/costos, autorización explícita para enviar, programación/colas/cancelación/revalidación de bajas, baja accesible al destinatario y métricas reales con procedencia. Nada de esto se habilita por preparar una lista. Sin banco, compras de hosting/dominio o nueva prioridad de Ollama. C02 podrá ampliar secuencias internas reutilizando las tareas/agenda/bitácora existentes, con envíos externos fuera del alcance autorizado.
+
+## O01.2c — simulación de envío (28/10/2026)
+
+Primer consumidor de las preparaciones: **simula** la campaña destinatario por destinatario, revalidando todo al momento de procesarlo. **No envía mensajes**; el único modo que acepta la base de datos es `Simulacion`.
+
+1. CRM → Campañas → (campaña) → **Simulación de envío**. Requiere que la **última** preparación coincida con la revisión actual; si algo cambió, hay que conservar una nueva.
+2. Capturar motivo, confirmar que es una simulación e **Iniciar simulación**. Se crean los destinatarios **Elegibles** de esa preparación con su huella de destino y la autorización que los hizo elegibles. Sólo una simulación en curso por campaña; el mismo `requestId` devuelve la misma simulación.
+3. El proceso automático **Simulación de campañas** (`campaign_simulation`, cada minuto, hasta 200 destinatarios por ciclo) toma el mismo bloqueo que las decisiones de consentimiento y, para cada destinatario:
+   - **Contacto retirado:** se borró o cambió de cliente.
+   - **Destino inválido / Destino cambiado:** el correo o teléfono ya no es válido o no es el preparado.
+   - **Baja:** el destino tiene una baja vigente (incluida una registrada después de iniciar).
+   - **Sin autorización / Vencido:** la última decisión del contacto ya no autoriza ese destino o venció.
+   - Si todo sigue igual: **Simulado**, con la huella SHA-256 del mensaje personalizado (`{{nombre}}` y `{{cliente}}` en asunto y contenido).
+4. Si la plantilla cambia (asunto, contenido, canal o se desactiva) o la campaña se cierra, los pendientes quedan **Omitido** con "Plantilla cambiada" o "Campaña cerrada" y la simulación termina con ese motivo.
+5. **Cancelar simulación** (con motivo) deja los pendientes como Cancelado. Ninguna simulación se reabre ni se borra.
+
+No se guardan textos, nombres ni destinos: sólo referencias técnicas, estados, motivos y huellas. Alta y cierre quedan en auditoría. Rutas: `GET/POST /crm/campanas-locales/:id/ejecuciones` y `POST /crm/campanas-locales/:id/ejecuciones/:ejecucion/cancelar` (permiso `crm.campanas.gestionar`, 10/min, `no-store`).
+
+**Sigue pendiente (C01.2/O01.3):** baja accesible al destinatario, evidencia e identidad, autorización del propietario para enviar, canal/proveedor real, programación por fecha y métricas de entrega. Una simulación "Simulado" no es un mensaje enviado ni autoriza enviarlo.
