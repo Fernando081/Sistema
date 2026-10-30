@@ -96,7 +96,7 @@ export async function checkRestoredHttp(directory, files, routes, options = {}) 
           if (response.headers.get(header) !== value) failures.push(header);
         const csp = response.headers.get("content-security-policy") ?? "";
         if (!["default-src 'none'", "frame-ancestors 'none'", "form-action 'self'"].every(rule => csp.split(";").some(part => part.trim() === rule))) failures.push("content-security-policy");
-        const type = item.path.endsWith(".css") ? "text/css" : item.path.endsWith(".jpg") ? "image/jpeg" : item.path.endsWith(".png") ? "image/png" : item.path.endsWith(".xml") ? "application/xml" : item.path.endsWith(".txt") ? "text/plain" : "text/html";
+        const type = item.path.endsWith(".css") ? "text/css" : item.path.endsWith(".jpg") ? "image/jpeg" : item.path.endsWith(".png") ? "image/png" : item.path.endsWith(".xml") ? "application/xml" : item.path.endsWith(".txt") ? "text/plain" : item.path.endsWith(".js") ? "text/javascript" : item.path.endsWith(".webp") ? "image/webp" : item.path.endsWith(".woff2") ? "font/woff2" : "text/html";
         if (!response.headers.get("content-type")?.startsWith(type)) failures.push("content-type");
         const chunks = [];
         let size = 0;

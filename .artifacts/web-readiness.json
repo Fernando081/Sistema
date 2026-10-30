@@ -51,10 +51,10 @@
   "local": {
     "auditErrors": 0,
     "auditWarnings": [],
-    "maxInitialBytes": 23093,
+    "maxInitialBytes": 36157,
     "clientJavaScriptBytes": 0,
-    "maxInitialAssetBytes": 321828,
+    "maxInitialAssetBytes": 172049,
     "imageBudgetScope": "HTML+CSS sin comprimir y unión de fuentes de imágenes no lazy, incluyendo candidatos srcset; sin caché. No mide velocidad ni imágenes lazy que el navegador pueda cargar al iniciar."
   },
-  "generatedAt": "2026-10-11T23:45:57.208Z"
+  "generatedAt": "2026-10-29T23:17:48.148Z"
 }

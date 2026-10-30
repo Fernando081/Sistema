@@ -16,7 +16,7 @@ function safeName(name, ids) {
   if (parts[0] !== "releases" || !ids.includes(parts[1])) throw new Error("Archivo ajeno al piloto");
   const file = parts.slice(2).join("/");
   if (!/^[a-zA-Z0-9_./-]+$/.test(file) || parts.slice(2).some(part => !part || part === "." || part === "..") ||
-      (!configs.includes(file) && !/\.(?:html|css|png|jpg|txt)$/.test(file))) throw new Error("Archivo no permitido");
+      (!configs.includes(file) && !/\.(?:html|css|png|jpg|txt|js|webp|woff2)$/.test(file))) throw new Error("Archivo no permitido");
   return name;
 }
 function decode(archive) {
@@ -58,7 +58,7 @@ function decode(archive) {
     if (!routes?.["/"] || !routes["/404"]) throw new Error("Rutas incompletas");
     for (const [route, name] of Object.entries(routes)) {
       const url = new URL(route, "http://127.0.0.1");
-      if (url.origin !== "http://127.0.0.1" || url.pathname !== route || url.search || url.hash || !seal.files[name] || !/\.(?:html|css|png|jpg|txt)$/.test(name)) throw new Error("Ruta inválida");
+      if (url.origin !== "http://127.0.0.1" || url.pathname !== route || url.search || url.hash || !seal.files[name] || !/\.(?:html|css|png|jpg|txt|js|webp|woff2)$/.test(name)) throw new Error("Ruta inválida");
     }
   }
   if ([...files.keys()].some(name => !allowed.has(name))) throw new Error("Contenido fuera del sello");

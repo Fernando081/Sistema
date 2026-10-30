@@ -42,6 +42,6 @@ test("Organization solo incluye identidad del negocio y contactos confirmados", 
   assert.match(html, /itemprop="areaServed">Zona de prueba/);
   assert.doesNotMatch(
     html,
-    /itemprop="(?:legalName|taxID|logo|sameAs|aggregateRating|openingHours)"|<script/,
+    /itemprop="(?:legalName|taxID|logo|sameAs|aggregateRating|openingHours)"|<script(?! src="\/assets\/site\.js" defer><\/script>)/,
   );
 });

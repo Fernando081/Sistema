@@ -8,6 +8,6 @@
   "scripts": {
     "build": "node build.mjs",
     "start": "node server.mjs",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --import ./test/support/pid-reserve.mjs --test test/*.test.mjs"
   }
 }

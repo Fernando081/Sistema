@@ -7,9 +7,13 @@ import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawn, spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { validateIntakeProfile, loadIntakeProfile, checkIntakeProfile, prepareIntakeProfile } from "../intake-profile.mjs";
 import { createBridgePreflight } from "../lead-preflight.mjs";
 import { profileFixture } from "./intake-profile.fixture.mjs";
+// Rutas absolutas: la suite corre desde la raíz (npm run test:web-publica) o desde public-web (npm test).
+const serverScript = fileURLToPath(new URL("../server.mjs", import.meta.url));
+const intakeScript = fileURLToPath(new URL("../intake-profile.mjs", import.meta.url));
 import { createPreviewServer } from "../server.mjs";
 import { build } from "../build.mjs";
 
@@ -70,10 +74,12 @@ test("perfil y claves inválidos cierran con errores sanitizados; archivo acotad
     await assert.rejects(loadIntakeProfile(file), /Perfil/);
     await writeFile(file, Buffer.from([0xff])); await assert.rejects(loadIntakeProfile(file), /Perfil/);
     await writeFile(file, JSON.stringify({ secret: key }));
-    const command = spawnSync(process.execPath, ["public-web/intake-profile.mjs", "--profile=" + file], { encoding: "utf8" });
+    const command = spawnSync(process.execPath, [intakeScript, "--profile=" + file], { encoding: "utf8" });
     assert.equal(command.status, 1); assert.ok(!command.stdout.includes(key)); assert.ok(!command.stderr.includes(key));
-    const server = spawnSync(process.execPath, ["public-web/server.mjs", "--capture-profile=" + file], { encoding: "utf8" });
+    assert.doesNotMatch(command.stderr, /ERR_MODULE_NOT_FOUND/);
+    const server = spawnSync(process.execPath, [serverScript, "--capture-profile=" + file], { encoding: "utf8" });
     assert.equal(server.status, 1); assert.ok(!server.stderr.includes(key));
+    assert.doesNotMatch(server.stderr, /ERR_MODULE_NOT_FOUND/);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
@@ -144,7 +150,7 @@ test("CLI exige perfil explícito: cerrado aun con variables; habilitado hace pr
     child = undefined;
   };
   const start = async (args) => {
-    child = spawn(process.execPath, ["public-web/server.mjs", ...args], { env, stdio: ["ignore", "pipe", "pipe"] });
+    child = spawn(process.execPath, [serverScript, ...args], { env, stdio: ["ignore", "pipe", "pipe"] });
     child.stderr.resume();
     await new Promise((resolve, reject) => {
       const timer = setTimeout(() => reject(new Error("CLI no inició a tiempo")), 10000);

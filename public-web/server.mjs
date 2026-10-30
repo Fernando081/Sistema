@@ -4,6 +4,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { root, shell as baseShell, heading } from "./build.mjs";
 import { validateCatalog } from "./catalog.mjs";
+import { staticAssets, staticType } from "./static-assets.mjs";
 import { searchHtml } from "./search.mjs";
 import { inquiryHtml } from "./inquiry.mjs";
 import { freeInquiryHtml } from "./free-inquiry.mjs";
@@ -66,7 +67,7 @@ export async function createPreviewServer(
   return createServer(async (req, res) => {
     res.setHeader(
       "Content-Security-Policy",
-      "default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+      "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
     );
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("Referrer-Policy", "no-referrer");
@@ -296,6 +297,8 @@ export async function createPreviewServer(
         res.setHeader("Content-Type", "text/css; charset=utf-8");
       if (normalized === "/assets/logo-rtt.jpg")
         res.setHeader("Content-Type", "image/jpeg");
+      if (filename && staticAssets.includes(normalized))
+        res.setHeader("Content-Type", staticType(normalized));
       if (normalized === "/robots.txt")
         res.setHeader("Content-Type", "text/plain; charset=utf-8");
       if (normalized === "/sitemap.xml")

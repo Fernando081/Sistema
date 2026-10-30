@@ -33,7 +33,7 @@ test("microdatos Product/Brand usan datos publicados y no afirman precios, GTIN 
   assert.match(html, /itemprop="name">Marca &amp; prueba/);
   assert.doesNotMatch(
     html,
-    /itemprop="(?:offers|aggregateRating|review|gtin|mpn|manufacturer|price|availability)"|<script/,
+    /itemprop="(?:offers|aggregateRating|review|gtin|mpn|manufacturer|price|availability)"|<script(?! src="\/assets\/site\.js" defer><\/script>)/,
   );
   assert.doesNotMatch(html, /itemprop="image"/);
   for (const status of ["draft", "retired"])

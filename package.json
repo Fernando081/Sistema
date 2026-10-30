@@ -13,7 +13,7 @@
     "build": "npm --workspace backend run build && npm --workspace frontend run build && npm run build:web-publica",
     "build:web-publica": "node public-web/build.mjs",
     "start:web-publica": "node public-web/server.mjs",
-    "test:web-publica": "node --test public-web/test/*.test.mjs",
+    "test:web-publica": "node --import ./public-web/test/support/pid-reserve.mjs --test public-web/test/*.test.mjs",
     "test:web-publica-ui": "playwright test --config public-web/playwright.config.ts",
     "verify:web-publica": "npm run build:web-publica && npm run test:web-publica && npm run test:web-publica-ui",
     "check:web-readiness": "node public-web/readiness.mjs",

@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { dynamicResponse } from "../response-budget.mjs";
+import { limits } from "../budget.mjs";
 import { inquiryHtml } from "../inquiry.mjs";
 import { loadBusiness } from "../business.mjs";
 import { mkdtemp, writeFile, rm } from "node:fs/promises";
@@ -13,7 +14,7 @@ test("HTTP responde 503 sin cuerpo HEAD cuando CSS supera presupuesto", async ()
   let server;
   try {
     await build(directory);
-    await writeFile(join(directory, "assets/site.css"), Buffer.alloc(20001));
+    await writeFile(join(directory, "assets/site.css"), Buffer.alloc(limits.cssBytes + 1));
     server = await createPreviewServer(directory);
     await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
     const base = `http://127.0.0.1:${server.address().port}`;
@@ -41,7 +42,7 @@ test("presupuesto dinámico incluye CSS y cuenta bytes UTF-8", () => {
     () => dynamicResponse("é".repeat(20001), Buffer.alloc(10000)),
     /presupuesto/,
   );
-  assert.throws(() => dynamicResponse("x", Buffer.alloc(20001)), /presupuesto/);
+  assert.throws(() => dynamicResponse("x", Buffer.alloc(limits.cssBytes + 1)), /presupuesto/);
 });
 test("mensaje largo no crea enlaces enormes y conserva texto para copiar", async () => {
   const business = await loadBusiness();

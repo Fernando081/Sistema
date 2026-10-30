@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { measureBudget } from "../budget.mjs";
+import { measureBudget, limits } from "../budget.mjs";
 test("presupuesto por ruta incluye CSS compartido y rechaza exceso antes de escribir", () => {
   const report = measureBudget(
     new Map([["/", "<h1>Inicio</h1>"]]),
@@ -14,7 +14,7 @@ test("presupuesto por ruta incluye CSS compartido y rechaza exceso antes de escr
     /Presupuesto/,
   );
   assert.throws(
-    () => measureBudget(new Map([["/", "a"]]), Buffer.alloc(20001)),
+    () => measureBudget(new Map([["/", "a"]]), Buffer.alloc(limits.cssBytes + 1)),
     /Presupuesto/,
   );
 });

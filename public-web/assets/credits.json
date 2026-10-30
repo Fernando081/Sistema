@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "note": "Fotografías de referencia de bancos abiertos; no muestran productos, inventario ni instalaciones del negocio.",
+  "photos": [
+    {
+      "files": [
+        "puente-laguna.webp"
+      ],
+      "title": "Tampico Bridge",
+      "creator": "AnbyG",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Tampico_Bridge.jpg",
+      "via": "Wikimedia Commons",
+      "credit": "\"Tampico Bridge\" by AnbyG, CC BY-SA 4.0, via Wikimedia Commons",
+      "changes": "Recortada, redimensionada y convertida a WebP para la web pública.",
+      "downloaded": "2026-10-29T22:03:26.670Z"
+    },
+    {
+      "files": [
+        "inyector.webp"
+      ],
+      "title": "Unit injector late prod",
+      "creator": "Panoha",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "page": "https://commons.wikimedia.org/wiki/File:Unit_injector_late_prod.jpg",
+      "via": "Wikimedia Commons",
+      "credit": "\"Unit injector late prod\" by Panoha, CC BY-SA 3.0, via Wikimedia Commons",
+      "changes": "Recortada, redimensionada y convertida a WebP para la web pública.",
+      "downloaded": "2026-10-29T22:03:30.862Z"
+    },
+    {
+      "files": [
+        "maza.webp"
+      ],
+      "title": "Eicher Pro8055 wheel hub",
+      "creator": "Photohelp13",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Eicher_Pro8055_wheel_hub.jpg",
+      "via": "Wikimedia Commons",
+      "credit": "\"Eicher Pro8055 wheel hub\" by Photohelp13, CC BY-SA 4.0, via Wikimedia Commons",
+      "changes": "Recortada, redimensionada y convertida a WebP para la web pública.",
+      "downloaded": "2026-10-29T22:03:32.143Z"
+    },
+    {
+      "files": [
+        "motor.webp"
+      ],
+      "title": "Scammell Pioneer pic4 engine compartment",
+      "creator": "AlfvanBeem",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Scammell_Pioneer_pic4_engine_compartment.jpg",
+      "via": "Wikimedia Commons",
+      "credit": "\"Scammell Pioneer pic4 engine compartment\" by AlfvanBeem, CC0, via Wikimedia Commons",
+      "changes": "Recortada, redimensionada y convertida a WebP para la web pública.",
+      "downloaded": "2026-10-29T22:03:34.965Z"
+    },
+    {
+      "files": [
+        "puente-tampico-1600.webp",
+        "puente-tampico-960.webp"
+      ],
+      "title": "Puente Tampico, Tamps",
+      "creator": "César Eduardo Ortega Villagómez",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Puente_Tampico,_Tamps.jpg",
+      "via": "Wikimedia Commons",
+      "credit": "\"Puente Tampico, Tamps\" by César Eduardo Ortega Villagómez, CC BY-SA 4.0, via Wikimedia Commons",
+      "changes": "Recortada, redimensionada y convertida a WebP para la web pública.",
+      "downloaded": "2026-10-29T22:03:36.425Z"
+    },
+    {
+      "files": [
+        "carga-diesel.webp"
+      ],
+      "title": "Truck fueling, GO Gas Station at Highway 40 during sunset",
+      "creator": "Ahmed",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Truck_fueling,_GO_Gas_Station_at_Highway_40_during_sunset.jpg",
+      "via": "Wikimedia Commons",
+      "credit": "\"Truck fueling, GO Gas Station at Highway 40 during sunset\" by Ahmed, CC BY 4.0, via Wikimedia Commons",
+      "changes": "Recortada, redimensionada y convertida a WebP para la web pública.",
+      "downloaded": "2026-10-29T22:04:25.332Z"
+    },
+    {
+      "files": [
+        "matraca.webp"
+      ],
+      "title": "Socket wrench and sockets",
+      "creator": "Kae",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Socket_wrench_and_sockets.JPG",
+      "via": "Wikimedia Commons",
+      "credit": "\"Socket wrench and sockets\" by Kae, CC BY-SA 3.0, via Wikimedia Commons",
+      "changes": "Recortada, redimensionada y convertida a WebP para la web pública.",
+      "downloaded": "2026-10-29T22:04:26.616Z"
+    },
+    {
+      "files": [
+        "puerto-tampico.webp"
+      ],
+      "title": "Puente Tampico Tamaulipas",
+      "creator": "NICOVAF",
+      "license": "Dominio público",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "page": "https://commons.wikimedia.org/wiki/File:Puente_Tampico_Tamaulipas.jpg",
+      "via": "Wikimedia Commons",
+      "credit": "\"Puente Tampico Tamaulipas\" by NICOVAF, public domain, via Wikimedia Commons",
+      "changes": "Recortada, redimensionada y convertida a WebP para la web pública.",
+      "downloaded": "2026-10-29T22:03:25.601Z"
+    }
+  ],
+  "fonts": [
+    {
+      "files": [
+        "zilla-slab-400.woff2",
+        "zilla-slab-600.woff2"
+      ],
+      "family": "Zilla Slab",
+      "license": "SIL Open Font License 1.1",
+      "source": "https://fonts.google.com/specimen/Zilla+Slab"
+    }
+  ]
+}

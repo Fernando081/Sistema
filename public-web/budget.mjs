@@ -2,7 +2,9 @@ import { gzipSync, brotliCompressSync } from "node:zlib";
 
 export const limits = Object.freeze({
   initialBytes: 50000,
-  cssBytes: 20000,
+  // CSS ya minificado por css.mjs (WEB02.4). WEB02.5 sube a 28 000 por la papelería
+  // (carpetas, hoja, cupón) y las fuentes propias; HTML+CSS sigue bajo 50 000.
+  cssBytes: 28000,
   compressedBytes: 15000,
 });
 export function measureBudget(pages, css) {

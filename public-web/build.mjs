@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { resolve, join } from "node:path";
 import { businessPages, loadBusiness } from "./business.mjs";
 import { measureBudget } from "./budget.mjs";
+import { loadCss } from "./css.mjs";
 import { loadCatalog, catalogPages } from "./catalog.mjs";
 import { prepareMedia } from "./media.mjs";
 import { searchHtml } from "./search.mjs";
@@ -13,35 +14,50 @@ import { auditPages } from "./audit.mjs";
 import { freeInquiryHtml } from "./free-inquiry.mjs";
 import { measureImageBudget } from "./image-budget.mjs";
 import { previewContextHtml, validatePreviewMode, TEST_PILOT_MODE } from "./preview-context.mjs";
+import { homeBody, footerHtml, creditsBody } from "./home.mjs";
+import { loadStaticAssets } from "./static-assets.mjs";
 export const root = fileURLToPath(new URL(".", import.meta.url));
 export const brand = "Refacciones y Tractorepuestos Tampico";
 const mark =
-  '<img class="brand-logo" src="/assets/logo-rtt.jpg" alt="" width="1254" height="1254" decoding="async">';
+  '<img class="brand-logo" src="/assets/logo-rtt-160.webp" alt="" width="160" height="160" decoding="async">';
 const links = [
-  ["/", "Inicio"],
   ["/catalogo", "Catálogo"],
   ["/buscar", "Buscar"],
-  ["/consulta", "Consultar una pieza"],
   ["/categorias", "Categorías"],
   ["/marcas", "Marcas"],
   ["/nosotros", "Nosotros"],
   ["/contacto", "Contacto"],
 ];
-const heroArt = `<div class="brand-hero"><img src="/assets/logo-rtt.jpg" alt="Logo de Refacciones y Tractorepuestos Tampico: tractocamión azul y engrane" width="1254" height="1254" decoding="async"></div>`;
+// WEB02.5: el pie y la portada leen los datos confirmados de business.json.
+const business = await loadBusiness();
+const footer = footerHtml(business);
+// Cada carpeta interior lleva una fotografía de referencia (decorativa, créditos en /creditos).
+const headingPhotos = {
+  "/catalogo": "inyector",
+  "/buscar": "matraca",
+  "/categorias": "maza",
+  "/marcas": "motor",
+  "/nosotros": "puerto-tampico",
+  "/contacto": "puente-laguna",
+  "/consulta": "carga-diesel",
+};
+const withHeadingPhoto = (path, body) =>
+  path.startsWith("/productos/")
+    ? body
+    : body.replace(
+        '<section class="page-heading">',
+        `<section class="page-heading has-photo"><img class="heading-photo" src="/assets/photos/${headingPhotos["/" + path.split("/")[1]] ?? "puente-laguna"}.webp" alt="" width="720" height="900" decoding="async">`,
+      );
 export function shell(path, title, body, metadata = {}) {
-  return `<!doctype html><html lang="es-MX"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${title} | ${brand}</title><meta name="description" content="${metadataDescription(metadata.description)}"><link rel="stylesheet" href="/assets/site.css"></head><body><a class="skip" href="#contenido">Saltar al contenido</a><div class="preview-bar" role="region" aria-label="Estado de la vista previa">Vista previa de diseño · Catálogo en preparación</div><header class="site-header"><a class="brand" href="/">${mark}<span>Refacciones y Tractorepuestos<strong>Tampico</strong></span></a><nav aria-label="Navegación principal">${links.map(([url, label]) => `<a href="${url}" ${path === url ? 'aria-current="page"' : ""}>${label}</a>`).join("")}</nav></header><main id="contenido" tabindex="-1">${path === "/" ? "" : breadcrumbHtml(title, metadata.breadcrumbs)}${body}</main><footer><div><a class="brand" href="/">${mark}<span>Refacciones y Tractorepuestos<strong>Tampico</strong></span></a><p>Un negocio familiar para el servicio pesado diésel.</p></div><div><p class="eyebrow">La información correcta importa</p><p>Marca, número de parte y aplicación.<br>Una ficha clara para cada refacción.</p><a href="/contacto">Conoce nuestros canales de atención <span aria-hidden="true">↗</span></a></div><p class="footer-note">Catálogo y canales de atención en preparación.</p></footer></body></html>`;
+  body = withHeadingPhoto(path, body);
+  return `<!doctype html><html lang="es-MX"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${title} | ${brand}</title><meta name="description" content="${metadataDescription(metadata.description)}"><link rel="preload" href="/assets/fonts/zilla-slab-600.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css"><script src="/assets/site.js" defer></script></head><body><a class="skip" href="#contenido">Saltar al contenido</a><div class="preview-bar" role="region" aria-label="Estado de la vista previa">Vista previa de diseño · Catálogo en preparación</div><header class="site-header"><a class="brand" href="/">${mark}<span>Refacciones y Tractorepuestos<strong>Tampico</strong></span></a><nav aria-label="Navegación principal">${links.map(([url, label]) => `<a href="${url}"${path === url ? ' aria-current="page"' : ""}>${label}</a>`).join("")}<a class="nav-action" href="/consulta"${path === "/consulta" ? ' aria-current="page"' : ""}>Consultar una pieza</a></nav></header><main id="contenido" tabindex="-1">${path === "/" ? "" : breadcrumbHtml(title, metadata.breadcrumbs)}${body}</main>${footer}</body></html>`;
 }
-export const heading = (eyebrow, title, description) =>
-  `<section class="page-heading"><p class="eyebrow">${eyebrow}</p><h1>${title}</h1><p class="lead">${description}</p></section>`;
+// WEB02.5: el primer argumento (antetítulo) ya no se muestra; se conserva la firma.
+export const heading = (_eyebrow, title, description) =>
+  `<section class="page-heading"><h1>${title}</h1><p class="lead">${description}</p></section>`;
 export const pages = new Map([
-  [
-    "/",
-    shell(
-      "/",
-      "Refacciones para servicio pesado diésel",
-      `<section class="hero"><div><p class="eyebrow">Un negocio familiar · Servicio pesado diésel</p><h1>La pieza correcta.<br><em>Para seguir<br>adelante.</em></h1><p class="lead">Refacciones y Tractorepuestos Tampico. Compra y venta de refacciones para quienes mantienen el servicio pesado en movimiento.</p><div class="actions"><a class="button primary" href="/catalogo">Explorar el catálogo <span aria-hidden="true">↗</span></a><a class="button secondary" href="/contacto">Conocer nuestra atención</a></div></div>${heroArt}</section><section class="principles"><p><span>01 /</span> Número de parte</p><p><span>02 /</span> Marca y aplicación</p><p><span>03 /</span> Referencias verificadas</p></section><section class="intro"><p class="eyebrow">Información que acompaña tu decisión</p><h2>Más claridad.<br>Desde la primera consulta.</h2><div><p>Estamos preparando un catálogo para consultar cada producto por su número de parte, marca y aplicación.</p><p>Las referencias y especificaciones se incorporarán después de revisar la información de cada ficha.</p><a class="text-link" href="/catalogo">Ver el estado del catálogo <span aria-hidden="true">→</span></a></div></section><section class="closing"><p class="eyebrow">Refacciones y Tractorepuestos Tampico</p><h2>Un negocio familiar.<br>Una conversación directa.</h2><a class="button primary" href="/contacto">Información de contacto <span aria-hidden="true">↗</span></a></section>`,
-    ),
-  ],
+  ["/", shell("/", "Refacciones para servicio pesado diésel", homeBody(business))],
+  ["/creditos", shell("/creditos", "Créditos", await creditsBody(fileURLToPath(new URL(".", import.meta.url)), heading))],
   [
     "/catalogo",
     shell(
@@ -78,7 +94,7 @@ export const pages = new Map([
         "Una ficha.<br>Todos los detalles.",
         "Vista de diseño para revisar la jerarquía; no representa un producto real.",
       ) +
-        `<section class="product-layout"><div class="image-frame"><p>Fotografía real autorizada</p><span aria-hidden="true">+</span></div><article><p class="eyebrow">Marca del producto</p><h2>Nombre comercial<br>de la refacción</h2><p class="part-label">Número de parte original</p><p>La descripción revisada ocupará este espacio. No se muestran precios ni disponibilidad sin confirmación.</p><a class="button primary" href="/contacto">Información para solicitar atención</a></article></section><section class="details-grid"><article><h2>Aplicación</h2><p>Fabricante, modelo, motor y restricciones verificadas.</p></article><article><h2>Referencias cruzadas</h2><p>OEM, alternos y equivalencias elegidas tras revisión.</p></article><article><h2>Especificaciones</h2><p>Características, valores y unidades comprobadas.</p></article></section>`,
+        `<section class="product-layout"><div class="image-frame"><span aria-hidden="true">+</span><p>Fotografía real autorizada</p></div><article><h2>Nombre comercial<br>de la refacción</h2><p>Marca del producto</p><p class="part-label">Número de parte original</p><p>La descripción revisada ocupará este espacio. No se muestran precios ni disponibilidad sin confirmación.</p><a class="button primary" href="/contacto">Información para solicitar atención</a></article></section><section class="details-grid"><article><h2>Aplicación</h2><p>Fabricante, modelo, motor y restricciones verificadas.</p></article><article><h2>Referencias cruzadas</h2><p>OEM, alternos y equivalencias elegidas tras revisión.</p></article><article><h2>Especificaciones</h2><p>Características, valores y unidades comprobadas.</p></article></section>`,
     ),
   ],
   [
@@ -138,7 +154,7 @@ export async function build(
 ) {
   if (Number(process.versions.node.split(".")[0]) !== 24)
     throw new Error("Usa Node.js 24");
-  const css = await readFile(join(root, "assets/site.css"));
+  const css = await loadCss(root);
   const logo = await readFile(join(root, "assets/logo-rtt.jpg"));
   if (logo.length > 350000 || logo[0] !== 0xff || logo[1] !== 0xd8)
     throw new Error("Logo JPEG inválido o mayor a 350 kB");
@@ -159,10 +175,12 @@ export async function build(
     : await loadRedirects(selectedPages);
   const report = measureBudget(selectedPages, css);
   const media = await prepareMedia(products, mediaDirectory);
+  const statics = await loadStaticAssets(root);
+  report.clientJavaScriptBytes = statics.get("/assets/site.js").length;
   report.imageBudget = measureImageBudget(
     selectedPages,
     css,
-    new Map([...media, ["/assets/logo-rtt.jpg", logo]]),
+    new Map([...media, ...statics, ["/assets/logo-rtt.jpg", logo]]),
   );
   const audit = auditPages(selectedPages, media, redirects);
   if (
@@ -211,6 +229,11 @@ export async function build(
   await writeFile(join(output, "robots.txt"), "User-agent: *\nDisallow: /\n");
   routes["/assets/site.css"] = "assets/site.css";
   routes["/assets/logo-rtt.jpg"] = "assets/logo-rtt.jpg";
+  for (const [url, bytes] of statics) {
+    await mkdir(resolve(output, url.slice(1), ".."), { recursive: true });
+    await writeFile(join(output, url.slice(1)), bytes);
+    routes[url] = url.slice(1);
+  }
   routes["/robots.txt"] = "robots.txt";
   await writeFile(join(output, "routes.json"), JSON.stringify(routes, null, 2));
   const htmlBytes = Math.max(
@@ -221,7 +244,7 @@ export async function build(
       "Presupuesto público inicial superado (50 kB HTML+CSS sin comprimir)",
     );
   console.log(
-    `Web pública: ${selectedPages.size} páginas; máximo HTML+CSS ${htmlBytes + css.length} bytes; JavaScript cliente 0 bytes.`,
+    `Web pública: ${selectedPages.size} páginas; máximo HTML+CSS ${htmlBytes + css.length} bytes; JavaScript cliente ${report.clientJavaScriptBytes} bytes.`,
   );
   return routes;
 }

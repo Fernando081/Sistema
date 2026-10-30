@@ -1,3 +1,5 @@
+import { loadCss } from "./css.mjs";
+import { loadStaticAssets } from "./static-assets.mjs";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -77,13 +79,14 @@ export async function checkReadiness() {
   const audit = auditPages(pages, media, await loadRedirects(pages));
   const budget = measureBudget(
     pages,
-    await readFile(join(root, "assets/site.css")),
+    await loadCss(root),
   );
   const imageBudget = measureImageBudget(
     pages,
-    await readFile(join(root, "assets/site.css")),
+    await loadCss(root),
     new Map([
       ...media,
+      ...(await loadStaticAssets(root)),
       [
         "/assets/logo-rtt.jpg",
         await readFile(join(root, "assets/logo-rtt.jpg")),

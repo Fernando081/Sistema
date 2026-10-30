@@ -2,7 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { navigationPages, groupRoute, pageSize } from "../navigation.mjs";
 import { measureBudget } from "../budget.mjs";
-import { readFile } from "node:fs/promises";
+import { loadCss } from "../css.mjs";
+import { fileURLToPath } from "node:url";
 import { pagesForCatalog } from "../build.mjs";
 const product = (index) => ({
   slug: `fixture-${index}`,
@@ -59,7 +60,7 @@ test("mil fichas conservan el presupuesto y grupos con nombres similares no coli
   const items = Array.from({ length: 1000 }, (_, i) => product(i));
   const report = measureBudget(
     pagesForCatalog(items),
-    await readFile(new URL("../assets/site.css", import.meta.url)),
+    await loadCss(fileURLToPath(new URL("..", import.meta.url))),
   );
   assert.ok(report.routes.every((row) => row.initialBytes <= 50000));
   assert.notEqual(groupRoute("marcas", "A-B"), groupRoute("marcas", "A B"));

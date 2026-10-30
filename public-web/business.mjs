@@ -125,6 +125,14 @@ export function organizationMetadata(input) {
     )
     .join("")}`;
 }
+// Preguntas frecuentes compartidas por /contacto y la portada (WEB02.5).
+export function businessFaqItems(input) {
+  const business = validateBusiness(input);
+  const show = (field) => business.contact[field].confirmed;
+  const lines = (field) =>
+    escapeHtml(business.contact[field].value).replaceAll("\n", "<br>");
+  return `<details><summary>¿Qué información necesito para consultar una pieza?</summary><p>Ten a mano el número de parte, la marca y la aplicación o modelo. Nuestro equipo debe confirmar compatibilidad, precio y disponibilidad.</p><a class="text-link" href="/consulta">Consultar una pieza que no aparece en el catálogo</a></details>${show("serviceArea") ? `<details><summary>¿Cómo puedo recibir mis refacciones?</summary><p>${lines("serviceArea")}</p><p>Consulta con nuestro equipo las condiciones de entrega de tu pedido.</p></details>` : ""}${show("hours") ? `<details><summary>¿Cuáles son los horarios de atención?</summary><p>${lines("hours")}</p></details>` : ""}${show("address") ? `<details><summary>¿Dónde está el negocio?</summary><p>${lines("address")}</p>${business.contact.maps?.confirmed ? `<a class="text-link" href="${escapeHtml(business.contact.maps.value)}" rel="noopener noreferrer">Ver ubicación en Google Maps</a>` : ""}</details>` : ""}`;
+}
 export function businessPages(input, shell, heading) {
   const business = validateBusiness(input);
   const show = (field) => business.contact[field].confirmed;
@@ -154,7 +162,7 @@ export function businessPages(input, shell, heading) {
         `<div><h3>${{ address: "Ubicación", hours: "Horarios", serviceArea: "Alcance de servicio" }[field]}</h3><p${field === "address" ? ' itemprop="address"' : field === "serviceArea" ? ' itemprop="areaServed"' : ""}>${lines(field)}</p></div>`,
     )
     .join("");
-  const faq = `<section class="business-faq"><h2>Preguntas frecuentes</h2><details><summary>¿Qué información necesito para consultar una pieza?</summary><p>Ten a mano el número de parte, la marca y la aplicación o modelo. Nuestro equipo debe confirmar compatibilidad, precio y disponibilidad.</p><a class="text-link" href="/consulta">Consultar una pieza que no aparece en el catálogo</a></details>${show("serviceArea") ? `<details><summary>¿Cómo puedo recibir mis refacciones?</summary><p>${lines("serviceArea")}</p><p>Consulta con nuestro equipo las condiciones de entrega de tu pedido.</p></details>` : ""}${show("hours") ? `<details><summary>¿Cuáles son los horarios de atención?</summary><p>${lines("hours")}</p></details>` : ""}${show("address") ? `<details><summary>¿Dónde está el negocio?</summary><p>${lines("address")}</p>${business.contact.maps?.confirmed ? `<a class="text-link" href="${escapeHtml(business.contact.maps.value)}" rel="noopener noreferrer">Ver ubicación en Google Maps</a>` : ""}</details>` : ""}</section>`;
+  const faq = `<section class="business-faq"><h2>Preguntas frecuentes</h2>${businessFaqItems(business)}</section>`;
   const confirmedBrands = business.brands.filter((record) => record.confirmed);
   const story = business.story.confirmed
     ? business.story.paragraphs
@@ -169,10 +177,10 @@ export function businessPages(input, shell, heading) {
         "Nosotros",
         heading(
           "Refacciones y Tractorepuestos Tampico",
-          "Un negocio familiar.<br>Con enfoque en tu refacción.",
-          "Compra y venta de refacciones para servicio pesado diésel.",
+          "Un negocio familiar.",
+          "Con enfoque en tu refacción. Compra y venta de refacciones para servicio pesado diésel.",
         ) +
-          `<section class="contact-grid"><article><p class="eyebrow">Quiénes somos</p><h2>Refacciones y<br>Tractorepuestos.</h2><p>Somos un negocio familiar dedicado a la compra y venta de refacciones para servicio pesado diésel.</p>${story}</article><article><p class="eyebrow">Una consulta bien preparada</p><h2>La información<br>hace la diferencia.</h2><p>El número de parte, la marca y la aplicación ayudan a identificar la refacción que necesitas.</p><a class="text-link" href="/contacto">Información de contacto →</a></article></section>`,
+          `<section class="contact-grid"><article><h2>Refacciones y<br>Tractorepuestos.</h2><p>Somos un negocio familiar dedicado a la compra y venta de refacciones para servicio pesado diésel.</p>${story}</article><article><h2>La información<br>hace la diferencia.</h2><p>El número de parte, la marca y la aplicación ayudan a identificar la refacción que necesitas.</p><a class="text-link" href="/contacto">Información de contacto →</a></article></section>`,
       ),
     ],
     [
@@ -200,7 +208,7 @@ export function businessPages(input, shell, heading) {
           "El siguiente paso<br>empieza contigo.",
           "Ten a mano el número de parte y la información de la aplicación.",
         ) +
-          `<section class="contact-grid">${organizationMetadata(business)}<p class="eyebrow">Refacciones y Tractorepuestos</p><h2>Tampico</h2>${contacts.length ? `<div class="contact-actions">${contacts.join("")}</div>` : !details ? "<p>Estamos preparando los canales de atención de esta página.</p>" : ""}${details}${!contacts.length && !details ? "<p>Próximamente podrás consultar teléfono, ubicación y horarios confirmados.</p>" : ""}</article><article><p class="eyebrow">Para identificar la pieza</p><h2>Información útil<br>para tu consulta.</h2><ul><li>Número de parte o referencia original.</li><li>Marca y aplicación de la refacción.</li><li>Fotografía o especificaciones, si las tienes.</li></ul><p>Revisa las aplicaciones y restricciones antes de elegir una pieza.</p><a class="text-link" href="/catalogo">Ver el catálogo →</a></article></section>${faq}`,
+          `<section class="contact-grid">${organizationMetadata(business)}<h2>Canales de atención</h2>${contacts.length ? `<div class="contact-actions">${contacts.join("")}</div>` : !details ? "<p>Estamos preparando los canales de atención de esta página.</p>" : ""}${details}${!contacts.length && !details ? "<p>Próximamente podrás consultar teléfono, ubicación y horarios confirmados.</p>" : ""}</article><article><h2>Información útil<br>para tu consulta.</h2><ul><li>Número de parte o referencia original.</li><li>Marca y aplicación de la refacción.</li><li>Fotografía o especificaciones, si las tienes.</li></ul><p>Revisa las aplicaciones y restricciones antes de elegir una pieza.</p><a class="text-link" href="/catalogo">Ver el catálogo →</a></article></section>${faq}`,
       ),
     ],
   ]);

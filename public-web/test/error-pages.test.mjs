@@ -10,7 +10,7 @@ test("errores mantienen identidad, noindex y rutas de recuperación sin reintent
     assert.match(html, /href="\/catalogo">Volver al catálogo/);
     assert.match(html, /href="\/buscar">Nueva búsqueda/);
     assert.match(html, /12 segundos/);
-    assert.doesNotMatch(html, /<script|http-equiv="refresh"/);
+    assert.doesNotMatch(html, /<script(?! src="\/assets\/site\.js" defer><\/script>)|http-equiv="refresh"/);
   }
   assert.doesNotMatch(errorHtml(429, { retryAfter: "<script>" }), /<script>/);
   assert.match(errorHtml(503, { budget: true }), /Reduce las piezas/);

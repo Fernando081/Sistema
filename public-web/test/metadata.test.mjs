@@ -31,7 +31,7 @@ test("fichas con título comercial repetido tienen metadatos propios y rutas exi
     assert.ok(pages.has(item.url));
   assert.match(html, /href="\/catalogo">Catálogo/);
   assert.match(html, /Familia &lt;revisada&gt;/);
-  assert.doesNotMatch(html, /rel="canonical"|application\/ld\+json|<script/);
+  assert.doesNotMatch(html, /rel="canonical"|application\/ld\+json|<script(?! src="\/assets\/site\.js" defer><\/script>)/);
   assert.match(html, /noindex,nofollow/);
   assert.throws(() =>
     breadcrumbHtml("x", [{ url: "javascript:alert(1)", title: "x" }]),

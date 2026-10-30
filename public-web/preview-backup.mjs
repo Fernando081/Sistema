@@ -28,7 +28,7 @@ function safeName(name) {
     !/^[a-zA-Z0-9_./-]+$/.test(name) ||
     name.split("/").some((part) => !part || part === "." || part === "..") ||
     (!privateFiles.includes(name) &&
-      !/\.(?:html|css|png|jpg|txt|xml)$/.test(name))
+      !/\.(?:html|css|png|jpg|txt|xml|js|webp|woff2)$/.test(name))
   )
     throw new Error("Archivo de respaldo no permitido");
   return name;

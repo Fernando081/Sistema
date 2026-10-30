@@ -65,7 +65,7 @@ test("ficha tiene contenido HTML inicial escapado y enlace desde catálogo", () 
   );
   const html = pages.get("/productos/prueba-interna");
   assert.match(html, /&lt;script&gt;/);
-  assert.doesNotMatch(html, /<script|\/uploads\/|PrecioUnitario/);
+  assert.doesNotMatch(html, /<script(?! src="\/assets\/site\.js" defer><\/script>)|\/uploads\/|PrecioUnitario/);
   assert.match(html, /PRUEBA/);
   assert.match(html, /Restricción &lt;b&gt;/);
   assert.match(html, /Referencia &amp; revisión/);

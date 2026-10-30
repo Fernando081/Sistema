@@ -11,11 +11,16 @@ test("HTML inicial y navegación sin ejecutar JavaScript", () => {
     assert.match(html, /<html lang="es-MX">/);
     assert.match(html, /<h1>/);
     assert.match(html, /noindex,nofollow/);
-    assert.doesNotMatch(html, /<script/);
+    // WEB02.5: un único script propio y diferido; el contenido no depende de él.
+    assert.deepEqual(html.match(/<script\b[^>]*>/g), [
+      '<script src="/assets/site.js" defer>',
+    ]);
+    assert.doesNotMatch(html, /<script>|\son[a-z]+="/);
     assert.doesNotMatch(html, /api\/v1|access_token|VIN|ESN|PrecioUnitario/);
     for (const [, target] of html.matchAll(/href="([^"]+)"/g))
       if (
         target !== "#contenido" &&
+        !(target.startsWith("#") && html.includes(`id="${target.slice(1)}"`)) &&
         !target.startsWith("/assets/") &&
         !/^(?:tel:\+[1-9][0-9]{7,14}|mailto:[a-zA-Z0-9._%+@-]+|https:\/\/wa\.me\/[0-9]+|https:\/\/maps\.app\.goo\.gl\/[a-zA-Z0-9]+)$/.test(
           target,
@@ -79,6 +84,16 @@ test("servidor local: métodos, encabezados, 404 real y aislamiento de archivos"
       (await fetch(base + "/assets/site.css")).headers.get("content-type"),
       "text/css; charset=utf-8",
     );
+    const script = await fetch(base + "/assets/site.js");
+    assert.equal(script.headers.get("content-type"), "text/javascript; charset=utf-8");
+    assert.match(home.headers.get("content-security-policy"), /script-src 'self'/);
+    assert.doesNotMatch(home.headers.get("content-security-policy"), /unsafe|https?:/);
+    for (const [path, type] of [
+      ["/assets/photos/puente-tampico-1600.webp", "image/webp"],
+      ["/assets/fonts/zilla-slab-600.woff2", "font/woff2"],
+    ])
+      assert.equal((await fetch(base + path)).headers.get("content-type"), type);
+    assert.equal((await fetch(base + "/assets/credits.json")).status, 404);
     const files = JSON.parse(
       await readFile(join(directory, "routes.json"), "utf8"),
     );
