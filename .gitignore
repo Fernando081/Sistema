@@ -34,3 +34,9 @@ public-web/capture-profile.local.json
 
 # O04 (28/10/2026): versiones desplegables, estado, bitácoras y datos de staging se quedan en el equipo.
 /releases/
+
+# Skills de diseño (30/10/2026): se versionan las instrucciones; el historial de taste, los
+# binarios de impeccable (se reinstalan con `npx impeccable install`) y la configuración local no.
+/.taste-skill/
+**/skills/impeccable/scripts/bin/
+/.claude/settings.local.json
